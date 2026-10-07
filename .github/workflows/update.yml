@@ -1,0 +1,43 @@
+name: Aggiorna pronostici
+
+on:
+  schedule:
+    - cron: "0 6,18 * * *"   # 08:00 e 20:00 in Italia con l'ora legale (07:00 e 19:00 con quella solare)
+  workflow_dispatch:          # pulsante "Run workflow" nella scheda Actions
+
+permissions:
+  contents: write
+
+concurrency:
+  group: aggiorna-pronostici
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Installa le dipendenze
+        run: pip install -r requirements.txt
+
+      - name: Genera il sito
+        env:
+          FOOTBALL_DATA_KEY: ${{ secrets.FOOTBALL_DATA_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: python generate.py
+
+      - name: Salva le modifiche
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs
+          if [ -f data/predictions.json ]; then git add data/predictions.json; fi
+          git diff --staged --quiet || git commit -m "Aggiorna pronostici"
+          git push
