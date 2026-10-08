@@ -914,7 +914,37 @@ details.match summary{padding:18px!important}
     return text;
   }
 
-  function matchCenter(m, p, a, s, finalOutcome, prudent) {
+  function deriveRecommendation(m) {
+    if (m.recommendation && m.recommendation.best) return m.recommendation;
+    var p=m.prob||{}, q=m.markets&&Object.keys(m.markets).length?m.markets:deriveSlipMarkets(m.xg), z=m.top_scores&&m.top_scores[0];
+    var a=[
+      {code:"1",label:"1 · Vince "+m.home,p:p.p1,kind:"esito"},
+      {code:"X",label:"X · Pareggio",p:p.px,kind:"esito"},
+      {code:"2",label:"2 · Vince "+m.away,p:p.p2,kind:"esito"},
+      {code:"1X",label:"1X · "+m.home+" non perde",p:p.p1+p.px,kind:"doppia"},
+      {code:"X2",label:"X2 · "+m.away+" non perde",p:p.p2+p.px,kind:"doppia"},
+      {code:"Over 2,5",label:"Over 2,5 · almeno 3 gol",p:p.o25,kind:"gol"},
+      {code:"Under 3,5",label:"Under 3,5 · massimo 3 gol",p:p.u35,kind:"gol"},
+      {code:"Gol",label:"Gol · entrambe segnano",p:p.gg,kind:"gol"},
+      {code:"No Gol",label:"No Gol · almeno una resta a 0",p:p.ng,kind:"gol"},
+      {code:"1_o15",label:"1 + Over 1,5",p:q["1_o15"],kind:"combo"},
+      {code:"2_o15",label:"2 + Over 1,5",p:q["2_o15"],kind:"combo"},
+      {code:"1x_o15",label:"1X + Over 1,5",p:q["1x_o15"],kind:"combo"},
+      {code:"x2_o15",label:"X2 + Over 1,5",p:q["x2_o15"],kind:"combo"},
+      {code:"gg_o25",label:"Gol + Over 2,5",p:q["gg_o25"],kind:"combo"}
+    ];
+    if(z)a.push({code:"score",label:"Risultato esatto · "+z[0]+"-"+z[1],p:Number(z[2]||0),kind:"score"});
+    a=a.filter(function(x){return x.p>0;});
+    var w={esito:1,doppia:.99,gol:1.015,combo:1.035,score:.90};
+    a.sort(function(x,y){return y.p*w[y.kind]-x.p*w[x.kind];});
+    var simple=a.filter(function(x){return x.kind==="esito"||x.kind==="doppia";}).sort(function(x,y){return y.p-x.p;})[0]||a[0];
+    var best=a[0]||simple;
+    if((best.kind==="combo"||best.kind==="gol")&&best.p<.55)best=simple;
+    if(best.kind==="score"||best.p<.50)best=simple;
+    return {best:best,alternatives:a.slice(0,6)};
+  }
+
+  function matchCenter(m, p, a, s, finalOutcome, prudent, rec) {
     return '<div class="match-center">' +
       '<div class="mc-kicker"><span>Match Center</span><span class="mc-ai">' + (a.ai ? "AI + statistiche" : "Solo statistiche") + '</span></div>' +
       '<div class="mc-teams"><div class="mc-team"><small>CASA</small><b>' + esc(m.home) + '</b></div><div class="mc-vs">VS</div><div class="mc-team"><small>TRASFERTA</small><b>' + esc(m.away) + '</b></div></div>' +
@@ -926,12 +956,12 @@ details.match summary{padding:18px!important}
       '<div class="mc-stat"><small>Forma trasferta</small><div class="mc-form">' + chips(m.form && m.form.away) + '</div></div></div>' +
       '<div class="mc-score"><span>Risultato più probabile</span><b>' + s[0] + '-' + s[1] + '</b><span>' + pc(s[2]) + '</span></div>' +
       '<div class="mc-explain"><b>Perché questo esito</b><p class="expl">' + esc(a.text) + '</p></div>' +
-      '<div class="mc-final"><div class="title">Pronostico finale del modello</div><div class="mc-final-main"><b>' + esc(finalOutcome[0] + " · " + finalOutcome[1]) + '</b><strong>' + pc(finalOutcome[2]) + '</strong></div>' +
+      '<div class="mc-final"><div class="title">Pronostico finale del modello</div><div class="mc-final-main"><b>' + esc(rec.best.label) + '</b><strong>' + pc(rec.best.p) + '</strong></div><div class="row"><span>Tipo</span><b>' + esc(rec.best.kind) + '</b></div>' +
       '<div class="row"><span>Alternativa prudente</span><b>' + esc(prudent[0]) + ' · ' + pc(prudent[1]) + '</b></div></div></div>';
   }
 
   function card(m, i) {
-    var p = m.prob, f = m.fair_odds, a = m.analysis, s = m.top_scores[0];
+    var p = m.prob, f = m.fair_odds, a = m.analysis, s = m.top_scores[0], rec = deriveRecommendation(m);
     var finalOutcome = p.p1 >= p.px && p.p1 >= p.p2
       ? ["1", m.home, p.p1]
       : (p.px >= p.p1 && p.px >= p.p2 ? ["X", "Pareggio", p.px] : ["2", m.away, p.p2]);
@@ -957,14 +987,15 @@ details.match summary{padding:18px!important}
       '<i class="d" style="flex:' + p.px + '"><small>X</small>' + pc(p.px) + "</i>" +
       '<i class="a" style="flex:' + p.p2 + '"><small>2</small>' + pc(p.p2) + "</i></div>" +
       '<div class="match-pick"><span class="pick-pill">Modello</span><span class="value">' + esc(finalOutcome[0] + ' · ' + finalOutcome[1]) + ' <b>' + pc(finalOutcome[2]) + '</b></span></div></summary>' +
-      '<div class="detail">' + matchCenter(m, p, a, s, finalOutcome, prudent) +
+      '<div class="detail">' + matchCenter(m, p, a, s, finalOutcome, prudent, rec) +
       "<div><div class=\"who\">" + (a.ai ? "Analisi con le ultime notizie" : "Analisi statistica") + '</div><p class="expl">' + esc(a.text) + "</p></div>" +
       abs + adj + src +
       '<div class="final-prediction" aria-label="Pronostico finale del modello">' +
       '<div class="title">Pronostico finale del modello</div>' +
-      '<div class="main-outcome"><span class="outcome">' + esc(finalOutcome[0] + " · " + finalOutcome[1]) + '</span><span class="prob">' + pc(finalOutcome[2]) + '</span></div>' +
+      '<div class="main-outcome"><span class="outcome">' + esc(rec.best.label) + '</span><span class="prob">' + pc(rec.best.p) + '</span></div>' +
       '<div class="rows">' +
       '<div class="row"><span>Alternativa più prudente</span><b>' + esc(prudent[0]) + ' · <span class="num">' + pc(prudent[1]) + '</span></b></div>' +
+      '<div class="row"><span>Altri mercati forti</span><b class="num">' + rec.alternatives.slice(1,3).map(function(x){return esc(x.label)+" · "+pc(x.p);}).join(" · ") + '</b></div>' +
       '<div class="row"><span>Risultato esatto più probabile</span><b class="num">' + esc(s[0] + "-" + s[1]) + ' · ' + pc(s[2]) + '</b></div>' +
       '</div>' +
       '<p class="note">Stima statistica del modello: non è una certezza e non costituisce un invito a scommettere.</p>' +
