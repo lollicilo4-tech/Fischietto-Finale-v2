@@ -340,6 +340,30 @@ h2.sub2{font-family:var(--font-display);font-size:30px;letter-spacing:.02em}
 @media(max-width:430px){
  .top h1{font-size:43px}.teams{font-size:24px}.hero .vs{gap:7px}.main-outcome .outcome{font-size:24px}
 }
+
+/* ===== HOME APP-LIKE ===== */
+.top:after{content:"MODELLO STATISTICO • DATI REALI • ANALISI AI";display:block;margin-top:4px;color:#637991;font:600 10px var(--font-num);letter-spacing:.13em}
+.tiles{grid-template-columns:repeat(2,1fr)!important}
+.tile:first-child{grid-column:span 2;min-height:112px;display:flex;flex-direction:column;justify-content:center}
+.tile:first-child:before{content:"⚽";position:absolute;right:18px;top:12px;font-size:38px;opacity:.16}
+.tile{position:relative;overflow:hidden}
+.tile:after{content:"›";position:absolute;right:16px;bottom:12px;color:var(--gold);font-size:22px;font-weight:700}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:18px 0 10px}
+.section-head .eyebrow{font:700 10px var(--font-num);letter-spacing:.12em;color:var(--gold);text-transform:uppercase}
+.section-head h2{font-family:var(--font-display);font-size:30px;line-height:1}
+.sure,.list{gap:12px}
+#p-home .lead{color:#91a5bb}
+#p-partite .lead,#p-sicure .lead,#p-classifica .lead,#p-storico .lead{color:#91a5bb}
+.final-prediction:before{content:"";display:block;width:34px;height:3px;border-radius:99px;background:var(--gold);margin-bottom:12px}
+.final-prediction .main-outcome .outcome{letter-spacing:.01em}
+.conf{border-radius:999px;padding:3px 7px;background:rgba(255,255,255,.045)}
+.conf.alta{color:var(--good);border:1px solid rgba(66,214,160,.22)}
+.conf.media{color:var(--gold);border:1px solid rgba(247,198,74,.22)}
+.conf.bassa{color:#ff8b7f;border:1px solid rgba(255,120,109,.22)}
+.bottomnav{border-radius:20px!important;padding:7px!important;bottom:12px!important;margin-inline:8px;max-width:704px}
+.bottomnav button{border-radius:14px!important}
+.bottomnav button[aria-selected="true"]{background:rgba(74,163,255,.14)!important;color:#fff!important;box-shadow:inset 0 0 0 1px rgba(74,163,255,.18)}
+@media(min-width:560px){.tiles{grid-template-columns:repeat(4,1fr)!important}.tile:first-child{grid-column:span 2}.tile{min-height:116px}}
 </style>
 </head>
 <body>
