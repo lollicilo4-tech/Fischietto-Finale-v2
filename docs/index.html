@@ -1039,15 +1039,88 @@ function hero(matches) {
     renderSlip();
   }
 
+function deriveSlipMarkets(xg){
+    if(!xg||xg.length<2) return {};
+    var lh=Number(xg[0])||0, la=Number(xg[1])||0, cells=[], total=0;
+    function pois(l,k){var v=Math.exp(-l);for(var z=1;z<=k;z++)v*=l/z;return v;}
+    for(var i=0;i<9;i++)for(var j=0;j<9;j++){
+      var p=pois(lh,i)*pois(la,j);
+      if(i===j&&i<=1)p*=1.08; else if(i+j===1)p*=0.94;
+      cells.push([i,j,p]); total+=p;
+    }
+    var q={ "1x_o15":0,"x2_o15":0,"1_o15":0,"2_o15":0,"1x_u35":0,"x2_u35":0,"gg_o25":0,"ng_u35":0 };
+    cells.forEach(function(v){
+      var i=v[0],j=v[1],p=v[2]/total;
+      if(i>=j&&i+j>=2)q["1x_o15"]+=p;
+      if(j>=i&&i+j>=2)q["x2_o15"]+=p;
+      if(i>j&&i+j>=2)q["1_o15"]+=p;
+      if(j>i&&i+j>=2)q["2_o15"]+=p;
+      if(i>=j&&i+j<=3)q["1x_u35"]+=p;
+      if(j>=i&&i+j<=3)q["x2_u35"]+=p;
+      if(i>0&&j>0&&i+j>=3)q["gg_o25"]+=p;
+      if((i===0||j===0)&&i+j<=3)q["ng_u35"]+=p;
+    });
+    return q;
+  }
+
 function renderModelSlip(){
     var all=[], used={}, picks=[], mode=SLIP_MODE;
-    MATCHES.forEach(function(m){var p=m.prob||{}, a=[["1X",m.home+" non perde",p.p1+p.px],["X2",m.away+" non perde",p.p2+p.px],["Over 1,5","Almeno 2 gol",p.o15],["Under 3,5","Al massimo 3 gol",p.u35],["1","Vince "+m.home,p.p1],["X","Pareggio",p.px],["2","Vince "+m.away,p.p2],["Over 2,5","Almeno 3 gol",p.o25],["Under 2,5","Al massimo 2 gol",p.u25],["Gol","Segnano entrambe",p.gg],["No Gol","Non segnano entrambe",p.ng]];if(mode==="bomba"&&m.top_scores&&m.top_scores[0]){var s=m.top_scores[0];a.push(["Ris. esatto",s[0]+"-"+s[1],Number(s[2]||0)]);}a.forEach(function(x){if(x[2]>0)all.push({match:m,m:m.home+" – "+m.away,code:x[0],label:x[1],p:Number(x[2])});});});
-    var min=mode==="sicura"?0.68:mode==="media"?0.54:0.20,max=mode==="sicura"?1.01:mode==="media"?0.82:0.62;
-    all.filter(function(x){return x.p>=min&&x.p<=max;}).sort(function(a,b){return mode==="bomba"?a.p-b.p:b.p-a.p;}).forEach(function(x){if(picks.length<n&&!used[x.match.id]){picks.push(x);used[x.match.id]=true;}});
-    if(picks.length<n)all.sort(function(a,b){return b.p-a.p;}).forEach(function(x){if(picks.length<n&&!used[x.match.id]){picks.push(x);used[x.match.id]=true;}});
-    var prod=picks.reduce(function(v,x){return v*x.p;},1), name={sicura:"SICURA",media:"MEDIA",bomba:"BOMBA"}[mode], desc={sicura:"Selezioni con la probabilità più alta del modello.",media:"Equilibrio tra probabilità e mercati più ambiziosi.",bomba:"Selezioni ad alta variabilità, incluso il risultato esatto quando disponibile."}[mode];
+    MATCHES.forEach(function(m){
+      var p=m.prob||{}, q=m.markets&&Object.keys(m.markets).length?m.markets:deriveSlipMarkets(m.xg), a=[
+        ["1X","1X · "+m.home+" non perde",p.p1+p.px,"base"],
+        ["X2","X2 · "+m.away+" non perde",p.p2+p.px,"base"],
+        ["1","1 · Vince "+m.home,p.p1,"base"],
+        ["X","X · Pareggio",p.px,"base"],
+        ["2","2 · Vince "+m.away,p.p2,"base"],
+        ["Over 1,5","Over 1,5 · almeno 2 gol",p.o15,"gol"],
+        ["Under 3,5","Under 3,5 · massimo 3 gol",p.u35,"gol"],
+        ["Gol","Gol · entrambe segnano",p.gg,"gol"],
+        ["No Gol","No Gol · almeno una resta a 0",p.ng,"gol"],
+        ["1 + Over 1,5","1 + Over 1,5",q["1_o15"],"combo"],
+        ["2 + Over 1,5","2 + Over 1,5",q["2_o15"],"combo"],
+        ["1X + Over 1,5","1X + Over 1,5",q["1x_o15"],"combo"],
+        ["X2 + Over 1,5","X2 + Over 1,5",q["x2_o15"],"combo"],
+        ["1X + Under 3,5","1X + Under 3,5",q["1x_u35"],"combo"],
+        ["X2 + Under 3,5","X2 + Under 3,5",q["x2_u35"],"combo"],
+        ["Gol + Over 2,5","Gol + Over 2,5",q["gg_o25"],"combo"],
+        ["No Gol + Under 3,5","No Gol + Under 3,5",q["ng_u35"],"combo"]
+      ];
+      if(m.top_scores&&m.top_scores[0]){
+        var z=m.top_scores[0];
+        a.push(["Ris. esatto","Risultato esatto · "+z[0]+"-"+z[1],Number(z[2]||0),"score"]);
+      }
+      a.forEach(function(x){
+        if(x[2]>0) all.push({match:m,m:m.home+" – "+m.away,code:x[0],label:x[1],p:Number(x[2]),kind:x[3]});
+      });
+    });
+    var cfg=mode==="sicura"?{min:.62,max:1.01,score:false}:mode==="media"?{min:.43,max:.82,score:false}:{min:.12,max:.62,score:true};
+    var rank={score:0,combo:1,gol:2,base:3};
+    all.filter(function(x){return x.p>=cfg.min&&x.p<=cfg.max&&(cfg.score||x.kind!=="score");})
+      .sort(function(a,b){return mode==="bomba" ? (a.p-b.p || rank[a.kind]-rank[b.kind]) : (b.p-a.p || rank[a.kind]-rank[b.kind]);})
+      .forEach(function(x){if(picks.length<n&&!used[x.match.id]){picks.push(x);used[x.match.id]=true;}});
+    if(picks.length<n){
+      all.filter(function(x){return cfg.score||x.kind!=="score";}).sort(function(a,b){return b.p-a.p;})
+        .forEach(function(x){if(picks.length<n&&!used[x.match.id]){picks.push(x);used[x.match.id]=true;}});
+    }
+    if(picks.length<n&&mode==="bomba"){
+      all.filter(function(x){return x.kind==="score";}).sort(function(a,b){return b.p-a.p;})
+        .forEach(function(x){if(picks.length<n&&!used[x.match.id]){picks.push(x);used[x.match.id]=true;}});
+    }
+    var prod=picks.reduce(function(v,x){return v*x.p;},1);
+    var name={sicura:"SICURA",media:"MEDIA",bomba:"BOMBA"}[mode];
+    var desc={
+      sicura:"Il modello privilegia gli esiti più solidi, ma può scegliere anche Gol e combo quando hanno una probabilità superiore al semplice 1X2.",
+      media:"Il modello cerca il miglior equilibrio tra probabilità, mercati gol e combinazioni.",
+      bomba:"Il modello cerca valore statistico tra combo più spinte e, quando disponibile, il risultato esatto più probabile."
+    }[mode];
     var aiOn=MATCHES.some(function(x){return x.analysis&&x.analysis.ai;});
-    $("slip").innerHTML='<div class="slip-hero"><div class="slip-kicker">Schedina automatica · '+name+'</div><div class="slip-title">'+name+'</div><div class="slip-sub">'+desc+' Le probabilità sono quelle già calcolate: nessuna nuova chiamata AI.</div><div class="slip-meta"><span>'+picks.length+' selezioni</span><span>Prob. comb. '+pc(prod)+'</span><span>'+ (aiOn?"AI + statistica":"Solo statistica") +'</span></div></div><div class="slip-list">'+picks.map(function(x,i){return '<div class="slip-item"><div class="slip-num">0'+(i+1)+'</div><div><div class="slip-match">'+esc(x.m)+'</div><div class="slip-market">'+esc(x.code+' · '+x.label)+'</div></div><div class="slip-prob">'+pc(x.p)+'<small>stima</small></div></div>';}).join("")+'</div><div class="slip-foot"><div class="slip-combo">'+pc(prod)+'<small>probabilità combinata teorica</small></div><div class="slip-note">Stima statistica, non garanzia e non quota reale.</div></div>';
+    var kindName={base:"Esito",gol:"Gol",combo:"Combo",score:"Risultato esatto"};
+    $("slip").innerHTML=
+      '<div class="slip-hero"><div class="slip-kicker">Schedina automatica · '+name+'</div><div class="slip-title">'+name+'</div><div class="slip-sub">'+desc+'</div><div class="slip-meta"><span>'+picks.length+' selezioni</span><span>Prob. comb. teorica '+pc(prod)+'</span><span>'+ (aiOn?"AI + statistica":"Solo statistica") +'</span></div></div>'+
+      '<div class="slip-list">'+picks.map(function(x,i){
+        return '<div class="slip-item"><div class="slip-num">0'+(i+1)+'</div><div><div class="slip-match">'+esc(x.m)+'</div><div class="slip-market">'+esc(kindName[x.kind]+' · '+x.label)+'</div></div><div class="slip-prob">'+pc(x.p)+'<small>stima</small></div></div>';
+      }).join("")+'</div>'+
+      '<div class="slip-foot"><div class="slip-combo">'+pc(prod)+'<small>probabilità combinata teorica</small></div><div class="slip-note">Il modello considera i dati disponibili, xG, forma, distribuzione dei gol e, quando disponibile, la correzione AI. Stima statistica: non è una certezza.</div></div>';
   }
 
   function renderSlip() {
