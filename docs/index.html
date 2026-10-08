@@ -1033,9 +1033,9 @@ details.match summary{padding:18px!important}
   function homeDashboard(matches) {
     var ranked=matches.slice().sort(function(a,b){return Math.max(b.prob.p1,b.prob.px,b.prob.p2)-Math.max(a.prob.p1,a.prob.px,a.prob.p2);});
     if(!ranked.length)return;
-    var m=ranked[0],p=m.prob,s=m.top_scores[0];
+    var m=ranked[0],p=m.prob,s=m.top_scores[0],rec=deriveRecommendation(m);
     var fo=p.p1>=p.px&&p.p1>=p.p2?["1",m.home,p.p1]:p.px>=p.p2?["X","Pareggio",p.px]:["2",m.away,p.p2];
-    $("feature-home").innerHTML='<div class="feature-card"><div class="feature-top"><span class="badge">'+esc(fo[0])+" · "+esc(fo[1])+' '+pc(fo[2])+'</span><span class="conf '+m.conf+'">Affidabilità '+esc(m.conf)+'</span></div><div class="feature-match"><div class="feature-team"><small>Casa</small><b>'+esc(m.home)+'</b></div><div class="feature-vs">VS</div><div class="feature-team r"><small>Trasferta</small><b>'+esc(m.away)+'</b></div></div><div class="feature-prob"><span class="'+(fo[0]==="1"?"hot":"")+'"><b>1</b>'+pc(p.p1)+'</span><span class="'+(fo[0]==="X"?"hot":"")+'"><b>X</b>'+pc(p.px)+'</span><span class="'+(fo[0]==="2"?"hot":"")+'"><b>2</b>'+pc(p.p2)+'</span></div><div class="feature-bottom"><div class="feature-score"><small>Risultato più probabile</small>'+s[0]+'-'+s[1]+'</div><button class="feature-open" type="button" data-open-home="m-'+esc(m.id)+'">Vedi analisi →</button></div></div>';
+    $("feature-home").innerHTML='<div class="feature-card"><div class="feature-top"><span class="badge">'+esc(rec.best.label)+' '+pc(rec.best.p)+'</span><span class="conf '+m.conf+'">Affidabilità '+esc(m.conf)+'</span></div><div class="feature-match"><div class="feature-team"><small>Casa</small><b>'+esc(m.home)+'</b></div><div class="feature-vs">VS</div><div class="feature-team r"><small>Trasferta</small><b>'+esc(m.away)+'</b></div></div><div class="feature-prob"><span class="'+(fo[0]==="1"?"hot":"")+'"><b>1</b>'+pc(p.p1)+'</span><span class="'+(fo[0]==="X"?"hot":"")+'"><b>X</b>'+pc(p.px)+'</span><span class="'+(fo[0]==="2"?"hot":"")+'"><b>2</b>'+pc(p.p2)+'</span></div><div class="feature-bottom"><div class="feature-score"><small>Risultato più probabile</small>'+s[0]+'-'+s[1]+'</div><button class="feature-open" type="button" data-open-home="m-'+esc(m.id)+'">Vedi analisi →</button></div></div>';
     var n=matches.length,avg=matches.reduce(function(x,y){return x+Math.max(y.prob.p1,y.prob.px,y.prob.p2)},0)/n;
     $("quick-home").innerHTML='<div class="quick-card"><div class="q-label">Partite</div><div class="q-value">'+n+'</div><div class="q-note">analizzate dal modello</div></div><div class="quick-card"><div class="q-label">Forza media</div><div class="q-value">'+pc(avg)+'</div><div class="q-note">esito principale medio</div></div>';
     $("strong-home").innerHTML=ranked.slice(0,4).map(function(x){var q=x.prob, f=q.p1>=q.px&&q.p1>=q.p2?["1",x.home,q.p1]:q.px>=q.p2?["X","Pareggio",q.px]:["2",x.away,q.p2];return '<button type="button" class="home-row" data-open-home="m-'+esc(x.id)+'"><span class="hr-p">'+pc(f[2])+'<small>'+esc(f[0]+' · '+f[1])+'</small></span><span class="hr-teams">'+esc(x.home)+' — '+esc(x.away)+'<small>'+esc(x.conf)+' · '+esc(x.top_scores[0][0]+'-'+x.top_scores[0][1])+' probabile</small></span><span class="hr-score">'+esc(x.top_scores[0][0]+'-'+x.top_scores[0][1])+'</span></button>';}).join("");
@@ -1047,7 +1047,7 @@ function hero(matches) {
     var m = matches.slice().sort(function (a, b) {
       return Math.max(b.prob.p1, b.prob.px, b.prob.p2) - Math.max(a.prob.p1, a.prob.px, a.prob.p2);
     })[0];
-    var p = m.prob, f = m.fair_odds, s = m.top_scores[0];
+    var p = m.prob, f = m.fair_odds, s = m.top_scores[0], rec = deriveRecommendation(m);
     var top = p.p1 >= p.p2 ? ["1", m.home, p.p1, f.p1] : ["2", m.away, p.p2, f.p2];
     if (p.px > top[2]) top = ["X", "Pareggio", p.px, f.px];
     $("hero").innerHTML = '<div class="hero" style="--i:0"><span class="badge">Pronostico più netto del turno</span>' +
@@ -1055,7 +1055,7 @@ function hero(matches) {
       '<div class="mid"><div class="label">X</div><div class="big">' + pc(p.px) + '</div></div>' +
       '<div class="side r"><div class="nm">' + esc(m.away) + '</div><div class="big">' + pc(p.p2) + '</div></div></div>' +
       '<div class="meta"><span>Risultato probabile <b class="num">' + s[0] + "-" + s[1] + '</b></span>' +
-      '<span>Esito più probabile <b>' + esc(top[1]) + '</b></span></div>' +
+      '<span>Pronostico del modello <b>' + esc(rec.best.label) + ' · ' + pc(rec.best.p) + '</b></span></div>' +
       '<button type="button" class="cta" data-open="m-' + esc(m.id) + '">Apri l\'analisi</button></div>';
     $("hero").querySelector(".cta").addEventListener("click", function () {
       var el = $(this.getAttribute("data-open"));
