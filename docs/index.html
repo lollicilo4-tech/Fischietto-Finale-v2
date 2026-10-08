@@ -419,6 +419,17 @@ details.match summary{padding:15px 15px 13px}
 details.match[open] summary{border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.025),transparent)}
 @media(max-width:430px){.match-team .team-name{font-size:20px}.match-score strong{font-size:24px}.match-pick .value{font-size:18px}.bar{height:42px}}
 
+/* ===== MODEL SLIP v7 — combinazione automatica locale ===== */
+.slip-hero{background:linear-gradient(145deg,rgba(247,198,74,.14),rgba(18,34,56,.96));border:1px solid rgba(247,198,74,.28);border-radius:22px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.slip-kicker{font:800 10px var(--font-num);letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.slip-title{font:800 30px/.95 var(--font-display);text-transform:uppercase;margin-top:5px}.slip-sub{color:#9eb1c7;font-size:12px;margin-top:7px;max-width:520px}
+.slip-meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}.slip-meta span{font-size:10px;font-weight:700;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08);color:#b8c7d7}
+.slip-list{display:flex;flex-direction:column;gap:8px}.slip-item{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:11px 12px}
+.slip-num{font:800 17px var(--font-num);color:var(--gold)}.slip-match{font-weight:700;font-size:13px}.slip-market{font-size:11px;color:var(--muted);margin-top:2px}.slip-prob{text-align:right;font:800 20px var(--font-num);color:var(--good)}.slip-prob small{display:block;font:500 9px var(--font-body);color:var(--muted);text-transform:uppercase}
+.slip-foot{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}.slip-combo{font:800 27px var(--font-display)}.slip-combo small{display:block;font:500 10px var(--font-body);color:var(--muted)}.slip-note{font-size:11px;color:var(--muted);line-height:1.4}
+.slip-toggle{display:flex;gap:7px;margin-bottom:12px}.slip-toggle button{font:700 12px var(--font-body);padding:7px 11px;border-radius:10px;background:var(--surface);color:var(--fg);border:1px solid var(--line);cursor:pointer}.slip-toggle button[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:var(--gold-ink)}
+@media(max-width:430px){.slip-item{grid-template-columns:28px minmax(0,1fr) auto}.slip-title{font-size:27px}.slip-foot{align-items:flex-start;flex-direction:column}}
+
 /* ===== HOME DASHBOARD v6 ===== */
 .home-kicker{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 0 10px}
 .home-kicker h2{font-size:20px;margin:0}.home-kicker span{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.08em}
@@ -675,6 +686,9 @@ main{max-width:1040px!important;margin:0 auto!important;padding-bottom:110px!imp
       <button type="button" class="tile" data-go="sicure">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg>
         <span><b>Più sicure</b><small>Le selezioni più probabili</small></span></button>
+      <button type="button" class="tile" data-go="schedina">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18H6z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>
+        <span><b>Schedina AI</b><small>Combinazione automatica del modello</small></span></button>
       <button type="button" class="tile" data-go="classifica">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
         <span><b>Classifica</b><small>Serie A</small></span></button>
@@ -701,6 +715,11 @@ main{max-width:1040px!important;margin:0 auto!important;padding-bottom:110px!imp
       <p class="lead" style="margin:0">Le partite sono trattate come indipendenti. Più selezioni aggiungi, più è facile che una sbagli.</p>
     </div>
   </section>
+  <section id="p-schedina" role="tabpanel" aria-labelledby="t-schedina" hidden>
+    <p class="lead">Combinazione costruita automaticamente usando le probabilità già calcolate dal modello. Non viene effettuata una nuova chiamata AI per creare la combinazione, così si evita consumo inutile della quota.</p>
+    <div class="slip-toggle" id="slip-toggle" role="group" aria-label="Numero di selezioni"></div>
+    <div id="slip"></div>
+  </section>
   <section id="p-storico" role="tabpanel" aria-labelledby="t-storico" hidden>
     <p class="lead" id="hist-lead">Ogni pronostico viene salvato prima della partita e confrontato con il risultato.</p>
     <div class="hist-hero" id="hist-hero"></div>
@@ -723,6 +742,8 @@ main{max-width:1040px!important;margin:0 auto!important;padding-bottom:110px!imp
     <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M12 5v14M3 12h4M17 12h4"/></svg>Partite</button>
   <button role="tab" id="t-sicure" aria-selected="false" aria-controls="p-sicure">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg>Più sicure</button>
+  <button role="tab" id="t-schedina" aria-selected="false" aria-controls="p-schedina">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18H6z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>Schedina</button>
   <button role="tab" id="t-classifica" aria-selected="false" aria-controls="p-classifica">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Classifica</button>
   <button role="tab" id="t-storico" aria-selected="false" aria-controls="p-storico">
@@ -950,10 +971,27 @@ function hero(matches) {
     });
   }
 
+  var SLIP_N = 3;
   function computePicks() {
     PICKS = MATCHES.map(best).sort(function (a, b) { return b.p - a.p; });
     renderCombo();
+    renderSlip();
   }
+
+  function renderSlip() {
+    var picks = PICKS.slice(0, SLIP_N), prod = picks.reduce(function (s, x) { return s * x.p; }, 1);
+    if (!picks.length) { $("slip").innerHTML = '<div class="msg">Nessuna selezione disponibile.</div>'; return; }
+    var aiOn = MATCHES.some(function(x){ return x.analysis && x.analysis.ai; });
+    $("slip").innerHTML =
+      '<div class="slip-hero"><div class="slip-kicker">Selezione automatica</div><div class="slip-title">Schedina del modello</div>' +
+      '<div class="slip-sub">Le selezioni sono ordinate per probabilità stimata. Quando l’analisi AI è disponibile, le sue correzioni sono già riflesse nelle probabilità; la composizione della combinazione avviene localmente.</div>' +
+      '<div class="slip-meta"><span>' + picks.length + ' selezioni</span><span>Probabilità comb. ' + pc(prod) + '</span><span>' + (aiOn ? 'AI + statistica' : 'Solo statistica') + '</span></div></div>' +
+      '<div class="slip-list">' + picks.map(function (x, i) {
+        return '<div class="slip-item"><div class="slip-num">0' + (i + 1) + '</div><div><div class="slip-match">' + esc(x.m) + '</div><div class="slip-market">' + esc(x.code + ' · ' + x.label) + '</div></div><div class="slip-prob">' + pc(x.p) + '<small>stima</small></div></div>';
+      }).join("") + '</div>' +
+      '<div class="slip-foot"><div class="slip-combo">' + pc(prod) + '<small>probabilità combinata teorica</small></div><div class="slip-note">Non è una garanzia e non rappresenta una quota reale. Le probabilità combinate assumono indipendenza tra gli eventi.</div></div>';
+  }
+
 
   function renderCombo() {
     var sel = PICKS.slice(0, n), prod = sel.reduce(function (s, x) { return s * x.p; }, 1);
@@ -985,7 +1023,7 @@ function hero(matches) {
     $("seg2").appendChild(b);
   });
 
-  var tabs = ["home", "partite", "sicure", "classifica", "storico"];
+  var tabs = ["home", "partite", "sicure", "schedina", "classifica", "storico"];
   tabs.forEach(function (t) {
     $("t-" + t).addEventListener("click", function () {
       tabs.forEach(function (u) { $("t-" + u).setAttribute("aria-selected", String(u === t)); $("p-" + u).hidden = u !== t; });
