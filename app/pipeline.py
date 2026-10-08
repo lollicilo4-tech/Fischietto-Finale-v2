@@ -68,7 +68,7 @@ async def build_turno() -> dict:
             "id": fx["id"], "home": fx["home"], "away": fx["away"], "kickoff": fx["kickoff"], "label": fx["label"],
             "prob": prob, "fair_odds": {k: model.fair_odds(prob[k]) for k in KEYS},
             "xg": [round(lh, 2), round(la, 2)], "xg_base": [round(item["base"]["lh"], 2), round(item["base"]["la"], 2)],
-            "top_scores": s["top_scores"], "conf": s["conf"],
+            "top_scores": s["top_scores"], "markets": s.get("markets", {}), "conf": s["conf"],
             "form": {"home": teams.get(fx["home"], {}).get("form", ""), "away": teams.get(fx["away"], {}).get("form", "")},
             "last": {"home": _last(ctx["finished"], fx["home"]), "away": _last(ctx["finished"], fx["away"])},
             "h2h": _h2h(ctx.get("previous", []) + ctx["finished"], fx["home"], fx["away"]),
