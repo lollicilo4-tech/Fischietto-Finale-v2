@@ -1260,6 +1260,14 @@ function slipReason(x){
     b.addEventListener("click", function () { $("t-" + b.getAttribute("data-go")).click(); });
   });
 
+  function marketPerformancePanel(h){
+    var mp=h.market_performance||{}, order=["1X2","Gol","Over/Under","Combo","Risultato esatto"];
+    var rows=order.filter(function(k){return mp[k];}).map(function(k){var v=mp[k], gap=(v.calibration_gap||0)*100; return "<div class=\"market-perf-row\"><b>"+esc(k)+"</b><span>"+v.hit+"/"+v.n+" · "+pc(v.rate)+"</span><span>prev. "+pc(v.avg_p)+"</span><span>"+(gap>=0?"+":"")+gap.toFixed(1)+" pt</span></div>";}).join("");
+    if(!rows) return "";
+    var ready=order.filter(function(k){return mp[k]&&mp[k].ready;}).length;
+    return "<div class=\"panel\" style=\"margin-top:14px\"><h2>Affidabilità per mercato</h2><p class=\"expl\">Confronto tra probabilità dichiarata e frequenza reale. L'adattamento della Schedina entra in gioco solo con almeno 10 osservazioni per mercato.</p><div style=\"display:flex;flex-direction:column;gap:8px\">"+rows+"</div><p class=\"lead\" style=\"margin:10px 0 0\">"+(ready?"Calibrazione storica disponibile per "+ready+" categorie.":"Campione ancora in raccolta: nessun correttivo applicato.")+"</p></div>";
+  }
+
   fetch("turno.json").then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || "Errore"); return j; }); })
     .then(function (d) {
       var tags = [];
@@ -1335,6 +1343,7 @@ function slipReason(x){
         (h.n < 50 ? " Con " + h.n + " partite il dato è ancora ballerino: serve almeno una cinquantina di partite, meglio cento." : "") + "</p></div>" +
         (cal ? '<div class="panel"><h2>Quando dico 60%, succede?</h2><div class="cal" style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em"><span>Probabilità</span><span>Successi</span><span>Detto</span><span>Reale</span></div><div style="display:flex;flex-direction:column;gap:8px">' + cal + '</div><p class="lead" style="margin:0">Se "Detto" e "Reale" sono vicini, le percentuali sono affidabili.</p></div>' : "") + cl;
     }
+    $("quality").innerHTML += marketPerformancePanel(h);
     $("hist").innerHTML = h.items.map(function (x) {
       return "<div><span>" + esc(x.match) + "<small>" + esc(x.pick) + " dato al " + pc(x.p) + " · finale " + esc(x.score) + '</small></span><span class="' + (x.ok ? "ok" : "ko") + '" aria-label="' + (x.ok ? "Azzeccato" : "Sbagliato") + '">' + (x.ok ? "✓" : "✕") + "</span></div>";
     }).join("");
