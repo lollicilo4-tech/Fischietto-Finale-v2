@@ -364,6 +364,23 @@ h2.sub2{font-family:var(--font-display);font-size:30px;letter-spacing:.02em}
 .bottomnav button{border-radius:14px!important}
 .bottomnav button[aria-selected="true"]{background:rgba(74,163,255,.14)!important;color:#fff!important;box-shadow:inset 0 0 0 1px rgba(74,163,255,.18)}
 @media(min-width:560px){.tiles{grid-template-columns:repeat(4,1fr)!important}.tile:first-child{grid-column:span 2}.tile{min-height:116px}}
+
+/* ===== MATCH DETAIL PREMIUM v3 ===== */
+.match[open] .detail{animation:detailIn .38s ease both}
+@keyframes detailIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.detail-compare{margin:2px 0 2px;padding:16px;border-radius:18px;background:linear-gradient(145deg,rgba(74,163,255,.09),rgba(255,255,255,.025));border:1px solid rgba(104,145,187,.18);overflow:hidden}
+.detail-compare .compare-head{display:flex;justify-content:space-between;align-items:end;gap:10px;margin-bottom:14px}
+.detail-compare .compare-title{font:800 11px var(--font-num);letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.detail-compare .compare-sub{font-size:11px;color:var(--muted)}
+.compare-teams{display:grid;grid-template-columns:minmax(0,1fr) 62px minmax(0,1fr);gap:10px;align-items:center;margin-bottom:15px}
+.compare-team{min-width:0}.compare-team.r{text-align:right}.compare-team .name{font:800 22px/1 var(--font-display);text-transform:uppercase;overflow-wrap:anywhere}.compare-team .xg{font:700 14px var(--font-num);color:var(--muted);margin-top:5px}
+.compare-vs{text-align:center;font:800 12px var(--font-num);color:#60758d}
+.compare-metric{display:grid;grid-template-columns:38px minmax(0,1fr) 38px;gap:9px;align-items:center;margin:11px 0}.compare-metric .value{font:700 12px var(--font-num);text-align:center}.compare-metric .label{text-align:center;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.06em;margin-top:3px;grid-column:1/-1;grid-row:2}
+.compare-track{height:9px;border-radius:99px;background:#1a2b40;overflow:hidden;display:flex}.compare-track .left{height:100%;background:linear-gradient(90deg,#2e7ed1,#4aa3ff);width:var(--left);transform-origin:left;animation:growLeft .7s cubic-bezier(.2,.8,.2,1) both}.compare-track .right{height:100%;background:linear-gradient(90deg,#ff5b72,#d63d56);width:var(--right);margin-left:auto;transform-origin:right;animation:growRight .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes growLeft{from{width:0}to{width:var(--left)}}@keyframes growRight{from{width:0}to{width:var(--right)}}
+.form-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.form-box{background:rgba(255,255,255,.035);border-radius:12px;padding:10px}.form-box.r{text-align:right}.form-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px}.form-chips{display:flex;gap:4px}.form-box.r .form-chips{justify-content:flex-end}.form-box .chip{width:22px;height:22px;border-radius:6px;font-size:11px}
+.detail-compare .micro-note{margin-top:10px;color:#70859d;font-size:10px;line-height:1.35}
+@media(max-width:430px){.compare-teams{grid-template-columns:minmax(0,1fr) 42px minmax(0,1fr)}.compare-team .name{font-size:19px}.detail-compare{padding:14px}.compare-metric{grid-template-columns:34px minmax(0,1fr) 34px;gap:7px}}
 </style>
 </head>
 <body>
@@ -508,6 +525,27 @@ h2.sub2{font-family:var(--font-display);font-size:30px;letter-spacing:.02em}
     var p = m.prob;
     if (p.px >= p.p1 && p.px >= p.p2) return "Pareggio";
     return p.p1 >= p.p2 ? m.home : m.away;
+  }
+
+
+  function formStats(s) {
+    var f = String(s || "");
+    var v = (f.match(/V/g) || []).length, n = (f.match(/N/g) || []).length, p = (f.match(/P/g) || []).length;
+    return { v:v, n:n, p:p, points:v*3+n, max:(v+n+p)*3 };
+  }
+  function compareBlock(m) {
+    var h = formStats(m.form && m.form.home), a = formStats(m.form && m.form.away);
+    var hx = Number(m.xg && m.xg[0] || 0), ax = Number(m.xg && m.xg[1] || 0), total = hx + ax || 1;
+    var hp = h.max ? Math.round(h.points / h.max * 100) : 0, ap = a.max ? Math.round(a.points / a.max * 100) : 0;
+    var hxp = Math.round(hx / total * 100), axp = 100 - hxp;
+    return '<div class="detail-compare">' +
+      '<div class="compare-head"><div><div class="compare-title">Casa vs trasferta</div><div class="compare-sub">Confronto sintetico del modello</div></div><div class="compare-sub">' + (h.points) + '–' + (a.points) + ' punti</div></div>' +
+      '<div class="compare-teams"><div class="compare-team"><div class="name">' + esc(m.home) + '</div><div class="xg">' + d1(hx) + ' xG</div></div><div class="compare-vs">VS</div><div class="compare-team r"><div class="name">' + esc(m.away) + '</div><div class="xg">' + d1(ax) + ' xG</div></div></div>' +
+      '<div class="compare-metric"><span class="value">' + hp + '%</span><div><div class="compare-track" style="--left:' + hp + '%;--right:' + ap + '%"><i class="left"></i><i class="right"></i></div><div class="label">Forma recente</div></div><span class="value">' + ap + '%</span></div>' +
+      '<div class="compare-metric"><span class="value">' + hxp + '%</span><div><div class="compare-track" style="--left:' + hxp + '%;--right:' + axp + '%"><i class="left"></i><i class="right"></i></div><div class="label">Peso xG</div></div><span class="value">' + axp + '%</span></div>' +
+      '<div class="form-compare"><div class="form-box"><div class="form-label">' + esc(m.home) + '</div><div class="form-chips">' + chips(m.form && m.form.home) + '</div></div><div class="form-box r"><div class="form-label">' + esc(m.away) + '</div><div class="form-chips">' + chips(m.form && m.form.away) + '</div></div></div>' +
+      '<div class="micro-note">Forma: V = vittoria, N = pareggio, P = sconfitta. I valori di xG sono gol attesi stimati dal modello.</div>' +
+      '</div>';
   }
 
   function card(m, i) {
