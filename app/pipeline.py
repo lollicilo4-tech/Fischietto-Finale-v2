@@ -82,9 +82,19 @@ async def build_turno() -> dict:
                               "base": {k: round(item["base"][k], 4) for k in ("p1", "px", "p2")},
                               **({"old": {k: round(item["old"][k], 4) for k in ("p1", "px", "p2")}} if item["old"] else {})})
 
-    return {"demo": ctx["demo"], "ai": any(a["ai"] for a in analyses),
-            "ai_error": next((a.get("reason") for a in analyses if a.get("reason")), None),
-            "ai_status": "attiva" if any(a["ai"] for a in analyses) else "solo_statistica",
+    ai_count = sum(1 for a in analyses if a["ai"])
+    ai_error = next((a.get("reason") for a in analyses if a.get("reason")), None)
+    if ai_count == len(analyses):
+        ai_status = "attiva"
+    elif ai_count > 0:
+        ai_status = "parziale"
+    elif ai_error:
+        ai_status = "non_disponibile"
+    else:
+        ai_status = "solo_statistica"
+    return {"demo": ctx["demo"], "ai": ai_count > 0,
+            "ai_error": ai_error,
+            "ai_status": ai_status,
             "matchday": ctx.get("matchday"),
             "played": [] if ctx["demo"] else store.recent(ctx["finished"]),
             "generated_at": datetime.now(timezone.utc).isoformat(timespec="minutes"),
