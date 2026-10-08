@@ -151,6 +151,29 @@ def summarize(lh: float, la: float) -> dict:
     scores.sort(key=lambda s: -s[2])
     r["u25"] = 1 - r["o25"]
     r["ng"] = 1 - r["gg"]
+
+    # Mercati combinati: calcolati direttamente dalla matrice dei punteggi,
+    # non moltiplicando probabilità marginali. Restano quindi coerenti con
+    # lo stesso modello Poisson usato per 1X2, gol e risultati esatti.
+    combos = {
+        "1x_o15": 0.0, "x2_o15": 0.0,
+        "1_o15": 0.0, "2_o15": 0.0,
+        "1x_u35": 0.0, "x2_u35": 0.0,
+        "gg_o25": 0.0, "ng_u35": 0.0,
+    }
+    for i, j, p in cells:
+        q = p / total
+        if i >= j and i + j >= 2: combos["1x_o15"] += q
+        if j >= i and i + j >= 2: combos["x2_o15"] += q
+        if i > j and i + j >= 2: combos["1_o15"] += q
+        if j > i and i + j >= 2: combos["2_o15"] += q
+        if i >= j and i + j <= 3: combos["1x_u35"] += q
+        if j >= i and i + j <= 3: combos["x2_u35"] += q
+        if i > 0 and j > 0 and i + j >= 3: combos["gg_o25"] += q
+        if i == 0 or j == 0:
+            if i + j <= 3: combos["ng_u35"] += q
+    r["markets"] = {k: round(v, 4) for k, v in combos.items()}
+
     top = max(r["p1"], r["px"], r["p2"])
     r["conf"] = "alta" if top >= 0.55 else "media" if top >= 0.45 else "bassa"
     r["top_scores"] = [[i, j, round(q, 4)] for i, j, q in scores[:3]]
