@@ -1308,6 +1308,19 @@ function slipReason(x){
     return '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Andamento degli ultimi pronostici">'+line+dots+'<text x="8" y="'+(H-5)+'" class="market-cal-label">meno recente</text><text x="'+(W-8)+'" y="'+(H-5)+'" text-anchor="end" class="market-cal-label">più recente</text></svg>';
   }
 
+  function backtestPanel(h){
+    var b=h.backtest;
+    if(!b||!b.n) return '<div class="backtest"><div class="backtest-head"><h3>Laboratorio · retrospettiva</h3><span>in attesa</span></div><p class="backtest-note">Servono pronostici storici salvati prima delle partite per confrontare il modello su finestre consecutive.</p></div>';
+    var labels=[["10","Ultime 10"],["25","Ultime 25"],["50","Ultime 50"]];
+    var cards=labels.map(function(x){
+      var v=b.windows[x[0]], rate=v.rate==null?0:v.rate;
+      return '<div class="bt-card"><b>'+ (v.rate==null?'—':pc(v.rate)) +'</b><small>'+x[1]+' · '+v.n+' partite'+(v.available?'':' · campione incompleto')+'</small><div class="bt-bar"><span style="width:'+Math.round(rate*100)+'%"></span></div><small>Brier '+(v.brier==null?'—':d2(v.brier))+'</small></div>';
+    }).join('');
+    var markets=Object.keys(b.markets||{}).map(function(k){return [k,b.markets[k]];}).sort(function(a,c){return (c[1].n||0)-(a[1].n||0);}).slice(0,10);
+    var rows=markets.map(function(x){var v=x[1];return '<div class="bt-market-row"><b>'+esc(x[0])+'</b><span>'+v.hit+'/'+v.n+'</span><span>'+pc(v.rate)+'</span><span>gap '+(v.gap>=0?'+':'')+pc(v.gap)+'</span></div>';}).join('');
+    return '<div class="backtest"><div class="backtest-head"><h3>Laboratorio · retrospettiva</h3><span>'+b.n+' pronostici</span></div><p class="backtest-note">Confronto sui pronostici effettivamente salvati prima dell'esito. Non vengono ricostruite previsioni a posteriori.</p><div class="bt-grid">'+cards+'</div>'+(rows?'<div class="bt-market"><div class="bt-market-row"><b>Mercato</b><span>Hit</span><span>Reale</span><span>Gap</span></div>'+rows+'</div>':'')+'</div>';
+  }
+
   function marketPerformancePanel(h){
     var mp=h.market_performance||{}, order=["1X2","Gol","Over/Under","Combo","Risultato esatto"];
     var entries=order.filter(function(k){return mp[k];});
@@ -1391,7 +1404,7 @@ function slipReason(x){
       var mk = h.markets || {}, mkt = "";
       if (mk.ou && mk.ou.n) mkt += '<div class="stat"><div class="k">Over/Under 2,5</div><div class="v">' + mk.ou.hit + " su " + mk.ou.n + '</div><div class="s">' + pc(mk.ou.hit / mk.ou.n) + "</div></div>";
       if (mk.gg && mk.gg.n) mkt += '<div class="stat"><div class="k">Gol / No Gol</div><div class="v">' + mk.gg.hit + " su " + mk.gg.n + '</div><div class="s">' + pc(mk.gg.hit / mk.gg.n) + "</div></div>";
-      $("quality").innerHTML = modelScorePanel(h) + '<h2 class="sub2">Qualità del modello</h2>' +
+      $("quality").innerHTML = modelScorePanel(h) + backtestPanel(h) + '<h2 class="sub2">Qualità del modello</h2>' +
         '<div class="sum"><div class="stat"><div class="k">Errore del modello</div><div class="v num">' + d2(h.brier) + '</div><div class="s">più è basso, meglio è</div></div>' +
         '<div class="stat"><div class="k">Metodo semplice</div><div class="v num">' + d2(h.brier_base) + '</div><div class="s">solo le medie del campionato</div></div>' + mkt + "</div>" +
         '<div class="panel" style="margin-top:14px"><p class="expl">' + (better
