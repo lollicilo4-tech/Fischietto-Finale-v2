@@ -279,6 +279,67 @@ h2 { font-family: var(--font-display); font-weight: 700; font-size: 22px; text-t
   @keyframes reveal { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
   @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 }
+
+/* ===== RESTYLING PREMIUM v2 — solo CSS, logica invariata ===== */
+:root{
+  --bg:#07111f;--surface:#0d1929;--surface2:#122238;--fg:#f4f7fb;--muted:#8ea1b8;--line:#20344d;
+  --home:#4aa3ff;--away:#ff5b72;--draw:#70839b;--gold:#f7c64a;--gold-ink:#211800;
+  --link:#74b8ff;--good:#42d6a0;--bad:#ff786d;--on-home:#06101b;--on-away:#19060a;--on-draw:#fff;
+  --shadow:0 18px 50px rgba(0,0,0,.28);
+}
+html{background:#07111f}
+body{max-width:720px;padding-inline:18px;padding-block:24px 118px;background:
+ radial-gradient(circle at 8% 0%,rgba(74,163,255,.13),transparent 28rem),
+ radial-gradient(circle at 100% 8%,rgba(247,198,74,.08),transparent 24rem),var(--bg)}
+.top{padding:22px 0 20px;gap:10px}
+.top h1{font-size:50px;letter-spacing:.035em;text-shadow:0 5px 28px rgba(74,163,255,.16)}
+.top h1 span{color:var(--gold)}
+.top .sub{font-size:14px;color:#9eb1c7}
+.tags{gap:7px}.tag{background:rgba(255,255,255,.035);border-color:#29415d;backdrop-filter:blur(10px)}
+.panel,.hero,.match,.tile,.played,.stat,.final-prediction,.bottomnav{
+  background:linear-gradient(145deg,rgba(18,34,56,.96),rgba(10,22,37,.96));
+  border:1px solid rgba(104,145,187,.20);box-shadow:var(--shadow)
+}
+.hero{border-radius:24px;padding:20px;margin-bottom:18px;position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:-60px auto auto -40px;width:180px;height:180px;background:rgba(74,163,255,.16);filter:blur(40px);border-radius:50%}
+.badge{background:rgba(247,198,74,.12);color:var(--gold);border:1px solid rgba(247,198,74,.28);font-weight:700}
+.hero .big{font-family:var(--font-num);font-size:30px;font-weight:700}
+.hero .cta,.cta{background:linear-gradient(135deg,#4aa3ff,#2e7ed1);border:0;border-radius:14px;box-shadow:0 10px 24px rgba(46,126,209,.25);font-weight:700}
+.tiles{gap:12px}
+.tile{border-radius:18px;padding:17px;transition:transform .18s ease,border-color .18s ease}
+.tile:active{transform:scale(.98)}
+.tile .big{font-family:var(--font-display);font-size:28px}
+.tile .small{color:var(--muted)}
+.match{border-radius:20px;margin-bottom:12px;overflow:hidden}
+.match>summary{padding:17px 17px 16px}
+.match[open]{border-color:rgba(74,163,255,.38);box-shadow:0 20px 55px rgba(0,0,0,.34)}
+.mhead{color:#91a7bf;font-size:12px}
+.teams{font-family:var(--font-display);font-size:27px;line-height:1.05;margin:9px 0 13px}
+.bar{height:36px;border-radius:10px;overflow:hidden;background:#1b2c42}
+.bar i{font-family:var(--font-num);font-weight:700}
+.peek{color:#9db0c5;font-size:12px;margin-top:11px}
+.detail{padding:0 17px 18px}
+.who{color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:.12em;font-weight:800;margin-bottom:7px}
+.expl{color:#c9d5e2}
+.final-prediction{
+  margin:16px 0;padding:17px;border-radius:18px;border-color:rgba(247,198,74,.35);
+  background:linear-gradient(145deg,rgba(247,198,74,.11),rgba(18,34,56,.98))
+}
+.final-prediction .title{color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:.13em;font-weight:800;margin-bottom:10px}
+.main-outcome{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.main-outcome .outcome{font-family:var(--font-display);font-size:28px;font-weight:800}
+.main-outcome .prob{font-family:var(--font-num);font-size:25px;color:var(--gold);font-weight:700}
+.rows{margin-top:12px;border-top:1px solid rgba(255,255,255,.08)}
+.row{display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:13px}
+.row b{color:#f3f7fb;text-align:right}.note{font-size:11px;color:#8297ad;margin-top:12px}
+.stat{border-radius:15px;padding:14px}.stat .k{color:#8096ad}.stat .v{font-size:21px;font-weight:700}
+.nav,.bottomnav{background:rgba(9,19,32,.88)!important;border-color:rgba(117,151,186,.22)!important;backdrop-filter:blur(18px);box-shadow:0 -10px 35px rgba(0,0,0,.24)}
+button{font-family:inherit}
+h2.sub2{font-family:var(--font-display);font-size:30px;letter-spacing:.02em}
+.msg{border-radius:15px;background:rgba(255,255,255,.04);border:1px solid var(--line);padding:14px}
+@media(max-width:430px){
+ .top h1{font-size:43px}.teams{font-size:24px}.hero .vs{gap:7px}.main-outcome .outcome{font-size:24px}
+}
 </style>
 </head>
 <body>
