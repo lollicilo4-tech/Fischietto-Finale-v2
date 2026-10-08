@@ -675,7 +675,7 @@ main{max-width:1040px!important;margin:0 auto!important;padding-bottom:110px!imp
 .model-score-head{display:flex;justify-content:space-between;gap:12px;align-items:center}.model-score-kicker{font:800 10px var(--font-num);letter-spacing:.13em;text-transform:uppercase;color:#8ea5bd}.model-score-number{font:800 34px var(--font-num);line-height:1;color:#72e2bb}.model-score-label{margin-top:3px;font:800 22px var(--font-display);text-transform:uppercase}.model-score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.model-score-mini{padding:9px;border-radius:13px;background:rgba(255,255,255,.045)}.model-score-mini b{display:block;font:800 13px var(--font-num)}.model-score-mini span{display:block;margin-top:2px;color:#8ea5bd;font:700 8px var(--font-num);text-transform:uppercase}.model-score-track{height:7px;margin-top:12px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}.model-score-track span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#4da7ff,#72e2bb)}
 .model-trend{margin-top:14px;padding:14px;border:1px solid rgba(111,151,193,.16);border-radius:18px;background:rgba(255,255,255,.025)}.model-trend h3{font:800 15px var(--font-display);margin-bottom:3px}.model-trend p{font-size:11px;color:#8ea5bd;margin-bottom:9px}.model-trend svg{width:100%;display:block}
 @media(max-width:500px){.model-score-grid{grid-template-columns:1fr 1fr}.model-score-grid .model-score-mini:last-child{grid-column:1/-1}}
-</style><style id="slip-reliability-css">.slip-reliability{margin-top:5px;color:var(--muted);font:700 9px var(--font-num);letter-spacing:.02em}</style><style id="match-center-css">
+</style><style id="slip-reliability-css">.slip-reliability{margin-top:5px;color:var(--muted);font:700 9px var(--font-num);letter-spacing:.02em}.slip-hero-row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}.slip-quality{text-align:right;min-width:82px}.slip-quality-score{font:900 25px var(--font-num);color:var(--gold);line-height:1}.slip-quality-label{margin-top:4px;color:#8ea5bd;font:800 8px var(--font-num);text-transform:uppercase;letter-spacing:.08em}.slip-quality-track{height:6px;margin:13px 0 3px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}.slip-quality-track span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#4da7ff,#72e2bb)}.slip-quality-note{margin-top:7px;color:#6f849a;font:600 9px/1.4 var(--font-num)}@media(max-width:500px){.slip-hero-row{gap:10px}.slip-quality-score{font-size:21px}}</style><style id="match-center-css">
 /* ===== MATCH CENTER PREMIUM v8 ===== */
 .match-center{margin:16px 0 4px;padding:0;border:1px solid rgba(111,151,193,.22);border-radius:24px;background:linear-gradient(160deg,#122b47 0%,#0b1829 58%,#0a1523 100%);box-shadow:0 24px 60px rgba(0,0,0,.32);overflow:hidden;position:relative}
 .match-center:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% -20%,rgba(74,163,255,.20),transparent 38%),radial-gradient(circle at 50% 110%,rgba(247,198,74,.09),transparent 30%);pointer-events:none}
@@ -1139,6 +1139,22 @@ function slipReason(x){
     return 1 + gap * 0.60;
   }
 
+  function slipQuality(picks, mode, prod){
+    if(!picks.length) return {score:0,label:"Nessuna selezione",prob:0,reliability:null,coverage:0};
+    var geo=Math.pow(Math.max(prod,0.0000001),1/picks.length);
+    var probScore=Math.max(0,Math.min(100,(geo-0.25)/0.75*100));
+    var vals=picks.map(function(x){return marketReliability(x);});
+    var ready=vals.filter(function(r){return r.score!=null;});
+    var reliability=ready.length?ready.reduce(function(a,r){return a+r.score;},0)/ready.length:null;
+    var coverage=ready.length/picks.length;
+    var reliabilityScore=reliability==null?55:reliability;
+    var score=Math.round(probScore*.58+reliabilityScore*.32+coverage*100*.10);
+    var floor=mode==="sicura"?60:mode==="media"?48:35;
+    score=Math.max(floor,Math.min(99,score));
+    var label=score>=80?"Molto solida":score>=68?"Buona qualità":score>=55?"Da monitorare":"Speculativa";
+    return {score:score,label:label,prob:geo,reliability:reliability,coverage:coverage};
+  }
+
   function renderModelSlip(){
     var all=[], used={}, picks=[], mode=SLIP_MODE;
     MATCHES.forEach(function(m){
@@ -1212,7 +1228,7 @@ function slipReason(x){
     var aiOn=MATCHES.some(function(x){return x.analysis&&x.analysis.ai;});
     var kindName={base:"Esito",esito:"Esito",doppia:"Doppia chance",gol:"Gol",combo:"Combo",score:"Risultato esatto"};
     $("slip").innerHTML=
-      '<div class="slip-hero"><div class="slip-kicker">Schedina automatica · '+name+'</div><div class="slip-title">'+name+'</div><div class="slip-sub">'+desc+'</div><div class="slip-meta"><span>'+picks.length+' selezioni</span><span>Prob. comb. teorica '+pc(prod)+'</span><span>'+ (aiOn?"AI + statistica":"Solo statistica") +'</span></div></div>'+
+      '<div class="slip-hero"><div class="slip-kicker">Schedina automatica · '+name+'</div><div class="slip-hero-row"><div><div class="slip-title">'+name+'</div><div class="slip-sub">'+desc+'</div></div><div class="slip-quality"><div class="slip-quality-score">'+slipQuality(picks,mode,prod).score+'/100</div><div class="slip-quality-label">'+slipQuality(picks,mode,prod).label+'</div></div></div><div class="slip-quality-track"><span style="width:'+slipQuality(picks,mode,prod).score+'%"></span></div><div class="slip-meta"><span>'+picks.length+' selezioni</span><span>Prob. comb. teorica '+pc(prod)+'</span><span>'+ (aiOn?"AI + statistica":"Solo statistica") +'</span></div><div class="slip-quality-note">Punteggio sintetico: probabilità media delle selezioni + affidabilità storica disponibile. Non modifica le probabilità del modello.</div></div>'+
       '<div class="slip-list">'+picks.map(function(x,i){
         return '<div class="slip-item"><div class="slip-num">0'+(i+1)+'</div><div><div class="slip-match">'+esc(x.m)+'</div><div class="slip-market">'+esc(kindName[x.kind]+' · '+x.label)+(x.recommended?' <b>· TOP MODELLO</b>':'')+'</div><div class="slip-reason">'+esc(slipReason(x))+'</div><div class="slip-reliability">'+(function(){var r=marketReliability(x);return r.score==null?'Affidabilità: dati insufficienti':('Affidabilità: '+r.score+'/100 · '+r.n+' osservazioni'+(r.source==="mercato"?' · mercato':' · categoria'));})()+'</div></div><div class="slip-prob">'+pc(x.p)+'<small>stima</small></div></div>';
       }).join("")+'</div>'+
