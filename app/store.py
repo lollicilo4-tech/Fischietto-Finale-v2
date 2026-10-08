@@ -97,10 +97,32 @@ def history(finished: list[dict]) -> dict:
         items.append({"match": f"{p['home']} – {p['away']}", "pick": p["pick"], "p": p["pick_p"],
                       "score": f"{m['hg']}-{m['ag']}", "ok": p["pick"] == actual})
     n = len(items)
-    out = {"n": n, "hit": sum(1 for i in items if i["ok"]),
+    hit = sum(1 for i in items if i["ok"])
+    out = {"n": n, "hit": hit,
            "avg_p": (sum(i["p"] for i in items) / n) if n else None, "items": items[:30]}
     if not n:
         return out
+
+    # Stato sintetico della forma del modello: usa solo risultati già chiusi.
+    # Evita di dare un giudizio forte con un campione troppo piccolo.
+    recent_n = min(10, n)
+    recent_items = items[:recent_n]
+    recent_hit = sum(1 for i in recent_items if i["ok"])
+    recent_rate = recent_hit / recent_n
+    overall_rate = hit / n
+    if n < 10:
+        status, status_label = "in_attesa", "Campione in costruzione"
+    elif recent_rate >= 0.55 and recent_rate >= overall_rate + 0.08:
+        status, status_label = "in_forma", "Modello in forma"
+    elif recent_rate <= overall_rate - 0.08:
+        status, status_label = "da_monitorare", "Da monitorare"
+    else:
+        status, status_label = "stabile", "Modello stabile"
+    out["performance"] = {
+        "status": status, "label": status_label, "recent_n": recent_n,
+        "recent_hit": recent_hit, "recent_rate": recent_rate,
+        "overall_rate": overall_rate
+    }
 
     # Metodo di riferimento: usare sempre le frequenze di 1, X, 2 dell'intero campionato
     tot = len(finished)
