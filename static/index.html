@@ -1039,7 +1039,8 @@ function hero(matches) {
     renderSlip();
   }
 
-  function renderSlip() {\n    if (SLIP_MODE !== "legacy") return renderModelSlip();
+  function renderSlip() {
+    if (SLIP_MODE !== "legacy") return renderModelSlip();
     var picks = PICKS.slice(0, SLIP_N), prod = picks.reduce(function (s, x) { return s * x.p; }, 1);
     if (!picks.length) { $("slip").innerHTML = '<div class="msg">Nessuna selezione disponibile.</div>'; return; }
     var aiOn = MATCHES.some(function(x){ return x.analysis && x.analysis.ai; });
