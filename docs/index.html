@@ -560,7 +560,7 @@ h2 { font-family: var(--font-display); font-weight: 700; font-size: 22px; text-t
     .then(function (d) {
       var tags = [];
       tags.push(d.demo ? '<span class="tag warn">Dati di esempio</span>' : '<span class="tag ok">Dati reali</span>');
-      tags.push(d.ai ? '<span class="tag ok">Notizie aggiornate</span>' : '<span class="tag">Solo statistica</span>');
+      tags.push(d.ai ? '<span class="tag ok">Notizie aggiornate</span>' : (d.ai_error ? '<span class="tag warn">AI non disponibile</span>' : '<span class="tag">Solo statistica</span>'));
       if (d.generated_at) {
         var g = new Date(d.generated_at);
         tags.push('<span class="tag">Aggiornato ' + String(g.getDate()).padStart(2, "0") + "/" + String(g.getMonth() + 1).padStart(2, "0") + " " + String(g.getHours()).padStart(2, "0") + ":" + String(g.getMinutes()).padStart(2, "0") + "</span>");
