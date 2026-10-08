@@ -10,10 +10,12 @@ import asyncio
 import json
 import os
 import time
+from pathlib import Path
 
 FACTOR_MIN, FACTOR_MAX = 0.85, 1.15
 CACHE_SECONDS = 6 * 3600
 _cache: dict = {}
+PERSIST_PATH = Path(__file__).resolve().parent.parent / "docs" / "ai_cache.json"
 ROLE = {"att": "attaccante titolare", "def": "difensore titolare"}
 
 SYSTEM = """Sei l'analista di un'app che spiega come potrebbe andare una partita di calcio.
@@ -142,6 +144,30 @@ async def _ask_groq(client, fx: dict, base: dict) -> dict:
     }
 
 
+def _load_persistent_cache() -> None:
+    try:
+        raw = json.loads(PERSIST_PATH.read_text(encoding="utf-8"))
+        now = time.time()
+        for key, value in raw.items():
+            if isinstance(value, dict) and now - float(value.get("saved_at", 0)) < CACHE_SECONDS:
+                _cache[key] = (float(value["saved_at"]), value["analysis"])
+    except (OSError, ValueError, TypeError, KeyError):
+        pass
+
+
+def _save_persistent_cache() -> None:
+    try:
+        PERSIST_PATH.parent.mkdir(parents=True, exist_ok=True)
+        payload = {
+            key: {"saved_at": stamp, "analysis": value}
+            for key, (stamp, value) in _cache.items()
+            if time.time() - stamp < CACHE_SECONDS
+        }
+        PERSIST_PATH.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    except OSError:
+        pass
+
+
 async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict]:
     """items: [{"fx": fixture, "base": {lh, la, p1, px, p2, ...}}]"""
     if not use_ai:
@@ -150,6 +176,7 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
         why = "Chiave GROQ_API_KEY non trovata: l'analisi AI viene sostituita dal fallback statistico."
         return [fallback_analysis(i["fx"], i["base"], teams, why) for i in items]
 
+    _load_persistent_cache()
     from groq import AsyncGroq
     client = AsyncGroq()
     sem = asyncio.Semaphore(3)
@@ -173,4 +200,6 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
         _cache[fx["id"]] = (time.time(), out)
         return out
 
-    return await asyncio.gather(*(one(i) for i in items))
+    results = await asyncio.gather(*(one(i) for i in items))
+    _save_persistent_cache()
+    return results
