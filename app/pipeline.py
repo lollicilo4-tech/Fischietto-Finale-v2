@@ -38,6 +38,61 @@ def _h2h(pool: list[dict], home: str, away: str, n: int = 3) -> list[dict]:
             for m in sorted(games, key=lambda m: m["date"], reverse=True)[:n]]
 
 
+def _recommendations(s: dict, home: str, away: str) -> dict:
+    """Seleziona un pronostico principale tra mercati semplici, gol, combo e score."""
+    p = s
+    q = s.get("markets", {})
+    z = s.get("top_scores", [])
+    candidates = [
+        {"code": "1", "label": f"1 · Vince {home}", "p": p["p1"], "kind": "esito"},
+        {"code": "X", "label": "X · Pareggio", "p": p["px"], "kind": "esito"},
+        {"code": "2", "label": f"2 · Vince {away}", "p": p["p2"], "kind": "esito"},
+        {"code": "1X", "label": f"1X · {home} non perde", "p": p["p1"] + p["px"], "kind": "doppia"},
+        {"code": "X2", "label": f"X2 · {away} non perde", "p": p["p2"] + p["px"], "kind": "doppia"},
+        {"code": "Over 1,5", "label": "Over 1,5 · almeno 2 gol", "p": p["o15"], "kind": "gol"},
+        {"code": "Over 2,5", "label": "Over 2,5 · almeno 3 gol", "p": p["o25"], "kind": "gol"},
+        {"code": "Under 2,5", "label": "Under 2,5 · massimo 2 gol", "p": p["u25"], "kind": "gol"},
+        {"code": "Under 3,5", "label": "Under 3,5 · massimo 3 gol", "p": p["u35"], "kind": "gol"},
+        {"code": "Gol", "label": "Gol · entrambe segnano", "p": p["gg"], "kind": "gol"},
+        {"code": "No Gol", "label": "No Gol · almeno una resta a 0", "p": p["ng"], "kind": "gol"},
+    ]
+    combo_labels = {
+        "1_o15": "1 + Over 1,5",
+        "2_o15": "2 + Over 1,5",
+        "1x_o15": "1X + Over 1,5",
+        "x2_o15": "X2 + Over 1,5",
+        "1x_u35": "1X + Under 3,5",
+        "x2_u35": "X2 + Under 3,5",
+        "gg_o25": "Gol + Over 2,5",
+        "ng_u35": "No Gol + Under 3,5",
+    }
+    for code, label in combo_labels.items():
+        if q.get(code, 0) > 0:
+            candidates.append({"code": code, "label": label, "p": q[code], "kind": "combo"})
+    if z:
+        candidates.append({"code": "score", "label": f"Risultato esatto · {z[0][0]}-{z[0][1]}", "p": z[0][2], "kind": "score"})
+
+    for x in candidates:
+        x["p"] = round(float(x["p"]), 4)
+
+    weighted = {"esito": 1.00, "doppia": 0.99, "gol": 1.015, "combo": 1.035, "score": 0.90}
+    ranked = sorted(candidates, key=lambda x: x["p"] * weighted[x["kind"]], reverse=True)
+    best = ranked[0]
+
+    best_simple = max((x for x in candidates if x["kind"] in ("esito", "doppia")), key=lambda x: x["p"])
+    if best["kind"] in ("combo", "gol") and best["p"] < 0.55:
+        best = best_simple
+    if best["kind"] == "score" or best["p"] < 0.50:
+        best = best_simple
+
+    top = sorted(candidates, key=lambda x: x["p"], reverse=True)
+    best_by_kind = {}
+    for x in top:
+        best_by_kind.setdefault(x["kind"], x)
+
+    return {"best": best, "alternatives": top[:6], "by_kind": best_by_kind}
+
+
 async def build_turno() -> dict:
     ctx = await data.get_context()
     teams, avg_h, avg_a = ctx["teams"], ctx["avg_h"], ctx["avg_a"]
@@ -68,7 +123,7 @@ async def build_turno() -> dict:
             "id": fx["id"], "home": fx["home"], "away": fx["away"], "kickoff": fx["kickoff"], "label": fx["label"],
             "prob": prob, "fair_odds": {k: model.fair_odds(prob[k]) for k in KEYS},
             "xg": [round(lh, 2), round(la, 2)], "xg_base": [round(item["base"]["lh"], 2), round(item["base"]["la"], 2)],
-            "top_scores": s["top_scores"], "markets": s.get("markets", {}), "conf": s["conf"],
+            "top_scores": s["top_scores"], "markets": s.get("markets", {}), "recommendation": _recommendations(s, fx["home"], fx["away"]), "conf": s["conf"],
             "form": {"home": teams.get(fx["home"], {}).get("form", ""), "away": teams.get(fx["away"], {}).get("form", "")},
             "last": {"home": _last(ctx["finished"], fx["home"]), "away": _last(ctx["finished"], fx["away"])},
             "h2h": _h2h(ctx.get("previous", []) + ctx["finished"], fx["home"], fx["away"]),
