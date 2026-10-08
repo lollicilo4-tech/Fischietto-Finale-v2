@@ -832,6 +832,22 @@ main{max-width:1040px!important;margin:0 auto!important;padding-bottom:110px!imp
     return text;
   }
 
+  function matchCenter(m, p, a, s, finalOutcome, prudent) {
+    return '<div class="match-center">' +
+      '<div class="mc-kicker"><span>Match Center</span><span class="mc-ai">' + (a.ai ? "AI + statistiche" : "Solo statistiche") + '</span></div>' +
+      '<div class="mc-teams"><div class="mc-team"><small>CASA</small><b>' + esc(m.home) + '</b></div><div class="mc-vs">VS</div><div class="mc-team"><small>TRASFERTA</small><b>' + esc(m.away) + '</b></div></div>' +
+      '<div class="mc-probs"><div class="mc-prob ' + (finalOutcome[0] === "1" ? "hot" : "") + '"><small>1</small><strong>' + pc(p.p1) + '</strong></div>' +
+      '<div class="mc-prob ' + (finalOutcome[0] === "X" ? "hot" : "") + '"><small>X</small><strong>' + pc(p.px) + '</strong></div>' +
+      '<div class="mc-prob ' + (finalOutcome[0] === "2" ? "hot" : "") + '"><small>2</small><strong>' + pc(p.p2) + '</strong></div></div>' +
+      '<div class="mc-grid"><div class="mc-stat"><small>Gol attesi</small><b>' + d1(m.xg[0]) + ' – ' + d1(m.xg[1]) + '</b></div>' +
+      '<div class="mc-stat"><small>Affidabilità</small><b>' + esc(m.conf) + '</b></div><div class="mc-stat"><small>Forma casa</small><div class="mc-form">' + chips(m.form && m.form.home) + '</div></div>' +
+      '<div class="mc-stat"><small>Forma trasferta</small><div class="mc-form">' + chips(m.form && m.form.away) + '</div></div></div>' +
+      '<div class="mc-score"><span>Risultato più probabile</span><b>' + s[0] + '-' + s[1] + '</b><span>' + pc(s[2]) + '</span></div>' +
+      '<div class="mc-explain"><b>Perché questo esito</b><p class="expl">' + esc(a.text) + '</p></div>' +
+      '<div class="mc-final"><div class="title">Pronostico finale del modello</div><div class="mc-final-main"><b>' + esc(finalOutcome[0] + " · " + finalOutcome[1]) + '</b><strong>' + pc(finalOutcome[2]) + '</strong></div>' +
+      '<div class="row"><span>Alternativa prudente</span><b>' + esc(prudent[0]) + ' · ' + pc(prudent[1]) + '</b></div></div></div>';
+  }
+
   function card(m, i) {
     var p = m.prob, f = m.fair_odds, a = m.analysis, s = m.top_scores[0];
     var finalOutcome = p.p1 >= p.px && p.p1 >= p.p2
@@ -859,15 +875,7 @@ main{max-width:1040px!important;margin:0 auto!important;padding-bottom:110px!imp
       '<i class="d" style="flex:' + p.px + '"><small>X</small>' + pc(p.px) + "</i>" +
       '<i class="a" style="flex:' + p.p2 + '"><small>2</small>' + pc(p.p2) + "</i></div>" +
       '<div class="match-pick"><span class="pick-pill">Modello</span><span class="value">' + esc(finalOutcome[0] + ' · ' + finalOutcome[1]) + ' <b>' + pc(finalOutcome[2]) + '</b></span></div></summary>' +
-      '<div class="detail"><div class="match-center">
-<div class="mc-kicker"><span>Match Center</span><span class="mc-ai">AI + statistiche</span></div>
-<div class="mc-teams"><div class="mc-team"><small>CASA</small><b>' + esc(m.home) + '</b></div><div class="mc-vs">VS</div><div class="mc-team"><small>TRASFERTA</small><b>' + esc(m.away) + '</b></div></div>
-<div class="mc-probs"><div class="mc-prob ' + (finalOutcome[0] === "1" ? "hot" : "") + '"><small>1</small><strong>' + pc(p.p1) + '</strong></div><div class="mc-prob ' + (finalOutcome[0] === "X" ? "hot" : "") + '"><small>X</small><strong>' + pc(p.px) + '</strong></div><div class="mc-prob ' + (finalOutcome[0] === "2" ? "hot" : "") + '"><small>2</small><strong>' + pc(p.p2) + '</strong></div></div>
-<div class="mc-grid"><div class="mc-stat"><small>Gol attesi</small><b>' + d1(m.xg[0]) + ' – ' + d1(m.xg[1]) + '</b></div><div class="mc-stat"><small>Affidabilità</small><b>' + esc(m.conf) + '</b></div><div class="mc-stat"><small>Forma casa</small><div class="mc-form">' + chips(m.form && m.form.home) + '</div></div><div class="mc-stat"><small>Forma trasferta</small><div class="mc-form">' + chips(m.form && m.form.away) + '</div></div></div>
-<div class="mc-score"><span>Risultato più probabile</span><b>' + s[0] + '-' + s[1] + '</b><span>' + pc(s[2]) + '</span></div>
-<div class="mc-explain"><b>Perché questo esito</b><p class="expl">' + esc(a.text) + '</p></div>
-<div class="mc-final"><div class="title">Pronostico finale del modello</div><div class="mc-final-main"><b>' + esc(finalOutcome[0] + " · " + finalOutcome[1]) + '</b><strong>' + pc(finalOutcome[2]) + '</strong></div><div class="row"><span>Alternativa prudente</span><b>' + esc(prudent[0]) + ' · ' + pc(prudent[1]) + '</b></div></div>
-</div>' +
+      '<div class="detail">' + matchCenter(m, p, a, s, finalOutcome, prudent) +
       "<div><div class=\"who\">" + (a.ai ? "Analisi con le ultime notizie" : "Analisi statistica") + '</div><p class="expl">' + esc(a.text) + "</p></div>" +
       abs + adj + src +
       '<div class="final-prediction" aria-label="Pronostico finale del modello">' +
