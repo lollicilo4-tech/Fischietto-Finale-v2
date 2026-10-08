@@ -56,7 +56,7 @@ async def main() -> int:
             shutil.copy2(f, OUT / f.name)
 
     print(f"Sito aggiornato in {OUT}: {len(turno['matches'])} partite, "
-          f"analisi {'Claude' if turno['ai'] else 'a regole'}.")
+          f"analisi {'AI' if turno['ai'] else 'solo statistica'}.")
     return 0
 
 
