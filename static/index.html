@@ -761,7 +761,8 @@ function hero(matches) {
       if (d.ai_error) $("aierr").innerHTML = '<div class="msg err"><b>Notizie non caricate.</b>' + esc(d.ai_error) + "</div>";
       if (d.matchday) $("sub").textContent = "Serie A · giornata " + d.matchday;
       $("tile-partite").textContent = (d.matchday ? "Giornata " + d.matchday + " · " : "") + d.matches.length + " partite";
-      hero(d.matches);\n      homeDashboard(d.matches);
+      hero(d.matches);
+      homeDashboard(d.matches);
       MATCHES = d.matches;
       $("matches").innerHTML = grouped(d.matches);
       if (d.played && d.played.length) {
