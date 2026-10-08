@@ -133,6 +133,69 @@ details.match summary::-webkit-details-marker { display: none; }
 .abs { font-size: 13px; color: var(--muted); }
 .srcs { font-size: 12px; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
 .srcs a { color: var(--link); overflow-wrap: anywhere; }
+
+.final-prediction {
+  background: var(--gold);
+  color: var(--gold-ink);
+  border: 2px solid var(--gold);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.final-prediction .title {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.final-prediction .main-outcome {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.final-prediction .main-outcome .outcome {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 38px;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+.final-prediction .main-outcome .prob {
+  font-family: var(--font-num);
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1;
+}
+.final-prediction .rows {
+  display: grid;
+  gap: 8px;
+}
+.final-prediction .row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+  font-size: 13px;
+}
+.final-prediction .row b {
+  font-weight: 700;
+}
+.final-prediction .row .num {
+  font-size: 16px;
+  font-weight: 700;
+}
+.final-prediction .note {
+  margin: 2px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid rgba(36, 26, 0, 0.22);
+  color: var(--gold-ink);
+  font-size: 11px;
+  line-height: 1.35;
+}
 .formrow { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
 .formrow div { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .formrow b { font-weight: 600; min-width: 90px; }
@@ -364,6 +427,12 @@ h2 { font-family: var(--font-display); font-weight: 700; font-size: 22px; text-t
 
   function card(m, i) {
     var p = m.prob, f = m.fair_odds, a = m.analysis, s = m.top_scores[0];
+    var finalOutcome = p.p1 >= p.px && p.p1 >= p.p2
+      ? ["1", m.home, p.p1]
+      : (p.px >= p.p1 && p.px >= p.p2 ? ["X", "Pareggio", p.px] : ["2", m.away, p.p2]);
+    var prudent = p.p1 + p.px >= p.px + p.p2
+      ? ["1X", p.p1 + p.px]
+      : ["X2", p.px + p.p2];
     var alt = m.top_scores.slice(1).map(function (x) { return x[0] + "-" + x[1]; }).join(", ");
     var abs = "";
     if (a.absences_home.length) abs += "<div><b>" + esc(m.home) + ":</b> " + a.absences_home.map(esc).join(", ") + "</div>";
@@ -382,6 +451,15 @@ h2 { font-family: var(--font-display); font-weight: 700; font-size: 22px; text-t
       '<div class="detail">' +
       "<div><div class=\"who\">" + (a.ai ? "Analisi con le ultime notizie" : "Analisi statistica") + '</div><p class="expl">' + esc(a.text) + "</p></div>" +
       abs + adj + src +
+      '<div class="final-prediction" aria-label="Pronostico finale del modello">' +
+      '<div class="title">Pronostico finale del modello</div>' +
+      '<div class="main-outcome"><span class="outcome">' + esc(finalOutcome[0] + " · " + finalOutcome[1]) + '</span><span class="prob">' + pc(finalOutcome[2]) + '</span></div>' +
+      '<div class="rows">' +
+      '<div class="row"><span>Alternativa più prudente</span><b>' + esc(prudent[0]) + ' · <span class="num">' + pc(prudent[1]) + '</span></b></div>' +
+      '<div class="row"><span>Risultato esatto più probabile</span><b class="num">' + esc(s[0] + "-" + s[1]) + ' · ' + pc(s[2]) + '</b></div>' +
+      '</div>' +
+      '<p class="note">Stima statistica del modello: non è una certezza e non costituisce un invito a scommettere.</p>' +
+      '</div>' +
       '<div class="grid">' +
       '<div class="stat wide"><div class="k">Quote eque 1 · X · 2</div><div class="v num">' + d2(f.p1) + " · " + d2(f.px) + " · " + d2(f.p2) + "</div></div>" +
       '<div class="stat"><div class="k">Risultato probabile</div><div class="v">' + s[0] + "-" + s[1] + '</div><div class="s">' + pc(s[2]) + " · poi " + alt + "</div></div>" +
