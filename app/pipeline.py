@@ -84,6 +84,7 @@ async def build_turno() -> dict:
 
     return {"demo": ctx["demo"], "ai": any(a["ai"] for a in analyses),
             "ai_error": next((a.get("reason") for a in analyses if a.get("reason")), None),
+            "ai_status": "attiva" if any(a["ai"] for a in analyses) else "solo_statistica",
             "matchday": ctx.get("matchday"),
             "played": [] if ctx["demo"] else store.recent(ctx["finished"]),
             "generated_at": datetime.now(timezone.utc).isoformat(timespec="minutes"),
