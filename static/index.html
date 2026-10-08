@@ -675,7 +675,7 @@ main{max-width:1040px!important;margin:0 auto!important;padding-bottom:110px!imp
 .model-score-head{display:flex;justify-content:space-between;gap:12px;align-items:center}.model-score-kicker{font:800 10px var(--font-num);letter-spacing:.13em;text-transform:uppercase;color:#8ea5bd}.model-score-number{font:800 34px var(--font-num);line-height:1;color:#72e2bb}.model-score-label{margin-top:3px;font:800 22px var(--font-display);text-transform:uppercase}.model-score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.model-score-mini{padding:9px;border-radius:13px;background:rgba(255,255,255,.045)}.model-score-mini b{display:block;font:800 13px var(--font-num)}.model-score-mini span{display:block;margin-top:2px;color:#8ea5bd;font:700 8px var(--font-num);text-transform:uppercase}.model-score-track{height:7px;margin-top:12px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}.model-score-track span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#4da7ff,#72e2bb)}
 .model-trend{margin-top:14px;padding:14px;border:1px solid rgba(111,151,193,.16);border-radius:18px;background:rgba(255,255,255,.025)}.model-trend h3{font:800 15px var(--font-display);margin-bottom:3px}.model-trend p{font-size:11px;color:#8ea5bd;margin-bottom:9px}.model-trend svg{width:100%;display:block}
 @media(max-width:500px){.model-score-grid{grid-template-columns:1fr 1fr}.model-score-grid .model-score-mini:last-child{grid-column:1/-1}}
-</style></style><style id="match-center-css">
+</style><style id="slip-reliability-css">.slip-reliability{margin-top:5px;color:var(--muted);font:700 9px var(--font-num);letter-spacing:.02em}</style></style><style id="match-center-css">
 /* ===== MATCH CENTER PREMIUM v8 ===== */
 .match-center{margin:16px 0 4px;padding:0;border:1px solid rgba(111,151,193,.22);border-radius:24px;background:linear-gradient(160deg,#122b47 0%,#0b1829 58%,#0a1523 100%);box-shadow:0 24px 60px rgba(0,0,0,.32);overflow:hidden;position:relative}
 .match-center:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% -20%,rgba(74,163,255,.20),transparent 38%),radial-gradient(circle at 50% 110%,rgba(247,198,74,.09),transparent 30%);pointer-events:none}
@@ -861,7 +861,7 @@ details.match summary{padding:18px!important}
     navigator.serviceWorker.register("sw.js").catch(function () {});
   }
 
-  var PICKS = [], MATCHES = [], n = 3, NODC = true, SLIP_MODE = "sicura", MARKET_PERFORMANCE = {};
+  var PICKS = [], MATCHES = [], n = 3, NODC = true, SLIP_MODE = "sicura", MARKET_PERFORMANCE = {}, BACKTEST_MARKETS = {};
 
   function best(m) {
     var p = m.prob;
@@ -1121,6 +1121,16 @@ function slipReason(x){
     return "Selezione derivata dalla probabilità complessiva e dalla raccomandazione multi-mercato del modello.";
   }
 
+  function marketReliability(x){
+    var exact = BACKTEST_MARKETS[x.code];
+    var type = x.kind === "score" ? "Risultato esatto" : x.kind === "combo" ? "Combo" : x.kind === "gol" ? "Gol" : "1X2";
+    var perf = exact && exact.n >= 10 ? exact : MARKET_PERFORMANCE[type] || null;
+    if(!perf || !perf.n) return {score:null,n:0,ready:false,source:"in attesa"};
+    var gap=Math.abs(perf.gap!=null?perf.gap:(perf.calibration_gap||0));
+    var score=Math.round(Math.max(0,Math.min(100,(1-gap)*70 + (1-Math.min(1,perf.brier||0))*30)));
+    return {score:score,n:perf.n,ready:perf.n>=10,source:exact&&exact.n>=10?"mercato":"categoria"};
+  }
+
   function historicalMarketBoost(x){
     var type = x.kind === "score" ? "Risultato esatto" : x.kind === "combo" ? "Combo" : x.kind === "gol" ? "Gol" : x.kind === "doppia" || x.kind === "base" || x.kind === "esito" ? "1X2" : "";
     var perf = MARKET_PERFORMANCE[type];
@@ -1204,7 +1214,7 @@ function slipReason(x){
     $("slip").innerHTML=
       '<div class="slip-hero"><div class="slip-kicker">Schedina automatica · '+name+'</div><div class="slip-title">'+name+'</div><div class="slip-sub">'+desc+'</div><div class="slip-meta"><span>'+picks.length+' selezioni</span><span>Prob. comb. teorica '+pc(prod)+'</span><span>'+ (aiOn?"AI + statistica":"Solo statistica") +'</span></div></div>'+
       '<div class="slip-list">'+picks.map(function(x,i){
-        return '<div class="slip-item"><div class="slip-num">0'+(i+1)+'</div><div><div class="slip-match">'+esc(x.m)+'</div><div class="slip-market">'+esc(kindName[x.kind]+' · '+x.label)+(x.recommended?' <b>· TOP MODELLO</b>':'')+'</div><div class="slip-reason">'+esc(slipReason(x))+'</div></div><div class="slip-prob">'+pc(x.p)+'<small>stima</small></div></div>';
+        return '<div class="slip-item"><div class="slip-num">0'+(i+1)+'</div><div><div class="slip-match">'+esc(x.m)+'</div><div class="slip-market">'+esc(kindName[x.kind]+' · '+x.label)+(x.recommended?' <b>· TOP MODELLO</b>':'')+'</div><div class="slip-reason">'+esc(slipReason(x))+'</div><div class="slip-reliability">'+(function(){var r=marketReliability(x);return r.score==null?'Affidabilità: dati insufficienti':('Affidabilità: '+r.score+'/100 · '+r.n+' osservazioni'+(r.source==="mercato"?' · mercato':' · categoria'));})()+'</div></div><div class="slip-prob">'+pc(x.p)+'<small>stima</small></div></div>';
       }).join("")+'</div>'+
       '<div class="slip-foot"><div class="slip-combo">'+pc(prod)+'<small>probabilità combinata teorica</small></div><div class="slip-note">Le selezioni derivano dalle probabilità del modello e dalle sue raccomandazioni multi-mercato. Stima statistica: non è una certezza e non costituisce un invito a scommettere.</div></div>';
   }
@@ -1357,7 +1367,7 @@ function slipReason(x){
       hero(d.matches);
       homeDashboard(d.matches);
       MATCHES = d.matches;
-      MARKET_PERFORMANCE = d.market_performance || {};
+      MARKET_PERFORMANCE = d.market_performance || {}; BACKTEST_MARKETS = (d.backtest && d.backtest.markets) || {};
       $("matches").innerHTML = grouped(d.matches);
       if (d.played && d.played.length) {
         var hits = d.played.filter(function (x) { return x.ok; }).length;
