@@ -382,6 +382,21 @@ h2.sub2{font-family:var(--font-display);font-size:30px;letter-spacing:.02em}
 .outcome-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:2px 0 14px}.outcome-pill{border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.035);border-radius:11px;padding:8px 6px;text-align:center}.outcome-pill .code{font:800 10px var(--font-num);color:var(--muted)}.outcome-pill .pct{display:block;font:700 16px var(--font-num);margin-top:2px}.outcome-pill.hot{border-color:rgba(247,198,74,.4);background:rgba(247,198,74,.1)}.outcome-pill.hot .code,.outcome-pill.hot .pct{color:var(--gold)}
 .final-reason{margin:0 0 12px;padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.035);border-left:3px solid var(--gold);font-size:12px;line-height:1.4;color:#b7c7d8}.final-reason b{color:#f3f7fb}.score-focus{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-top:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07)}.score-focus .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}.score-focus .score{font:800 34px/1 var(--font-display);color:#fff}.score-focus .prob{font:700 12px var(--font-num);color:var(--gold)}
 @media(max-width:430px){.final-hero{grid-template-columns:78px minmax(0,1fr);gap:12px}.conf-ring{width:76px;height:76px}.conf-ring .num{font-size:21px}.final-hero .outcome{font-size:27px}.score-focus .score{font-size:30px}}
+
+/* ===== MATCH CARDS v5 — panoramica sportiva ===== */
+.match-summary-main{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:center}
+.match-team{min-width:0}.match-team.away{text-align:right}
+.match-team .team-name{font-family:var(--font-display);font-size:22px;font-weight:800;line-height:.98;text-transform:uppercase;overflow-wrap:anywhere}
+.match-team .team-side{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:3px}
+.match-score{font-family:var(--font-num);font-weight:700;font-size:13px;color:var(--muted);text-align:center;white-space:nowrap}
+.match-score strong{display:block;font-family:var(--font-display);font-size:27px;line-height:1;color:var(--fg)}
+.match-pick{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:8px;border-top:1px solid var(--line)}
+.match-pick .label{font-size:10px}.match-pick .value{font-family:var(--font-display);font-weight:800;font-size:20px;text-transform:uppercase}
+.match-pick .value b{font-family:var(--font-num);font-size:14px;margin-left:5px}
+.pick-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:999px;background:rgba(247,198,74,.13);color:var(--gold);border:1px solid rgba(247,198,74,.28);font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+details.match summary{padding:15px 15px 13px}
+details.match[open] summary{border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.025),transparent)}
+@media(max-width:430px){.match-team .team-name{font-size:20px}.match-score strong{font-size:24px}.match-pick .value{font-size:18px}.bar{height:42px}}
 </style>
 </head>
 <body>
@@ -556,12 +571,16 @@ h2.sub2{font-family:var(--font-display);font-size:30px;letter-spacing:.02em}
       ? '<div class="abs">Correzione sui gol attesi: ' + esc(m.home) + " ×" + d2(a.factor_home) + ", " + esc(m.away) + " ×" + d2(a.factor_away) + " (gol attesi di base " + d1(m.xg_base[0]) + " - " + d1(m.xg_base[1]) + ").</div>" : "";
     return '<details class="match" id="m-' + esc(m.id) + '" style="--i:' + i + '"><summary>' +
       '<div class="mhead"><span>' + esc(when(m)) + '</span><span class="conf ' + m.conf + '">Affidabilità ' + m.conf + "</span></div>" +
-      '<div class="teams"><span>' + esc(m.home) + '</span><span class="away">' + esc(m.away) + "</span></div>" +
+      '<div class="match-summary-main">' +
+      '<div class="match-team"><div class="team-side">Casa</div><div class="team-name">' + esc(m.home) + '</div></div>' +
+      '<div class="match-score"><strong>' + s[0] + '-' + s[1] + '</strong>probabile</div>' +
+      '<div class="match-team away"><div class="team-side">Trasferta</div><div class="team-name">' + esc(m.away) + '</div></div>' +
+      '</div>' +
       '<div class="bar" role="img" aria-label="' + esc(m.home) + " " + pc(p.p1) + ", pareggio " + pc(p.px) + ", " + esc(m.away) + " " + pc(p.p2) + '">' +
       '<i class="h" style="flex:' + p.p1 + '"><small>1</small>' + pc(p.p1) + "</i>" +
       '<i class="d" style="flex:' + p.px + '"><small>X</small>' + pc(p.px) + "</i>" +
       '<i class="a" style="flex:' + p.p2 + '"><small>2</small>' + pc(p.p2) + "</i></div>" +
-      '<div class="peek"><span>Più probabile <b>' + esc(topPick(m)) + '</b></span><span>Risultato <b class="num">' + s[0] + "-" + s[1] + "</b></span></div></summary>" +
+      '<div class="match-pick"><span class="pick-pill">Modello</span><span class="value">' + esc(finalOutcome[0] + ' · ' + finalOutcome[1]) + ' <b>' + pc(finalOutcome[2]) + '</b></span></div></summary>' +
       '<div class="detail">' +
       "<div><div class=\"who\">" + (a.ai ? "Analisi con le ultime notizie" : "Analisi statistica") + '</div><p class="expl">' + esc(a.text) + "</p></div>" +
       abs + adj + src + compareBlock(m) +
