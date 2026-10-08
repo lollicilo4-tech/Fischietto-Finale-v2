@@ -232,7 +232,8 @@ h2 { font-family: var(--font-display); font-weight: 700; font-size: 22px; text-t
 .hist-rate{font-family:var(--font-display);font-weight:800;font-size:54px;line-height:.9}.hist-rate small{font-family:var(--font-body);font-size:12px;color:var(--muted);font-weight:600}
 .hist-ring{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--gold) var(--rate),var(--surface2) 0);position:relative;flex:0 0 auto}.hist-ring:after{content:"";position:absolute;inset:7px;border-radius:50%;background:var(--surface)}.hist-ring b{position:relative;z-index:1;font-family:var(--font-num);font-size:15px}
 .hist-bars{display:flex;align-items:flex-end;gap:5px;height:76px;padding-top:12px}.hist-bars i{flex:1;min-width:8px;background:var(--line);border-radius:5px 5px 2px 2px;height:18%;position:relative}.hist-bars i.y{background:var(--good)}.hist-bars i.n{background:var(--bad)}.hist-bars i span{position:absolute;bottom:-17px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--muted);font-style:normal}.hist-caption{font-size:12px;color:var(--muted);margin-top:22px}.hist-caption b{color:var(--fg)}
-.perf-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:10px}.perf-head small{color:var(--muted);font-size:11px}
+.perf-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:10px}.perf-head small{color:var(--muted);font-size:11px}.perf-status{display:inline-flex;margin-top:10px;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:var(--surface2);color:var(--muted)}.perf-status.ok{background:rgba(66,214,160,.14);color:var(--good)}.perf-status.bad{background:rgba(255,120,109,.14);color:var(--bad)}
+
 
 /* Storico */
 .sum { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
@@ -800,8 +801,13 @@ function hero(matches) {
     var histRate = h.hit / h.n;
     var recent = (h.items || []).slice(0, 12);
     var bars = recent.map(function(x){ return '<i class="'+(x.ok?'y':'n')+'" style="height:'+(x.ok?78:34)+'%"><span>'+(x.ok?'✓':'✕')+'</span></i>'; }).join("");
+    var perf = h.performance || {};
+    var perfLabel = perf.label || (h.n < 10 ? "Campione in costruzione" : "Performance");
+    var perfClass = perf.status === "in_forma" ? "ok" : perf.status === "da_monitorare" ? "bad" : "neutral";
     $("hist-hero").innerHTML =
-      '<div class="hist-hero-top"><div><div class="hist-kicker">Performance del modello</div><div class="hist-rate">'+pc(histRate)+' <small>1X2 azzeccato</small></div><p class="hist-caption"><b>'+h.hit+'</b> pronostici corretti su <b>'+h.n+'</b>. Le ultime '+recent.length+' partite mostrano l’andamento reale.</p></div><div class="hist-ring" style="--rate:'+Math.round(histRate*100)+'%"><b>'+pc(histRate)+'</b></div></div><div class="hist-bars">'+bars+'</div>';
+      '<div class="hist-hero-top"><div><div class="hist-kicker">Performance del modello</div><div class="hist-rate">'+pc(histRate)+' <small>1X2 azzeccato</small></div><div class="perf-status '+perfClass+'">'+esc(perfLabel)+'</div><p class="hist-caption"><b>'+h.hit+'</b> pronostici corretti su <b>'+h.n+'</b>. Ultime '+recent.length+': <b>'+((perf.recent_hit!=null)?perf.recent_hit:recent.filter(function(x){return x.ok}).length)+'</b> corrette. '+
+      (perf.status === "in_forma" ? "La forma recente è sopra la media storica." : perf.status === "da_monitorare" ? "La forma recente è sotto la media: meglio osservare altri risultati." : perf.status === "stabile" ? "La forma recente è in linea con la media." : "Servono più partite prima di giudicare la forma.")+
+      '</p></div><div class="hist-ring" style="--rate:'+Math.round(histRate*100)+'%"><b>'+pc(histRate)+'</b></div></div><div class="hist-bars">'+bars+'</div>';
     $("sum").innerHTML =
       '<div class="stat"><div class="k">Esito 1X2 azzeccato</div><div class="v">' + h.hit + " su " + h.n + '</div><div class="s">' + pc(h.hit / h.n) + "</div></div>" +
       '<div class="stat"><div class="k">Probabilità media dichiarata</div><div class="v">' + pc(h.avg_p) + '</div><div class="s">se coincide, il modello è calibrato</div></div>';
