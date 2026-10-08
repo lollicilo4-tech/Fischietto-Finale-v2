@@ -181,6 +181,7 @@ async def build_turno() -> dict:
             "played": [] if ctx["demo"] else store.recent(ctx["finished"]),
             "market_performance": {} if ctx["demo"] else store.history(ctx["finished"]).get("market_performance", {}),
             "recommendation_performance": {} if ctx["demo"] else store.history(ctx["finished"]).get("recommendation_performance", {}),
+            "backtest": {} if ctx["demo"] else store.history(ctx["finished"]).get("backtest", {}),
             "generated_at": datetime.now(timezone.utc).isoformat(timespec="minutes"),
             "matches": out}
 
