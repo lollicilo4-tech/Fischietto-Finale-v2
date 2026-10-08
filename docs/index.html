@@ -450,7 +450,7 @@ h2 { font-family: var(--font-display); font-weight: 700; font-size: 22px; text-t
       '<i class="a" style="flex:' + p.p2 + '"><small>2</small>' + pc(p.p2) + "</i></div>" +
       '<div class="peek"><span>Più probabile <b>' + esc(topPick(m)) + '</b></span><span>Risultato <b class="num">' + s[0] + "-" + s[1] + "</b></span></div></summary>" +
       '<div class="detail">' +
-      "<div><div class=\"who\">" + "ANALISI DEL MODELLO" + '</div><p class="expl">' + esc(a.text) + "</p></div>" +
+      "<div><div class=\"who\">" + (a.ai ? "Analisi con le ultime notizie" : "Analisi statistica") + '</div><p class="expl">' + esc(a.text) + "</p></div>" +
       abs + adj + src +
       '<div class="final-prediction" aria-label="Pronostico finale del modello">' +
       '<div class="title">Pronostico finale del modello</div>' +
