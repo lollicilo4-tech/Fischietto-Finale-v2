@@ -100,7 +100,7 @@ async def _ask_groq(client, fx: dict, base: dict) -> dict:
             {"role": "system", "content": SYSTEM},
             {"role": "user", "content": user},
         ],
-        max_completion_tokens=1800,
+        max_completion_tokens=900,
         temperature=0.2,
         reasoning_effort="low",
         tool_choice="required",
@@ -164,7 +164,11 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
                 out = await _ask_groq(client, fx, item["base"])
             except Exception as exc:  # rete, JSON non valido, limiti: si ripiega sulle regole
                 print(f"[analyst] {fx['home']}-{fx['away']}: {exc!r}")
-                why = f"{type(exc).__name__}: {exc}"[:400]
+                msg = str(exc)
+                if "429" in msg or "rate limit" in msg.lower() or "tokens per day" in msg.lower():
+                    why = "Limite di utilizzo Groq raggiunto per oggi. L’analisi AI riprenderà automaticamente quando il limite sarà nuovamente disponibile."
+                else:
+                    why = f"Errore AI ({type(exc).__name__}). L’analisi statistica resta disponibile."
                 return fallback_analysis(fx, item["base"], teams, why)
         _cache[fx["id"]] = (time.time(), out)
         return out
