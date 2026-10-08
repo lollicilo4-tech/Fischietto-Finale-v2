@@ -189,6 +189,49 @@ def _recommendation_performance(rows: list[tuple[str, dict, dict]]) -> dict:
             "calibration_gap": hit / n - avg_p, "brier": sum((p - (1.0 if ok else 0.0)) ** 2 for p, ok in vals) / n,
             "ready": n >= 10}
 
+def _backtest(rows: list[tuple[str, dict, dict]]) -> dict:
+    """Retrospettiva sui pronostici realmente salvati prima delle partite."""
+    def metrics(sub):
+        n=len(sub)
+        if not n:
+            return {"n":0,"hit":0,"rate":None,"avg_p":None,"brier":None}
+        hit=sum(1 for _,p,m in sub if p["pick"]==_outcome(m))
+        avg=sum(p["pick_p"] for _,p,_ in sub)/n
+        brier=sum(sum((q-(1.0 if k==_outcome(m) else 0.0))**2 for k,q in (("1",p["p1"]),("X",p["px"]),("2",p["p2"]))) for _,p,m in sub)/n
+        return {"n":n,"hit":hit,"rate":hit/n,"avg_p":avg,"brier":brier}
+
+    ordered=sorted(rows,key=lambda r:r[1].get("kickoff") or "")
+    windows={}
+    for label,size in (("10",10),("25",25),("50",50)):
+        sub=ordered[-size:] if len(ordered)>=size else ordered
+        m=metrics(sub)
+        m["available"]=len(ordered)>=size
+        windows[label]=m
+
+    code_stats={}
+    for _,p,m in rows:
+        for item in p.get("market_predictions",[]):
+            code=item.get("code")
+            prob=item.get("p")
+            if not code or prob is None:
+                continue
+            key=code
+            g=code_stats.setdefault(key,{"n":0,"hit":0,"sum_p":0.0,"sum_brier":0.0})
+            ok=_market_hit(code,m,item.get("score"))
+            g["n"]+=1
+            g["hit"]+=int(ok)
+            g["sum_p"]+=float(prob)
+            g["sum_brier"]+=(float(prob)-(1.0 if ok else 0.0))**2
+    for v in code_stats.values():
+        v["rate"]=v["hit"]/v["n"]
+        v["avg_p"]=v["sum_p"]/v["n"]
+        v["brier"]=v["sum_brier"]/v["n"]
+        v["gap"]=v["rate"]-v["avg_p"]
+        del v["sum_p"],v["sum_brier"]
+
+    return {"n":len(ordered),"windows":windows,"markets":code_stats,
+            "note":"Valuta solo pronostici già salvati prima dell'esito; non ricalcola retroattivamente le previsioni."}
+
 def history(finished: list[dict]) -> dict:
     rows = _joined(finished)
     items, brier, outcomes = [], [], []
@@ -270,4 +313,5 @@ def history(finished: list[dict]) -> dict:
     out["markets"] = {"ou": {"n": len(ou), "hit": sum(ou)}, "gg": {"n": len(gg), "hit": sum(gg)}}
     out["market_performance"] = _market_performance(rows)
     out["recommendation_performance"] = _recommendation_performance(rows)
+    out["backtest"] = _backtest(rows)
     return out
