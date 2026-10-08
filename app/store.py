@@ -86,6 +86,109 @@ def recent(finished: list[dict], limit: int = 9) -> list[dict]:
     return out
 
 
+
+def _market_type(code: str) -> str:
+    if code in ("1", "X", "2", "1X", "X2"):
+        return "1X2"
+    if code in ("Gol", "No Gol"):
+        return "Gol"
+    if code.startswith("Over") or code.startswith("Under"):
+        return "Over/Under"
+    if code == "score":
+        return "Risultato esatto"
+    if code:
+        return "Combo"
+    return "Altro"
+
+
+def _market_hit(code: str, m: dict, score_code: str | None = None) -> bool:
+    total = m["hg"] + m["ag"]
+    outcome = _outcome(m)
+    if code in ("1", "X", "2", "1X", "X2"):
+        return outcome == code if code in ("1", "X", "2") else (outcome in code)
+    if code == "Over 1,5":
+        return total >= 2
+    if code == "Over 2,5":
+        return total >= 3
+    if code == "Under 2,5":
+        return total <= 2
+    if code == "Under 3,5":
+        return total <= 3
+    if code == "Gol":
+        return m["hg"] > 0 and m["ag"] > 0
+    if code == "No Gol":
+        return m["hg"] == 0 or m["ag"] == 0
+    if code == "1_o15":
+        return outcome == "1" and total >= 2
+    if code == "2_o15":
+        return outcome == "2" and total >= 2
+    if code == "1x_o15":
+        return outcome in ("1", "X") and total >= 2
+    if code == "x2_o15":
+        return outcome in ("X", "2") and total >= 2
+    if code == "1x_u35":
+        return outcome in ("1", "X") and total <= 3
+    if code == "x2_u35":
+        return outcome in ("X", "2") and total <= 3
+    if code == "gg_o25":
+        return m["hg"] > 0 and m["ag"] > 0 and total >= 3
+    if code == "ng_u35":
+        return (m["hg"] == 0 or m["ag"] == 0) and total <= 3
+    if code == "score":
+        return score_code == f"{m['hg']}-{m['ag']}"
+    return False
+
+
+def _market_performance(rows: list[tuple[str, dict, dict]]) -> dict:
+    groups: dict[str, list[tuple[float, bool]]] = {}
+    for _, p, m in rows:
+        for item in p.get("market_predictions", []):
+            code = item.get("code")
+            prob = item.get("p")
+            if not code or prob is None:
+                continue
+            kind = _market_type(code)
+            groups.setdefault(kind, []).append(
+                (float(prob), _market_hit(code, m, item.get("score")))
+            )
+    out = {}
+    for kind, vals in groups.items():
+        n = len(vals)
+        avg_p = sum(p for p, _ in vals) / n
+        hit = sum(1 for _, ok in vals if ok)
+        brier = sum((p - (1.0 if ok else 0.0)) ** 2 for p, ok in vals) / n
+        out[kind] = {
+            "n": n,
+            "hit": hit,
+            "rate": hit / n,
+            "avg_p": avg_p,
+            "calibration_gap": hit / n - avg_p,
+            "brier": brier,
+            "ready": n >= 10,
+        }
+    return out
+
+
+def _recommendation_performance(rows: list[tuple[str, dict, dict]]) -> dict:
+    vals = []
+    for _, p, m in rows:
+        r = p.get("recommendation")
+        if not r:
+            continue
+        code = r.get("code")
+        prob = r.get("p")
+        if not code or prob is None:
+            continue
+        vals.append((float(prob), _market_hit(code, m, r.get("score"))))
+    if not vals:
+        return {}
+    n = len(vals)
+    hit = sum(1 for _, ok in vals if ok)
+    avg_p = sum(p for p, _ in vals) / n
+    return {"n": n, "hit": hit, "rate": hit / n, "avg_p": avg_p,
+            "calibration_gap": hit / n - avg_p, "brier": sum((p - (1.0 if ok else 0.0)) ** 2 for p, ok in vals) / n,
+            "ready": n >= 10}
+
 def history(finished: list[dict]) -> dict:
     rows = _joined(finished)
     items, brier, outcomes = [], [], []
@@ -165,4 +268,6 @@ def history(finished: list[dict]) -> dict:
                            "brier_new": sum(br2(p["base"], a) for p, a in cmp) / len(cmp),
                            "brier_old": sum(br2(p["old"], a) for p, a in cmp) / len(cmp)}
     out["markets"] = {"ou": {"n": len(ou), "hit": sum(ou)}, "gg": {"n": len(gg), "hit": sum(gg)}}
+    out["market_performance"] = _market_performance(rows)
+    out["recommendation_performance"] = _recommendation_performance(rows)
     return out
