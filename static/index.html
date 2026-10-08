@@ -1039,10 +1039,34 @@ function hero(matches) {
     renderSlip();
   }
 
+function deriveSlipMarkets(xg){
+    if(!xg||xg.length<2) return {};
+    var lh=Number(xg[0])||0, la=Number(xg[1])||0, cells=[], total=0;
+    function pois(l,k){var v=Math.exp(-l);for(var z=1;z<=k;z++)v*=l/z;return v;}
+    for(var i=0;i<9;i++)for(var j=0;j<9;j++){
+      var p=pois(lh,i)*pois(la,j);
+      if(i===j&&i<=1)p*=1.08; else if(i+j===1)p*=0.94;
+      cells.push([i,j,p]); total+=p;
+    }
+    var q={ "1x_o15":0,"x2_o15":0,"1_o15":0,"2_o15":0,"1x_u35":0,"x2_u35":0,"gg_o25":0,"ng_u35":0 };
+    cells.forEach(function(v){
+      var i=v[0],j=v[1],p=v[2]/total;
+      if(i>=j&&i+j>=2)q["1x_o15"]+=p;
+      if(j>=i&&i+j>=2)q["x2_o15"]+=p;
+      if(i>j&&i+j>=2)q["1_o15"]+=p;
+      if(j>i&&i+j>=2)q["2_o15"]+=p;
+      if(i>=j&&i+j<=3)q["1x_u35"]+=p;
+      if(j>=i&&i+j<=3)q["x2_u35"]+=p;
+      if(i>0&&j>0&&i+j>=3)q["gg_o25"]+=p;
+      if((i===0||j===0)&&i+j<=3)q["ng_u35"]+=p;
+    });
+    return q;
+  }
+
 function renderModelSlip(){
     var all=[], used={}, picks=[], mode=SLIP_MODE;
     MATCHES.forEach(function(m){
-      var p=m.prob||{}, q=m.markets||{}, a=[
+      var p=m.prob||{}, q=m.markets&&Object.keys(m.markets).length?m.markets:deriveSlipMarkets(m.xg), a=[
         ["1X","1X · "+m.home+" non perde",p.p1+p.px,"base"],
         ["X2","X2 · "+m.away+" non perde",p.p2+p.px,"base"],
         ["1","1 · Vince "+m.home,p.p1,"base"],
