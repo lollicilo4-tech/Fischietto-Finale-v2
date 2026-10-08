@@ -38,6 +38,29 @@ def _h2h(pool: list[dict], home: str, away: str, n: int = 3) -> list[dict]:
             for m in sorted(games, key=lambda m: m["date"], reverse=True)[:n]]
 
 
+def _market_predictions(s: dict, recommendation: dict) -> list[dict]:
+    p = s
+    q = s.get("markets", {})
+    items = [
+        ("1", p["p1"], "esito"), ("X", p["px"], "esito"), ("2", p["p2"], "esito"),
+        ("1X", p["p1"] + p["px"], "doppia"), ("X2", p["p2"] + p["px"], "doppia"),
+        ("Over 1,5", p["o15"], "gol"), ("Over 2,5", p["o25"], "gol"),
+        ("Under 2,5", p["u25"], "gol"), ("Under 3,5", p["u35"], "gol"),
+        ("Gol", p["gg"], "gol"), ("No Gol", p["ng"], "gol"),
+    ]
+    for code in ("1_o15", "2_o15", "1x_o15", "x2_o15", "1x_u35", "x2_u35", "gg_o25", "ng_u35"):
+        if q.get(code) is not None:
+            items.append((code, q[code], "combo"))
+    if s.get("top_scores"):
+        score = s["top_scores"][0]
+        items.append(("score", score[2], "score", f"{score[0]}-{score[1]}"))
+    out = [{"code": code, "p": round(float(prob), 4), "kind": kind} for code, prob, kind, *rest in items]
+    if s.get("top_scores"):
+        out[-1]["score"] = f"{s['top_scores'][0][0]}-{s['top_scores'][0][1]}"
+    return out
+
+
+
 def _recommendations(s: dict, home: str, away: str) -> dict:
     """Seleziona un pronostico principale tra mercati semplici, gol, combo e score."""
     p = s
@@ -119,11 +142,13 @@ async def build_turno() -> dict:
         if not an["ai"]:  # il testo a regole deve citare le stesse cifre mostrate nella scheda
             an["text"] = analyst.fallback_analysis(fx, {**s, "lh": lh, "la": la}, teams)["text"]
         prob = {k: round(s[k], 4) for k in KEYS}
+        recommendation = _recommendations(s, fx["home"], fx["away"])
+        market_predictions = _market_predictions(s, recommendation)
         out.append({
             "id": fx["id"], "home": fx["home"], "away": fx["away"], "kickoff": fx["kickoff"], "label": fx["label"],
             "prob": prob, "fair_odds": {k: model.fair_odds(prob[k]) for k in KEYS},
             "xg": [round(lh, 2), round(la, 2)], "xg_base": [round(item["base"]["lh"], 2), round(item["base"]["la"], 2)],
-            "top_scores": s["top_scores"], "markets": s.get("markets", {}), "recommendation": _recommendations(s, fx["home"], fx["away"]), "conf": s["conf"],
+            "top_scores": s["top_scores"], "markets": s.get("markets", {}), "recommendation": recommendation, "conf": s["conf"],
             "form": {"home": teams.get(fx["home"], {}).get("form", ""), "away": teams.get(fx["away"], {}).get("form", "")},
             "last": {"home": _last(ctx["finished"], fx["home"]), "away": _last(ctx["finished"], fx["away"])},
             "h2h": _h2h(ctx.get("previous", []) + ctx["finished"], fx["home"], fx["away"]),
@@ -134,6 +159,8 @@ async def build_turno() -> dict:
             store.save(fx["id"], fx["home"], fx["away"], fx["kickoff"], prob["p1"], prob["px"], prob["p2"],
                        extra={"o25": prob["o25"], "gg": prob["gg"], "xg": [round(lh, 2), round(la, 2)],
                               "top": s["top_scores"][0][:2], "ai": bool(an["ai"]),
+                              "market_predictions": market_predictions,
+                              "recommendation": recommendation.get("best"),
                               "base": {k: round(item["base"][k], 4) for k in ("p1", "px", "p2")},
                               **({"old": {k: round(item["old"][k], 4) for k in ("p1", "px", "p2")}} if item["old"] else {})})
 
@@ -152,6 +179,8 @@ async def build_turno() -> dict:
             "ai_status": ai_status,
             "matchday": ctx.get("matchday"),
             "played": [] if ctx["demo"] else store.recent(ctx["finished"]),
+            "market_performance": {} if ctx["demo"] else store.history(ctx["finished"]).get("market_performance", {}),
+            "recommendation_performance": {} if ctx["demo"] else store.history(ctx["finished"]).get("recommendation_performance", {}),
             "generated_at": datetime.now(timezone.utc).isoformat(timespec="minutes"),
             "matches": out}
 
