@@ -1094,7 +1094,21 @@ function deriveSlipMarkets(xg){
     return q;
   }
 
-function renderModelSlip(){
+function slipReason(x){
+    var m=x.match||{}, p=m.prob||{}, xg=m.xg||[], total=(Number(xg[0])||0)+(Number(xg[1])||0);
+    var code=x.code||"";
+    if(code==="Gol") return "xG combinati "+total.toFixed(2)+" · entrambe le squadre hanno una probabilità favorevole di segnare.";
+    if(code==="No Gol") return "Il modello vede una buona probabilità che almeno una delle due squadre resti a 0.";
+    if(code.indexOf("Over")===0) return "Produzione offensiva stimata favorevole: xG combinati "+total.toFixed(2)+".";
+    if(code.indexOf("Under")===0) return "Il modello stima un volume di gol contenuto: xG combinati "+total.toFixed(2)+".";
+    if(code.indexOf("+")>=0) return "Combo coerente con la distribuzione dei punteggi del modello e con le probabilità dei mercati coinvolti.";
+    if(code==="Ris. esatto") return "È il risultato esatto con la maggiore probabilità nella matrice dei punteggi.";
+    if(code==="1X"||code==="X2") return "La doppia chance raccoglie due esiti e offre una copertura più ampia rispetto al segno singolo.";
+    if(code==="1"||code==="2"||code==="X") return "È l'esito con maggiore forza nella stima 1X2 del modello.";
+    return "Selezione derivata dalla probabilità complessiva e dalla raccomandazione multi-mercato del modello.";
+  }
+
+  function renderModelSlip(){
     var all=[], used={}, picks=[], mode=SLIP_MODE;
     MATCHES.forEach(function(m){
       var rec=deriveRecommendation(m), p=m.prob||{}, q=m.markets&&Object.keys(m.markets).length?m.markets:deriveSlipMarkets(m.xg), a=[
@@ -1169,7 +1183,7 @@ function renderModelSlip(){
     $("slip").innerHTML=
       '<div class="slip-hero"><div class="slip-kicker">Schedina automatica · '+name+'</div><div class="slip-title">'+name+'</div><div class="slip-sub">'+desc+'</div><div class="slip-meta"><span>'+picks.length+' selezioni</span><span>Prob. comb. teorica '+pc(prod)+'</span><span>'+ (aiOn?"AI + statistica":"Solo statistica") +'</span></div></div>'+
       '<div class="slip-list">'+picks.map(function(x,i){
-        return '<div class="slip-item"><div class="slip-num">0'+(i+1)+'</div><div><div class="slip-match">'+esc(x.m)+'</div><div class="slip-market">'+esc(kindName[x.kind]+' · '+x.label)+(x.recommended?' <b>· TOP MODELLO</b>':'')+'</div></div><div class="slip-prob">'+pc(x.p)+'<small>stima</small></div></div>';
+        return '<div class="slip-item"><div class="slip-num">0'+(i+1)+'</div><div><div class="slip-match">'+esc(x.m)+'</div><div class="slip-market">'+esc(kindName[x.kind]+' · '+x.label)+(x.recommended?' <b>· TOP MODELLO</b>':'')+'</div><div class="slip-reason">'+esc(slipReason(x))+'</div></div><div class="slip-prob">'+pc(x.p)+'<small>stima</small></div></div>';
       }).join("")+'</div>'+
       '<div class="slip-foot"><div class="slip-combo">'+pc(prod)+'<small>probabilità combinata teorica</small></div><div class="slip-note">Le selezioni derivano dalle probabilità del modello e dalle sue raccomandazioni multi-mercato. Stima statistica: non è una certezza e non costituisce un invito a scommettere.</div></div>';
   }
