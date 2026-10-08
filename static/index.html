@@ -1039,6 +1039,17 @@ function hero(matches) {
     renderSlip();
   }
 
+function renderModelSlip(){
+    var all=[], used={}, picks=[], mode=SLIP_MODE;
+    MATCHES.forEach(function(m){var p=m.prob||{}, a=[["1X",m.home+" non perde",p.p1+p.px],["X2",m.away+" non perde",p.p2+p.px],["Over 1,5","Almeno 2 gol",p.o15],["Under 3,5","Al massimo 3 gol",p.u35],["1","Vince "+m.home,p.p1],["X","Pareggio",p.px],["2","Vince "+m.away,p.p2],["Over 2,5","Almeno 3 gol",p.o25],["Under 2,5","Al massimo 2 gol",p.u25],["Gol","Segnano entrambe",p.gg],["No Gol","Non segnano entrambe",p.ng]];if(mode==="bomba"&&m.top_scores&&m.top_scores[0]){var s=m.top_scores[0];a.push(["Ris. esatto",s[0]+"-"+s[1],Number(s[2]||0)]);}a.forEach(function(x){if(x[2]>0)all.push({match:m,m:m.home+" – "+m.away,code:x[0],label:x[1],p:Number(x[2])});});});
+    var min=mode==="sicura"?0.68:mode==="media"?0.54:0.20,max=mode==="sicura"?1.01:mode==="media"?0.82:0.62;
+    all.filter(function(x){return x.p>=min&&x.p<=max;}).sort(function(a,b){return mode==="bomba"?a.p-b.p:b.p-a.p;}).forEach(function(x){if(picks.length<n&&!used[x.match.id]){picks.push(x);used[x.match.id]=true;}});
+    if(picks.length<n)all.sort(function(a,b){return b.p-a.p;}).forEach(function(x){if(picks.length<n&&!used[x.match.id]){picks.push(x);used[x.match.id]=true;}});
+    var prod=picks.reduce(function(v,x){return v*x.p;},1), name={sicura:"SICURA",media:"MEDIA",bomba:"BOMBA"}[mode], desc={sicura:"Selezioni con la probabilità più alta del modello.",media:"Equilibrio tra probabilità e mercati più ambiziosi.",bomba:"Selezioni ad alta variabilità, incluso il risultato esatto quando disponibile."}[mode];
+    var aiOn=MATCHES.some(function(x){return x.analysis&&x.analysis.ai;});
+    $("slip").innerHTML='<div class="slip-hero"><div class="slip-kicker">Schedina automatica · '+name+'</div><div class="slip-title">'+name+'</div><div class="slip-sub">'+desc+' Le probabilità sono quelle già calcolate: nessuna nuova chiamata AI.</div><div class="slip-meta"><span>'+picks.length+' selezioni</span><span>Prob. comb. '+pc(prod)+'</span><span>'+ (aiOn?"AI + statistica":"Solo statistica") +'</span></div></div><div class="slip-list">'+picks.map(function(x,i){return '<div class="slip-item"><div class="slip-num">0'+(i+1)+'</div><div><div class="slip-match">'+esc(x.m)+'</div><div class="slip-market">'+esc(x.code+' · '+x.label)+'</div></div><div class="slip-prob">'+pc(x.p)+'<small>stima</small></div></div>';}).join("")+'</div><div class="slip-foot"><div class="slip-combo">'+pc(prod)+'<small>probabilità combinata teorica</small></div><div class="slip-note">Stima statistica, non garanzia e non quota reale.</div></div>';
+  }
+
   function renderSlip() {
     if (SLIP_MODE !== "legacy") return renderModelSlip();
     var picks = PICKS.slice(0, SLIP_N), prod = picks.reduce(function (s, x) { return s * x.p; }, 1);
@@ -1196,15 +1207,3 @@ function hero(matches) {
 </script>
 </body>
 </html>
-
-  function renderModelSlip(){
-    var all=[], used={}, picks=[], mode=SLIP_MODE;
-    MATCHES.forEach(function(m){var p=m.prob||{}, a=[["1X",m.home+" non perde",p.p1+p.px],["X2",m.away+" non perde",p.p2+p.px],["Over 1,5","Almeno 2 gol",p.o15],["Under 3,5","Al massimo 3 gol",p.u35],["1","Vince "+m.home,p.p1],["X","Pareggio",p.px],["2","Vince "+m.away,p.p2],["Over 2,5","Almeno 3 gol",p.o25],["Under 2,5","Al massimo 2 gol",p.u25],["Gol","Segnano entrambe",p.gg],["No Gol","Non segnano entrambe",p.ng]];if(mode==="bomba"&&m.top_scores&&m.top_scores[0]){var s=m.top_scores[0];a.push(["Ris. esatto",s[0]+"-"+s[1],Number(s[2]||0)]);}a.forEach(function(x){if(x[2]>0)all.push({match:m,m:m.home+" – "+m.away,code:x[0],label:x[1],p:Number(x[2])});});});
-    var min=mode==="sicura"?0.68:mode==="media"?0.54:0.20,max=mode==="sicura"?1.01:mode==="media"?0.82:0.62;
-    all.filter(function(x){return x.p>=min&&x.p<=max;}).sort(function(a,b){return mode==="bomba"?a.p-b.p:b.p-a.p;}).forEach(function(x){if(picks.length<n&&!used[x.match.id]){picks.push(x);used[x.match.id]=true;}});
-    if(picks.length<n)all.sort(function(a,b){return b.p-a.p;}).forEach(function(x){if(picks.length<n&&!used[x.match.id]){picks.push(x);used[x.match.id]=true;}});
-    var prod=picks.reduce(function(v,x){return v*x.p;},1), name={sicura:"SICURA",media:"MEDIA",bomba:"BOMBA"}[mode], desc={sicura:"Selezioni con la probabilità più alta del modello.",media:"Equilibrio tra probabilità e mercati più ambiziosi.",bomba:"Selezioni ad alta variabilità, incluso il risultato esatto quando disponibile."}[mode];
-    var aiOn=MATCHES.some(function(x){return x.analysis&&x.analysis.ai;});
-    $("slip").innerHTML='<div class="slip-hero"><div class="slip-kicker">Schedina automatica · '+name+'</div><div class="slip-title">'+name+'</div><div class="slip-sub">'+desc+' Le probabilità sono quelle già calcolate: nessuna nuova chiamata AI.</div><div class="slip-meta"><span>'+picks.length+' selezioni</span><span>Prob. comb. '+pc(prod)+'</span><span>'+ (aiOn?"AI + statistica":"Solo statistica") +'</span></div></div><div class="slip-list">'+picks.map(function(x,i){return '<div class="slip-item"><div class="slip-num">0'+(i+1)+'</div><div><div class="slip-match">'+esc(x.m)+'</div><div class="slip-market">'+esc(x.code+' · '+x.label)+'</div></div><div class="slip-prob">'+pc(x.p)+'<small>stima</small></div></div>';}).join("")+'</div><div class="slip-foot"><div class="slip-combo">'+pc(prod)+'<small>probabilità combinata teorica</small></div><div class="slip-note">Stima statistica, non garanzia e non quota reale.</div></div>';
-  }
-
