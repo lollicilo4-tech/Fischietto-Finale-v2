@@ -728,12 +728,7 @@ details.match summary{padding:18px!important}
 @media(max-width:560px){body{padding-inline:12px!important}.tiles{grid-template-columns:1fr 1fr!important}.tile{min-height:108px!important;padding:15px!important}.tile.main{grid-column:1/-1!important}.tile b{font-size:19px!important}.tile svg{width:26px!important;height:26px!important}.nav{width:calc(100vw - 16px)!important}.nav button{font-size:9px!important;padding-left:2px!important;padding-right:2px!important}}
 @media(prefers-reduced-motion:no-preference){.tile,.quick-card,.feature-card,details.match,.slip-item,.panel{transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}.tile:hover,.quick-card:hover,.slip-item:hover{transform:translateY(-2px);border-color:rgba(53,167,255,.28)!important}}
 </style>
-<style id="slip-mode-css">
-.slip-toggle{display:flex!important;gap:7px!important;margin:10px 0!important;flex-wrap:wrap}
-.slip-toggle button{flex:1;min-width:90px;padding:11px 12px;border:1px solid rgba(116,154,194,.18);border-radius:13px;background:#0b1828;color:#8ea5bd;font:800 11px var(--font-num);text-transform:uppercase}
-.slip-toggle button[aria-pressed="true"]{background:linear-gradient(135deg,rgba(53,167,255,.22),rgba(247,198,74,.10));color:#fff;border-color:rgba(53,167,255,.38);box-shadow:0 8px 24px rgba(0,0,0,.18)}
-#slip-count button{font-size:10px}
-</style></head>
+<style id="slip-mode-css">.slip-toggle{display:flex!important;gap:7px!important;margin:10px 0!important;flex-wrap:wrap}.slip-toggle button{flex:1;min-width:90px;padding:11px 12px;border:1px solid rgba(116,154,194,.18);border-radius:13px;background:#0b1828;color:#8ea5bd;font:800 11px var(--font-num);text-transform:uppercase}.slip-toggle button[aria-pressed="true"]{background:linear-gradient(135deg,rgba(53,167,255,.22),rgba(247,198,74,.10));color:#fff;border-color:rgba(53,167,255,.38)}#slip-count button{font-size:10px}</style></head>
 <body>
 <header class="top">
   <div class="toprow"><button type="button" class="back" id="back" hidden>‹ Home</button><h1>Fischietto <span>finale</span></h1></div>
@@ -1045,55 +1040,24 @@ function hero(matches) {
   }
 
   function slipCandidates(mode) {
-    var out = [];
+    var out=[];
     MATCHES.forEach(function(m){
       var p=m.prob||{};
-      var base=[
-        ["1X",m.home+" non perde",p.p1+p.px,2],
-        ["X2",m.away+" non perde",p.p2+p.px,2],
-        ["Over 1,5","Almeno 2 gol",p.o15,2],
-        ["Under 3,5","Al massimo 3 gol",p.u35,2],
-        ["1","Vince "+m.home,p.p1,1],
-        ["X","Pareggio",p.px,1],
-        ["2","Vince "+m.away,p.p2,1],
-        ["Over 2,5","Almeno 3 gol",p.o25,1],
-        ["Under 2,5","Al massimo 2 gol",p.u25,1],
-        ["Gol","Segnano entrambe",p.gg,1],
-        ["No Gol","Non segnano entrambe",p.ng,1]
-      ];
-      if(mode==="bomba" && m.top_scores && m.top_scores[0]){
-        var s=m.top_scores[0], sp=Number(s[2]||0);
-        if(sp>0) base.push(["Ris. esatto",s[0]+"-"+s[1],sp,0]);
-      }
-      base.forEach(function(x){ out.push({m:m.home+" – "+m.away,match:m,code:x[0],label:x[1],p:Number(x[2]||0),tier:x[3]}); });
-    });
-    return out;
+      var base=[["1X",m.home+" non perde",p.p1+p.px],["X2",m.away+" non perde",p.p2+p.px],["Over 1,5","Almeno 2 gol",p.o15],["Under 3,5","Al massimo 3 gol",p.u35],["1","Vince "+m.home,p.p1],["X","Pareggio",p.px],["2","Vince "+m.away,p.p2],["Over 2,5","Almeno 3 gol",p.o25],["Under 2,5","Al massimo 2 gol",p.u25],["Gol","Segnano entrambe",p.gg],["No Gol","Non segnano entrambe",p.ng]];
+      if(mode==="bomba"&&m.top_scores&&m.top_scores[0]){var z=m.top_scores[0];base.push(["Ris. esatto",z[0]+"-"+z[1],Number(z[2]||0)]);}
+      base.forEach(function(x){if(Number(x[2])>0)out.push({m:m.home+" – "+m.away,match:m,code:x[0],label:x[1],p:Number(x[2])});});
+    }); return out;
   }
-
-  function renderSlip() {
-    var all=slipCandidates(SLIP_MODE);
-    var min=SLIP_MODE==="sicura"?0.68:SLIP_MODE==="media"?0.54:0.20;
-    var max=SLIP_MODE==="sicura"?1.01:SLIP_MODE==="media"?0.82:0.62;
-    var used={};
-    var pool=all.filter(function(x){return x.p>=min && x.p<=max;}).sort(function(a,b){
-      if(SLIP_MODE==="bomba") return a.p-b.p;
-      return b.p-a.p;
-    });
-    var picks=[];
-    pool.forEach(function(x){ if(picks.length<n || (x.p>=(picks[picks.length-1]||{p:0}).p && !used[x.match.id])) { if(!used[x.match.id] && picks.length<n){picks.push(x);used[x.match.id]=true;} } });
-    if(picks.length<n){
-      all.sort(function(a,b){return b.p-a.p;}).forEach(function(x){if(picks.length<n&&!used[x.match.id]){picks.push(x);used[x.match.id]=true;}});
-    }
-    var prod=picks.reduce(function(s,x){return s*x.p;},1);
-    var names={sicura:"SICURA",media:"MEDIA",bomba:"BOMBA"};
-    var desc={
-      sicura:"Massimizza la probabilità: il modello privilegia doppie chance e mercati con stima più alta.",
-      media:"Equilibrio tra probabilità e selezioni più ambiziose: il modello amplia i mercati senza inseguire il rischio.",
-      bomba:"Versione ad alta variabilità: il modello cerca selezioni meno probabili, incluso il risultato esatto quando disponibile."
-    };
-    if(!picks.length){$("slip").innerHTML='<div class="msg">Nessuna selezione disponibile.</div>';return;}
+  function renderSlip(){
+    var all=slipCandidates(SLIP_MODE), min=SLIP_MODE==="sicura"?0.68:SLIP_MODE==="media"?0.54:0.20, max=SLIP_MODE==="sicura"?1.01:SLIP_MODE==="media"?0.82:0.62;
+    var pool=all.filter(function(x){return x.p>=min&&x.p<=max;}).sort(function(a,b){return SLIP_MODE==="bomba"?a.p-b.p:b.p-a.p;}), used={}, picks=[];
+    pool.forEach(function(x){if(picks.length<n&&!used[x.match.id]){picks.push(x);used[x.match.id]=true;}});
+    if(picks.length<n)all.sort(function(a,b){return b.p-a.p;}).forEach(function(x){if(picks.length<n&&!used[x.match.id]){picks.push(x);used[x.match.id]=true;}});
+    var prod=picks.reduce(function(v,x){return v*x.p;},1), name={sicura:"SICURA",media:"MEDIA",bomba:"BOMBA"}[SLIP_MODE];
+    var desc={sicura:"Massimizza la probabilità con le selezioni più solide del modello.",media:"Bilancia probabilità e mercati più ambiziosi.",bomba:"Cerca selezioni ad alta variabilità, includendo il risultato esatto quando disponibile."}[SLIP_MODE];
     var aiOn=MATCHES.some(function(x){return x.analysis&&x.analysis.ai;});
-    $("slip").innerHTML='<div class="slip-hero"><div class="slip-kicker">Schedina automatica · '+names[SLIP_MODE]+'</div><div class="slip-title">'+names[SLIP_MODE]+'</div><div class="slip-sub">'+desc[SLIP_MODE]+' Le probabilità derivano dai dati già elaborati; nessuna nuova chiamata AI viene effettuata.</div><div class="slip-meta"><span>'+picks.length+' selezioni</span><span>Prob. comb. '+pc(prod)+'</span><span>'+ (aiOn?"AI + statistica":"Solo statistica") +'</span></div></div><div class="slip-list">'+picks.map(function(x,i){return '<div class="slip-item"><div class="slip-num">0'+(i+1)+'</div><div><div class="slip-match">'+esc(x.m)+'</div><div class="slip-market">'+esc(x.code+' · '+x.label)+'</div></div><div class="slip-prob">'+pc(x.p)+'<small>stima</small></div></div>';}).join("")+'</div><div class="slip-foot"><div class="slip-combo">'+pc(prod)+'<small>probabilità combinata teorica</small></div><div class="slip-note">Non è una garanzia e non rappresenta una quota reale. Le probabilità sono stime del modello e la combinazione assume indipendenza tra gli eventi.</div></div>';
-  }  ["sicura","media","bomba"].forEach(function(mode){var b=document.createElement("button");b.type="button";b.dataset.mode=mode;b.textContent=mode.charAt(0).toUpperCase()+mode.slice(1);b.addEventListener("click",function(){SLIP_MODE=mode;renderSlip();document.querySelectorAll("#slip-toggle button").forEach(function(z){z.setAttribute("aria-pressed",String(z.dataset.mode===SLIP_MODE));});});$("slip-toggle").appendChild(b);});
-  [3,4,5].forEach(function(k){var b=document.createElement("button");b.type="button";b.dataset.count=k;b.textContent=k+" selezioni";b.addEventListener("click",function(){n=k;renderSlip();document.querySelectorAll("#slip-count button").forEach(function(z){z.setAttribute("aria-pressed",String(+z.dataset.count===n));});});$("slip-count").appendChild(b);});
+    $("slip").innerHTML='<div class="slip-hero"><div class="slip-kicker">Schedina automatica · '+name+'</div><div class="slip-title">'+name+'</div><div class="slip-sub">'+desc+' Le probabilità sono quelle già calcolate dal modello: nessuna nuova chiamata AI.</div><div class="slip-meta"><span>'+picks.length+' selezioni</span><span>Prob. comb. '+pc(prod)+'</span><span>'+ (aiOn?"AI + statistica":"Solo statistica") +'</span></div></div><div class="slip-list">'+picks.map(function(x,i){return '<div class="slip-item"><div class="slip-num">0'+(i+1)+'</div><div><div class="slip-match">'+esc(x.m)+'</div><div class="slip-market">'+esc(x.code+' · '+x.label)+'</div></div><div class="slip-prob">'+pc(x.p)+'<small>stima</small></div></div>';}).join("")+'</div><div class="slip-foot"><div class="slip-combo">'+pc(prod)+'<small>probabilità combinata teorica</small></div><div class="slip-note">Stima statistica, non garanzia e non quota reale. La combinata assume indipendenza tra gli eventi.</div></div>';
+  }  ["sicura","media","bomba"].forEach(function(mode){var b=document.createElement("button");b.type="button";b.dataset.mode=mode;b.textContent=mode[0].toUpperCase()+mode.slice(1);b.addEventListener("click",function(){SLIP_MODE=mode;renderSlip();syncSlipControls();});$("slip-toggle").appendChild(b);});
+  [3,4,5].forEach(function(k){var b=document.createElement("button");b.type="button";b.dataset.count=k;b.textContent=k+" selezioni";b.addEventListener("click",function(){n=k;renderSlip();syncSlipControls();});$("slip-count").appendChild(b);});
+  function syncSlipControls(){Array.prototype.forEach.call(document.querySelectorAll("#slip-toggle button"),function(b){b.setAttribute("aria-pressed",String(b.dataset.mode===SLIP_MODE));});Array.prototype.forEach.call(document.querySelectorAll("#slip-count button"),function(b){b.setAttribute("aria-pressed",String(+b.dataset.count===n));});}
 
