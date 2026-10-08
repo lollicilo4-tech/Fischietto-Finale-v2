@@ -1039,25 +1039,171 @@ function hero(matches) {
     renderSlip();
   }
 
-  function slipCandidates(mode) {
-    var out=[];
-    MATCHES.forEach(function(m){
-      var p=m.prob||{};
-      var base=[["1X",m.home+" non perde",p.p1+p.px],["X2",m.away+" non perde",p.p2+p.px],["Over 1,5","Almeno 2 gol",p.o15],["Under 3,5","Al massimo 3 gol",p.u35],["1","Vince "+m.home,p.p1],["X","Pareggio",p.px],["2","Vince "+m.away,p.p2],["Over 2,5","Almeno 3 gol",p.o25],["Under 2,5","Al massimo 2 gol",p.u25],["Gol","Segnano entrambe",p.gg],["No Gol","Non segnano entrambe",p.ng]];
-      if(mode==="bomba"&&m.top_scores&&m.top_scores[0]){var z=m.top_scores[0];base.push(["Ris. esatto",z[0]+"-"+z[1],Number(z[2]||0)]);}
-      base.forEach(function(x){if(Number(x[2])>0)out.push({m:m.home+" – "+m.away,match:m,code:x[0],label:x[1],p:Number(x[2])});});
-    }); return out;
+  function renderSlip() {\n    if (SLIP_MODE !== "legacy") return renderModelSlip();
+    var picks = PICKS.slice(0, SLIP_N), prod = picks.reduce(function (s, x) { return s * x.p; }, 1);
+    if (!picks.length) { $("slip").innerHTML = '<div class="msg">Nessuna selezione disponibile.</div>'; return; }
+    var aiOn = MATCHES.some(function(x){ return x.analysis && x.analysis.ai; });
+    $("slip").innerHTML =
+      '<div class="slip-hero"><div class="slip-kicker">Selezione automatica</div><div class="slip-title">Schedina del modello</div>' +
+      '<div class="slip-sub">Le selezioni sono ordinate per probabilità stimata. Quando l’analisi AI è disponibile, le sue correzioni sono già riflesse nelle probabilità; la composizione della combinazione avviene localmente.</div>' +
+      '<div class="slip-meta"><span>' + picks.length + ' selezioni</span><span>Probabilità comb. ' + pc(prod) + '</span><span>' + (aiOn ? 'AI + statistica' : 'Solo statistica') + '</span></div></div>' +
+      '<div class="slip-list">' + picks.map(function (x, i) {
+        return '<div class="slip-item"><div class="slip-num">0' + (i + 1) + '</div><div><div class="slip-match">' + esc(x.m) + '</div><div class="slip-market">' + esc(x.code + ' · ' + x.label) + '</div></div><div class="slip-prob">' + pc(x.p) + '<small>stima</small></div></div>';
+      }).join("") + '</div>' +
+      '<div class="slip-foot"><div class="slip-combo">' + pc(prod) + '<small>probabilità combinata teorica</small></div><div class="slip-note">Non è una garanzia e non rappresenta una quota reale. Le probabilità combinate assumono indipendenza tra gli eventi.</div></div>';
   }
-  function renderSlip(){
-    var all=slipCandidates(SLIP_MODE), min=SLIP_MODE==="sicura"?0.68:SLIP_MODE==="media"?0.54:0.20, max=SLIP_MODE==="sicura"?1.01:SLIP_MODE==="media"?0.82:0.62;
-    var pool=all.filter(function(x){return x.p>=min&&x.p<=max;}).sort(function(a,b){return SLIP_MODE==="bomba"?a.p-b.p:b.p-a.p;}), used={}, picks=[];
-    pool.forEach(function(x){if(picks.length<n&&!used[x.match.id]){picks.push(x);used[x.match.id]=true;}});
+
+
+  function renderCombo() {
+    var sel = PICKS.slice(0, n), prod = sel.reduce(function (s, x) { return s * x.p; }, 1);
+    var strongest = sel[0];
+    if (!strongest) { $("combo").innerHTML = '<div class="msg">Nessuna selezione disponibile.</div>'; return; }
+    $("combo").innerHTML = '<div class="pick-hero"><div class="ph-top"><span class="ph-label">TOP PICK</span><span class="ph-prob">' + pc(strongest.p) + '</span></div><div class="ph-match">' + esc(strongest.m) + '</div><div class="ph-bet">Esito più probabile: <b>' + esc(strongest.label) + '</b> · modello statistico</div><div class="ph-bar"><div class="ph-fill" style="--p:' + Math.round(strongest.p * 100) + '%"></div></div></div>' +
+      '<div class="sure-head"><h2>Top picks</h2><small>ordinate per probabilità</small></div><div class="pick-list">' +
+      sel.map(function (x, i) { return '<div class="pick-item"><div class="pick-rank">#' + (i + 1) + '<b>' + (i === 0 ? 'TOP' : '') + '</b></div><div class="pick-main"><div class="pm-match">' + esc(x.m) + '</div><div class="pm-type">' + esc(x.label) + ' · ' + esc(x.code) + '</div></div><div class="pick-pct">' + pc(x.p) + '<small>probabilità</small></div></div>'; }).join("") +
+      '</div><div class="pick-meta"><span class="risk">✓ selezioni ordinate dal modello</span><span>' + n + ' selezioni</span><span>probabilità combinata ' + pc(prod) + '</span></div>' +
+      '<p class="sure-note">Queste sono probabilità statistiche, non garanzie. La probabilità combinata è il prodotto delle singole probabilità e tende a diminuire rapidamente aggiungendo selezioni.</p>';
+    var cum = 1;
+    $("decay").innerHTML = PICKS.slice(0, 5).map(function (x, i) {
+      cum *= x.p;
+      return '<div class="' + (i + 1 === n ? "on" : "") + '"><span>' + (i + 1) + (i ? " selezioni" : " selezione") + '</span><span class="track"><span class="fill" style="width:' + Math.round(cum * 100) + '%"></span></span><span class="val">' + pc(cum) + "</span></div>";
+    }).join("");
+    Array.prototype.forEach.call(document.querySelectorAll("#seg button"), function (b) { b.setAttribute("aria-pressed", String(+b.dataset.n === n)); });
+    Array.prototype.forEach.call(document.querySelectorAll("#seg2 button"), function (b) { b.setAttribute("aria-pressed", String((b.dataset.dc === "true") === NODC)); });
+  }
+  ["sicura","media","bomba"].forEach(function(mode){var b=document.createElement("button");b.type="button";b.dataset.mode=mode;b.textContent=mode[0].toUpperCase()+mode.slice(1);b.addEventListener("click",function(){SLIP_MODE=mode;renderModelSlip();syncSlipControls();});$("slip-toggle").appendChild(b);});
+  [3,4,5].forEach(function(k){var b=document.createElement("button");b.type="button";b.dataset.count=k;b.textContent=k+" selezioni";b.addEventListener("click",function(){n=k;renderModelSlip();syncSlipControls();});$("slip-count").appendChild(b);});
+  function syncSlipControls(){document.querySelectorAll("#slip-toggle button").forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.mode===SLIP_MODE));});document.querySelectorAll("#slip-count button").forEach(function(b){b.setAttribute("aria-pressed",String(+b.dataset.count===n));});}
+  [2, 3, 4, 5].forEach(function (k) {
+    var b = document.createElement("button");
+    b.type = "button"; b.dataset.n = k; b.textContent = k;
+    b.addEventListener("click", function () { n = k; renderCombo(); });
+    $("seg").appendChild(b);
+  });
+  [[true, "Selezioni nette"], [false, "Tutte"]].forEach(function (o) {
+    var b = document.createElement("button");
+    b.type = "button"; b.textContent = o[1]; b.dataset.dc = String(o[0]);
+    b.addEventListener("click", function () { NODC = o[0]; computePicks(); });
+    $("seg2").appendChild(b);
+  });
+
+  var tabs = ["home", "partite", "sicure", "schedina", "classifica", "storico"];
+  tabs.forEach(function (t) {
+    $("t-" + t).addEventListener("click", function () {
+      tabs.forEach(function (u) { $("t-" + u).setAttribute("aria-selected", String(u === t)); $("p-" + u).hidden = u !== t; });
+      document.body.classList.toggle("inner", t !== "home");
+      $("back").hidden = t === "home";
+      window.scrollTo(0, 0);
+    });
+  });
+  $("back").addEventListener("click", function () { $("t-home").click(); });
+
+  Array.prototype.forEach.call(document.querySelectorAll(".tile"), function (b) {
+    b.addEventListener("click", function () { $("t-" + b.getAttribute("data-go")).click(); });
+  });
+
+  fetch("turno.json").then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || "Errore"); return j; }); })
+    .then(function (d) {
+      var tags = [];
+      tags.push(d.demo ? '<span class="tag warn">Dati di esempio</span>' : '<span class="tag ok">Dati reali</span>');
+      if (d.ai_status === "attiva") tags.push('<span class="tag ok">Notizie aggiornate</span>');
+      else if (d.ai_status === "parziale") tags.push('<span class="tag warn">AI parzialmente disponibile</span>');
+      else if (d.ai_status === "non_disponibile") tags.push('<span class="tag warn">Solo statistica · AI non disponibile</span>');
+      else tags.push('<span class="tag">Solo statistica</span>');
+      if (d.generated_at) {
+        var g = new Date(d.generated_at);
+        tags.push('<span class="tag">Aggiornato ' + String(g.getDate()).padStart(2, "0") + "/" + String(g.getMonth() + 1).padStart(2, "0") + " " + String(g.getHours()).padStart(2, "0") + ":" + String(g.getMinutes()).padStart(2, "0") + "</span>");
+      }
+      $("tags").innerHTML = tags.join("");
+      if (d.ai_error) $("aierr").innerHTML = '<div class="msg err"><b>Notizie non caricate.</b>' + esc(d.ai_error) + "</div>";
+      if (d.matchday) $("sub").textContent = "Serie A · giornata " + d.matchday;
+      $("tile-partite").textContent = (d.matchday ? "Giornata " + d.matchday + " · " : "") + d.matches.length + " partite";
+      hero(d.matches);
+      homeDashboard(d.matches);
+      MATCHES = d.matches;
+      $("matches").innerHTML = grouped(d.matches);
+      if (d.played && d.played.length) {
+        var hits = d.played.filter(function (x) { return x.ok; }).length;
+        $("played").innerHTML = '<h2 class="sub2">Già giocate</h2><p class="lead">Ultime ' + d.played.length + " partite pronosticate: esito azzeccato " + hits + " volte su " + d.played.length + '.</p><div class="list">' + d.played.map(played).join("") + "</div>";
+      }
+      computePicks();
+    })
+    .catch(function (e) { $("matches").innerHTML = '<div class="msg err">' + esc(e.message) + "</div>"; });
+
+  fetch("storico.json").then(function (r) { return r.json(); }).then(function (h) {
+    if (h.demo) $("hist-lead").textContent = "Esempio dimostrativo. Con i dati reali qui compaiono i pronostici salvati prima di ogni partita e confrontati con il risultato.";
+    if (h.n) $("tile-storico").textContent = "Esito azzeccato " + h.hit + " su " + h.n;
+    if (!h.n) { $("hist-hero").innerHTML = '<div class="hist-kicker">Performance del modello</div><div style="margin-top:8px;font-family:var(--font-display);font-size:30px;font-weight:800">Nessun dato ancora</div><p class="hist-caption">Quando saranno disponibili risultati reali, qui vedrai precisione, andamento e qualità delle probabilità.</p>'; $("sum").innerHTML = '<div class="stat wide"><div class="k">Ancora vuoto</div><div class="s">Appena si giocano le partite pronosticate, compare il confronto.</div></div>'; return; }
+    var histRate = h.hit / h.n;
+    var recent = (h.items || []).slice(0, 12);
+    var bars = recent.map(function(x){ return '<i class="'+(x.ok?'y':'n')+'" style="height:'+(x.ok?78:34)+'%"><span>'+(x.ok?'✓':'✕')+'</span></i>'; }).join("");
+    var perf = h.performance || {};
+    var perfLabel = perf.label || (h.n < 10 ? "Campione in costruzione" : "Performance");
+    var perfClass = perf.status === "in_forma" ? "ok" : perf.status === "da_monitorare" ? "bad" : "neutral";
+    $("hist-hero").innerHTML =
+      '<div class="hist-hero-top"><div><div class="hist-kicker">Performance del modello</div><div class="hist-rate">'+pc(histRate)+' <small>1X2 azzeccato</small></div><div class="perf-status '+perfClass+'">'+esc(perfLabel)+'</div><p class="hist-caption"><b>'+h.hit+'</b> pronostici corretti su <b>'+h.n+'</b>. Ultime '+recent.length+': <b>'+((perf.recent_hit!=null)?perf.recent_hit:recent.filter(function(x){return x.ok}).length)+'</b> corrette. '+
+      (perf.status === "in_forma" ? "La forma recente è sopra la media storica." : perf.status === "da_monitorare" ? "La forma recente è sotto la media: meglio osservare altri risultati." : perf.status === "stabile" ? "La forma recente è in linea con la media." : "Servono più partite prima di giudicare la forma.")+
+      '</p></div><div class="hist-ring" style="--rate:'+Math.round(histRate*100)+'%"><b>'+pc(histRate)+'</b></div></div><div class="hist-bars">'+bars+'</div>';
+    $("sum").innerHTML =
+      '<div class="stat"><div class="k">Esito 1X2 azzeccato</div><div class="v">' + h.hit + " su " + h.n + '</div><div class="s">' + pc(h.hit / h.n) + "</div></div>" +
+      '<div class="stat"><div class="k">Probabilità media dichiarata</div><div class="v">' + pc(h.avg_p) + '</div><div class="s">se coincide, il modello è calibrato</div></div>';
+    if (h.brier != null) {
+      var better = h.brier < h.brier_base, diff = Math.abs(1 - h.brier / h.brier_base);
+      var cal = (h.calibration || []).map(function (b) {
+        return '<div class="cal"><span>' + esc(b.label) + '</span><span class="decay" style="display:block"><span class="track" style="display:block"><span class="fill" style="width:' + Math.round(b.hit * 100) + '%"></span></span></span><span>' + pc(b.avg_p) + "</span><span>" + pc(b.hit) + "</span></div>";
+      }).join("");
+      var cl = "";
+      if (h.claude) {
+        var c = h.claude, gain = c.brier_stat - c.brier_final;
+        cl = '<div class="panel"><h2>Le notizie aiutano?</h2><p class="expl">Su ' + c.n + " partite: con le notizie l'errore è " + d2(c.brier_final) + ", con la sola statistica " + d2(c.brier_stat) + ". " +
+          (c.n < 30 ? "Troppo presto per dirlo." : Math.abs(gain) < 0.003 ? "Per ora non cambia quasi nulla." : gain > 0 ? "Le notizie migliorano le stime." : "Le notizie per ora peggiorano le stime.") +
+          " Esito azzeccato: " + c.hit_final + " su " + c.n + " con le notizie, " + c.hit_stat + " su " + c.n + " con la sola statistica.</p></div>";
+      }
+      if (h.versions) {
+        var v = h.versions, g2 = v.brier_old - v.brier_new;
+        cl += '<div class="panel"><h2>Modello nuovo o vecchio?</h2><p class="expl">Su ' + v.n + " partite, solo statistica: errore " + d2(v.brier_new) + " per il modello attuale, " + d2(v.brier_old) + " per la prima versione. " +
+          (v.n < 30 ? "Troppo presto per dirlo." : Math.abs(g2) < 0.003 ? "Per ora sono alla pari." : g2 > 0 ? "Il modello attuale va meglio." : "La prima versione va meglio.") + "</p></div>";
+      }
+      var mk = h.markets || {}, mkt = "";
+      if (mk.ou && mk.ou.n) mkt += '<div class="stat"><div class="k">Over/Under 2,5</div><div class="v">' + mk.ou.hit + " su " + mk.ou.n + '</div><div class="s">' + pc(mk.ou.hit / mk.ou.n) + "</div></div>";
+      if (mk.gg && mk.gg.n) mkt += '<div class="stat"><div class="k">Gol / No Gol</div><div class="v">' + mk.gg.hit + " su " + mk.gg.n + '</div><div class="s">' + pc(mk.gg.hit / mk.gg.n) + "</div></div>";
+      $("quality").innerHTML = '<h2 class="sub2">Qualità del modello</h2>' +
+        '<div class="sum"><div class="stat"><div class="k">Errore del modello</div><div class="v num">' + d2(h.brier) + '</div><div class="s">più è basso, meglio è</div></div>' +
+        '<div class="stat"><div class="k">Metodo semplice</div><div class="v num">' + d2(h.brier_base) + '</div><div class="s">solo le medie del campionato</div></div>' + mkt + "</div>" +
+        '<div class="panel" style="margin-top:14px"><p class="expl">' + (better
+          ? "Il modello sbaglia il " + Math.round(diff * 100) + "% in meno del metodo semplice."
+          : "Per ora il modello non fa meglio del metodo semplice (" + Math.round(diff * 100) + "% di errore in più).") +
+        (h.n < 50 ? " Con " + h.n + " partite il dato è ancora ballerino: serve almeno una cinquantina di partite, meglio cento." : "") + "</p></div>" +
+        (cal ? '<div class="panel"><h2>Quando dico 60%, succede?</h2><div class="cal" style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em"><span>Probabilità</span><span>Successi</span><span>Detto</span><span>Reale</span></div><div style="display:flex;flex-direction:column;gap:8px">' + cal + '</div><p class="lead" style="margin:0">Se "Detto" e "Reale" sono vicini, le percentuali sono affidabili.</p></div>' : "") + cl;
+    }
+    $("hist").innerHTML = h.items.map(function (x) {
+      return "<div><span>" + esc(x.match) + "<small>" + esc(x.pick) + " dato al " + pc(x.p) + " · finale " + esc(x.score) + '</small></span><span class="' + (x.ok ? "ok" : "ko") + '" aria-label="' + (x.ok ? "Azzeccato" : "Sbagliato") + '">' + (x.ok ? "✓" : "✕") + "</span></div>";
+    }).join("");
+  }).catch(function () {});
+
+  fetch("classifica.json").then(function (r) { return r.json(); }).then(function (c) {
+    var t = c.table || [];
+    if (!t.length) { $("table").innerHTML = '<div class="msg">Classifica non disponibile.</div>'; return; }
+    var n = t.length;
+    $("table").innerHTML = '<table class="table"><thead><tr><th>#</th><th>Squadra</th><th>PG</th><th class="hide-s">V</th><th class="hide-s">N</th><th class="hide-s">P</th><th>DR</th><th>Pt</th></tr></thead><tbody>' +
+      t.map(function (r) {
+        var dr = r.gf - r.ga, cls = r.pos <= 4 ? "ucl" : (n >= 18 && r.pos > n - 3) ? "rel" : "";
+        return '<tr class="' + cls + '"><td>' + r.pos + "</td><td>" + esc(r.team) + "</td><td>" + r.pg + '</td><td class="hide-s">' + r.w + '</td><td class="hide-s">' + r.d + '</td><td class="hide-s">' + r.l + "</td><td>" + (dr > 0 ? "+" : "") + dr + "</td><td>" + r.pts + "</td></tr>";
+      }).join("") + "</tbody></table>";
+  }).catch(function () { $("table").innerHTML = '<div class="msg">Classifica non disponibile.</div>'; });
+})();
+</script>
+</body>
+</html>
+
+  function renderModelSlip(){
+    var all=[], used={}, picks=[], mode=SLIP_MODE;
+    MATCHES.forEach(function(m){var p=m.prob||{}, a=[["1X",m.home+" non perde",p.p1+p.px],["X2",m.away+" non perde",p.p2+p.px],["Over 1,5","Almeno 2 gol",p.o15],["Under 3,5","Al massimo 3 gol",p.u35],["1","Vince "+m.home,p.p1],["X","Pareggio",p.px],["2","Vince "+m.away,p.p2],["Over 2,5","Almeno 3 gol",p.o25],["Under 2,5","Al massimo 2 gol",p.u25],["Gol","Segnano entrambe",p.gg],["No Gol","Non segnano entrambe",p.ng]];if(mode==="bomba"&&m.top_scores&&m.top_scores[0]){var s=m.top_scores[0];a.push(["Ris. esatto",s[0]+"-"+s[1],Number(s[2]||0)]);}a.forEach(function(x){if(x[2]>0)all.push({match:m,m:m.home+" – "+m.away,code:x[0],label:x[1],p:Number(x[2])});});});
+    var min=mode==="sicura"?0.68:mode==="media"?0.54:0.20,max=mode==="sicura"?1.01:mode==="media"?0.82:0.62;
+    all.filter(function(x){return x.p>=min&&x.p<=max;}).sort(function(a,b){return mode==="bomba"?a.p-b.p:b.p-a.p;}).forEach(function(x){if(picks.length<n&&!used[x.match.id]){picks.push(x);used[x.match.id]=true;}});
     if(picks.length<n)all.sort(function(a,b){return b.p-a.p;}).forEach(function(x){if(picks.length<n&&!used[x.match.id]){picks.push(x);used[x.match.id]=true;}});
-    var prod=picks.reduce(function(v,x){return v*x.p;},1), name={sicura:"SICURA",media:"MEDIA",bomba:"BOMBA"}[SLIP_MODE];
-    var desc={sicura:"Massimizza la probabilità con le selezioni più solide del modello.",media:"Bilancia probabilità e mercati più ambiziosi.",bomba:"Cerca selezioni ad alta variabilità, includendo il risultato esatto quando disponibile."}[SLIP_MODE];
+    var prod=picks.reduce(function(v,x){return v*x.p;},1), name={sicura:"SICURA",media:"MEDIA",bomba:"BOMBA"}[mode], desc={sicura:"Selezioni con la probabilità più alta del modello.",media:"Equilibrio tra probabilità e mercati più ambiziosi.",bomba:"Selezioni ad alta variabilità, incluso il risultato esatto quando disponibile."}[mode];
     var aiOn=MATCHES.some(function(x){return x.analysis&&x.analysis.ai;});
-    $("slip").innerHTML='<div class="slip-hero"><div class="slip-kicker">Schedina automatica · '+name+'</div><div class="slip-title">'+name+'</div><div class="slip-sub">'+desc+' Le probabilità sono quelle già calcolate dal modello: nessuna nuova chiamata AI.</div><div class="slip-meta"><span>'+picks.length+' selezioni</span><span>Prob. comb. '+pc(prod)+'</span><span>'+ (aiOn?"AI + statistica":"Solo statistica") +'</span></div></div><div class="slip-list">'+picks.map(function(x,i){return '<div class="slip-item"><div class="slip-num">0'+(i+1)+'</div><div><div class="slip-match">'+esc(x.m)+'</div><div class="slip-market">'+esc(x.code+' · '+x.label)+'</div></div><div class="slip-prob">'+pc(x.p)+'<small>stima</small></div></div>';}).join("")+'</div><div class="slip-foot"><div class="slip-combo">'+pc(prod)+'<small>probabilità combinata teorica</small></div><div class="slip-note">Stima statistica, non garanzia e non quota reale. La combinata assume indipendenza tra gli eventi.</div></div>';
-  }  ["sicura","media","bomba"].forEach(function(mode){var b=document.createElement("button");b.type="button";b.dataset.mode=mode;b.textContent=mode[0].toUpperCase()+mode.slice(1);b.addEventListener("click",function(){SLIP_MODE=mode;renderSlip();syncSlipControls();});$("slip-toggle").appendChild(b);});
-  [3,4,5].forEach(function(k){var b=document.createElement("button");b.type="button";b.dataset.count=k;b.textContent=k+" selezioni";b.addEventListener("click",function(){n=k;renderSlip();syncSlipControls();});$("slip-count").appendChild(b);});
-  function syncSlipControls(){Array.prototype.forEach.call(document.querySelectorAll("#slip-toggle button"),function(b){b.setAttribute("aria-pressed",String(b.dataset.mode===SLIP_MODE));});Array.prototype.forEach.call(document.querySelectorAll("#slip-count button"),function(b){b.setAttribute("aria-pressed",String(+b.dataset.count===n));});}
+    $("slip").innerHTML='<div class="slip-hero"><div class="slip-kicker">Schedina automatica · '+name+'</div><div class="slip-title">'+name+'</div><div class="slip-sub">'+desc+' Le probabilità sono quelle già calcolate: nessuna nuova chiamata AI.</div><div class="slip-meta"><span>'+picks.length+' selezioni</span><span>Prob. comb. '+pc(prod)+'</span><span>'+ (aiOn?"AI + statistica":"Solo statistica") +'</span></div></div><div class="slip-list">'+picks.map(function(x,i){return '<div class="slip-item"><div class="slip-num">0'+(i+1)+'</div><div><div class="slip-match">'+esc(x.m)+'</div><div class="slip-market">'+esc(x.code+' · '+x.label)+'</div></div><div class="slip-prob">'+pc(x.p)+'<small>stima</small></div></div>';}).join("")+'</div><div class="slip-foot"><div class="slip-combo">'+pc(prod)+'<small>probabilità combinata teorica</small></div><div class="slip-note">Stima statistica, non garanzia e non quota reale.</div></div>';
+  }
 
