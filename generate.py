@@ -35,9 +35,11 @@ async def main() -> int:
         print("Errore: manca FOOTBALL_DATA_KEY nei Secrets, non pubblico i dati di esempio.")
         return 1
     if turno.get("ai_error"):
-        print(f"Attenzione: Claude non ha risposto ({turno['ai_error']}). Pubblico l'analisi a regole.")
+        print(f"Attenzione: analisi AI non disponibile ({turno['ai_error']}). Pubblico l'analisi statistica.")
 
-    turno.pop("ai_error", None)  # i dettagli tecnici dell'errore non vanno nel file pubblico
+    turno["ai_error"] = turno.get("ai_error") or None
+    # Lo stato resta nel JSON pubblico per rendere trasparente se l'AI è attiva.
+    turno["ai_status"] = turno.get("ai_status", "attiva" if turno["ai"] else "solo_statistica")
     storico = await pipeline.build_storico()
     classifica = await pipeline.build_classifica()
 
