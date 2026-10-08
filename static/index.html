@@ -226,6 +226,14 @@ h2 { font-family: var(--font-display); font-weight: 700; font-size: 22px; text-t
 .decay .on { font-weight: 600; }
 .decay .val { text-align: right; font-family: var(--font-num); }
 
+/* Performance storico — dashboard */
+.hist-hero{background:linear-gradient(145deg,rgba(74,163,255,.14),rgba(247,198,74,.07));border:1px solid #29415d;border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}
+.hist-hero-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.hist-kicker{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.hist-rate{font-family:var(--font-display);font-weight:800;font-size:54px;line-height:.9}.hist-rate small{font-family:var(--font-body);font-size:12px;color:var(--muted);font-weight:600}
+.hist-ring{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--gold) var(--rate),var(--surface2) 0);position:relative;flex:0 0 auto}.hist-ring:after{content:"";position:absolute;inset:7px;border-radius:50%;background:var(--surface)}.hist-ring b{position:relative;z-index:1;font-family:var(--font-num);font-size:15px}
+.hist-bars{display:flex;align-items:flex-end;gap:5px;height:76px;padding-top:12px}.hist-bars i{flex:1;min-width:8px;background:var(--line);border-radius:5px 5px 2px 2px;height:18%;position:relative}.hist-bars i.y{background:var(--good)}.hist-bars i.n{background:var(--bad)}.hist-bars i span{position:absolute;bottom:-17px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--muted);font-style:normal}.hist-caption{font-size:12px;color:var(--muted);margin-top:22px}.hist-caption b{color:var(--fg)}
+.perf-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:10px}.perf-head small{color:var(--muted);font-size:11px}
+
 /* Storico */
 .sum { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .hist div { display: grid; grid-template-columns: minmax(0, 1fr) 24px; gap: 10px; align-items: center; padding-block: 9px; border-bottom: 1px solid var(--line); font-size: 14px; }
@@ -476,9 +484,10 @@ details.match[open] summary{border-bottom:1px solid var(--line);background:linea
   </section>
   <section id="p-storico" role="tabpanel" aria-labelledby="t-storico" hidden>
     <p class="lead" id="hist-lead">Ogni pronostico viene salvato prima della partita e confrontato con il risultato.</p>
+    <div class="hist-hero" id="hist-hero"></div>
     <div class="sum" id="sum"></div>
     <div id="quality"></div>
-    <div class="panel" style="margin-top:14px"><div class="hist" id="hist"></div></div>
+    <div class="panel" style="margin-top:14px"><div class="perf-head"><h2>Ultimi pronostici</h2><small>più recente → meno recente</small></div><div class="hist" id="hist"></div></div>
   </section>
   <section id="p-classifica" role="tabpanel" aria-labelledby="t-classifica" hidden>
     <div class="panel"><div id="table"><div class="msg">Carico la classifica…</div></div></div>
@@ -681,7 +690,7 @@ details.match[open] summary{border-bottom:1px solid var(--line);background:linea
     $("feature-home").innerHTML='<div class="feature-card"><div class="feature-top"><span class="badge">'+esc(fo[0])+" · "+esc(fo[1])+' '+pc(fo[2])+'</span><span class="conf '+m.conf+'">Affidabilità '+esc(m.conf)+'</span></div><div class="feature-match"><div class="feature-team"><small>Casa</small><b>'+esc(m.home)+'</b></div><div class="feature-vs">VS</div><div class="feature-team r"><small>Trasferta</small><b>'+esc(m.away)+'</b></div></div><div class="feature-prob"><span class="'+(fo[0]==="1"?"hot":"")+'"><b>1</b>'+pc(p.p1)+'</span><span class="'+(fo[0]==="X"?"hot":"")+'"><b>X</b>'+pc(p.px)+'</span><span class="'+(fo[0]==="2"?"hot":"")+'"><b>2</b>'+pc(p.p2)+'</span></div><div class="feature-bottom"><div class="feature-score"><small>Risultato più probabile</small>'+s[0]+'-'+s[1]+'</div><button class="feature-open" type="button" data-open-home="m-'+esc(m.id)+'">Vedi analisi →</button></div></div>';
     var n=matches.length,avg=matches.reduce(function(x,y){return x+Math.max(y.prob.p1,y.prob.px,y.prob.p2)},0)/n;
     $("quick-home").innerHTML='<div class="quick-card"><div class="q-label">Partite</div><div class="q-value">'+n+'</div><div class="q-note">analizzate dal modello</div></div><div class="quick-card"><div class="q-label">Forza media</div><div class="q-value">'+pc(avg)+'</div><div class="q-note">esito principale medio</div></div>';
-    $("strong-home").innerHTML=ranked.slice(0,4).map(function(x){var q=x.prob, f=q.p1>=q.px&&q.p1>=q.p2?["1",x.home,q.p1]:q.px>=q.p2?["X","Pareggio",q.px]:["2",x.away,q.p2];return '<button type="button" class="home-row" data-open-home="m-'+esc(x.id)+'"><span class="hr-p">'+pc(q[q.p1>=q.px&&q.p1>=q.p2?"p1":q.px>=q.p2?"px":"p2"])+'<small>'+esc(q===x.prob?"1X2":"")+'</small></span><span class="hr-teams">'+esc(x.home)+' — '+esc(x.away)+'<small>'+esc(x.conf)+' · '+esc(x.top_scores[0][0]+'-'+x.top_scores[0][1])+' probabile</small></span><span class="hr-score">'+esc(q===x.prob?q["p"+({"1":"1","X":"x","2":"2"}[q.p1>=q.px&&q.p1>=q.p2?"1":q.px>=q.p2?"X":"2"])]||"")+'</span></button>';}).join("");
+    $("strong-home").innerHTML=ranked.slice(0,4).map(function(x){var q=x.prob, f=q.p1>=q.px&&q.p1>=q.p2?["1",x.home,q.p1]:q.px>=q.p2?["X","Pareggio",q.px]:["2",x.away,q.p2];return '<button type="button" class="home-row" data-open-home="m-'+esc(x.id)+'"><span class="hr-p">'+pc(f[2])+'<small>'+esc(f[0]+' · '+f[1])+'</small></span><span class="hr-teams">'+esc(x.home)+' — '+esc(x.away)+'<small>'+esc(x.conf)+' · '+esc(x.top_scores[0][0]+'-'+x.top_scores[0][1])+' probabile</small></span><span class="hr-score">'+esc(x.top_scores[0][0]+'-'+x.top_scores[0][1])+'</span></button>';}).join("");
     Array.prototype.forEach.call(document.querySelectorAll('[data-open-home]'),function(b){b.addEventListener('click',function(){var el=$(b.getAttribute('data-open-home'));if(el){el.open=true;$("t-partite").click();setTimeout(function(){el.scrollIntoView({behavior:"smooth",block:"start"})},40)}})});
     $("home-dashboard").hidden=false;
   }
@@ -787,7 +796,12 @@ function hero(matches) {
   fetch("/api/storico").then(function (r) { return r.json(); }).then(function (h) {
     if (h.demo) $("hist-lead").textContent = "Esempio dimostrativo. Con i dati reali qui compaiono i pronostici salvati prima di ogni partita e confrontati con il risultato.";
     if (h.n) $("tile-storico").textContent = "Esito azzeccato " + h.hit + " su " + h.n;
-    if (!h.n) { $("sum").innerHTML = '<div class="stat wide"><div class="k">Ancora vuoto</div><div class="s">Appena si giocano le partite pronosticate, compare il confronto.</div></div>'; return; }
+    if (!h.n) { $("hist-hero").innerHTML = '<div class="hist-kicker">Performance del modello</div><div style="margin-top:8px;font-family:var(--font-display);font-size:30px;font-weight:800">Nessun dato ancora</div><p class="hist-caption">Quando saranno disponibili risultati reali, qui vedrai precisione, andamento e qualità delle probabilità.</p>'; $("sum").innerHTML = '<div class="stat wide"><div class="k">Ancora vuoto</div><div class="s">Appena si giocano le partite pronosticate, compare il confronto.</div></div>'; return; }
+    var histRate = h.hit / h.n;
+    var recent = (h.items || []).slice(0, 12);
+    var bars = recent.map(function(x){ return '<i class="'+(x.ok?'y':'n')+'" style="height:'+(x.ok?78:34)+'%"><span>'+(x.ok?'✓':'✕')+'</span></i>'; }).join("");
+    $("hist-hero").innerHTML =
+      '<div class="hist-hero-top"><div><div class="hist-kicker">Performance del modello</div><div class="hist-rate">'+pc(histRate)+' <small>1X2 azzeccato</small></div><p class="hist-caption"><b>'+h.hit+'</b> pronostici corretti su <b>'+h.n+'</b>. Le ultime '+recent.length+' partite mostrano l’andamento reale.</p></div><div class="hist-ring" style="--rate:'+Math.round(histRate*100)+'%"><b>'+pc(histRate)+'</b></div></div><div class="hist-bars">'+bars+'</div>';
     $("sum").innerHTML =
       '<div class="stat"><div class="k">Esito 1X2 azzeccato</div><div class="v">' + h.hit + " su " + h.n + '</div><div class="s">' + pc(h.hit / h.n) + "</div></div>" +
       '<div class="stat"><div class="k">Probabilità media dichiarata</div><div class="v">' + pc(h.avg_p) + '</div><div class="s">se coincide, il modello è calibrato</div></div>';
