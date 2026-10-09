@@ -125,12 +125,17 @@ async def _ask_groq(client, fx: dict, base: dict) -> dict:
     for url in re.findall(r'https?://[^\s\]\)\}>,]+', text):
         add_url(url)
     try:
-        raw = message.model_dump() if hasattr(message, "model_dump") else {}
-        executed = raw.get("executed_tools") or []
+        # executed_tools può essere esposto sul messaggio oppure sulla
+        # risposta completa, a seconda della versione del client Groq.
+        raw_response = resp.model_dump() if hasattr(resp, "model_dump") else {}
+        raw_message = message.model_dump() if hasattr(message, "model_dump") else {}
+        executed = []
+        for container in (raw_response, raw_message):
+            if isinstance(container, dict):
+                executed.extend(container.get("executed_tools") or [])
 
-        # La forma dei risultati browser_search può variare tra versioni SDK:
-        # alcune espongono search_results, altre results; percorriamo solo
-        # i dati restituiti dal tool, senza inventare URL a partire dal testo.
+        # Alcune versioni annidano i risultati sotto search_results, altre
+        # sotto results. Leggiamo solo URL realmente restituiti dal tool.
         def collect_results(value):
             if isinstance(value, dict):
                 url = value.get("url") or value.get("link")
@@ -201,7 +206,11 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
         fx = item["fx"]
         hit = _cache.get(fx["id"])
         if hit and time.time() - hit[0] < CACHE_SECONDS:
-            return hit[1]
+            # Le vecchie cache senza fonti non devono impedire una nuova
+            # ricerca web dopo la correzione dell'estrazione.
+            cached_sources = hit[1].get("sources") if isinstance(hit[1], dict) else None
+            if cached_sources:
+                return hit[1]
         if rate_limited.is_set():
             return fallback_analysis(fx, item["base"], teams, rate_limit_message)
         async with sem:
