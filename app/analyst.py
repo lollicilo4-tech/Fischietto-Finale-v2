@@ -102,7 +102,7 @@ async def _ask_groq(client, fx: dict, base: dict) -> dict:
             {"role": "system", "content": SYSTEM},
             {"role": "user", "content": user},
         ],
-        max_completion_tokens=900,
+        max_completion_tokens=650,
         temperature=0.2,
         reasoning_effort="low",
         tool_choice="required",
@@ -198,9 +198,10 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
     _load_persistent_cache()
     from groq import AsyncGroq
     client = AsyncGroq()
-    sem = asyncio.Semaphore(3)
+    # Limita il carico simultaneo per evitare picchi TPM sul piano on-demand.
+    sem = asyncio.Semaphore(2)
     rate_limited = asyncio.Event()
-    rate_limit_message = "Limite di utilizzo Groq raggiunto per oggi. L’analisi statistica resta disponibile; l’AI riproverà al prossimo aggiornamento."
+    rate_limit_message = "Limite Groq temporaneamente raggiunto. L’analisi statistica resta disponibile; l’AI riproverà al prossimo aggiornamento."
 
     async def one(item):
         fx = item["fx"]
@@ -218,13 +219,31 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
             if rate_limited.is_set():
                 return fallback_analysis(fx, item["base"], teams, rate_limit_message)
             try:
-                out = await _ask_groq(client, fx, item["base"])
-            except Exception as exc:  # rete, JSON non valido, limiti: si ripiega sulle regole
+                out = None
+                for attempt in range(3):
+                    try:
+                        out = await _ask_groq(client, fx, item["base"])
+                        break
+                    except Exception as exc:
+                        msg = str(exc).lower()
+                        transient_tpm = ("429" in msg or "rate limit" in msg) and (
+                            "tokens per minute" in msg or "tpm" in msg or "try again in" in msg
+                        )
+                        if transient_tpm and attempt < 2:
+                            # Il 429 TPM è normalmente temporaneo: attendi e riprova.
+                            await asyncio.sleep(5 * (attempt + 1))
+                            continue
+                        raise
+                if out is None:
+                    raise RuntimeError("Groq non ha restituito un'analisi")
+            except Exception as exc:  # rete, JSON non valido, limiti: fallback controllato
                 print(f"[analyst] {fx['home']}-{fx['away']}: {exc!r}")
-                msg = str(exc)
-                if "429" in msg or "rate limit" in msg.lower() or "tokens per day" in msg.lower():
+                msg = str(exc).lower()
+                if "tokens per day" in msg or "daily" in msg or ("429" in msg and not ("tokens per minute" in msg or "tpm" in msg or "try again in" in msg)):
                     rate_limited.set()
                     why = rate_limit_message
+                elif "429" in msg or "rate limit" in msg:
+                    why = "Limite temporaneo Groq dopo i tentativi. L’analisi statistica resta disponibile."
                 else:
                     why = f"Errore AI ({type(exc).__name__}). L’analisi statistica resta disponibile."
                 return fallback_analysis(fx, item["base"], teams, why)
