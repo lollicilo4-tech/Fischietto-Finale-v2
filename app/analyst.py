@@ -127,12 +127,26 @@ async def _ask_groq(client, fx: dict, base: dict) -> dict:
     try:
         raw = message.model_dump() if hasattr(message, "model_dump") else {}
         executed = raw.get("executed_tools") or []
-        for tool in executed:
-            for result in (tool.get("search_results") or []):
-                if isinstance(result, dict):
-                    add_url(result.get("url") or result.get("link"), result.get("title"))
-    except Exception:
-        pass
+
+        # La forma dei risultati browser_search può variare tra versioni SDK:
+        # alcune espongono search_results, altre results; percorriamo solo
+        # i dati restituiti dal tool, senza inventare URL a partire dal testo.
+        def collect_results(value):
+            if isinstance(value, dict):
+                url = value.get("url") or value.get("link")
+                title = value.get("title") or value.get("name")
+                if isinstance(url, str) and url.startswith(("http://", "https://")):
+                    add_url(url, title)
+                for child in value.values():
+                    if isinstance(child, (dict, list)):
+                        collect_results(child)
+            elif isinstance(value, list):
+                for child in value:
+                    collect_results(child)
+
+        collect_results(executed)
+    except Exception as exc:
+        print(f"[analyst] {fx['home']}-{fx['away']}: impossibile leggere le fonti browser_search ({type(exc).__name__})")
 
     data = _parse_json(text)
     return {
