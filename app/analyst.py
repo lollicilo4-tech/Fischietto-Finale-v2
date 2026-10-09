@@ -10,6 +10,8 @@ import asyncio
 import json
 import os
 import time
+import re
+import unicodedata
 from pathlib import Path
 
 FACTOR_MIN, FACTOR_MAX = 0.85, 1.15
@@ -39,6 +41,89 @@ def _clip(x, default=1.0) -> float:
         return max(FACTOR_MIN, min(FACTOR_MAX, float(x)))
     except (TypeError, ValueError):
         return default
+
+
+def _norm(value: str) -> str:
+    value = unicodedata.normalize("NFKD", str(value).casefold())
+    value = "".join(ch for ch in value if not unicodedata.combining(ch))
+    return re.sub(r"[^a-z0-9]+", " ", value).strip()
+
+
+_TEAM_ALIASES = {
+    "como 1907": ("como",), "inter": ("inter", "internazionale"),
+    "milan": ("milan",), "roma": ("roma",), "napoli": ("napoli",),
+    "fiorentina": ("fiorentina",), "genoa": ("genoa",),
+    "juventus": ("juventus",), "cagliari": ("cagliari",),
+    "frosinone": ("frosinone",), "parma": ("parma",),
+    "lecce": ("lecce",), "bologna": ("bologna",),
+    "lazio": ("lazio",), "monza": ("monza",),
+    "sassuolo": ("sassuolo",), "atalanta": ("atalanta",),
+    "venezia fc": ("venezia",), "torino": ("torino",),
+    "udinese": ("udinese",),
+}
+_CONFIRMED_TERMS = (
+    "indisponibile", "indisponibili", "squalificato", "squalificati",
+    "squalifica", "salta la partita", "saltera la partita", "out per",
+    "non ci sara", "non sara disponibile", "lesione muscolare",
+    "frattura", "operato", "operazione", "stop di", "stop per",
+    "ruled out", "suspended", "will miss", "out of",
+)
+_UNCERTAIN_TERMS = (
+    "in dubbio", "dubbio", "in recupero", "recupero in corso",
+    "pronto a giocare", "pronto per giocare", "rientrato in gruppo",
+    "probabile disponibile", "potrebbe giocare", "da valutare",
+    "doubtful", "questionable", "expected to return",
+)
+
+
+def _source_confirms_absence(name: str, team: str, sources: list[dict]) -> bool:
+    """Richiede una fonte raccolta che associ esplicitamente giocatore, squadra e indisponibilità."""
+    tokens = _norm(name).split()
+    # Nelle parentesi spesso c'è solo il motivo, non il nome del calciatore.
+    name_tokens = [t for t in tokens if t not in {"infortunio", "lesione", "muscolare", "frattura"}]
+    if not name_tokens:
+        return False
+    player_key = name_tokens[-1]
+    team_norm = _norm(team)
+    aliases = _TEAM_ALIASES.get(team_norm, (team_norm,))
+    for source in sources or []:
+        title = _norm(source.get("title", ""))
+        url = _norm(source.get("url", ""))
+        evidence = f"{title} {url}"
+        player_mentioned = player_key in evidence.split()
+        team_mentioned = any(alias in evidence for alias in aliases)
+        confirmed = any(term in evidence for term in _CONFIRMED_TERMS)
+        uncertain = any(term in evidence for term in _UNCERTAIN_TERMS)
+        if player_mentioned and team_mentioned and confirmed and not uncertain:
+            return True
+    return False
+
+
+def _validate_absences(data: dict, fx: dict, sources: list[dict]) -> dict:
+    """Fail closed: se una sola assenza non è corroborata, neutralizza tutti gli aggiustamenti AI."""
+    home = data.get("assenze_casa", [])
+    away = data.get("assenze_trasferta", [])
+    if not isinstance(home, list) or not isinstance(away, list):
+        return {"absences_home": [], "absences_away": [], "factor_home": 1.0,
+                "factor_away": 1.0, "validation_warning": "Formato assenze non valido; fattori neutrali."}
+    candidates = [(str(x), fx["home"]) for x in home] + [(str(x), fx["away"]) for x in away]
+    # I termini di incertezza non possono essere promossi a indisponibilità confermata.
+    explanation = _norm(data.get("spiegazione", ""))
+    has_uncertainty = any(term in explanation for term in _UNCERTAIN_TERMS)
+    verified = all(_source_confirms_absence(name, team, sources) for name, team in candidates)
+    if has_uncertainty or not verified:
+        return {
+            "absences_home": [], "absences_away": [],
+            "factor_home": 1.0, "factor_away": 1.0,
+            "validation_warning": "Assenze non confermate automaticamente: elenchi svuotati e fattori AI neutralizzati.",
+        }
+    return {
+        "absences_home": [str(x) for x in home][:5],
+        "absences_away": [str(x) for x in away][:5],
+        "factor_home": _clip(data.get("fattore_gol_casa")),
+        "factor_away": _clip(data.get("fattore_gol_trasferta")),
+        "validation_warning": None,
+    }
 
 
 def pc(p: float) -> str:
@@ -157,12 +242,17 @@ async def _ask_groq(client, fx: dict, base: dict) -> dict:
         print(f"[analyst] {fx['home']}-{fx['away']}: impossibile leggere le fonti browser_search ({type(exc).__name__})")
 
     data = _parse_json(text)
+    checked = _validate_absences(data, fx, sources[:5])
+    explanation = str(data.get("spiegazione", "")).strip()
+    if checked["validation_warning"]:
+        explanation = (explanation + " " + checked["validation_warning"]).strip()
     return {
-        "ai": True, "text": str(data.get("spiegazione", "")).strip(),
-        "factor_home": _clip(data.get("fattore_gol_casa")), "factor_away": _clip(data.get("fattore_gol_trasferta")),
-        "absences_home": [str(x) for x in data.get("assenze_casa", [])][:5],
-        "absences_away": [str(x) for x in data.get("assenze_trasferta", [])][:5],
+        "ai": True, "text": explanation,
+        "factor_home": checked["factor_home"], "factor_away": checked["factor_away"],
+        "absences_home": checked["absences_home"],
+        "absences_away": checked["absences_away"],
         "sources": sources[:5],
+        "validation_version": 1,
     }
 
 
@@ -213,7 +303,7 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
             # Le vecchie cache senza fonti non devono impedire una nuova
             # ricerca web dopo la correzione dell'estrazione.
             cached_sources = hit[1].get("sources") if isinstance(hit[1], dict) else None
-            if cached_sources:
+            if cached_sources and hit[1].get("validation_version") == 1:
                 return hit[1]
         if rate_limited.is_set():
             return fallback_analysis(fx, item["base"], teams, rate_limit_message)
