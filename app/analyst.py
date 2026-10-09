@@ -109,7 +109,9 @@ def _validate_absences(data: dict, fx: dict, sources: list[dict]) -> dict:
     candidates = [(str(x), fx["home"]) for x in home] + [(str(x), fx["away"]) for x in away]
     # I termini di incertezza non possono essere promossi a indisponibilità confermata.
     explanation = _norm(data.get("spiegazione", ""))
-    has_uncertainty = any(term in explanation for term in _UNCERTAIN_TERMS)
+    has_uncertainty = any(term in explanation for term in _UNCERTAIN_TERMS) or any(
+        any(term in _norm(name) for term in _UNCERTAIN_TERMS) for name, _ in candidates
+    )
     verified = bool(candidates) and all(_source_confirms_absence(name, team, sources) for name, team in candidates)
     if not candidates:
         return {"absences_home": [], "absences_away": [], "factor_home": 1.0,
