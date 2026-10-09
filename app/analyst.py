@@ -13,7 +13,7 @@ import time
 from pathlib import Path
 
 FACTOR_MIN, FACTOR_MAX = 0.85, 1.15
-CACHE_SECONDS = 6 * 3600
+CACHE_SECONDS = 72 * 3600  # allineata alla finestra delle notizie recenti (72 ore)
 _cache: dict = {}
 PERSIST_PATH = Path(__file__).resolve().parent.parent / "docs" / "ai_cache.json"
 ROLE = {"att": "attaccante titolare", "def": "difensore titolare"}
