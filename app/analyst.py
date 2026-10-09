@@ -21,14 +21,17 @@ ROLE = {"att": "attaccante titolare", "def": "difensore titolare"}
 SYSTEM = """Sei l'analista di un'app che spiega come potrebbe andare una partita di calcio.
 Cerca sul web notizie recenti (ultime 72 ore) su queste due squadre: infortuni, squalifiche,
 probabili formazioni, turnover, cambi di allenatore, impegni ravvicinati.
-Usa solo ciò che trovi in fonti affidabili. Se non trovi nulla di rilevante, dillo e usa fattore 1.0.
+Usa solo informazioni verificabili in fonti affidabili e recenti. Verifica che ogni giocatore citato appartenga davvero alla rosa della squadra corretta.
+Inserisci in "assenze_casa" e "assenze_trasferta" SOLO giocatori confermati indisponibili o squalificati per questa specifica partita da una fonte attendibile.
+NON elencare come assente chi è soltanto in dubbio, in recupero, rientrato in gruppo, dato per probabile disponibile o indicato in una notizia vecchia. Se lo stato non è chiaro, ometti il giocatore dall'array e spiega l'incertezza nel testo.
+Non dedurre l'assenza dal solo fatto che un giocatore non compaia in una probabile formazione. Non confondere giocatori di squadre diverse, omonimi o notizie riferite a un'altra partita/stagione.
+Se non trovi indisponibilità confermate, restituisci array vuoti e fattori 1.0. Non penalizzare una squadra sulla base di voci non verificate. I fattori devono riflettere solo assenze confermate e rilevanti per il ruolo; se l'impatto non è dimostrabile, usa 1.0.
 Non citare quote dei bookmaker e non incoraggiare a scommettere.
 Rispondi SOLO con un oggetto JSON, senza altro testo, con questi campi:
 {"assenze_casa": [str], "assenze_trasferta": [str],
  "fattore_gol_casa": numero tra 0.85 e 1.15, "fattore_gol_trasferta": numero tra 0.85 e 1.15,
  "spiegazione": "3-4 frasi in italiano, chiare, coerenti con i numeri del modello"}
-Il fattore moltiplica i gol attesi della squadra: sotto 1 se le assenze ne riducono l'attacco
-(o se l'avversario perde un difensore importante, alza invece l'altra squadra)."""
+Il fattore moltiplica i gol attesi della squadra: sotto 1 se un'assenza offensiva confermata ne riduce l'attacco; può aumentare moderatamente se l'avversario perde un difensore titolare confermato indisponibile. Non applicare correzioni simmetriche o automatiche senza una motivazione verificata."""
 
 
 def _clip(x, default=1.0) -> float:
