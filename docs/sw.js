@@ -1,5 +1,5 @@
 // Prima la rete, poi l'ultima copia salvata: senza connessione l'app mostra l'ultimo turno visto.
-const CACHE = "fischietto-v1";
+const CACHE = "fischietto-v2";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "icon-192.png"];
 
 self.addEventListener("install", (e) => {
