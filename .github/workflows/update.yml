@@ -32,6 +32,9 @@ jobs:
       - name: Installa le dipendenze
         run: pip install -r requirements.txt
 
+      - name: Test automatici della validazione AI
+        run: python -m unittest discover -s tests -v
+
       - name: Genera il sito
         env:
           FOOTBALL_DATA_KEY: ${{ secrets.FOOTBALL_DATA_KEY }}
