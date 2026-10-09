@@ -1328,7 +1328,7 @@ function slipReason(x){
     }).join('');
     var markets=Object.keys(b.markets||{}).map(function(k){return [k,b.markets[k]];}).sort(function(a,c){return (c[1].n||0)-(a[1].n||0);}).slice(0,10);
     var rows=markets.map(function(x){var v=x[1];return '<div class="bt-market-row"><b>'+esc(x[0])+'</b><span>'+v.hit+'/'+v.n+'</span><span>'+pc(v.rate)+'</span><span>gap '+(v.gap>=0?'+':'')+pc(v.gap)+'</span></div>';}).join('');
-    return '<div class="backtest"><div class="backtest-head"><h3>Laboratorio · retrospettiva</h3><span>'+b.n+' pronostici</span></div><p class="backtest-note">Confronto sui pronostici effettivamente salvati prima dell'esito. Non vengono ricostruite previsioni a posteriori.</p><div class="bt-grid">'+cards+'</div>'+(rows?'<div class="bt-market"><div class="bt-market-row"><b>Mercato</b><span>Hit</span><span>Reale</span><span>Gap</span></div>'+rows+'</div>':'')+'</div>';
+    return '<div class="backtest"><div class="backtest-head"><h3>Laboratorio · retrospettiva</h3><span>'+b.n+' pronostici</span></div><p class="backtest-note">Confronto sui pronostici effettivamente salvati prima dell\'esito. Non vengono ricostruite previsioni a posteriori.</p><div class="bt-grid">'+cards+'</div>'+(rows?'<div class="bt-market"><div class="bt-market-row"><b>Mercato</b><span>Hit</span><span>Reale</span><span>Gap</span></div>'+rows+'</div>':'')+'</div>';
   }
 
   function marketPerformancePanel(h){
