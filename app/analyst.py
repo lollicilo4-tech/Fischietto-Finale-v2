@@ -180,20 +180,28 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
     from groq import AsyncGroq
     client = AsyncGroq()
     sem = asyncio.Semaphore(3)
+    rate_limited = asyncio.Event()
+    rate_limit_message = "Limite di utilizzo Groq raggiunto per oggi. L’analisi statistica resta disponibile; l’AI riproverà al prossimo aggiornamento."
 
     async def one(item):
         fx = item["fx"]
         hit = _cache.get(fx["id"])
         if hit and time.time() - hit[0] < CACHE_SECONDS:
             return hit[1]
+        if rate_limited.is_set():
+            return fallback_analysis(fx, item["base"], teams, rate_limit_message)
         async with sem:
+            # Un'altra richiesta potrebbe aver già rilevato il limite mentre questa attendeva.
+            if rate_limited.is_set():
+                return fallback_analysis(fx, item["base"], teams, rate_limit_message)
             try:
                 out = await _ask_groq(client, fx, item["base"])
             except Exception as exc:  # rete, JSON non valido, limiti: si ripiega sulle regole
                 print(f"[analyst] {fx['home']}-{fx['away']}: {exc!r}")
                 msg = str(exc)
                 if "429" in msg or "rate limit" in msg.lower() or "tokens per day" in msg.lower():
-                    why = "Limite di utilizzo Groq raggiunto per oggi. L’analisi AI riprenderà automaticamente quando il limite sarà nuovamente disponibile."
+                    rate_limited.set()
+                    why = rate_limit_message
                 else:
                     why = f"Errore AI ({type(exc).__name__}). L’analisi statistica resta disponibile."
                 return fallback_analysis(fx, item["base"], teams, why)
