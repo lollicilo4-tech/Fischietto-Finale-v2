@@ -178,9 +178,12 @@ async def _ask_groq(client, fx: dict, base: dict) -> dict:
         f"Partita: {fx['home']} (casa) contro {fx['away']} (trasferta), {kickoff}.\n"
         f"Numeri del modello statistico: gol attesi {d1(base['lh'])} - {d1(base['la'])}; "
         f"1 {pc(base['p1'])}, X {pc(base['px'])}, 2 {pc(base['p2'])}.\n\n"
-        "Fai una ricerca web mirata alle ultime 72 ore su infortuni, squalifiche, "
-        "probabili formazioni, turnover, cambi di allenatore e impegni ravvicinati. "
-        "Dai priorità a fonti affidabili e recenti. Non inventare assenze. "
+        "Fai una ricerca web mirata alle ultime 72 ore su questa partita e queste due squadre. "
+        "Usa solo pagine realmente pertinenti a questa partita, preferibilmente fonti ufficiali "
+        "dei club/competizioni o testate sportive affidabili. Scarta pagine di risultati generici, "
+        "live score, pronostici generici e articoli riferiti a date/stagioni diverse. "
+        "Non inventare assenze e non trattare i risultati della ricerca come prova se il titolo "
+        "o la pagina non confermano chiaramente la notizia. "
         "Rispondi SOLO con un oggetto JSON valido, senza markdown e senza testo fuori dal JSON. "
         "Campi obbligatori: assenze_casa (array di stringhe), assenze_trasferta (array di stringhe), "
         "fattore_gol_casa (numero 0.85-1.15), fattore_gol_trasferta (numero 0.85-1.15), "
@@ -214,12 +217,10 @@ async def _ask_groq(client, fx: dict, base: dict) -> dict:
         seen.add(url)
         sources.append({"title": title or url, "url": url})
 
-    import re
-    for url in re.findall(r'https?://[^\s\]\)\}>,]+', text):
-        add_url(url)
     try:
-        # executed_tools può essere esposto sul messaggio oppure sulla
-        # risposta completa, a seconda della versione del client Groq.
+        # Preferisci i risultati strutturati di browser_search: contengono titoli
+        # reali. Estrarre prima gli URL dal testo del modello produceva link senza
+        # titolo e poteva riempire il limite prima di leggere le fonti effettive.
         raw_response = resp.model_dump() if hasattr(resp, "model_dump") else {}
         raw_message = message.model_dump() if hasattr(message, "model_dump") else {}
         executed = []
@@ -227,8 +228,6 @@ async def _ask_groq(client, fx: dict, base: dict) -> dict:
             if isinstance(container, dict):
                 executed.extend(container.get("executed_tools") or [])
 
-        # Alcune versioni annidano i risultati sotto search_results, altre
-        # sotto results. Leggiamo solo URL realmente restituiti dal tool.
         def collect_results(value):
             if isinstance(value, dict):
                 url = value.get("url") or value.get("link")
@@ -246,8 +245,16 @@ async def _ask_groq(client, fx: dict, base: dict) -> dict:
     except Exception as exc:
         print(f"[analyst] {fx['home']}-{fx['away']}: impossibile leggere le fonti browser_search ({type(exc).__name__})")
 
+    # Solo se l'SDK non espone risultati strutturati, usa i link nel testo.
+    if not sources:
+        import re
+        for url in re.findall(r'https?://[^\s\]\)\}>,]+', text):
+            add_url(url)
+
+    # Rimuove link generici/duplicati e limita i riferimenti mostrati in scheda.
+    sources = sources[:4]
     data = _parse_json(text)
-    checked = _validate_absences(data, fx, sources[:5])
+    checked = _validate_absences(data, fx, sources)
     explanation = str(data.get("spiegazione", "")).strip()
     if checked["validation_warning"]:
         # Non aggiungere soltanto un avviso al testo originale: potrebbe
@@ -255,18 +262,17 @@ async def _ask_groq(client, fx: dict, base: dict) -> dict:
         # appena rifiutato. In caso di mancata conferma, sostituisci l'intera
         # spiegazione con un testo neutro coerente con i fattori effettivi.
         explanation = (
-            "Le fonti raccolte non consentono di convalidare automaticamente "
-            "le assenze citate. Per evitare correzioni non supportate, gli "
-            "elenchi delle assenze sono stati svuotati e i fattori AI sono "
-            "neutralizzati a 1,0. Gol attesi e probabilità restano quindi "
-            "quelli del modello statistico, senza aggiustamenti per indisponibilità."
+            "Non ho trovato conferme sufficientemente solide sulle indisponibilità "
+            "per modificare i gol attesi. Per prudenza, non applico correzioni per assenze: "
+            "le probabilità restano quelle del modello statistico. L'analisi delle notizie "
+            "non sostituisce i dati statistici e non implica che le squadre siano al completo."
         )
     return {
         "ai": True, "text": explanation,
         "factor_home": checked["factor_home"], "factor_away": checked["factor_away"],
         "absences_home": checked["absences_home"],
         "absences_away": checked["absences_away"],
-        "sources": sources[:5],
+        "sources": sources,
         "validation_version": 2,
     }
 
