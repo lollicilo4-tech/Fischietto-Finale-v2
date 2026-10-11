@@ -48,4 +48,12 @@ jobs:
           git add docs
           if [ -f data/predictions.json ]; then git add data/predictions.json; fi
           git diff --staged --quiet || git commit -m "Aggiorna pronostici"
+          # Altri commit possono arrivare su main mentre la generazione gira.
+          # Integra le modifiche remote prima del push, senza force-push.
+          git fetch origin main
+          if ! git rebase origin/main; then
+            echo "::error::Rebase automatico non riuscito: possibili modifiche concorrenti agli stessi dati. Interrompo senza sovrascrivere main."
+            git rebase --abort
+            exit 1
+          fi
           git push
