@@ -5,6 +5,11 @@ on:
     branches: [main]
     paths:
       - "app/analyst.py"
+      - "app/data.py"
+      - "app/pipeline.py"
+      - "generate.py"
+      - "static/index.html"
+      - "README.md"
       - ".github/workflows/update.yml"
   schedule:
     - cron: "0 6,18 * * *"   # 08:00 e 20:00 in Italia con l'ora legale (07:00 e 19:00 con quella solare)
