@@ -740,12 +740,14 @@ details.match summary{padding:18px!important}
 @media(min-width:701px){main{padding-bottom:120px!important}.tiles{grid-template-columns:repeat(4,minmax(0,1fr))!important}.tile.main{grid-column:span 2!important}.tile{min-height:128px!important}}
 @media(max-width:560px){body{padding-inline:12px!important}.tiles{grid-template-columns:1fr 1fr!important}.tile{min-height:108px!important;padding:15px!important}.tile.main{grid-column:1/-1!important}.tile b{font-size:19px!important}.tile svg{width:26px!important;height:26px!important}.nav{width:calc(100vw - 16px)!important}.nav button{font-size:9px!important;padding-left:2px!important;padding-right:2px!important}}
 @media(prefers-reduced-motion:no-preference){.tile,.quick-card,.feature-card,details.match,.slip-item,.panel{transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}.tile:hover,.quick-card:hover,.slip-item:hover{transform:translateY(-2px);border-color:rgba(53,167,255,.28)!important}}
+.league-label{display:block;margin:10px 0 5px;font-size:10px;letter-spacing:.12em;font-weight:800;color:var(--muted)}.league-select{width:100%;max-width:280px;padding:11px 13px;border-radius:12px;border:1px solid rgba(74,163,255,.35);background:#0b1828;color:#f4f8ff;font:700 14px var(--font-body);outline-offset:3px}
 </style>
 <style id="slip-mode-css">.slip-toggle{display:flex!important;gap:7px!important;margin:10px 0!important;flex-wrap:wrap}.slip-toggle button{flex:1;min-width:90px;padding:11px 12px;border:1px solid rgba(116,154,194,.18);border-radius:13px;background:#0b1828;color:#8ea5bd;font:800 11px var(--font-num);text-transform:uppercase}.slip-toggle button[aria-pressed="true"]{background:linear-gradient(135deg,rgba(53,167,255,.22),rgba(247,198,74,.10));color:#fff;border-color:rgba(53,167,255,.38)}#slip-count button{font-size:10px}</style></head>
 <body>
 <header class="top">
   <div class="toprow"><button type="button" class="back" id="back" hidden>‹ Home</button><h1>Fischietto <span>finale</span></h1></div>
   <p class="sub" id="sub">Serie A · come potrebbe andare ogni partita</p>
+  <label for="league-select" class="league-label">CAMPIONATO</label><select id="league-select" aria-label="Seleziona campionato" class="league-select"><option value="SA">Serie A</option><option value="BL1">Bundesliga</option><option value="PD">LaLiga</option><option value="FL1">Ligue 1</option></select>
   <div class="tags" id="tags"></div>
   <div id="aierr"></div>
 </header>
@@ -765,7 +767,7 @@ details.match summary{padding:18px!important}
         <span><b>Schedina modello</b><small>Sicura · Media · Bomba</small></span></button>
       <button type="button" class="tile" data-go="classifica">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
-        <span><b>Classifica</b><small>Serie A</small></span></button>
+        <span><b>Classifica</b><small id="tile-league-name">Serie A</small></span></button>
       <button type="button" class="tile" data-go="storico" style="grid-column: 1 / -1; min-height: 100px">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
         <span><b>Storico</b><small id="tile-storico">Pronostici e risultati veri</small></span></button>
@@ -827,6 +829,14 @@ details.match summary{padding:18px!important}
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); };
+  var LEAGUE = new URLSearchParams(location.search).get("league") || "SA";
+  if (!["SA","BL1","PD","FL1"].includes(LEAGUE)) LEAGUE = "SA";
+  var LEAGUE_NAMES = {SA:"Serie A",BL1:"Bundesliga",PD:"LaLiga",FL1:"Ligue 1"};
+  var leaguePrefix = LEAGUE === "SA" ? "" : "league-" + LEAGUE + "-";
+  var leagueSelect = $("league-select");
+  if (leagueSelect) { leagueSelect.value = LEAGUE; leagueSelect.addEventListener("change", function(){ location.href = "?league=" + encodeURIComponent(leagueSelect.value); }); }
+  $("sub").textContent = LEAGUE_NAMES[LEAGUE] + " · come potrebbe andare ogni partita";
+  if ($("tile-league-name")) $("tile-league-name").textContent = LEAGUE_NAMES[LEAGUE];
   var pc = function (p) { return Math.round(p * 100) + "%"; };
   var d1 = function (x) { return x.toFixed(1).replace(".", ","); };
   var d2 = function (x) { return x == null ? "–" : x.toFixed(2).replace(".", ","); };
@@ -1348,7 +1358,7 @@ function slipReason(x){
     return '<div class="panel" style="margin-top:14px"><h2>Affidabilità per mercato</h2><p class="expl">Indicatore 0–100 costruito da calibrazione e Brier score. È un indicatore descrittivo, non una garanzia di rendimento. La Schedina usa lo storico solo quando ci sono almeno 10 osservazioni per categoria.</p><div class="market-perf-grid">'+cards+'</div>'+chart+'<div class="panel" style="margin-top:12px;padding:12px"><p class="lead" style="margin:0">'+(ready?'Calibrazione storica attiva per '+ready+' categorie.':'Campione ancora insufficiente: il sistema continua a raccogliere dati senza modificare le probabilità del modello.')+'</p></div></div>';
   }
 
-  fetch("/api/turno").then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || "Errore"); return j; }); })
+  fetch(LEAGUE === "SA" ? "/api/turno" : leaguePrefix + "turno.json").then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || "Errore"); return j; }); })
     .then(function (d) {
       var tags = [];
       tags.push(d.demo ? '<span class="tag warn">Dati di esempio</span>' : '<span class="tag ok">Dati reali</span>');
@@ -1362,7 +1372,7 @@ function slipReason(x){
       }
       $("tags").innerHTML = tags.join("");
       if (d.ai_error) $("aierr").innerHTML = '<div class="msg err"><b>Notizie non caricate.</b>' + esc(d.ai_error) + "</div>";
-      if (d.matchday) $("sub").textContent = "Serie A · giornata " + d.matchday;
+      if (d.matchday) $("sub").textContent = LEAGUE_NAMES[LEAGUE] + " · giornata " + d.matchday;
       $("tile-partite").textContent = (d.matchday ? "Giornata " + d.matchday + " · " : "") + d.matches.length + " partite";
       hero(d.matches);
       homeDashboard(d.matches);
@@ -1377,7 +1387,7 @@ function slipReason(x){
     })
     .catch(function (e) { $("matches").innerHTML = '<div class="msg err">' + esc(e.message) + "</div>"; });
 
-  fetch("/api/storico").then(function (r) { return r.json(); }).then(function (h) {
+  fetch(LEAGUE === "SA" ? "/api/storico" : leaguePrefix + "storico.json").then(function (r) { return r.json(); }).then(function (h) {
     if (h.demo) $("hist-lead").textContent = "Esempio dimostrativo. Con i dati reali qui compaiono i pronostici salvati prima di ogni partita e confrontati con il risultato.";
     if (h.n) $("tile-storico").textContent = "Esito azzeccato " + h.hit + " su " + h.n;
     if (!h.n) { $("hist-hero").innerHTML = '<div class="hist-kicker">Performance del modello</div><div style="margin-top:8px;font-family:var(--font-display);font-size:30px;font-weight:800">Nessun dato ancora</div><p class="hist-caption">Quando saranno disponibili risultati reali, qui vedrai precisione, andamento e qualità delle probabilità.</p>'; $("sum").innerHTML = '<div class="stat wide"><div class="k">Ancora vuoto</div><div class="s">Appena si giocano le partite pronosticate, compare il confronto.</div></div>'; return; }
@@ -1429,7 +1439,7 @@ function slipReason(x){
     }).join("");
   }).catch(function () {});
 
-  fetch("/api/classifica").then(function (r) { return r.json(); }).then(function (c) {
+  fetch(LEAGUE === "SA" ? "/api/classifica" : leaguePrefix + "classifica.json").then(function (r) { return r.json(); }).then(function (c) {
     var t = c.table || [];
     if (!t.length) { $("table").innerHTML = '<div class="msg">Classifica non disponibile.</div>'; return; }
     var n = t.length;
