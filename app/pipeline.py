@@ -116,8 +116,8 @@ def _recommendations(s: dict, home: str, away: str) -> dict:
     return {"best": best, "alternatives": top[:6], "by_kind": best_by_kind}
 
 
-async def build_turno() -> dict:
-    ctx = await data.get_context()
+async def build_turno(competition: str | None = None, use_ai: bool | None = None) -> dict:
+    ctx = await data.get_context(competition)
     teams, avg_h, avg_a = ctx["teams"], ctx["avg_h"], ctx["avg_a"]
 
     bases = []
@@ -131,7 +131,7 @@ async def build_turno() -> dict:
             old = model.summarize(*model.expected_goals_simple(ts, sh, sa, fx["home"], fx["away"]))
         bases.append({"fx": fx, "base": base, "old": old})
 
-    analyses = await analyst.analyze_all(bases, teams, use_ai=not ctx["demo"])
+    analyses = await analyst.analyze_all(bases, teams, use_ai=(not ctx["demo"] and use_ai is not False))
 
     out = []
     for item, an in zip(bases, analyses):
@@ -186,10 +186,10 @@ async def build_turno() -> dict:
             "matches": out}
 
 
-async def build_storico() -> dict:
+async def build_storico(competition: str | None = None) -> dict:
     if not data.has_key():
         return DEMO_HISTORY
-    ctx = await data.get_context()
+    ctx = await data.get_context(competition)
     return {"demo": False, **store.history(ctx["finished"])}
 
 
@@ -202,8 +202,8 @@ DEMO_CLASSIFICA = [
 ]
 
 
-async def build_classifica() -> dict:
+async def build_classifica(competition: str | None = None) -> dict:
     if not data.has_key():
         return {"demo": True, "table": DEMO_CLASSIFICA}
-    ctx = await data.get_context()
+    ctx = await data.get_context(competition)
     return {"demo": False, "table": ctx.get("standings", [])}
