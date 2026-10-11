@@ -25,40 +25,47 @@ OUT = ROOT / "docs"
 
 
 async def main() -> int:
-    try:
-        turno = await pipeline.build_turno()
-    except RuntimeError as exc:  # per esempio pausa per le nazionali: nessuna partita in programma
-        print(f"Nessun aggiornamento: {exc}")
+    competitions = {"SA": "Serie A", "BL1": "Bundesliga", "PD": "LaLiga", "FL1": "Ligue 1"}
+    payloads = {}
+    for code, label in competitions.items():
+        try:
+            turno = await pipeline.build_turno(code, use_ai=(code == "SA"))
+            if turno["demo"] and os.getenv("CI"):
+                if code == "SA":
+                    print("Errore: manca FOOTBALL_DATA_KEY nei Secrets, non pubblico i dati di esempio.")
+                    return 1
+                print(f"Salto {label}: dati demo non pubblicabili.")
+                continue
+            if turno.get("ai_error"):
+                print(f"Attenzione ({label}): AI non disponibile ({turno['ai_error']}).")
+            turno["ai_error"] = turno.get("ai_error") or None
+            turno["ai_status"] = turno.get("ai_status", "attiva" if turno["ai"] else "solo_statistica")
+            turno["league"], turno["league_name"] = code, label
+            payloads[code] = (turno, await pipeline.build_storico(code), await pipeline.build_classifica(code))
+            print(f"{label}: {len(turno['matches'])} partite, analisi {'AI' if turno['ai'] else 'solo statistica'}.")
+        except Exception as exc:
+            if code == "SA":
+                print(f"Nessun aggiornamento Serie A: {exc}")
+                return 0
+            print(f"Salto {label}: {exc}")
+    if "SA" not in payloads:
+        print("Nessun aggiornamento: dati Serie A non disponibili.")
         return 0
-
-    if turno["demo"] and os.getenv("CI"):
-        print("Errore: manca FOOTBALL_DATA_KEY nei Secrets, non pubblico i dati di esempio.")
-        return 1
-    if turno.get("ai_error"):
-        print(f"Attenzione: analisi AI non disponibile ({turno['ai_error']}). Pubblico l'analisi statistica.")
-
-    turno["ai_error"] = turno.get("ai_error") or None
-    # Lo stato resta nel JSON pubblico per rendere trasparente se l'AI è attiva.
-    turno["ai_status"] = turno.get("ai_status", "attiva" if turno["ai"] else "solo_statistica")
-    storico = await pipeline.build_storico()
-    classifica = await pipeline.build_classifica()
-
     OUT.mkdir(exist_ok=True)
-    (OUT / ".nojekyll").touch()  # GitHub Pages: servi i file così come sono
-    for name, payload in (("turno.json", turno), ("storico.json", storico), ("classifica.json", classifica)):
-        (OUT / name).write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    (OUT / ".nojekyll").touch()
+    for code, (turno, storico, classifica) in payloads.items():
+        prefix = "" if code == "SA" else f"league-{code}-"
+        for suffix, payload in (("turno.json", turno), ("storico.json", storico), ("classifica.json", classifica)):
+            (OUT / f"{prefix}{suffix}").write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
     html = (ROOT / "static" / "index.html").read_text(encoding="utf-8")
     html = html.replace("/api/turno", "turno.json").replace("/api/storico", "storico.json")
     html = html.replace("/api/classifica", "classifica.json")
     (OUT / "index.html").write_text(html, encoding="utf-8")
-    for f in (ROOT / "static").iterdir():  # icone, manifest e service worker per l'installazione su telefono
+    for f in (ROOT / "static").iterdir():
         if f.is_file() and f.name != "index.html":
             shutil.copy2(f, OUT / f.name)
-
-    print(f"Sito aggiornato in {OUT}: {len(turno['matches'])} partite, "
-          f"analisi {'AI' if turno['ai'] else 'solo statistica'}.")
+    print(f"Sito aggiornato: {len(payloads)} campionati pubblicati.")
     return 0
-
 
 if __name__ == "__main__":
     sys.exit(asyncio.run(main()))
