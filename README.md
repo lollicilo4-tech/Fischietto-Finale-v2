@@ -1,6 +1,6 @@
 # Fischietto finale
 
-App che stima come potrebbe andare ogni partita di Serie A. Soluzione ibrida in tre livelli:
+App che stima come potrebbe andare ogni partita di Serie A, Bundesliga, LaLiga e Ligue 1. Soluzione ibrida in tre livelli:
 
 | Livello | Cosa fa | File |
 |---|---|---|
@@ -25,13 +25,13 @@ py -m uvicorn app.main:app --reload
 Apri http://localhost:8000.
 
 - **Senza chiavi**: dati inventati e analisi a regole (etichetta "Dati di esempio").
-- **Con `FOOTBALL_DATA_KEY`**: dati reali del campionato (piano gratuito, Serie A inclusa).
+- **Con `FOOTBALL_DATA_KEY`**: dati reali dei campionati supportati. La Serie A usa l’analisi AI; le altre leghe partono con il modello statistico per limitare i consumi.
 - **Con anche `GROQ_API_KEY`**: GPT-OSS analizza ogni partita con ricerca web. La ricerca web usa il tool `browser_search` di Groq.
 
 ## Pubblicazione gratuita
 
 Il sito online è statico: un'automazione di GitHub (`.github/workflows/update.yml`) esegue `generate.py`
-due volte al giorno, scrive i dati nella cartella `docs/` e la pubblica. I visitatori non fanno mai
+due volte al giorno, scrive i dati nella cartella `docs/` e la pubblica. Il selettore consente di passare tra Serie A, Bundesliga, LaLiga e Ligue 1; dati e classifica sono separati per campionato. I visitatori non fanno mai
 partire chiamate a football-data.org o all'AI, quindi il costo dell'AI non dipende dal traffico. Il server può restare spento, il sito è sempre acceso e lo Storico non si perde.
 
 1. **GitHub**: crea un account su github.com e un repository nuovo **pubblico**. GitHub Pages è gratuito solo
