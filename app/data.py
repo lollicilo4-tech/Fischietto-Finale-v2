@@ -2,6 +2,7 @@
 
 Senza chiave FOOTBALL_DATA_KEY parte la modalità demo con dati inventati.
 """
+import asyncio
 import os
 import time
 
@@ -11,6 +12,8 @@ BASE = "https://api.football-data.org/v4"
 COMPETITION = os.getenv("COMPETITION", "SA")
 _cache: dict = {}
 CACHE_SECONDS = 30 * 60  # il piano gratuito ha 10 richieste al minuto
+MIN_REQUEST_INTERVAL = 6.2  # margine di sicurezza sotto le 10 richieste/minuto
+_last_request_at = 0.0
 
 # --- Demo ------------------------------------------------------------------
 DEMO_TEAMS = {
@@ -64,6 +67,11 @@ def has_key() -> bool:
 
 
 async def _get(client: httpx.AsyncClient, path: str, params: dict) -> dict:
+    global _last_request_at
+    wait = MIN_REQUEST_INTERVAL - (time.monotonic() - _last_request_at)
+    if wait > 0:
+        await asyncio.sleep(wait)
+    _last_request_at = time.monotonic()
     r = await client.get(f"{BASE}{path}", params=params,
                          headers={"X-Auth-Token": os.environ["FOOTBALL_DATA_KEY"]}, timeout=20)
     r.raise_for_status()
