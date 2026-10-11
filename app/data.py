@@ -9,7 +9,7 @@ import httpx
 
 BASE = "https://api.football-data.org/v4"
 COMPETITION = os.getenv("COMPETITION", "SA")
-_cache: dict = {"t": 0.0, "v": None}
+_cache: dict = {}
 CACHE_SECONDS = 30 * 60  # il piano gratuito ha 10 richieste al minuto
 
 # --- Demo ------------------------------------------------------------------
@@ -83,18 +83,19 @@ def _standings(st: dict) -> list[dict]:
             for r in tables[0]["table"]]
 
 
-async def real_context() -> dict:
+async def real_context(competition: str | None = None) -> dict:
     from . import model
+    competition = competition or COMPETITION
 
     async with httpx.AsyncClient() as client:
-        fin = await _get(client, f"/competitions/{COMPETITION}/matches", {"status": "FINISHED"})
-        sch = await _get(client, f"/competitions/{COMPETITION}/matches", {"status": "SCHEDULED,TIMED"})
+        fin = await _get(client, f"/competitions/{competition}/matches", {"status": "FINISHED"})
+        sch = await _get(client, f"/competitions/{competition}/matches", {"status": "SCHEDULED,TIMED"})
         previous = []
         try:  # stagione scorsa: serve a non partire da zero nelle prime giornate
             first = min(m["utcDate"] for m in sch["matches"]) if sch["matches"] else None
             if first:
                 y = int(first[:4]) - (1 if int(first[5:7]) < 7 else 0)
-                prev = await _get(client, f"/competitions/{COMPETITION}/matches", {"season": y - 1, "status": "FINISHED"})
+                prev = await _get(client, f"/competitions/{competition}/matches", {"season": y - 1, "status": "FINISHED"})
                 previous = [{"id": str(m["id"]), "date": m["utcDate"], "home": _name(m["homeTeam"]),
                              "away": _name(m["awayTeam"]), "hg": m["score"]["fullTime"]["home"],
                              "ag": m["score"]["fullTime"]["away"]}
@@ -102,7 +103,7 @@ async def real_context() -> dict:
         except (httpx.HTTPError, KeyError, ValueError):
             previous = []
         try:  # la classifica è un di più: se manca, il resto funziona lo stesso
-            st = await _get(client, f"/competitions/{COMPETITION}/standings", {})
+            st = await _get(client, f"/competitions/{competition}/standings", {})
         except httpx.HTTPError:
             st = {}
 
@@ -131,11 +132,13 @@ async def real_context() -> dict:
             "standings": _standings(st)}
 
 
-async def get_context() -> dict:
+async def get_context(competition: str | None = None) -> dict:
+    competition = competition or COMPETITION
     if not has_key():
         return demo_context()
-    if _cache["v"] and time.time() - _cache["t"] < CACHE_SECONDS:
-        return _cache["v"]
-    ctx = await real_context()
-    _cache.update(t=time.time(), v=ctx)
+    cached = _cache.get(competition)
+    if cached and time.time() - cached["t"] < CACHE_SECONDS:
+        return cached["v"]
+    ctx = await real_context(competition)
+    _cache[competition] = {"t": time.time(), "v": ctx}
     return ctx
