@@ -1148,5 +1148,1265 @@
    1.78,
    1.07
   ]
+ },
+ "565821": {
+  "ai": true,
+  "away": "Dortmund",
+  "base": {
+   "p1": 0.1986,
+   "p2": 0.5815,
+   "px": 0.2199
+  },
+  "gg": 0.5952,
+  "home": "Union Berlin",
+  "kickoff": "2026-10-17T13:30:00Z",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.1986
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2199
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.5815
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.4185
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.8014
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8318
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6148
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3852
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6074
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5952
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4048
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.1549
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.5016
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3302
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.677
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.2815
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4738
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4919
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3517
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1033,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.6148,
+  "old": {
+   "p1": 0.3147,
+   "p2": 0.4609,
+   "px": 0.2243
+  },
+  "p1": 0.1986,
+  "p2": 0.5815,
+  "pick": "2",
+  "pick_p": 0.5815,
+  "px": 0.2199,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8318
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.13,
+   2.06
+  ]
+ },
+ "565822": {
+  "ai": true,
+  "away": "Stuttgart",
+  "base": {
+   "p1": 0.2921,
+   "p2": 0.4751,
+   "px": 0.2328
+  },
+  "gg": 0.6558,
+  "home": "HSV",
+  "kickoff": "2026-10-17T13:30:00Z",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.2921
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2328
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.4751
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.5249
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.7079
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8515
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6471
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3529
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5721
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.6558
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.3442
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.2442
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.4125
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.439
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6073
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3151
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3993
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.5515
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3063
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1043,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.6471,
+  "old": {
+   "p1": 0.3879,
+   "p2": 0.3898,
+   "px": 0.2223
+  },
+  "p1": 0.2921,
+  "p2": 0.4751,
+  "pick": "2",
+  "pick_p": 0.4751,
+  "px": 0.2328,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8515
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.45,
+   1.89
+  ]
+ },
+ "565823": {
+  "ai": true,
+  "away": "SC Paderborn",
+  "base": {
+   "p1": 0.5062,
+   "p2": 0.2347,
+   "px": 0.259
+  },
+  "gg": 0.5299,
+  "home": "Bremen",
+  "kickoff": "2026-10-17T13:30:00Z",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.5062
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.259
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2347
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7653
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.4938
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7558
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5018
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4982
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7176
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5299
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4701
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.4015
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1684
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5874
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.3544
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5412
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3749
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4045
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4359
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1255,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5018,
+  "old": {
+   "p1": 0.6618,
+   "p2": 0.1426,
+   "px": 0.1956
+  },
+  "p1": 0.5062,
+  "p2": 0.2347,
+  "pick": "1",
+  "pick_p": 0.5062,
+  "px": 0.259,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7558
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.65,
+   1.04
+  ]
+ },
+ "565824": {
+  "ai": true,
+  "away": "Augsburg",
+  "base": {
+   "p1": 0.4869,
+   "p2": 0.2845,
+   "px": 0.2286
+  },
+  "gg": 0.664,
+  "home": "Elversberg",
+  "kickoff": "2026-10-17T13:30:00Z",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4869
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2286
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2845
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7155
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5131
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8592
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6605
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3395
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.557
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.664
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.336
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.4266
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2395
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6197
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4327
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3919
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3017
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.5629
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.2962
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1011,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.6605,
+  "old": {
+   "p1": 0.378,
+   "p2": 0.4187,
+   "px": 0.2033
+  },
+  "p1": 0.4869,
+  "p2": 0.2845,
+  "pick": "1",
+  "pick_p": 0.4869,
+  "px": 0.2286,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8592
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.95,
+   1.46
+  ]
+ },
+ "565825": {
+  "ai": true,
+  "away": "RB Leipzig",
+  "base": {
+   "p1": 0.6959,
+   "p2": 0.1464,
+   "px": 0.1577
+  },
+  "gg": 0.7051,
+  "home": "Bayern",
+  "kickoff": "2026-10-17T16:30:00Z",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.6959
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1577
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1464
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8536
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.3041
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.9306
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.8008
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.1992
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.3791
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.7051
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.2949
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.6583
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1292
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.8013
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.2723
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3075
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.1446
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.6467
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.2045
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.0798,
+    "score": "2-1"
+   }
+  ],
+  "o25": 0.8008,
+  "old": {
+   "p1": 0.8649,
+   "p2": 0.0483,
+   "px": 0.0868
+  },
+  "p1": 0.6959,
+  "p2": 0.1464,
+  "pick": "1",
+  "pick_p": 0.6959,
+  "px": 0.1577,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.9306
+  },
+  "top": [
+   2,
+   1
+  ],
+  "xg": [
+   2.95,
+   1.35
+  ]
+ },
+ "565826": {
+  "ai": false,
+  "away": "Hoffenheim",
+  "base": {
+   "p1": 0.4158,
+   "p2": 0.3626,
+   "px": 0.2216
+  },
+  "gg": 0.7212,
+  "home": "M'gladbach",
+  "kickoff": "2026-10-18T15:30:00Z",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4158
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2216
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.3626
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.6374
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5842
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8925
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.7216
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.2784
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.4843
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.7212
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.2788
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3731
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.3229
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5696
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.5194
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.309
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.2891
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.6325
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.2414
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.0887,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.7216,
+  "old": {
+   "p1": 0.4741,
+   "p2": 0.3383,
+   "px": 0.1876
+  },
+  "p1": 0.4158,
+  "p2": 0.3626,
+  "pick": "1",
+  "pick_p": 0.4158,
+  "px": 0.2216,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8925
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.95,
+   1.81
+  ]
+ },
+ "565827": {
+  "ai": false,
+  "away": "Freiburg",
+  "base": {
+   "p1": 0.5596,
+   "p2": 0.2365,
+   "px": 0.2039
+  },
+  "gg": 0.7,
+  "home": "Leverkusen",
+  "kickoff": "2026-10-18T13:30:00Z",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.5596
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2039
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2365
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7635
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.4404
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.896
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.7285
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.2715
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.4758
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.7
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.3
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.5108
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2054
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6905
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.3852
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3516
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.2311
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.6172
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.2473
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.089,
+    "score": "2-1"
+   }
+  ],
+  "o25": 0.7285,
+  "old": {
+   "p1": 0.6162,
+   "p2": 0.1716,
+   "px": 0.2122
+  },
+  "p1": 0.5596,
+  "p2": 0.2365,
+  "pick": "1",
+  "pick_p": 0.5596,
+  "px": 0.2039,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.896
+  },
+  "top": [
+   2,
+   1
+  ],
+  "xg": [
+   2.32,
+   1.48
+  ]
+ },
+ "565828": {
+  "ai": true,
+  "away": "1. FC Köln",
+  "base": {
+   "p1": 0.5238,
+   "p2": 0.2694,
+   "px": 0.2067
+  },
+  "gg": 0.7245,
+  "home": "Frankfurt",
+  "kickoff": "2026-10-16T18:30:00Z",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.5238
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2067
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2694
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7306
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.4762
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.9047
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.7457
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.2543
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.4537
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.7245
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.2755
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.4807
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2389
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6658
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4239
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3224
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.2332
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.6442
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.2283
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.085,
+    "score": "2-1"
+   }
+  ],
+  "o25": 0.7457,
+  "old": {
+   "p1": 0.4814,
+   "p2": 0.3086,
+   "px": 0.21
+  },
+  "p1": 0.5238,
+  "p2": 0.2694,
+  "pick": "1",
+  "pick_p": 0.5238,
+  "px": 0.2067,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.9047
+  },
+  "top": [
+   2,
+   1
+  ],
+  "xg": [
+   2.29,
+   1.62
+  ]
+ },
+ "565829": {
+  "ai": true,
+  "away": "Mainz",
+  "base": {
+   "p1": 0.4591,
+   "p2": 0.2856,
+   "px": 0.2553
+  },
+  "gg": 0.5822,
+  "home": "Schalke",
+  "kickoff": "2026-10-17T13:30:00Z",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4591
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2553
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2856
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7144
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5409
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7903
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5502
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4498
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6726
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5822
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4178
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3737
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2208
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5695
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4165
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.476
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3786
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4598
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3862
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1224,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5502,
+  "old": {
+   "p1": 0.3104,
+   "p2": 0.4373,
+   "px": 0.2522
+  },
+  "p1": 0.4591,
+  "p2": 0.2856,
+  "pick": "1",
+  "pick_p": 0.4591,
+  "px": 0.2553,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7903
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.64,
+   1.25
+  ]
  }
 }
