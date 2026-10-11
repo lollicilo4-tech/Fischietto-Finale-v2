@@ -250,14 +250,24 @@ async def _ask_groq(client, fx: dict, base: dict) -> dict:
     checked = _validate_absences(data, fx, sources[:5])
     explanation = str(data.get("spiegazione", "")).strip()
     if checked["validation_warning"]:
-        explanation = (explanation + " " + checked["validation_warning"]).strip()
+        # Non aggiungere soltanto un avviso al testo originale: potrebbe
+        # continuare ad affermare come certe assenze che la validazione ha
+        # appena rifiutato. In caso di mancata conferma, sostituisci l'intera
+        # spiegazione con un testo neutro coerente con i fattori effettivi.
+        explanation = (
+            "Le fonti raccolte non consentono di convalidare automaticamente "
+            "le assenze citate. Per evitare correzioni non supportate, gli "
+            "elenchi delle assenze sono stati svuotati e i fattori AI sono "
+            "neutralizzati a 1,0. Gol attesi e probabilità restano quindi "
+            "quelli del modello statistico, senza aggiustamenti per indisponibilità."
+        )
     return {
         "ai": True, "text": explanation,
         "factor_home": checked["factor_home"], "factor_away": checked["factor_away"],
         "absences_home": checked["absences_home"],
         "absences_away": checked["absences_away"],
         "sources": sources[:5],
-        "validation_version": 1,
+        "validation_version": 2,
     }
 
 
@@ -308,8 +318,25 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
             # Le vecchie cache senza fonti non devono impedire una nuova
             # ricerca web dopo la correzione dell'estrazione.
             cached_sources = hit[1].get("sources") if isinstance(hit[1], dict) else None
-            if cached_sources and hit[1].get("validation_version") == 1:
-                return hit[1]
+            if cached_sources and hit[1].get("validation_version") in (1, 2):
+                cached = dict(hit[1])
+                # Bonifica in memoria anche le cache già salvate con spiegazioni
+                # incoerenti; non richiede una nuova chiamata a Groq.
+                if "Assenze non confermate automaticamente" in str(cached.get("text", "")):
+                    cached["text"] = (
+                        "Le fonti raccolte non consentono di convalidare automaticamente "
+                        "le assenze citate. Per evitare correzioni non supportate, gli "
+                        "elenchi delle assenze sono stati svuotati e i fattori AI sono "
+                        "neutralizzati a 1,0. Gol attesi e probabilità restano quindi "
+                        "quelli del modello statistico, senza aggiustamenti per indisponibilità."
+                    )
+                    cached["absences_home"] = []
+                    cached["absences_away"] = []
+                    cached["factor_home"] = 1.0
+                    cached["factor_away"] = 1.0
+                    cached["validation_version"] = 2
+                    _cache[fx["id"]] = (hit[0], cached)
+                return cached
         if rate_limited.is_set():
             return fallback_analysis(fx, item["base"], teams, rate_limit_message)
         async with sem:
