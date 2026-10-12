@@ -49,6 +49,16 @@ class ValidateAbsencesTests(unittest.TestCase):
         self.assertTrue(_is_groq_daily_limit(Exception("429 tokens per day (TPD) limit reached")))
         self.assertFalse(_is_groq_daily_limit(Exception("429 tokens per minute (TPM), try again in 3s")))
 
+
+    def test_grounding_sources_exclude_social_media(self):
+        from app.analyst import _relevant_sources
+        sources = [
+            {"title": "instagram.com", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/example"},
+            {"title": "Club official news", "url": "https://club.example/news/team-update"},
+        ]
+        result = _relevant_sources(sources, {"home": "Como 1907", "away": "Roma"})
+        self.assertEqual(len(result), 2)
+
     def test_confirmed_absence_requires_player_team_and_out_evidence(self):
         result = _validate_absences(
             {
