@@ -1,6 +1,7 @@
 import unittest
+from types import SimpleNamespace
 
-from app.analyst import _parse_json, _validate_absences
+from app.analyst import _extract_response_text, _is_groq_daily_limit, _parse_json, _validate_absences
 
 
 class ValidateAbsencesTests(unittest.TestCase):
@@ -12,6 +13,27 @@ class ValidateAbsencesTests(unittest.TestCase):
         parsed = _parse_json('Risultato:\n```json\n{"assenze_casa": [], "fattore_gol_casa": 1.0}\n```')
         self.assertEqual(parsed["assenze_casa"], [])
         self.assertEqual(parsed["fattore_gol_casa"], 1.0)
+
+
+    def test_parse_json_rejects_non_object_json(self):
+        with self.assertRaises(ValueError):
+            _parse_json('[1, 2, 3]')
+
+    def test_gemini_text_is_recovered_from_candidate_parts(self):
+        response = SimpleNamespace(
+            text=None,
+            candidates=[SimpleNamespace(content=SimpleNamespace(parts=[
+                SimpleNamespace(text='{"assenze_casa": [],'),
+                SimpleNamespace(text='"assenze_trasferta": []}'),
+            ]))],
+        )
+        parsed = _parse_json(_extract_response_text(response))
+        self.assertEqual(parsed["assenze_casa"], [])
+        self.assertEqual(parsed["assenze_trasferta"], [])
+
+    def test_groq_daily_limit_is_distinguished_from_tpm(self):
+        self.assertTrue(_is_groq_daily_limit(Exception("429 tokens per day (TPD) limit reached")))
+        self.assertFalse(_is_groq_daily_limit(Exception("429 tokens per minute (TPM), try again in 3s")))
 
     def test_confirmed_absence_requires_player_team_and_out_evidence(self):
         result = _validate_absences(
