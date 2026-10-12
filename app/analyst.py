@@ -318,6 +318,64 @@ async def _ask_groq(client, fx: dict, base: dict) -> dict:
     }
 
 
+async def _ask_gemini(fx: dict, base: dict) -> dict:
+    """Provider di riserva: Gemini con ricerca Google."""
+    from google import genai
+    from google.genai import types
+
+    kickoff = fx.get("kickoff") or "prossimo turno"
+    prompt = (
+        f"Partita: {fx['home']} (casa) contro {fx['away']} (trasferta), {kickoff}.\\n"
+        f"Gol attesi {d1(base['lh'])}-{d1(base['la'])}; 1 {pc(base['p1'])}, "
+        f"X {pc(base['px'])}, 2 {pc(base['p2'])}.\\n"
+        "Cerca notizie recenti e attendibili sulle due squadre, soprattutto indisponibilità "
+        "confermate e squalifiche. Scarta pronostici, quote e risultati generici. Non inventare "
+        "assenze. Se non trovi conferme, usa array vuoti e fattori 1.0. I fattori devono essere "
+        "tra 0.85 e 1.15 e giustificati da assenze confermate. Rispondi solo con JSON valido: "
+        "assenze_casa (array), assenze_trasferta (array), fattore_gol_casa (numero), "
+        "fattore_gol_trasferta (numero), spiegazione (3-4 frasi in italiano)."
+    )
+    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+    response = await client.aio.models.generate_content(
+        model=os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite"),
+        contents=prompt,
+        config=types.GenerateContentConfig(
+            system_instruction=SYSTEM,
+            temperature=0.2,
+            max_output_tokens=650,
+            response_mime_type="application/json",
+            tools=[types.Tool(google_search=types.GoogleSearch())],
+        ),
+    )
+    data = _parse_json(response.text or "")
+    sources, seen = [], set()
+    for candidate in (getattr(response, "candidates", None) or []):
+        metadata = getattr(candidate, "grounding_metadata", None)
+        for chunk in (getattr(metadata, "grounding_chunks", None) or []):
+            web = getattr(chunk, "web", None)
+            url = getattr(web, "uri", None) if web else None
+            title = getattr(web, "title", None) if web else None
+            if url and url not in seen:
+                seen.add(url)
+                sources.append({"title": title or url, "url": url})
+    sources = _relevant_sources(sources, fx)
+    checked = _validate_absences(data, fx, sources)
+    explanation = str(data.get("spiegazione", "")).strip()
+    if checked["validation_warning"]:
+        explanation = (
+            "Non ho trovato conferme sufficientemente solide sulle indisponibilità "
+            "per modificare i gol attesi. Per prudenza, non applico correzioni per assenze: "
+            "le probabilità restano quelle del modello statistico. L'analisi delle notizie "
+            "non sostituisce i dati statistici e non implica che le squadre siano al completo."
+        )
+    return {
+        "ai": True, "text": explanation,
+        "factor_home": checked["factor_home"], "factor_away": checked["factor_away"],
+        "absences_home": checked["absences_home"], "absences_away": checked["absences_away"],
+        "sources": sources, "provider": "gemini", "validation_version": 4,
+    }
+
+
 def _load_persistent_cache() -> None:
     try:
         raw = json.loads(PERSIST_PATH.read_text(encoding="utf-8"))
@@ -346,13 +404,13 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
     """items: [{"fx": fixture, "base": {lh, la, p1, px, p2, ...}}]"""
     if not use_ai:
         return [fallback_analysis(i["fx"], i["base"], teams) for i in items]
-    if not os.getenv("GROQ_API_KEY"):
-        why = "Chiave GROQ_API_KEY non trovata: l'analisi AI viene sostituita dal fallback statistico."
+    if not os.getenv("GROQ_API_KEY") and not os.getenv("GEMINI_API_KEY"):
+        why = "Nessun provider AI configurato: analisi statistica disponibile."
         return [fallback_analysis(i["fx"], i["base"], teams, why) for i in items]
 
     _load_persistent_cache()
     from groq import AsyncGroq
-    client = AsyncGroq()
+    client = AsyncGroq() if os.getenv('GROQ_API_KEY') else None
     # Limita il carico simultaneo per evitare picchi TPM sul piano on-demand.
     sem = asyncio.Semaphore(2)
     rate_limited = asyncio.Event()
@@ -365,7 +423,7 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
             # Le vecchie cache senza fonti non devono impedire una nuova
             # ricerca web dopo la correzione dell'estrazione.
             cached_sources = hit[1].get("sources") if isinstance(hit[1], dict) else None
-            if isinstance(hit[1], dict) and hit[1].get("validation_version") in (1, 2, 3):
+            if isinstance(hit[1], dict) and hit[1].get("validation_version") in (1, 2, 3, 4):
                 cached = dict(hit[1])
                 filtered_sources = _relevant_sources(cached.get("sources") or [], fx)
                 # Filtra la cache localmente: non richiede nuove chiamate a Groq.
@@ -393,22 +451,24 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
                 return fallback_analysis(fx, item["base"], teams, rate_limit_message)
             try:
                 out = None
-                for attempt in range(3):
-                    try:
-                        out = await _ask_groq(client, fx, item["base"])
-                        break
-                    except Exception as exc:
-                        msg = str(exc).lower()
-                        transient_tpm = ("429" in msg or "rate limit" in msg) and (
-                            "tokens per minute" in msg or "tpm" in msg or "try again in" in msg
-                        )
-                        if transient_tpm and attempt < 2:
-                            # Il 429 TPM è normalmente temporaneo: attendi e riprova.
-                            await asyncio.sleep(5 * (attempt + 1))
-                            continue
-                        raise
+                if client is not None and not rate_limited.is_set():
+                    for attempt in range(3):
+                        try:
+                            out = await _ask_groq(client, fx, item["base"])
+                            break
+                        except Exception as exc:
+                            msg = str(exc).lower()
+                            transient_tpm = ("429" in msg or "rate limit" in msg) and (
+                                "tokens per minute" in msg or "tpm" in msg or "try again in" in msg
+                            )
+                            if transient_tpm and attempt < 2:
+                                await asyncio.sleep(5 * (attempt + 1))
+                                continue
+                            raise
+                if out is None and os.getenv("GEMINI_API_KEY"):
+                    out = await _ask_gemini(fx, item["base"])
                 if out is None:
-                    raise RuntimeError("Groq non ha restituito un'analisi")
+                    raise RuntimeError("Nessun provider AI disponibile")
             except Exception as exc:  # rete, JSON non valido, limiti: fallback controllato
                 print(f"[analyst] {fx['home']}-{fx['away']}: {exc!r}")
                 msg = str(exc).lower()
