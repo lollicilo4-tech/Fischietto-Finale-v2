@@ -230,6 +230,35 @@ def _extract_response_text(response) -> str:
     return "\n".join(chunks)
 
 
+
+def _read_field(value, *names):
+    """Legge campi da oggetti SDK o dizionari, compatibile con versioni diverse."""
+    for name in names:
+        if isinstance(value, dict) and value.get(name) is not None:
+            return value[name]
+        result = getattr(value, name, None)
+        if result is not None:
+            return result
+    return None
+
+
+def _extract_grounding_sources(response) -> list[dict]:
+    """Estrae le fonti Google Search da grounding metadata e le deduplica."""
+    sources, seen = [], set()
+    candidates = _read_field(response, "candidates") or []
+    for candidate in candidates:
+        metadata = _read_field(candidate, "grounding_metadata", "groundingMetadata")
+        chunks = _read_field(metadata, "grounding_chunks", "groundingChunks") or []
+        for chunk in chunks:
+            web = _read_field(chunk, "web")
+            url = _read_field(web, "uri", "url")
+            title = _read_field(web, "title")
+            if isinstance(url, str) and url.startswith(("https://", "http://")) and url not in seen:
+                seen.add(url)
+                sources.append({"title": str(title or url), "url": url})
+    return sources
+
+
 def _is_groq_daily_limit(error: Exception) -> bool:
     """Riconosce il limite giornaliero senza confonderlo con un TPM momentaneo."""
     msg = str(error).lower()
@@ -350,9 +379,9 @@ async def _ask_gemini(fx: dict, base: dict) -> dict:
 
     kickoff = fx.get("kickoff") or "prossimo turno"
     prompt = (
-        f"Partita: {fx['home']} (casa) contro {fx['away']} (trasferta), {kickoff}.\\n"
+        f"Partita: {fx['home']} (casa) contro {fx['away']} (trasferta), {kickoff}.\n"
         f"Gol attesi {d1(base['lh'])}-{d1(base['la'])}; 1 {pc(base['p1'])}, "
-        f"X {pc(base['px'])}, 2 {pc(base['p2'])}.\\n"
+        f"X {pc(base['px'])}, 2 {pc(base['p2'])}.\n"
         "Cerca notizie recenti e attendibili sulle due squadre, soprattutto indisponibilità "
         "confermate e squalifiche. Scarta pronostici, quote e risultati generici. Non inventare "
         "assenze. Se non trovi conferme, usa array vuoti e fattori 1.0. I fattori devono essere "
@@ -386,16 +415,7 @@ async def _ask_gemini(fx: dict, base: dict) -> dict:
     )
     # Alcune risposte con grounding espongono il testo solo nelle parti candidate.
     data = _parse_json(_extract_response_text(response))
-    sources, seen = [], set()
-    for candidate in (getattr(response, "candidates", None) or []):
-        metadata = getattr(candidate, "grounding_metadata", None)
-        for chunk in (getattr(metadata, "grounding_chunks", None) or []):
-            web = getattr(chunk, "web", None)
-            url = getattr(web, "uri", None) if web else None
-            title = getattr(web, "title", None) if web else None
-            if url and url not in seen:
-                seen.add(url)
-                sources.append({"title": title or url, "url": url})
+    sources = _extract_grounding_sources(response)
     sources = _relevant_sources(sources, fx)
     checked = _validate_absences(data, fx, sources)
     explanation = str(data.get("spiegazione", "")).strip()
@@ -411,7 +431,7 @@ async def _ask_gemini(fx: dict, base: dict) -> dict:
         "ai": True, "text": explanation,
         "factor_home": checked["factor_home"], "factor_away": checked["factor_away"],
         "absences_home": checked["absences_home"], "absences_away": checked["absences_away"],
-        "sources": sources, "provider": "gemini", "validation_version": 5,
+        "sources": sources, "provider": "gemini", "validation_version": 6,
     }
 
 
@@ -466,8 +486,8 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
             cache_provider = hit[1].get("provider") if isinstance(hit[1], dict) else None
             # Invalida solo la cache Gemini precedente al JSON strutturato;
             # conserva le analisi Groq valide per non consumare quote inutilmente.
-            cache_compatible = cache_version in (1, 2, 3, 4, 5) and (
-                cache_provider != "gemini" or cache_version == 5
+            cache_compatible = cache_version in (1, 2, 3, 4, 5, 6) and (
+                cache_provider != "gemini" or cache_version == 6
             )
             if isinstance(hit[1], dict) and cache_compatible:
                 cached = dict(hit[1])
@@ -486,7 +506,7 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
                     cached["absences_away"] = []
                     cached["factor_home"] = 1.0
                     cached["factor_away"] = 1.0
-                cached["validation_version"] = 5 if cached.get("provider") == "gemini" else 4
+                cached["validation_version"] = 6 if cached.get("provider") == "gemini" else 4
                 _cache[fx["id"]] = (hit[0], cached)
                 return cached
         if rate_limited.is_set():
