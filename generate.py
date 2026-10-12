@@ -25,7 +25,7 @@ OUT = ROOT / "docs"
 
 
 async def main() -> int:
-    competitions = {"SA": "Serie A", "BL1": "Bundesliga", "PD": "LaLiga", "FL1": "Ligue 1"}
+    competitions = {"SA": "Serie A", "PL": "Premier League", "CL": "Champions League", "BL1": "Bundesliga", "PD": "LaLiga", "FL1": "Ligue 1"}
     payloads = {}
     for code, label in competitions.items():
         try:
