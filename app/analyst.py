@@ -411,7 +411,7 @@ async def _ask_gemini(fx: dict, base: dict) -> dict:
         "ai": True, "text": explanation,
         "factor_home": checked["factor_home"], "factor_away": checked["factor_away"],
         "absences_home": checked["absences_home"], "absences_away": checked["absences_away"],
-        "sources": sources, "provider": "gemini", "validation_version": 4,
+        "sources": sources, "provider": "gemini", "validation_version": 5,
     }
 
 
@@ -462,7 +462,14 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
             # Le vecchie cache senza fonti non devono impedire una nuova
             # ricerca web dopo la correzione dell'estrazione.
             cached_sources = hit[1].get("sources") if isinstance(hit[1], dict) else None
-            if isinstance(hit[1], dict) and hit[1].get("validation_version") in (1, 2, 3, 4):
+            cache_version = hit[1].get("validation_version") if isinstance(hit[1], dict) else None
+            cache_provider = hit[1].get("provider") if isinstance(hit[1], dict) else None
+            # Invalida solo la cache Gemini precedente al JSON strutturato;
+            # conserva le analisi Groq valide per non consumare quote inutilmente.
+            cache_compatible = cache_version in (1, 2, 3, 4, 5) and (
+                cache_provider != "gemini" or cache_version == 5
+            )
+            if isinstance(hit[1], dict) and cache_compatible:
                 cached = dict(hit[1])
                 filtered_sources = _relevant_sources(cached.get("sources") or [], fx)
                 # Filtra la cache localmente: non richiede nuove chiamate a Groq.
@@ -479,7 +486,7 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
                     cached["absences_away"] = []
                     cached["factor_home"] = 1.0
                     cached["factor_away"] = 1.0
-                cached["validation_version"] = 4
+                cached["validation_version"] = 5 if cached.get("provider") == "gemini" else 4
                 _cache[fx["id"]] = (hit[0], cached)
                 return cached
         if rate_limited.is_set():
