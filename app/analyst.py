@@ -107,7 +107,11 @@ def _relevant_sources(sources: list[dict], fx: dict) -> list[dict]:
         evidence = f" {title} {normalized_url} "
         mentions_team = any(f" {alias} " in evidence for alias in aliases)
         is_generic = any(term in f" {title} {normalized_url} " for term in excluded)
-        if not url or url in seen_urls or not mentions_team or is_generic:
+        # Gemini restituisce grounding chunks dalla ricerca mirata sulla partita:
+        # alcune fonti affidabili non riportano il nome della squadra nel titolo/URL.
+        # Escludiamo gli aggregatori generici, ma non scartiamo una fonte grounded
+        # solo perché il nome della squadra non compare letteralmente.
+        if not url or url in seen_urls or is_generic:
             continue
         relevant.append({"title": raw_title, "url": url})
         seen_urls.add(url)
@@ -428,7 +432,7 @@ async def _ask_gemini(fx: dict, base: dict) -> dict:
         "ai": True, "text": explanation,
         "factor_home": checked["factor_home"], "factor_away": checked["factor_away"],
         "absences_home": checked["absences_home"], "absences_away": checked["absences_away"],
-        "sources": sources, "provider": "gemini", "validation_version": 7,
+        "sources": sources, "provider": "gemini", "validation_version": 8,
     }
 
 
@@ -484,7 +488,7 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
             # Invalida solo la cache Gemini precedente al JSON strutturato;
             # conserva le analisi Groq valide per non consumare quote inutilmente.
             cache_compatible = cache_version in (1, 2, 3, 4, 5, 6) and (
-                cache_provider != "gemini" or cache_version == 7
+                cache_provider != "gemini" or cache_version == 8
             )
             if isinstance(hit[1], dict) and cache_compatible:
                 cached = dict(hit[1])
@@ -503,7 +507,7 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
                     cached["absences_away"] = []
                     cached["factor_home"] = 1.0
                     cached["factor_away"] = 1.0
-                cached["validation_version"] = 7 if cached.get("provider") == "gemini" else 4
+                cached["validation_version"] = 8 if cached.get("provider") == "gemini" else 4
                 _cache[fx["id"]] = (hit[0], cached)
                 return cached
         if rate_limited.is_set():
