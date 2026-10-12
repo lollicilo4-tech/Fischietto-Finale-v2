@@ -1,7 +1,7 @@
 import unittest
 from types import SimpleNamespace
 
-from app.analyst import _extract_response_text, _is_groq_daily_limit, _parse_json, _validate_absences
+from app.analyst import _extract_grounding_sources, _extract_response_text, _is_groq_daily_limit, _parse_json, _validate_absences
 
 
 class ValidateAbsencesTests(unittest.TestCase):
@@ -30,6 +30,20 @@ class ValidateAbsencesTests(unittest.TestCase):
         parsed = _parse_json(_extract_response_text(response))
         self.assertEqual(parsed["assenze_casa"], [])
         self.assertEqual(parsed["assenze_trasferta"], [])
+
+
+    def test_gemini_grounding_sources_support_sdk_objects_and_dicts(self):
+        response = SimpleNamespace(candidates=[
+            SimpleNamespace(grounding_metadata=SimpleNamespace(grounding_chunks=[
+                SimpleNamespace(web=SimpleNamespace(uri="https://example.com/a", title="Example A")),
+                {"web": {"uri": "https://example.com/b", "title": "Example B"}},
+                SimpleNamespace(web=SimpleNamespace(uri="https://example.com/a", title="Duplicate")),
+            ]))
+        ])
+        sources = _extract_grounding_sources(response)
+        self.assertEqual(len(sources), 2)
+        self.assertEqual(sources[0]["title"], "Example A")
+        self.assertEqual(sources[1]["url"], "https://example.com/b")
 
     def test_groq_daily_limit_is_distinguished_from_tpm(self):
         self.assertTrue(_is_groq_daily_limit(Exception("429 tokens per day (TPD) limit reached")))
