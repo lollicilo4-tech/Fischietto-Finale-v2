@@ -112,7 +112,11 @@ def _relevant_sources(sources: list[dict], fx: dict) -> list[dict]:
         normalized_url = _norm(url)
         evidence = f" {title} {normalized_url} "
         host = url.split("//", 1)[-1].split("/", 1)[0].lower().split(":", 1)[0]
-        is_low_quality = any(host == domain or host.endswith("." + domain) for domain in low_quality_hosts)
+        title_host = raw_title.lower().split("//", 1)[-1].split("/", 1)[0].split(":", 1)[0]
+        is_low_quality = any(
+            candidate == domain or candidate.endswith("." + domain)
+            for candidate in (host, title_host) for domain in low_quality_hosts
+        )
         is_generic = any(term in f" {title} {normalized_url} " for term in excluded)
         # Non pretendere che il nome della squadra compaia nel titolo/URL:
         # alcune fonti grounded pertinenti non lo riportano letteralmente.
