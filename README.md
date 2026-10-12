@@ -1,6 +1,6 @@
 # Fischietto finale
 
-App che stima come potrebbe andare ogni partita di Serie A, Bundesliga, LaLiga e Ligue 1. Soluzione ibrida in tre livelli:
+App che stima come potrebbe andare ogni partita di Serie A, Premier League, Champions League, Bundesliga, LaLiga e Ligue 1. Soluzione ibrida in tre livelli:
 
 | Livello | Cosa fa | File |
 |---|---|---|
@@ -33,7 +33,7 @@ Apri http://localhost:8000.
 ## Pubblicazione gratuita
 
 Il sito online è statico: un'automazione di GitHub (`.github/workflows/update.yml`) esegue `generate.py`
-due volte al giorno, scrive i dati nella cartella `docs/` e la pubblica. Il selettore consente di passare tra Serie A, Bundesliga, LaLiga e Ligue 1; dati e classifica sono separati per campionato. I visitatori non fanno mai
+due volte al giorno, scrive i dati nella cartella `docs/` e la pubblica. Il selettore consente di passare tra Serie A, Premier League, Champions League, Bundesliga, LaLiga e Ligue 1; dati e classifica sono separati per campionato. I visitatori non fanno mai
 partire chiamate a football-data.org o all'AI, quindi il costo dell'AI non dipende dal traffico. Il server può restare spento, il sito è sempre acceso e lo Storico non si perde.
 
 1. **GitHub**: crea un account su github.com e un repository nuovo **pubblico**. GitHub Pages è gratuito solo
