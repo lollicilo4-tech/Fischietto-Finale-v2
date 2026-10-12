@@ -88,15 +88,25 @@ def _relevant_sources(sources: list[dict], fx: dict) -> list[dict]:
     aliases = [a for a in (_norm(x) for x in aliases) if a]
     relevant = []
     seen_urls = set()
+    # Pagine utili per verificare notizie; escludi aggregatori e pronostici
+    # anche quando citano correttamente entrambe le squadre.
+    excluded = (
+        "prediction", "pronostico", "pronostici", "forecast", "betting",
+        "tipps", "odds", "quote", "live score", "scores today", "h2h",
+        "head to head", "predicted lineups", "predicted lineup", "prediction",
+        "prediccion", "pronostico", "confronto diretto",
+    )
     for source in sources or []:
         url = str(source.get("url", "")).strip()
-        title = _norm(source.get("title", ""))
+        raw_title = str(source.get("title") or url)
+        title = _norm(raw_title)
         normalized_url = _norm(url)
         evidence = f" {title} {normalized_url} "
         mentions_team = any(f" {alias} " in evidence for alias in aliases)
-        if not url or url in seen_urls or not mentions_team:
+        is_generic = any(term in f" {title} {normalized_url} " for term in excluded)
+        if not url or url in seen_urls or not mentions_team or is_generic:
             continue
-        relevant.append({"title": source.get("title") or url, "url": url})
+        relevant.append({"title": raw_title, "url": url})
         seen_urls.add(url)
         if len(relevant) >= 4:
             break
@@ -301,7 +311,7 @@ async def _ask_groq(client, fx: dict, base: dict) -> dict:
         "absences_home": checked["absences_home"],
         "absences_away": checked["absences_away"],
         "sources": sources,
-        "validation_version": 3,
+        "validation_version": 4,
     }
 
 
@@ -352,27 +362,26 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
             # Le vecchie cache senza fonti non devono impedire una nuova
             # ricerca web dopo la correzione dell'estrazione.
             cached_sources = hit[1].get("sources") if isinstance(hit[1], dict) else None
-            if cached_sources and hit[1].get("validation_version") in (1, 2, 3):
+            if isinstance(hit[1], dict) and hit[1].get("validation_version") in (1, 2, 3):
                 cached = dict(hit[1])
-                filtered_sources = _relevant_sources(cached_sources, fx)
-                # Riutilizza la cache se contiene almeno una fonte pertinente;
-                # se tutte le fonti sono fuori tema, forza una nuova ricerca AI.
-                if filtered_sources:
-                    cached["sources"] = filtered_sources
-                    if "Assenze non confermate automaticamente" in str(cached.get("text", "")):
-                        cached["text"] = (
-                            "Non ho trovato conferme sufficientemente solide sulle indisponibilità "
-                            "per modificare i gol attesi. Per prudenza, non applico correzioni per assenze: "
-                            "le probabilità restano quelle del modello statistico. L'analisi delle notizie "
-                            "non sostituisce i dati statistici e non implica che le squadre siano al completo."
-                        )
-                        cached["absences_home"] = []
-                        cached["absences_away"] = []
-                        cached["factor_home"] = 1.0
-                        cached["factor_away"] = 1.0
-                    cached["validation_version"] = 3
-                    _cache[fx["id"]] = (hit[0], cached)
-                    return cached
+                filtered_sources = _relevant_sources(cached.get("sources") or [], fx)
+                # Filtra la cache localmente: non richiede nuove chiamate a Groq.
+                # Se nessuna fonte supera i criteri, mostra l'analisi senza link.
+                cached["sources"] = filtered_sources
+                if "Assenze non confermate automaticamente" in str(cached.get("text", "")):
+                    cached["text"] = (
+                        "Non ho trovato conferme sufficientemente solide sulle indisponibilità "
+                        "per modificare i gol attesi. Per prudenza, non applico correzioni per assenze: "
+                        "le probabilità restano quelle del modello statistico. L'analisi delle notizie "
+                        "non sostituisce i dati statistici e non implica che le squadre siano al completo."
+                    )
+                    cached["absences_home"] = []
+                    cached["absences_away"] = []
+                    cached["factor_home"] = 1.0
+                    cached["factor_away"] = 1.0
+                cached["validation_version"] = 4
+                _cache[fx["id"]] = (hit[0], cached)
+                return cached
         if rate_limited.is_set():
             return fallback_analysis(fx, item["base"], teams, rate_limit_message)
         async with sem:
