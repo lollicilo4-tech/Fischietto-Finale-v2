@@ -6,7 +6,7 @@ App che stima come potrebbe andare ogni partita di Serie A, Bundesliga, LaLiga e
 |---|---|---|
 | Dati | Risultati e calendario da football-data.org | `app/data.py` |
 | Modello | Poisson con correzione sui punteggi bassi, forma recente, quote eque (1 / probabilità) | `app/model.py` |
-| Groq + GPT-OSS | Cerca sul web infortuni e notizie, propone una correzione limitata (0,85-1,15) sui gol attesi e scrive la spiegazione con le fonti | `app/analyst.py` |
+| Groq + GPT-OSS, con Gemini di riserva | Cerca notizie e indisponibilità; Gemini interviene se Groq fallisce o raggiunge i limiti | `app/analyst.py` |
 
 I numeri restano al modello, quindi sono stabili e verificabili. L'AI non inventa probabilità né quote.
 Le quote eque non sono quote di bookmaker: quelle vere richiedono un'API dedicata.
@@ -26,7 +26,9 @@ Apri http://localhost:8000.
 
 - **Senza chiavi**: dati inventati e analisi a regole (etichetta "Dati di esempio").
 - **Con `FOOTBALL_DATA_KEY`**: dati reali dei campionati supportati. La Serie A usa l’analisi AI; le altre leghe partono con il modello statistico per limitare i consumi.
-- **Con anche `GROQ_API_KEY`**: GPT-OSS analizza ogni partita con ricerca web. La ricerca web usa il tool `browser_search` di Groq.
+- **Con `GROQ_API_KEY`**: Groq è il provider principale e usa `browser_search`.
+- **Con anche `GEMINI_API_KEY`**: Gemini con Google Search grounding entra in funzione solo se Groq fallisce o raggiunge un limite. La cache di 72 ore evita chiamate ripetute.
+- **Facoltativo**: `GEMINI_MODEL` permette di cambiare modello; il predefinito è `gemini-3.5-flash-lite`.
 
 ## Pubblicazione gratuita
 
@@ -40,7 +42,7 @@ partire chiamate a football-data.org o all'AI, quindi il costo dell'AI non dipen
 2. **Carica il progetto con GitHub Desktop**, non trascinando i file nel browser: GitHub Desktop rispetta
    `.gitignore` e non carica il file `.env` con le chiavi. Verifica comunque che `.env.example` abbia le righe
    delle chiavi vuote.
-3. **Secrets**: nel repository apri Settings, Secrets and variables, Actions, e crea `FOOTBALL_DATA_KEY` e `GROQ_API_KEY` con le tue chiavi.
+3. **Secrets**: nel repository apri Settings, Secrets and variables, Actions, e crea `FOOTBALL_DATA_KEY`, `GROQ_API_KEY` e `GEMINI_API_KEY` con le rispettive chiavi.
 4. **Prima generazione**: scheda Actions, "Aggiorna pronostici", Run workflow. In un paio di minuti compare
    la cartella `docs/` con il sito.
 5. **Pubblica `docs/`** con uno di questi:
