@@ -94,7 +94,10 @@ def _relevant_sources(sources: list[dict], fx: dict) -> list[dict]:
         "prediction", "pronostico", "pronostici", "forecast", "betting",
         "tipps", "odds", "quote", "live score", "scores today", "h2h",
         "head to head", "predicted lineups", "predicted lineup", "prediction",
-        "prediccion", "pronostico", "confronto diretto",
+        "prediccion", "confronto diretto", "risultato in diretta",
+        "punteggio in diretta", "cronaca e statistiche", "in diretta",
+        "live score", "lineups", "lineup", "calendario", "risultati",
+        "probabili formazioni", "partita calcio risultati", "statistiche",
     )
     for source in sources or []:
         url = str(source.get("url", "")).strip()
