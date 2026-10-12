@@ -308,12 +308,13 @@ async def _ask_groq(client, fx: dict, base: dict) -> dict:
             "le probabilità restano quelle del modello statistico. L'analisi delle notizie "
             "non sostituisce i dati statistici e non implica che le squadre siano al completo."
         )
+    print(f"[analyst] provider=groq match={fx['home']}-{fx['away']} sources={len(sources)}")
     return {
         "ai": True, "text": explanation,
         "factor_home": checked["factor_home"], "factor_away": checked["factor_away"],
         "absences_home": checked["absences_home"],
         "absences_away": checked["absences_away"],
-        "sources": sources,
+        "sources": sources, "provider": "groq",
         "validation_version": 4,
     }
 
@@ -368,6 +369,7 @@ async def _ask_gemini(fx: dict, base: dict) -> dict:
             "le probabilità restano quelle del modello statistico. L'analisi delle notizie "
             "non sostituisce i dati statistici e non implica che le squadre siano al completo."
         )
+    print(f"[analyst] provider=gemini match={fx['home']}-{fx['away']} sources={len(sources)}")
     return {
         "ai": True, "text": explanation,
         "factor_home": checked["factor_home"], "factor_away": checked["factor_away"],
