@@ -511,7 +511,8 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
                             break
                         except Exception as exc:
                             msg = str(exc).lower()
-                            transient_tpm = ("429" in msg or "rate limit" in msg) and (
+                            daily_quota = _is_groq_daily_limit(exc)
+                            transient_tpm = not daily_quota and ("429" in msg or "rate limit" in msg) and (
                                 "tokens per minute" in msg or "tpm" in msg or "try again in" in msg
                             )
                             if transient_tpm and attempt < 2:
