@@ -227,7 +227,7 @@ def _extract_response_text(response) -> str:
             part_text = getattr(part, "text", None)
             if part_text:
                 chunks.append(part_text)
-    return "\\n".join(chunks)
+    return "\n".join(chunks)
 
 
 def _is_groq_daily_limit(error: Exception) -> bool:
