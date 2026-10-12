@@ -747,7 +747,7 @@ details.match summary{padding:18px!important}
 <header class="top">
   <div class="toprow"><button type="button" class="back" id="back" hidden>‹ Home</button><h1>Fischietto <span>finale</span></h1></div>
   <p class="sub" id="sub">Serie A · come potrebbe andare ogni partita</p>
-  <label for="league-select" class="league-label">CAMPIONATO</label><select id="league-select" aria-label="Seleziona campionato" class="league-select"><option value="SA">Serie A</option><option value="BL1">Bundesliga</option><option value="PD">LaLiga</option><option value="FL1">Ligue 1</option></select>
+  <label for="league-select" class="league-label">CAMPIONATO</label><select id="league-select" aria-label="Seleziona campionato" class="league-select"><option value="SA">Serie A</option><option value="PL">Premier League</option><option value="CL">Champions League</option><option value="BL1">Bundesliga</option><option value="PD">LaLiga</option><option value="FL1">Ligue 1</option></select>
   <div class="tags" id="tags"></div>
   <div id="aierr"></div>
 </header>
@@ -830,8 +830,8 @@ details.match summary{padding:18px!important}
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   var LEAGUE = new URLSearchParams(location.search).get("league") || "SA";
-  if (!["SA","BL1","PD","FL1"].includes(LEAGUE)) LEAGUE = "SA";
-  var LEAGUE_NAMES = {SA:"Serie A",BL1:"Bundesliga",PD:"LaLiga",FL1:"Ligue 1"};
+  if (!["SA","PL","CL","BL1","PD","FL1"].includes(LEAGUE)) LEAGUE = "SA";
+  var LEAGUE_NAMES = {SA:"Serie A",PL:"Premier League",CL:"Champions League",BL1:"Bundesliga",PD:"LaLiga",FL1:"Ligue 1"};
   var leaguePrefix = LEAGUE === "SA" ? "" : "league-" + LEAGUE + "-";
   var leagueSelect = $("league-select");
   if (leagueSelect) { leagueSelect.value = LEAGUE; leagueSelect.addEventListener("change", function(){ location.href = "?league=" + encodeURIComponent(leagueSelect.value); }); }
