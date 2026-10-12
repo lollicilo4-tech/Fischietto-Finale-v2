@@ -469,8 +469,15 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
                     out = await _ask_gemini(fx, item["base"])
                 if out is None:
                     raise RuntimeError("Nessun provider AI disponibile")
-            except Exception as exc:  # rete, JSON non valido, limiti: fallback controllato
+            except Exception as exc:  # errore Groq: prova Gemini prima del fallback statistico
                 print(f"[analyst] {fx['home']}-{fx['away']}: {exc!r}")
+                if client is not None and os.getenv("GEMINI_API_KEY"):
+                    try:
+                        out = await _ask_gemini(fx, item["base"])
+                        _cache[fx["id"]] = (time.time(), out)
+                        return out
+                    except Exception as gemini_exc:
+                        print(f"[analyst] Gemini fallback {fx['home']}-{fx['away']}: {gemini_exc!r}")
                 msg = str(exc).lower()
                 if "tokens per day" in msg or "daily" in msg or ("429" in msg and not ("tokens per minute" in msg or "tpm" in msg or "try again in" in msg)):
                     rate_limited.set()
