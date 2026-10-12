@@ -209,7 +209,31 @@ def _parse_json(text: str) -> dict:
     a, b = text.find("{"), text.rfind("}")
     if a < 0 or b < a:
         raise ValueError("risposta senza JSON")
-    return json.loads(text[a:b + 1])
+    data = json.loads(text[a:b + 1])
+    if not isinstance(data, dict):
+        raise ValueError("la risposta JSON non è un oggetto")
+    return data
+
+
+def _extract_response_text(response) -> str:
+    """Recupera testo da response.text o dalle parti candidate dello SDK Gemini."""
+    raw_text = getattr(response, "text", None) or ""
+    if raw_text:
+        return raw_text
+    chunks = []
+    for candidate in (getattr(response, "candidates", None) or []):
+        content = getattr(candidate, "content", None)
+        for part in (getattr(content, "parts", None) or []):
+            part_text = getattr(part, "text", None)
+            if part_text:
+                chunks.append(part_text)
+    return "\\n".join(chunks)
+
+
+def _is_groq_daily_limit(error: Exception) -> bool:
+    """Riconosce il limite giornaliero senza confonderlo con un TPM momentaneo."""
+    msg = str(error).lower()
+    return "tokens per day" in msg or "daily token" in msg
 
 
 async def _ask_groq(client, fx: dict, base: dict) -> dict:
@@ -344,23 +368,24 @@ async def _ask_gemini(fx: dict, base: dict) -> dict:
             system_instruction=SYSTEM,
             temperature=0.2,
             max_output_tokens=650,
-            # Con Google Search attivo, chiediamo JSON nel prompt ma lasciamo
-            # l'output in testo: evita risposte vuote/non testuali del fallback.
-            response_mime_type="text/plain",
+            # Gemini 3.5 Flash-Lite supporta JSON strutturato insieme a Google Search.
+            response_mime_type="application/json",
+            response_schema={
+                "type": "OBJECT",
+                "properties": {
+                    "assenze_casa": {"type": "ARRAY", "items": {"type": "STRING"}},
+                    "assenze_trasferta": {"type": "ARRAY", "items": {"type": "STRING"}},
+                    "fattore_gol_casa": {"type": "NUMBER"},
+                    "fattore_gol_trasferta": {"type": "NUMBER"},
+                    "spiegazione": {"type": "STRING"},
+                },
+                "required": ["assenze_casa", "assenze_trasferta", "fattore_gol_casa", "fattore_gol_trasferta", "spiegazione"],
+            },
             tools=[types.Tool(google_search=types.GoogleSearch())],
         ),
     )
-    # response.text può essere vuoto in alcune risposte con grounding:
-    # recupera il testo dalle parti candidate prima di dichiarare il JSON assente.
-    raw_text = response.text or ""
-    if not raw_text:
-        for candidate in (getattr(response, "candidates", None) or []):
-            content = getattr(candidate, "content", None)
-            for part in (getattr(content, "parts", None) or []):
-                part_text = getattr(part, "text", None)
-                if part_text:
-                    raw_text += part_text
-    data = _parse_json(raw_text)
+    # Alcune risposte con grounding espongono il testo solo nelle parti candidate.
+    data = _parse_json(_extract_response_text(response))
     sources, seen = [], set()
     for candidate in (getattr(response, "candidates", None) or []):
         metadata = getattr(candidate, "grounding_metadata", None)
@@ -499,6 +524,12 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
                     raise RuntimeError("Nessun provider AI disponibile")
             except Exception as exc:  # errore Groq: prova Gemini prima del fallback statistico
                 print(f"[analyst] {fx['home']}-{fx['away']}: {exc!r}")
+                # Segnala subito il limite giornaliero: le richieste in coda saltano Groq.
+                daily_limit = _is_groq_daily_limit(exc) or (
+                    "429" in str(exc) and not any(t in str(exc).lower() for t in ("tokens per minute", "tpm", "try again in"))
+                )
+                if daily_limit:
+                    rate_limited.set()
                 if client is not None and os.getenv("GEMINI_API_KEY"):
                     try:
                         out = await _ask_gemini(fx, item["base"])
@@ -507,8 +538,7 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
                     except Exception as gemini_exc:
                         print(f"[analyst] Gemini fallback {fx['home']}-{fx['away']}: {gemini_exc!r}")
                 msg = str(exc).lower()
-                if "tokens per day" in msg or "daily" in msg or ("429" in msg and not ("tokens per minute" in msg or "tpm" in msg or "try again in" in msg)):
-                    rate_limited.set()
+                if daily_limit:
                     why = rate_limit_message
                 elif "429" in msg or "rate limit" in msg:
                     why = "Limite temporaneo Groq dopo i tentativi. L’analisi statistica resta disponibile."
