@@ -397,19 +397,8 @@ async def _ask_gemini(fx: dict, base: dict) -> dict:
             system_instruction=SYSTEM,
             temperature=0.2,
             max_output_tokens=650,
-            # Gemini 3.5 Flash-Lite supporta JSON strutturato insieme a Google Search.
-            response_mime_type="application/json",
-            response_schema={
-                "type": "OBJECT",
-                "properties": {
-                    "assenze_casa": {"type": "ARRAY", "items": {"type": "STRING"}},
-                    "assenze_trasferta": {"type": "ARRAY", "items": {"type": "STRING"}},
-                    "fattore_gol_casa": {"type": "NUMBER"},
-                    "fattore_gol_trasferta": {"type": "NUMBER"},
-                    "spiegazione": {"type": "STRING"},
-                },
-                "required": ["assenze_casa", "assenze_trasferta", "fattore_gol_casa", "fattore_gol_trasferta", "spiegazione"],
-            },
+            # Evita la modalità JSON vincolata: in questa configurazione impediva
+            # di ricevere i grounding_metadata necessari a mostrare fonti verificabili.
             tools=[types.Tool(google_search=types.GoogleSearch())],
         ),
     )
@@ -439,7 +428,7 @@ async def _ask_gemini(fx: dict, base: dict) -> dict:
         "ai": True, "text": explanation,
         "factor_home": checked["factor_home"], "factor_away": checked["factor_away"],
         "absences_home": checked["absences_home"], "absences_away": checked["absences_away"],
-        "sources": sources, "provider": "gemini", "validation_version": 6,
+        "sources": sources, "provider": "gemini", "validation_version": 7,
     }
 
 
@@ -495,7 +484,7 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
             # Invalida solo la cache Gemini precedente al JSON strutturato;
             # conserva le analisi Groq valide per non consumare quote inutilmente.
             cache_compatible = cache_version in (1, 2, 3, 4, 5, 6) and (
-                cache_provider != "gemini" or cache_version == 6
+                cache_provider != "gemini" or cache_version == 7
             )
             if isinstance(hit[1], dict) and cache_compatible:
                 cached = dict(hit[1])
@@ -514,7 +503,7 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
                     cached["absences_away"] = []
                     cached["factor_home"] = 1.0
                     cached["factor_away"] = 1.0
-                cached["validation_version"] = 6 if cached.get("provider") == "gemini" else 4
+                cached["validation_version"] = 7 if cached.get("provider") == "gemini" else 4
                 _cache[fx["id"]] = (hit[0], cached)
                 return cached
         if rate_limited.is_set():
