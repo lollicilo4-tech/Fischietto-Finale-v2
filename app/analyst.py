@@ -444,10 +444,24 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
                 _cache[fx["id"]] = (hit[0], cached)
                 return cached
         if rate_limited.is_set():
+            if os.getenv("GEMINI_API_KEY"):
+                try:
+                    out = await _ask_gemini(fx, item["base"])
+                    _cache[fx["id"]] = (time.time(), out)
+                    return out
+                except Exception as exc:
+                    print(f"[analyst] Gemini fallback {fx['home']}-{fx['away']}: {exc!r}")
             return fallback_analysis(fx, item["base"], teams, rate_limit_message)
         async with sem:
-            # Un'altra richiesta potrebbe aver già rilevato il limite mentre questa attendeva.
+            # Un'altra richiesta potrebbe aver già rilevato il limite mentre questa attende.
             if rate_limited.is_set():
+                if os.getenv("GEMINI_API_KEY"):
+                    try:
+                        out = await _ask_gemini(fx, item["base"])
+                        _cache[fx["id"]] = (time.time(), out)
+                        return out
+                    except Exception as exc:
+                        print(f"[analyst] Gemini fallback {fx['home']}-{fx['away']}: {exc!r}")
                 return fallback_analysis(fx, item["base"], teams, rate_limit_message)
             try:
                 out = None
