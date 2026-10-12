@@ -57,7 +57,8 @@ class ValidateAbsencesTests(unittest.TestCase):
             {"title": "Club official news", "url": "https://club.example/news/team-update"},
         ]
         result = _relevant_sources(sources, {"home": "Como 1907", "away": "Roma"})
-        self.assertEqual(len(result), 2)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["title"], "Club official news")
 
     def test_confirmed_absence_requires_player_team_and_out_evidence(self):
         result = _validate_absences(
