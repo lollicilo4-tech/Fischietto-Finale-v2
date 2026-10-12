@@ -50,17 +50,28 @@ jobs:
 
       - name: Salva le modifiche
         run: |
+          # Conserva l'output generato prima di riallineare il checkout all'ultimo main.
+          mkdir -p /tmp/generated-docs
+          cp -a docs/. /tmp/generated-docs/
+          if [ -f data/predictions.json ]; then cp data/predictions.json /tmp/predictions.json; fi
+
+          git fetch origin main
+          git reset --hard origin/main
+
+          # Applica soltanto i dati generati al codice più recente: evita rebase
+          # in conflitto quando più push ravvicinati avviano workflow concorrenti.
+          cp -a /tmp/generated-docs/. docs/
+          git add docs
+          if [ -f /tmp/predictions.json ]; then
+            mkdir -p data
+            cp /tmp/predictions.json data/predictions.json
+            git add data/predictions.json
+          fi
+          if git diff --staged --quiet; then
+            echo "Nessun dato generato da salvare."
+            exit 0
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs
-          if [ -f data/predictions.json ]; then git add data/predictions.json; fi
-          git diff --staged --quiet || git commit -m "Aggiorna pronostici"
-          # Altri commit possono arrivare su main mentre la generazione gira.
-          # Integra le modifiche remote prima del push, senza force-push.
-          git fetch origin main
-          if ! git rebase origin/main; then
-            echo "::error::Rebase automatico non riuscito: possibili modifiche concorrenti agli stessi dati. Interrompo senza sovrascrivere main."
-            git rebase --abort
-            exit 1
-          fi
-          git push
+          git commit -m "Aggiorna pronostici"
+          git push origin main
