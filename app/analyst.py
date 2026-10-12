@@ -415,8 +415,16 @@ async def _ask_gemini(fx: dict, base: dict) -> dict:
     )
     # Alcune risposte con grounding espongono il testo solo nelle parti candidate.
     data = _parse_json(_extract_response_text(response))
-    sources = _extract_grounding_sources(response)
-    sources = _relevant_sources(sources, fx)
+    raw_sources = _extract_grounding_sources(response)
+    sources = _relevant_sources(raw_sources, fx)
+    candidates = _read_field(response, "candidates") or []
+    metadata = _read_field(candidates[0], "grounding_metadata", "groundingMetadata") if candidates else None
+    queries = _read_field(metadata, "web_search_queries", "webSearchQueries") or []
+    print("[analyst] Gemini grounding match=" + fx["home"] + "-" + fx["away"]
+          + " metadata=" + ("yes" if metadata is not None else "no")
+          + " raw_sources=" + str(len(raw_sources))
+          + " relevant_sources=" + str(len(sources))
+          + " search_queries=" + str(len(queries)))
     checked = _validate_absences(data, fx, sources)
     explanation = str(data.get("spiegazione", "")).strip()
     if checked["validation_warning"]:
