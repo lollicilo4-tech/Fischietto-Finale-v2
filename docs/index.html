@@ -1012,7 +1012,7 @@ details.match summary{padding:18px!important}
       '<div class="match-pick"><span class="pick-pill">Modello</span><span class="value">' + esc(finalOutcome[0] + ' · ' + finalOutcome[1]) + ' <b>' + pc(finalOutcome[2]) + '</b></span></div></summary>' +
       '<div class="detail">' + matchCenter(m, p, a, s, finalOutcome, prudent, rec) +
       "<div><div class=\"who\">" + (a.ai ? "Analisi con le ultime notizie" : "Analisi statistica") + '</div><p class="expl">' + esc(a.text) + "</p></div>" +
-      abs + adj + src +
+      abs + adj + (a.ai && !a.sources.length ? '<div class="src-status">Analisi AI eseguita, ma nessuna fonte pertinente è stata verificata per questa partita. I fattori restano neutrali.</div>' : "") + src +
       '<div class="final-prediction" aria-label="Pronostico finale del modello">' +
       '<div class="title">Pronostico finale del modello</div>' +
       '<div class="main-outcome"><span class="outcome">' + esc(rec.best.label) + '</span><span class="prob">' + pc(rec.best.p) + '</span></div>' +
