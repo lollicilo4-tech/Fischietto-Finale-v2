@@ -344,11 +344,23 @@ async def _ask_gemini(fx: dict, base: dict) -> dict:
             system_instruction=SYSTEM,
             temperature=0.2,
             max_output_tokens=650,
-            response_mime_type="application/json",
+            # Con Google Search attivo, chiediamo JSON nel prompt ma lasciamo
+            # l'output in testo: evita risposte vuote/non testuali del fallback.
+            response_mime_type="text/plain",
             tools=[types.Tool(google_search=types.GoogleSearch())],
         ),
     )
-    data = _parse_json(response.text or "")
+    # response.text può essere vuoto in alcune risposte con grounding:
+    # recupera il testo dalle parti candidate prima di dichiarare il JSON assente.
+    raw_text = response.text or ""
+    if not raw_text:
+        for candidate in (getattr(response, "candidates", None) or []):
+            content = getattr(candidate, "content", None)
+            for part in (getattr(content, "parts", None) or []):
+                part_text = getattr(part, "text", None)
+                if part_text:
+                    raw_text += part_text
+    data = _parse_json(raw_text)
     sources, seen = [], set()
     for candidate in (getattr(response, "candidates", None) or []):
         metadata = getattr(candidate, "grounding_metadata", None)
