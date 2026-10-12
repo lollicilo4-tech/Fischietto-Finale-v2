@@ -152,8 +152,11 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
             "form": {"home": teams.get(fx["home"], {}).get("form", ""), "away": teams.get(fx["away"], {}).get("form", "")},
             "last": {"home": _last(ctx["finished"], fx["home"]), "away": _last(ctx["finished"], fx["away"])},
             "h2h": _h2h(ctx.get("previous", []) + ctx["finished"], fx["home"], fx["away"]),
-            "analysis": {k: an[k] for k in ("ai", "text", "factor_home", "factor_away",
-                                            "absences_home", "absences_away", "sources", "provider", "validation_warning")},
+            "analysis": {**{k: an[k] for k in ("ai", "text", "factor_home", "factor_away",
+                                            "absences_home", "absences_away", "sources")},
+                         "provider": an.get("provider"),
+                         "source_status": "verificate" if an.get("sources") else "nessuna fonte pertinente verificata",
+                         "validation_warning": an.get("validation_warning")},
         })
         if not ctx["demo"]:
             store.save(fx["id"], fx["home"], fx["away"], fx["kickoff"], prob["p1"], prob["px"], prob["p2"],
