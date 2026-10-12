@@ -93,11 +93,17 @@ def _relevant_sources(sources: list[dict], fx: dict) -> list[dict]:
     excluded = (
         "prediction", "pronostico", "pronostici", "forecast", "betting",
         "tipps", "odds", "quote", "live score", "scores today", "h2h",
-        "head to head", "predicted lineups", "predicted lineup", "prediction",
+        "head to head", "predicted lineups", "predicted lineup",
         "prediccion", "confronto diretto", "risultato in diretta",
         "punteggio in diretta", "cronaca e statistiche", "in diretta",
-        "live score", "lineups", "lineup", "calendario", "risultati",
+        "lineups", "lineup", "calendario", "risultati",
         "probabili formazioni", "partita calcio risultati", "statistiche",
+    )
+    # I social e le pagine di soli risultati non sono una base sufficiente
+    # per presentare una fonte come notizia verificata.
+    low_quality_hosts = (
+        "instagram.com", "facebook.com", "m.facebook.com", "tiktok.com",
+        "x.com", "twitter.com", "reddit.com", "pinterest.com",
     )
     for source in sources or []:
         url = str(source.get("url", "")).strip()
@@ -105,13 +111,12 @@ def _relevant_sources(sources: list[dict], fx: dict) -> list[dict]:
         title = _norm(raw_title)
         normalized_url = _norm(url)
         evidence = f" {title} {normalized_url} "
-        mentions_team = any(f" {alias} " in evidence for alias in aliases)
+        host = url.split("//", 1)[-1].split("/", 1)[0].lower().split(":", 1)[0]
+        is_low_quality = any(host == domain or host.endswith("." + domain) for domain in low_quality_hosts)
         is_generic = any(term in f" {title} {normalized_url} " for term in excluded)
-        # Gemini restituisce grounding chunks dalla ricerca mirata sulla partita:
-        # alcune fonti affidabili non riportano il nome della squadra nel titolo/URL.
-        # Escludiamo gli aggregatori generici, ma non scartiamo una fonte grounded
-        # solo perché il nome della squadra non compare letteralmente.
-        if not url or url in seen_urls or is_generic:
+        # Non pretendere che il nome della squadra compaia nel titolo/URL:
+        # alcune fonti grounded pertinenti non lo riportano letteralmente.
+        if not url.startswith(("https://", "http://")) or url in seen_urls or is_generic or is_low_quality:
             continue
         relevant.append({"title": raw_title, "url": url})
         seen_urls.add(url)
