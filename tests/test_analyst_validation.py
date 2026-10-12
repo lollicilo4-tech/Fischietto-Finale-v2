@@ -1,11 +1,17 @@
 import unittest
 
-from app.analyst import _validate_absences
+from app.analyst import _parse_json, _validate_absences
 
 
 class ValidateAbsencesTests(unittest.TestCase):
     def setUp(self):
         self.fixture = {"home": "Genoa", "away": "Fiorentina"}
+
+
+    def test_parse_json_accepts_json_wrapped_in_markdown(self):
+        parsed = _parse_json('Risultato:\n```json\n{"assenze_casa": [], "fattore_gol_casa": 1.0}\n```')
+        self.assertEqual(parsed["assenze_casa"], [])
+        self.assertEqual(parsed["fattore_gol_casa"], 1.0)
 
     def test_confirmed_absence_requires_player_team_and_out_evidence(self):
         result = _validate_absences(
