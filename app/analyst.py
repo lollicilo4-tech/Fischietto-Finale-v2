@@ -469,6 +469,18 @@ def _save_persistent_cache() -> None:
         pass
 
 
+def _cache_is_compatible(analysis: dict) -> bool:
+    """Accetta le versioni validate per provider senza invalidare la cache Gemini v8."""
+    if not isinstance(analysis, dict):
+        return False
+    version = analysis.get("validation_version")
+    provider = analysis.get("provider")
+    if provider == "gemini":
+        return version == 8
+    # Le versioni storiche Groq restano compatibili; le nuove vengono normalizzate a v4.
+    return version in (1, 2, 3, 4, 5, 6)
+
+
 async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict]:
     """items: [{"fx": fixture, "base": {lh, la, p1, px, p2, ...}}]"""
     if not use_ai:
@@ -492,13 +504,9 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
             # Le vecchie cache senza fonti non devono impedire una nuova
             # ricerca web dopo la correzione dell'estrazione.
             cached_sources = hit[1].get("sources") if isinstance(hit[1], dict) else None
-            cache_version = hit[1].get("validation_version") if isinstance(hit[1], dict) else None
-            cache_provider = hit[1].get("provider") if isinstance(hit[1], dict) else None
-            # Invalida solo la cache Gemini precedente al JSON strutturato;
-            # conserva le analisi Groq valide per non consumare quote inutilmente.
-            cache_compatible = cache_version in (1, 2, 3, 4, 5, 6) and (
-                cache_provider != "gemini" or cache_version == 8
-            )
+            # Conserva le analisi validate per provider: Gemini v8 e le versioni
+            # Groq storiche compatibili. Evita nuove chiamate AI non necessarie.
+            cache_compatible = _cache_is_compatible(hit[1])
             if isinstance(hit[1], dict) and cache_compatible:
                 cached = dict(hit[1])
                 filtered_sources = _relevant_sources(cached.get("sources") or [], fx)
