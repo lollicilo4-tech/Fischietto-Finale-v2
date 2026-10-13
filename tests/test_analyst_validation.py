@@ -1,7 +1,29 @@
 import unittest
 from types import SimpleNamespace
 
-from app.analyst import _extract_grounding_sources, _extract_response_text, _is_groq_daily_limit, _parse_json, _validate_absences
+from app.analyst import _cache_is_compatible, _extract_grounding_sources, _extract_response_text, _is_groq_daily_limit, _parse_json, _validate_absences
+
+
+class CacheCompatibilityTests(unittest.TestCase):
+    def test_current_gemini_cache_version_is_compatible(self):
+        self.assertTrue(_cache_is_compatible({"provider": "gemini", "validation_version": 8}))
+
+    def test_current_groq_cache_version_is_compatible(self):
+        self.assertTrue(_cache_is_compatible({"provider": "groq", "validation_version": 4}))
+
+    def test_legacy_groq_cache_versions_remain_compatible(self):
+        for version in (1, 2, 3, 4, 5, 6):
+            with self.subTest(version=version):
+                self.assertTrue(_cache_is_compatible({"provider": "groq", "validation_version": version}))
+
+    def test_old_gemini_cache_versions_are_rejected(self):
+        for version in (1, 2, 3, 4, 5, 6, 7):
+            with self.subTest(version=version):
+                self.assertFalse(_cache_is_compatible({"provider": "gemini", "validation_version": version}))
+
+    def test_malformed_cache_entry_is_rejected(self):
+        self.assertFalse(_cache_is_compatible(None))
+        self.assertFalse(_cache_is_compatible({"provider": "gemini", "validation_version": "8"}))
 
 
 class ValidateAbsencesTests(unittest.TestCase):
