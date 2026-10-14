@@ -33,11 +33,8 @@ async def main() -> int:
             turno = await pipeline.build_turno(code, use_ai=True)
             validate_turno_payload(turno)
             if turno["demo"] and os.getenv("CI"):
-                if code == "SA":
-                    print("Errore: manca FOOTBALL_DATA_KEY nei Secrets, non pubblico i dati di esempio.")
-                    return 1
-                print(f"Salto {label}: dati demo non pubblicabili.")
-                continue
+                print(f"Errore ({label}): dati demo non pubblicabili; annullo l'aggiornamento completo per evitare un sito con leghe non aggiornate.")
+                return 1
             if turno.get("ai_error"):
                 print(f"Attenzione ({label}): AI non disponibile ({turno['ai_error']}).")
             turno["ai_error"] = turno.get("ai_error") or None
@@ -49,7 +46,8 @@ async def main() -> int:
             if code == "SA":
                 print(f"Nessun aggiornamento Serie A: {exc}")
                 return 1
-            print(f"Salto {label}: {exc}")
+            print(f"Aggiornamento annullato ({label}): {exc}. Nessun JSON verrà pubblicato per mantenere coerenti tutte le leghe.")
+            return 1
     if "SA" not in payloads:
         print("Nessun aggiornamento: dati Serie A non disponibili.")
         return 0
