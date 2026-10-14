@@ -55,9 +55,9 @@ jobs:
           git fetch origin main
           git reset --hard origin/main
 
-          # Applica soltanto i dati generati al codice più recente: evita rebase
-          # in conflitto quando più push ravvicinati avviano workflow concorrenti.
-          cp -a /tmp/generated-docs/. docs/
+          # Applica soltanto i JSON generati: index.html e gli asset statici
+          # sono pubblicati da sync-static.yml e non vanno sovrascritti da un checkout vecchio.
+          find /tmp/generated-docs -maxdepth 1 -type f -name '*.json' -exec cp -a {} docs/ \;
           git add docs
           if [ -f /tmp/predictions.json ]; then
             mkdir -p data
