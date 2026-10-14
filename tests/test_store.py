@@ -70,7 +70,23 @@ class MarketReadinessTests(unittest.TestCase):
                     actual = store.history(finished)
 
                 self.assertEqual(actual["market_performance"]["1X2"]["ready"], expected_ready)
+                self.assertEqual(actual["market_performance"]["1X2"]["matches"], count)
                 self.assertEqual(actual["recommendation_performance"]["ready"], expected_ready)
+
+    def test_many_selections_from_few_matches_are_not_ready(self):
+        rows, finished = HistoryPerformanceStatusTests.sample_rows(10)
+        for _, prediction, _ in rows:
+            prediction["market_predictions"] = [{"code": "1", "p": 0.6} for _ in range(4)]
+            prediction["recommendation"] = {"code": "1", "p": 0.6}
+
+        with patch("app.store._joined", return_value=rows):
+            actual = store.history(finished)
+
+        metric = actual["market_performance"]["1X2"]
+        self.assertEqual(metric["n"], 40)
+        self.assertEqual(metric["matches"], 10)
+        self.assertFalse(metric["ready"])
+        self.assertFalse(actual["recommendation_performance"]["ready"])
 
 
 if __name__ == "__main__":

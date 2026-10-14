@@ -140,8 +140,8 @@ def _market_hit(code: str, m: dict, score_code: str | None = None) -> bool:
 
 
 def _market_performance(rows: list[tuple[str, dict, dict]]) -> dict:
-    groups: dict[str, list[tuple[float, bool]]] = {}
-    for _, p, m in rows:
+    groups: dict[str, list[tuple[str, float, bool]]] = {}
+    for mid, p, m in rows:
         for item in p.get("market_predictions", []):
             code = item.get("code")
             prob = item.get("p")
@@ -149,22 +149,24 @@ def _market_performance(rows: list[tuple[str, dict, dict]]) -> dict:
                 continue
             kind = _market_type(code)
             groups.setdefault(kind, []).append(
-                (float(prob), _market_hit(code, m, item.get("score")))
+                (mid, float(prob), _market_hit(code, m, item.get("score")))
             )
     out = {}
     for kind, vals in groups.items():
         n = len(vals)
-        avg_p = sum(p for p, _ in vals) / n
-        hit = sum(1 for _, ok in vals if ok)
-        brier = sum((p - (1.0 if ok else 0.0)) ** 2 for p, ok in vals) / n
+        match_count = len({mid for mid, _, _ in vals})
+        avg_p = sum(prob for _, prob, _ in vals) / n
+        hit = sum(1 for _, _, ok in vals if ok)
+        brier = sum((prob - (1.0 if ok else 0.0)) ** 2 for _, prob, ok in vals) / n
         out[kind] = {
             "n": n,
+            "matches": match_count,
             "hit": hit,
             "rate": hit / n,
             "avg_p": avg_p,
             "calibration_gap": hit / n - avg_p,
             "brier": brier,
-            "ready": n >= 30,
+            "ready": match_count >= 30,
         }
     return out
 
@@ -185,7 +187,7 @@ def _recommendation_performance(rows: list[tuple[str, dict, dict]]) -> dict:
     n = len(vals)
     hit = sum(1 for _, ok in vals if ok)
     avg_p = sum(p for p, _ in vals) / n
-    return {"n": n, "hit": hit, "rate": hit / n, "avg_p": avg_p,
+    return {"n": n, "matches": n, "hit": hit, "rate": hit / n, "avg_p": avg_p,
             "calibration_gap": hit / n - avg_p, "brier": sum((p - (1.0 if ok else 0.0)) ** 2 for p, ok in vals) / n,
             "ready": n >= 30}
 
