@@ -1,0 +1,47 @@
+name: Pubblica interfaccia statica
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "static/**"
+      - ".github/workflows/sync-static.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pubblica-interfaccia-statica
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - name: Copia l'interfaccia e gli asset nella cartella pubblicata
+        run: |
+          mkdir -p docs
+          cp -a static/. docs/
+          python - <<'PY'
+          from pathlib import Path
+          path = Path("docs/index.html")
+          html = path.read_text(encoding="utf-8")
+          html = html.replace("/api/turno", "turno.json")
+          html = html.replace("/api/storico", "storico.json")
+          html = html.replace("/api/classifica", "classifica.json")
+          path.write_text(html, encoding="utf-8")
+          PY
+      - name: Pubblica le modifiche senza rigenerare i pronostici
+        run: |
+          git add docs
+          if git diff --staged --quiet; then
+            echo "Interfaccia già aggiornata."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Pubblica interfaccia"
+          git push origin main
