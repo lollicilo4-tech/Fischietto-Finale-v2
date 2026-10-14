@@ -91,6 +91,15 @@ def _standings(st: dict) -> list[dict]:
             for r in tables[0]["table"]]
 
 
+def _select_upcoming_round(matches: list[dict]) -> tuple[int | None, list[dict]]:
+    """Seleziona il turno della prima partita in calendario, ignorando rinvii di turni precedenti."""
+    ordered = sorted(matches, key=lambda m: m["utcDate"])
+    if not ordered:
+        return None, []
+    matchday = ordered[0].get("matchday")
+    return matchday, [m for m in ordered if m.get("matchday") == matchday]
+
+
 async def real_context(competition: str | None = None) -> dict:
     from . import model
     competition = competition or COMPETITION
@@ -124,14 +133,13 @@ async def real_context(competition: str | None = None) -> dict:
         raise RuntimeError("Nessuna partita giocata: il modello ha bisogno di almeno qualche giornata.")
     teams, avg_h, avg_a = model.build_teams(finished, previous)
 
-    upcoming = sorted(sch["matches"], key=lambda m: m["utcDate"])
-    if not upcoming:
+    matchday, next_round = _select_upcoming_round(sch["matches"])
+    if not next_round:
         raise RuntimeError("Nessuna partita in programma.")
-    matchday = min(m["matchday"] for m in upcoming)
     fixtures = [
         {"id": str(m["id"]), "home": _name(m["homeTeam"]), "away": _name(m["awayTeam"]),
          "kickoff": m["utcDate"], "label": None}
-        for m in upcoming if m["matchday"] == matchday
+        for m in next_round
     ]
     simple = model.build_teams_simple(finished)
     return {"demo": False, "teams_simple": simple, "teams": teams, "avg_h": avg_h, "avg_a": avg_a,
