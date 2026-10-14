@@ -67,8 +67,8 @@ def _joined(finished: list[dict]) -> list[tuple[str, dict, dict]]:
     return rows
 
 
-def recent(finished: list[dict], limit: int = 9) -> list[dict]:
-    """Ultime partite giocate che avevano un pronostico salvato, con il risultato vero."""
+def recent(finished: list[dict], limit: int = 18) -> list[dict]:
+    """Ultime 18 partite pronosticate e concluse, per mostrare una giornata completa."""
     out = []
     for mid, p, m in _joined(finished)[:limit]:
         actual = _outcome(m)
