@@ -481,6 +481,18 @@ def _cache_is_compatible(analysis: dict) -> bool:
     return version in (1, 2, 3, 4, 5, 6)
 
 
+def _cache_needs_source_refresh(analysis: dict) -> bool:
+    """Rinnova le vecchie cache prive di fonti, ma conserva la cache Gemini v8 corrente."""
+    if not isinstance(analysis, dict):
+        return True
+    if analysis.get("sources"):
+        return False
+    return not (
+        analysis.get("provider") == "gemini"
+        and analysis.get("validation_version") == 8
+    )
+
+
 async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict]:
     """items: [{"fx": fixture, "base": {lh, la, p1, px, p2, ...}}]"""
     if not use_ai:
@@ -507,7 +519,8 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
             # Conserva le analisi validate per provider: Gemini v8 e le versioni
             # Groq storiche compatibili. Evita nuove chiamate AI non necessarie.
             cache_compatible = _cache_is_compatible(hit[1])
-            if isinstance(hit[1], dict) and cache_compatible:
+            refresh_sources = _cache_needs_source_refresh(hit[1])
+            if isinstance(hit[1], dict) and cache_compatible and not refresh_sources:
                 cached = dict(hit[1])
                 filtered_sources = _relevant_sources(cached.get("sources") or [], fx)
                 # Filtra la cache localmente: non richiede nuove chiamate a Groq.
