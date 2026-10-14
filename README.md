@@ -25,7 +25,7 @@ py -m uvicorn app.main:app --reload
 Apri http://localhost:8000.
 
 - **Senza chiavi**: dati inventati e analisi a regole (etichetta "Dati di esempio").
-- **Con `FOOTBALL_DATA_KEY`**: dati reali dei campionati supportati. La Serie A usa l’analisi AI; le altre leghe partono con il modello statistico per limitare i consumi.
+- **Con `FOOTBALL_DATA_KEY`**: dati reali dei campionati supportati. Tutti e sei i campionati pubblicati usano l’analisi AI quando disponibile; Groq è il provider principale e Gemini quello di riserva. Se un provider non è disponibile, il modello statistico continua a produrre le probabilità e lo stato dell’analisi segnala il fallback.
 - **Con `GROQ_API_KEY`**: Groq è il provider principale e usa `browser_search`.
 - **Con anche `GEMINI_API_KEY`**: Gemini con Google Search grounding entra in funzione solo se Groq fallisce o raggiunge un limite. La cache di 72 ore evita chiamate ripetute.
 - **Facoltativo**: `GEMINI_MODEL` permette di cambiare modello; il predefinito è `gemini-3.5-flash-lite`.
