@@ -19,6 +19,7 @@ except ImportError:
     pass
 
 from app import pipeline  # noqa: E402
+from app.validation import validate_turno_payload  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "docs"
@@ -30,6 +31,7 @@ async def main() -> int:
     for code, label in competitions.items():
         try:
             turno = await pipeline.build_turno(code, use_ai=True)
+            validate_turno_payload(turno)
             if turno["demo"] and os.getenv("CI"):
                 if code == "SA":
                     print("Errore: manca FOOTBALL_DATA_KEY nei Secrets, non pubblico i dati di esempio.")
@@ -46,7 +48,7 @@ async def main() -> int:
         except Exception as exc:
             if code == "SA":
                 print(f"Nessun aggiornamento Serie A: {exc}")
-                return 0
+                return 1
             print(f"Salto {label}: {exc}")
     if "SA" not in payloads:
         print("Nessun aggiornamento: dati Serie A non disponibili.")
