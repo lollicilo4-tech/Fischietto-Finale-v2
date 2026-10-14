@@ -1152,17 +1152,17 @@ function slipReason(x){
   function marketReliability(x){
     var exact = BACKTEST_MARKETS[x.code];
     var type = x.kind === "score" ? "Risultato esatto" : x.kind === "combo" ? "Combo" : x.kind === "gol" ? "Gol" : "1X2";
-    var perf = exact && exact.n >= 10 ? exact : MARKET_PERFORMANCE[type] || null;
+    var perf = exact && exact.n >= 30 ? exact : MARKET_PERFORMANCE[type] || null;
     if(!perf || !perf.n) return {score:null,n:0,ready:false,source:"in attesa"};
     var gap=Math.abs(perf.gap!=null?perf.gap:(perf.calibration_gap||0));
     var score=Math.round(Math.max(0,Math.min(100,(1-gap)*70 + (1-Math.min(1,perf.brier||0))*30)));
-    return {score:score,n:perf.n,ready:perf.n>=10,source:exact&&exact.n>=10?"mercato":"categoria"};
+    return {score:score,n:perf.n,ready:perf.n>=30,source:exact&&exact.n>=30?"mercato":"categoria"};
   }
 
   function historicalMarketBoost(x){
     var type = x.kind === "score" ? "Risultato esatto" : x.kind === "combo" ? "Combo" : x.kind === "gol" ? "Gol" : x.kind === "doppia" || x.kind === "base" || x.kind === "esito" ? "1X2" : "";
     var perf = MARKET_PERFORMANCE[type];
-    if(!perf || !perf.ready || perf.n < 10) return 1;
+    if(!perf || !perf.ready || perf.n < 30) return 1;
     var gap = Math.max(-0.08, Math.min(0.08, (perf.calibration_gap || 0)));
     return 1 + gap * 0.60;
   }
@@ -1314,7 +1314,7 @@ function slipReason(x){
   function modelReliability(h){
     var n=h.n||0, rate=n?h.hit/n:0, brier=h.brier;
     var cal=h.calibration||[];
-    if(!n || brier==null) return null;
+    if(n<30 || brier==null) return null;
     var gap=cal.length?cal.reduce(function(a,x){return a+Math.abs((x.hit||0)-(x.avg_p||0))*x.n;},0)/n:Math.abs(rate-(h.avg_p||0));
     var calibrationScore=Math.max(0,100-gap*300);
     var brierScore=Math.max(0,100-Math.min(1,brier)*100);
@@ -1363,11 +1363,11 @@ function slipReason(x){
     var mp=h.market_performance||{}, order=["1X2","Gol","Over/Under","Combo","Risultato esatto"];
     var entries=order.filter(function(k){return mp[k];});
     if(!entries.length) return '<div class="panel" style="margin-top:14px"><h2>Affidabilità per mercato</h2><p class="expl">Stiamo ancora raccogliendo risultati reali: nessun correttivo viene applicato alla Schedina.</p></div>';
-    function reliability(v){ if(!v.ready||v.n<10) return null; var cal=1-Math.min(1,Math.abs(v.calibration_gap||0)); var bri=1-Math.min(1,Math.max(0,v.brier||0)); return Math.round((cal*.7+bri*.3)*100); }
+    function reliability(v){ if(!v.ready||v.n<30) return null; var cal=1-Math.min(1,Math.abs(v.calibration_gap||0)); var bri=1-Math.min(1,Math.max(0,v.brier||0)); return Math.round((cal*.7+bri*.3)*100); }
     var cards=entries.map(function(k){var v=mp[k],score=reliability(v),pct=score==null?0:score;return '<div class="market-perf-card '+(score==null?'warn':'')+'"><div class="market-perf-top"><span class="market-perf-name">'+esc(k)+'</span><span class="market-perf-score">'+(score==null?'—':score+'/100')+'</span></div><div class="market-perf-track"><span style="width:'+pct+'%"></span></div><div class="market-perf-meta"><span>'+v.hit+' su '+v.n+'</span><span>prev. '+pc(v.avg_p)+'</span><span>reale '+pc(v.rate)+'</span></div></div>';}).join('');
-    var ready=entries.filter(function(k){return mp[k].ready&&mp[k].n>=10;}).length;
+    var ready=entries.filter(function(k){return mp[k].ready&&mp[k].n>=30;}).length;
     var W=320,H=190,L=34,R=14,T=16,B=30,innerW=W-L-R,innerH=H-T-B;
-    var points=entries.filter(function(k){return mp[k].ready&&mp[k].n>=10;}).map(function(k){var v=mp[k],x=L+Math.max(0,Math.min(1,v.avg_p))*innerW,y=T+(1-Math.max(0,Math.min(1,v.rate)))*innerH;return{x:x,y:y,k:k};});
+    var points=entries.filter(function(k){return mp[k].ready&&mp[k].n>=30;}).map(function(k){var v=mp[k],x=L+Math.max(0,Math.min(1,v.avg_p))*innerW,y=T+(1-Math.max(0,Math.min(1,v.rate)))*innerH;return{x:x,y:y,k:k};});
     var grid=[0,.25,.5,.75,1].map(function(v){var x=L+v*innerW,y=T+(1-v)*innerH;return '<line x1="'+x+'" y1="'+T+'" x2="'+x+'" y2="'+(T+innerH)+'" stroke="rgba(255,255,255,.07)"/><line x1="'+L+'" y1="'+y+'" x2="'+(L+innerW)+'" y2="'+y+'" stroke="rgba(255,255,255,.07)"/><text x="'+x+'" y="'+(H-8)+'" text-anchor="middle" class="market-cal-label">'+Math.round(v*100)+'%</text><text x="'+(L-7)+'" y="'+(y+3)+'" text-anchor="end" class="market-cal-label">'+Math.round(v*100)+'%</text>';}).join('');
     var curve=points.length>1?'<polyline points="'+points.map(function(p){return p.x+','+p.y;}).join(' ')+'" fill="none" stroke="#72e2bb" stroke-width="2.5"/>':'';
     var dots=points.map(function(p){return '<circle class="market-cal-dot" cx="'+p.x+'" cy="'+p.y+'" r="4"/><text x="'+p.x+'" y="'+(p.y-8)+'" text-anchor="middle" class="market-cal-label">'+esc(p.k)+'</text>';}).join('');
@@ -1413,7 +1413,7 @@ function slipReason(x){
     var recent = (h.items || []).slice(0, 12);
     var bars = recent.map(function(x){ return '<i class="'+(x.ok?'y':'n')+'" style="height:'+(x.ok?78:34)+'%"><span>'+(x.ok?'✓':'✕')+'</span></i>'; }).join("");
     var perf = h.performance || {};
-    var perfLabel = perf.label || (h.n < 10 ? "Campione in costruzione" : "Performance");
+    var perfLabel = perf.label || (h.n < 30 ? "Campione in costruzione" : "Performance");
     var perfClass = perf.status === "in_forma" ? "ok" : perf.status === "da_monitorare" ? "bad" : "neutral";
     $("hist-hero").innerHTML =
       '<div class="hist-hero-top"><div><div class="hist-kicker">Performance del modello</div><div class="hist-rate">'+pc(histRate)+' <small>1X2 azzeccato</small></div><div class="perf-status '+perfClass+'">'+esc(perfLabel)+'</div><p class="hist-caption"><b>'+h.hit+'</b> pronostici corretti su <b>'+h.n+'</b>. Ultime '+recent.length+': <b>'+((perf.recent_hit!=null)?perf.recent_hit:recent.filter(function(x){return x.ok}).length)+'</b> corrette. '+
