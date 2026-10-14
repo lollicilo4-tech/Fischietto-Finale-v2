@@ -7,6 +7,8 @@ on:
       - "app/analyst.py"
       - "app/data.py"
       - "app/pipeline.py"
+      - "app/store.py"
+      - "tests/**"
       - "generate.py"
       - "static/index.html"
       - "README.md"
