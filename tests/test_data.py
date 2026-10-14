@@ -7,9 +7,9 @@ class UpcomingRoundSelectionTests(unittest.TestCase):
     def test_skips_postponed_fixture_from_older_matchday(self):
         matches = [
             {"id": "postponed", "utcDate": "2026-10-21T18:00:00Z", "matchday": 6},
-            {"id": "round-9-a", "utcDate": "2026-10-17T13:00:00Z", "matchday": 9},
-            {"id": "round-9-b", "utcDate": "2026-10-18T16:00:00Z", "matchday": 9},
-            {"id": "round-10", "utcDate": "2026-10-24T16:00:00Z", "matchday": 10},
+            {"id": "round-9-a", "utcDate": "2026-10-24T13:00:00Z", "matchday": 9},
+            {"id": "round-9-b", "utcDate": "2026-10-25T16:00:00Z", "matchday": 9},
+            {"id": "round-10", "utcDate": "2026-11-01T16:00:00Z", "matchday": 10},
         ]
 
         matchday, fixtures = _select_upcoming_round(matches)
