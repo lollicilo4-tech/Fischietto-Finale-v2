@@ -742,7 +742,25 @@ details.match summary{padding:18px!important}
 @media(prefers-reduced-motion:no-preference){.tile,.quick-card,.feature-card,details.match,.slip-item,.panel{transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}.tile:hover,.quick-card:hover,.slip-item:hover{transform:translateY(-2px);border-color:rgba(53,167,255,.28)!important}}
 .league-label{display:block;margin:10px 0 5px;font-size:10px;letter-spacing:.12em;font-weight:800;color:var(--muted)}.league-select{width:100%;max-width:280px;padding:11px 13px;border-radius:12px;border:1px solid rgba(74,163,255,.35);background:#0b1828;color:#f4f8ff;font:700 14px var(--font-body);outline-offset:3px}
 </style>
-<style id="slip-mode-css">.slip-toggle{display:flex!important;gap:7px!important;margin:10px 0!important;flex-wrap:wrap}.slip-toggle button{flex:1;min-width:90px;padding:11px 12px;border:1px solid rgba(116,154,194,.18);border-radius:13px;background:#0b1828;color:#8ea5bd;font:800 11px var(--font-num);text-transform:uppercase}.slip-toggle button[aria-pressed="true"]{background:linear-gradient(135deg,rgba(53,167,255,.22),rgba(247,198,74,.10));color:#fff;border-color:rgba(53,167,255,.38)}#slip-count button{font-size:10px}</style></head>
+<style id="slip-mode-css">.slip-toggle{display:flex!important;gap:7px!important;margin:10px 0!important;flex-wrap:wrap}.slip-toggle button{flex:1;min-width:90px;padding:11px 12px;border:1px solid rgba(116,154,194,.18);border-radius:13px;background:#0b1828;color:#8ea5bd;font:800 11px var(--font-num);text-transform:uppercase}.slip-toggle button[aria-pressed="true"]{background:linear-gradient(135deg,rgba(53,167,255,.22),rgba(247,198,74,.10));color:#fff;border-color:rgba(53,167,255,.38)}#slip-count button{font-size:10px}</style>
+<style id="mobile-readability-fix">
+/* Leggibilità su schermi stretti: nomi lunghi non devono invadere data o punteggio. */
+.res .r{grid-template-columns:minmax(24px,44px) minmax(0,1fr) auto;gap:8px;align-items:start}
+.res .r>span{min-width:0;overflow-wrap:anywhere;line-height:1.35}
+.res .r>small{white-space:nowrap;font-size:11px}
+.res .r>b{white-space:nowrap;align-self:start}
+.detail-compare .micro-note{color:#91a5bb}
+.mc-team small,.mc-stat small,.mc-score span,.mc-final .row{color:#91a5bb}
+@media(max-width:380px){
+  .res .r{grid-template-columns:40px minmax(0,1fr) auto;gap:6px;font-size:12px}
+  .res .r>span{overflow-wrap:anywhere}
+  .res .r>b{font-size:12px}
+  .mc-score{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:6px;padding:11px 9px}
+  .mc-score b{font-size:25px}
+  .mc-score span{font-size:8px;letter-spacing:0}
+}
+</style>
+</head>
 <body>
 <header class="top">
   <div class="toprow"><button type="button" class="back" id="back" hidden>‹ Home</button><h1>Fischietto <span>finale</span></h1></div>
