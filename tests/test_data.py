@@ -32,6 +32,40 @@ class UpcomingRoundSelectionTests(unittest.TestCase):
     def test_empty_schedule_returns_no_round(self):
         self.assertEqual(_select_upcoming_round([]), (None, []))
 
+    def test_active_matchday_beats_larger_next_matchday(self):
+        matches = [
+            {"id": "today-live", "utcDate": "2026-10-14T18:00:00Z", "matchday": 2, "status": "IN_PLAY"},
+            {"id": "today-later", "utcDate": "2026-10-14T19:00:00Z", "matchday": 2, "status": "TIMED"},
+            {"id": "today-paused", "utcDate": "2026-10-14T18:15:00Z", "matchday": 2, "status": "PAUSED"},
+            *[
+                {"id": f"next-{i}", "utcDate": f"2026-10-{20 + (i // 9)}T19:00:00Z",
+                 "matchday": 3, "status": "SCHEDULED"}
+                for i in range(18)
+            ],
+        ]
+
+        matchday, fixtures = _select_upcoming_round(matches)
+
+        self.assertEqual(matchday, 2)
+        self.assertEqual({m["id"] for m in fixtures}, {"today-live", "today-later", "today-paused"})
+
+    def test_earliest_multi_fixture_round_beats_larger_later_round(self):
+        matches = [
+            {"id": "postponed", "utcDate": "2026-10-14T12:00:00Z", "matchday": 1, "status": "TIMED"},
+            {"id": "today-a", "utcDate": "2026-10-14T18:45:00Z", "matchday": 2, "status": "TIMED"},
+            {"id": "today-b", "utcDate": "2026-10-14T19:00:00Z", "matchday": 2, "status": "SCHEDULED"},
+            *[
+                {"id": f"next-{i}", "utcDate": f"2026-10-{20 + (i // 9)}T19:00:00Z",
+                 "matchday": 3, "status": "SCHEDULED"}
+                for i in range(18)
+            ],
+        ]
+
+        matchday, fixtures = _select_upcoming_round(matches)
+
+        self.assertEqual(matchday, 2)
+        self.assertEqual([m["id"] for m in fixtures], ["today-a", "today-b"])
+
 
 if __name__ == "__main__":
     unittest.main()

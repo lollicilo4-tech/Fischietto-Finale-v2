@@ -92,12 +92,12 @@ def _standings(st: dict) -> list[dict]:
 
 
 def _select_upcoming_round(matches: list[dict]) -> tuple[int | None, list[dict]]:
-    """Sceglie il turno imminente più rappresentato, evitando singoli rinvii più vecchi.
+    """Seleziona il turno corrente/imminente senza saltare alle giornate successive.
 
-    football-data.org può lasciare tra le partite future un recupero di un turno
-    precedente. Consideriamo i matchday che iniziano entro 10 giorni dalla prima
-    partita in calendario e scegliamo quello con più gare programmate; a parità
-    prevale quello che inizia prima.
+    Le API possono restituire insieme le gare ancora in corso e quelle future di
+    più giornate. Prima si dà priorità alla giornata con incontri IN_PLAY/PAUSED;
+    altrimenti si sceglie la prima giornata con almeno due gare nel prossimo
+    intervallo disponibile, così un singolo recupero rinviato non la fa prevalere.
     """
     ordered = sorted(matches, key=lambda m: m["utcDate"])
     if not ordered:
@@ -108,21 +108,48 @@ def _select_upcoming_round(matches: list[dict]) -> tuple[int | None, list[dict]]
     def kickoff(match: dict) -> datetime:
         return datetime.fromisoformat(match["utcDate"].replace("Z", "+00:00"))
 
-    first_date = kickoff(ordered[0])
-    cutoff = first_date + timedelta(days=10)
-    near = [m for m in ordered if kickoff(m) <= cutoff]
-
     rounds: dict[int, list[dict]] = {}
-    for match in near:
+    for match in ordered:
         matchday = match.get("matchday")
         if matchday is not None:
             rounds.setdefault(matchday, []).append(match)
     if not rounds:
         return None, []
 
+    active = [
+        match for match in ordered
+        if str(match.get("status", "")).upper() in {"IN_PLAY", "PAUSED"}
+    ]
+    if active:
+        active_rounds = {m["matchday"] for m in active if m.get("matchday") is not None}
+        if active_rounds:
+            matchday = min(
+                active_rounds,
+                key=lambda day: (-sum(1 for m in active if m.get("matchday") == day),
+                                 min(kickoff(m) for m in rounds[day])),
+            )
+            return matchday, sorted(rounds[matchday], key=lambda m: m["utcDate"])
+
+    first_date = kickoff(ordered[0])
+    cutoff = first_date + timedelta(days=10)
+    near = [m for m in ordered if kickoff(m) <= cutoff]
+    near_rounds: dict[int, list[dict]] = {}
+    for match in near:
+        matchday = match.get("matchday")
+        if matchday is not None:
+            near_rounds.setdefault(matchday, []).append(match)
+    if not near_rounds:
+        return None, []
+
+    # Prefer the earliest genuine round (2+ fixtures) over a lone postponed
+    # match from an older matchday or a larger, later round.
+    multi_fixture_rounds = {
+        day: fixtures for day, fixtures in near_rounds.items() if len(fixtures) >= 2
+    }
+    candidates = multi_fixture_rounds or near_rounds
     matchday, fixtures = min(
-        rounds.items(),
-        key=lambda item: (-len(item[1]), min(kickoff(m) for m in item[1])),
+        candidates.items(),
+        key=lambda item: min(kickoff(m) for m in item[1]),
     )
     return matchday, sorted(fixtures, key=lambda m: m["utcDate"])
 
@@ -133,7 +160,7 @@ async def real_context(competition: str | None = None) -> dict:
 
     async with httpx.AsyncClient() as client:
         fin = await _get(client, f"/competitions/{competition}/matches", {"status": "FINISHED"})
-        sch = await _get(client, f"/competitions/{competition}/matches", {"status": "SCHEDULED,TIMED"})
+        sch = await _get(client, f"/competitions/{competition}/matches", {"status": "SCHEDULED,TIMED,IN_PLAY,PAUSED"})
         previous = []
         try:  # stagione scorsa: serve a non partire da zero nelle prime giornate
             first = min(m["utcDate"] for m in sch["matches"]) if sch["matches"] else None
