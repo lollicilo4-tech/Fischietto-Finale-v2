@@ -29,7 +29,7 @@ async def main() -> int:
     payloads = {}
     for code, label in competitions.items():
         try:
-            turno = await pipeline.build_turno(code, use_ai=True)
+            turno = await pipeline.build_turno(code, use_ai=(code == "SA"))
             if turno["demo"] and os.getenv("CI"):
                 if code == "SA":
                     print("Errore: manca FOOTBALL_DATA_KEY nei Secrets, non pubblico i dati di esempio.")

@@ -92,12 +92,39 @@ def _standings(st: dict) -> list[dict]:
 
 
 def _select_upcoming_round(matches: list[dict]) -> tuple[int | None, list[dict]]:
-    """Seleziona il turno della prima partita in calendario, ignorando rinvii di turni precedenti."""
+    """Sceglie il turno imminente più rappresentato, evitando singoli rinvii più vecchi.
+
+    football-data.org può lasciare tra le partite future un recupero di un turno
+    precedente. Consideriamo i matchday che iniziano entro 10 giorni dalla prima
+    partita in calendario e scegliamo quello con più gare programmate; a parità
+    prevale quello che inizia prima.
+    """
     ordered = sorted(matches, key=lambda m: m["utcDate"])
     if not ordered:
         return None, []
-    matchday = ordered[0].get("matchday")
-    return matchday, [m for m in ordered if m.get("matchday") == matchday]
+
+    from datetime import datetime, timedelta
+
+    def kickoff(match: dict) -> datetime:
+        return datetime.fromisoformat(match["utcDate"].replace("Z", "+00:00"))
+
+    first_date = kickoff(ordered[0])
+    cutoff = first_date + timedelta(days=10)
+    near = [m for m in ordered if kickoff(m) <= cutoff]
+
+    rounds: dict[int, list[dict]] = {}
+    for match in near:
+        matchday = match.get("matchday")
+        if matchday is not None:
+            rounds.setdefault(matchday, []).append(match)
+    if not rounds:
+        return None, []
+
+    matchday, fixtures = min(
+        rounds.items(),
+        key=lambda item: (-len(item[1]), min(kickoff(m) for m in item[1])),
+    )
+    return matchday, sorted(fixtures, key=lambda m: m["utcDate"])
 
 
 async def real_context(competition: str | None = None) -> dict:
