@@ -1,7 +1,7 @@
 import unittest
 from types import SimpleNamespace
 
-from app.analyst import _cache_is_compatible, _extract_grounding_sources, _extract_response_text, _is_groq_daily_limit, _parse_json, _validate_absences
+from app.analyst import _cache_is_compatible, _cache_needs_source_refresh, _extract_grounding_sources, _extract_response_text, _is_groq_daily_limit, _parse_json, _validate_absences
 
 
 class CacheCompatibilityTests(unittest.TestCase):
@@ -24,6 +24,17 @@ class CacheCompatibilityTests(unittest.TestCase):
     def test_malformed_cache_entry_is_rejected(self):
         self.assertFalse(_cache_is_compatible(None))
         self.assertFalse(_cache_is_compatible({"provider": "gemini", "validation_version": "8"}))
+
+
+    def test_legacy_cache_without_sources_is_refreshed(self):
+        self.assertTrue(_cache_needs_source_refresh({"provider": "groq", "validation_version": 4, "sources": []}))
+        self.assertTrue(_cache_needs_source_refresh({"validation_version": 4, "sources": []}))
+
+    def test_current_gemini_v8_cache_without_sources_is_retained(self):
+        self.assertFalse(_cache_needs_source_refresh({"provider": "gemini", "validation_version": 8, "sources": []}))
+
+    def test_cache_with_sources_does_not_need_source_refresh(self):
+        self.assertFalse(_cache_needs_source_refresh({"provider": "groq", "validation_version": 4, "sources": [{"url": "https://example.com"}]}))
 
 
 class ValidateAbsencesTests(unittest.TestCase):
