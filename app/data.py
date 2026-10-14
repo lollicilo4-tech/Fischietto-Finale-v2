@@ -91,29 +91,23 @@ def _standings(st: dict) -> list[dict]:
             for r in tables[0]["table"]]
 
 
-def _select_upcoming_round(matches: list[dict]) -> tuple[int | None, list[dict]]:
-    """Seleziona il turno corrente/imminente senza saltare alle giornate successive.
+def _select_upcoming_round(matches: list[dict], now=None) -> tuple[int | None, list[dict]]:
+    """Seleziona il turno corrente/imminente, ignorando gare passate ancora marcate programmate.
 
-    Le API possono restituire insieme le gare ancora in corso e quelle future di
-    più giornate. Prima si dà priorità alla giornata con incontri IN_PLAY/PAUSED;
-    altrimenti si sceglie la prima giornata con almeno due gare nel prossimo
-    intervallo disponibile, così un singolo recupero rinviato non la fa prevalere.
+    Le API possono restituire insieme gare in corso e gare future di più giornate.
+    Prima si dà priorità alla giornata con incontri IN_PLAY/PAUSED; in assenza di
+    incontri attivi si considerano solo i kickoff non trascorsi. Questo evita che
+    un recupero rinviato con stato obsoleto prevalga sulla prossima giornata.
     """
-    ordered = sorted(matches, key=lambda m: m["utcDate"])
-    if not ordered:
-        return None, []
+    from datetime import datetime, timedelta, timezone
 
-    from datetime import datetime, timedelta
+    now = now or datetime.now(timezone.utc)
 
     def kickoff(match: dict) -> datetime:
         return datetime.fromisoformat(match["utcDate"].replace("Z", "+00:00"))
 
-    rounds: dict[int, list[dict]] = {}
-    for match in ordered:
-        matchday = match.get("matchday")
-        if matchday is not None:
-            rounds.setdefault(matchday, []).append(match)
-    if not rounds:
+    ordered = sorted(matches, key=kickoff)
+    if not ordered:
         return None, []
 
     active = [
@@ -123,16 +117,25 @@ def _select_upcoming_round(matches: list[dict]) -> tuple[int | None, list[dict]]
     if active:
         active_rounds = {m["matchday"] for m in active if m.get("matchday") is not None}
         if active_rounds:
+            rounds = {
+                day: [m for m in ordered if m.get("matchday") == day
+                      and (kickoff(m) >= now or str(m.get("status", "")).upper() in {"IN_PLAY", "PAUSED"})]
+                for day in active_rounds
+            }
             matchday = min(
                 active_rounds,
                 key=lambda day: (-sum(1 for m in active if m.get("matchday") == day),
                                  min(kickoff(m) for m in rounds[day])),
             )
-            return matchday, sorted(rounds[matchday], key=lambda m: m["utcDate"])
+            return matchday, sorted(rounds[matchday], key=kickoff)
 
-    first_date = kickoff(ordered[0])
+    upcoming = [m for m in ordered if kickoff(m) >= now]
+    if not upcoming:
+        return None, []
+
+    first_date = kickoff(upcoming[0])
     cutoff = first_date + timedelta(days=10)
-    near = [m for m in ordered if kickoff(m) <= cutoff]
+    near = [m for m in upcoming if kickoff(m) <= cutoff]
     near_rounds: dict[int, list[dict]] = {}
     for match in near:
         matchday = match.get("matchday")
@@ -142,7 +145,7 @@ def _select_upcoming_round(matches: list[dict]) -> tuple[int | None, list[dict]]
         return None, []
 
     # Prefer the earliest genuine round (2+ fixtures) over a lone postponed
-    # match from an older matchday or a larger, later round.
+    # fixture from an older matchday.
     multi_fixture_rounds = {
         day: fixtures for day, fixtures in near_rounds.items() if len(fixtures) >= 2
     }
@@ -151,7 +154,7 @@ def _select_upcoming_round(matches: list[dict]) -> tuple[int | None, list[dict]]
         candidates.items(),
         key=lambda item: min(kickoff(m) for m in item[1]),
     )
-    return matchday, sorted(fixtures, key=lambda m: m["utcDate"])
+    return matchday, sorted(fixtures, key=kickoff)
 
 
 async def real_context(competition: str | None = None) -> dict:
