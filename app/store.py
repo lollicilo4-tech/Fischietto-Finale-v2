@@ -256,7 +256,9 @@ def history(finished: list[dict]) -> dict:
     recent_hit = sum(1 for i in recent_items if i["ok"])
     recent_rate = recent_hit / recent_n
     overall_rate = hit / n
-    if n < 10:
+    # Con meno di 30 risultati non etichettiamo la forma come stabile/in forma:
+    # dieci partite sono un primo riscontro, non un campione sufficiente per giudicare.
+    if n < 30:
         status, status_label = "in_attesa", "Campione in costruzione"
     elif recent_rate >= 0.55 and recent_rate >= overall_rate + 0.08:
         status, status_label = "in_forma", "Modello in forma"
