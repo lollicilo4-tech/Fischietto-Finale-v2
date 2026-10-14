@@ -91,7 +91,7 @@ def _standings(st: dict) -> list[dict]:
             for r in tables[0]["table"]]
 
 
-def _select_upcoming_round(matches: list[dict], now=None) -> tuple[int | None, list[dict]]:
+def _select_upcoming_round(matches: list[dict], now=None, finished_ids: set[str] | None = None) -> tuple[int | None, list[dict]]:
     """Seleziona il turno corrente/imminente, ignorando gare passate ancora marcate programmate.
 
     Le API possono restituire insieme gare in corso e gare future di più giornate.
@@ -106,7 +106,11 @@ def _select_upcoming_round(matches: list[dict], now=None) -> tuple[int | None, l
     def kickoff(match: dict) -> datetime:
         return datetime.fromisoformat(match["utcDate"].replace("Z", "+00:00"))
 
-    ordered = sorted(matches, key=kickoff)
+    finished_ids = {str(mid) for mid in (finished_ids or set())}
+    # La risposta del calendario può essere temporaneamente incoerente con quella FINISHED.
+    # Un ID con risultato finale completo non deve mai tornare tra le partite da giocare.
+    eligible = [m for m in matches if str(m.get("id", "")) not in finished_ids]
+    ordered = sorted(eligible, key=kickoff)
     if not ordered:
         return None, []
 
@@ -184,13 +188,16 @@ async def real_context(competition: str | None = None) -> dict:
     finished = [
         {"id": str(m["id"]), "date": m["utcDate"], "home": _name(m["homeTeam"]), "away": _name(m["awayTeam"]),
          "hg": m["score"]["fullTime"]["home"], "ag": m["score"]["fullTime"]["away"]}
-        for m in fin["matches"] if m["score"]["fullTime"]["home"] is not None
+        for m in fin["matches"]
+        if m["score"]["fullTime"]["home"] is not None
+        and m["score"]["fullTime"]["away"] is not None
     ]
     if not finished:
         raise RuntimeError("Nessuna partita giocata: il modello ha bisogno di almeno qualche giornata.")
     teams, avg_h, avg_a = model.build_teams(finished, previous)
 
-    matchday, next_round = _select_upcoming_round(sch["matches"])
+    finished_ids = {m["id"] for m in finished}
+    matchday, next_round = _select_upcoming_round(sch["matches"], finished_ids=finished_ids)
     if not next_round:
         raise RuntimeError("Nessuna partita in programma.")
     fixtures = [
