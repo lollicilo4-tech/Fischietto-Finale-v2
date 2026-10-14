@@ -57,5 +57,21 @@ class HistoryPerformanceStatusTests(unittest.TestCase):
         self.assertEqual(actual["performance"]["label"], "Modello stabile")
 
 
+class MarketReadinessTests(unittest.TestCase):
+    def test_market_calibration_requires_thirty_observations(self):
+        for count, expected_ready in ((10, False), (30, True)):
+            with self.subTest(count=count):
+                rows, finished = HistoryPerformanceStatusTests.sample_rows(count)
+                for _, prediction, _ in rows:
+                    prediction["market_predictions"] = [{"code": "1", "p": 0.6}]
+                    prediction["recommendation"] = {"code": "1", "p": 0.6}
+
+                with patch("app.store._joined", return_value=rows):
+                    actual = store.history(finished)
+
+                self.assertEqual(actual["market_performance"]["1X2"]["ready"], expected_ready)
+                self.assertEqual(actual["recommendation_performance"]["ready"], expected_ready)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -164,7 +164,7 @@ def _market_performance(rows: list[tuple[str, dict, dict]]) -> dict:
             "avg_p": avg_p,
             "calibration_gap": hit / n - avg_p,
             "brier": brier,
-            "ready": n >= 10,
+            "ready": n >= 30,
         }
     return out
 
@@ -187,7 +187,7 @@ def _recommendation_performance(rows: list[tuple[str, dict, dict]]) -> dict:
     avg_p = sum(p for p, _ in vals) / n
     return {"n": n, "hit": hit, "rate": hit / n, "avg_p": avg_p,
             "calibration_gap": hit / n - avg_p, "brier": sum((p - (1.0 if ok else 0.0)) ** 2 for p, ok in vals) / n,
-            "ready": n >= 10}
+            "ready": n >= 30}
 
 def _backtest(rows: list[tuple[str, dict, dict]]) -> dict:
     """Retrospettiva sui pronostici realmente salvati prima delle partite."""
