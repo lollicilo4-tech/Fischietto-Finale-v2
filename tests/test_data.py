@@ -88,5 +88,23 @@ class UpcomingRoundSelectionTests(unittest.TestCase):
         self.assertEqual([m["id"] for m in fixtures], ["today-a", "today-b"])
 
 
+    def test_excludes_finished_ids_even_if_calendar_still_returns_them(self):
+        matches = [
+            {"id": "already-finished", "utcDate": "2026-10-14T18:00:00Z",
+             "matchday": 6, "status": "IN_PLAY"},
+            {"id": "next-a", "utcDate": "2026-10-17T13:00:00Z",
+             "matchday": 7, "status": "SCHEDULED"},
+            {"id": "next-b", "utcDate": "2026-10-18T16:00:00Z",
+             "matchday": 7, "status": "SCHEDULED"},
+        ]
+
+        matchday, fixtures = _select_upcoming_round(
+            matches, now=self.NOW, finished_ids={"already-finished"}
+        )
+
+        self.assertEqual(matchday, 7)
+        self.assertEqual([m["id"] for m in fixtures], ["next-a", "next-b"])
+
+
 if __name__ == "__main__":
     unittest.main()
