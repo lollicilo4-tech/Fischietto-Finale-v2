@@ -1013,7 +1013,7 @@ details.match summary{padding:18px!important}
     var abs = "";
     if (a.absences_home.length) abs += "<div><b>" + esc(m.home) + ":</b> " + a.absences_home.map(esc).join(", ") + "</div>";
     if (a.absences_away.length) abs += "<div><b>" + esc(m.away) + ":</b> " + a.absences_away.map(esc).join(", ") + "</div>";
-    var src = a.sources.length ? '<div class="srcs">' + a.sources.map(function (x) { return '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.title) + "</a>"; }).join("") + "</div>" : "";
+    var src = a.sources.length ? '<div class="src-status">Fonti web recuperate automaticamente: la presenza di un link non conferma da sola un’indisponibilità.</div><div class="srcs">' + a.sources.map(function (x) { return '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.title) + "</a>"; }).join("") + "</div>" : "";
     var adj = (Math.abs(a.factor_home - 1) > 0.005 || Math.abs(a.factor_away - 1) > 0.005)
       ? '<div class="abs">Correzione sui gol attesi: ' + esc(m.home) + " ×" + d2(a.factor_home) + ", " + esc(m.away) + " ×" + d2(a.factor_away) + " (gol attesi di base " + d1(m.xg_base[0]) + " - " + d1(m.xg_base[1]) + ").</div>" : "";
     return '<details class="match" id="m-' + esc(m.id) + '" style="--i:' + i + '"><summary>' +
