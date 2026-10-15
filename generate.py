@@ -75,7 +75,7 @@ def _report_source_coverage(payloads: dict) -> None:
             "Sotto il 50% viene generato un avviso; la pubblicazione non viene bloccata per non lasciare dati sportivi obsoleti.",
         ])
         with Path(summary_path).open("a", encoding="utf-8") as summary:
-            summary.write("\\n".join(lines) + "\\n")
+            summary.write("\n".join(lines) + "\n")
 
 
 async def main() -> int:
