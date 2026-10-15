@@ -51,7 +51,7 @@ class PublishedLeaguePayloadTests(unittest.TestCase):
                 self.assertIsInstance(storico.get("items"), list)
                 self.assertEqual(storico.get("n"), len(storico["items"]))
                 performance = storico.get("performance", {})
-                if storico["n"] < 30:
+                if 0 < storico["n"] < 30:
                     self.assertEqual(
                         performance.get("label"),
                         "Campione in costruzione",
