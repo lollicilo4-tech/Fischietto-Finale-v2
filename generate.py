@@ -23,7 +23,7 @@ from app.validation import summarize_source_coverage, validate_turno_payload  # 
 
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "docs"
-SOURCE_COVERAGE_WARNING_THRESHOLD = 0.50
+SOURCE_COVERAGE_WARNING_THRESHOLD = 0.50  # Soglia monitorata nel test operativo di copertura fonti.
 
 
 def _report_source_coverage(payloads: dict) -> None:
