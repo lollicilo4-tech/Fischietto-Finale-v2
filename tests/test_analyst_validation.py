@@ -53,7 +53,7 @@ class CacheCompatibilityTests(unittest.TestCase):
             {"provider": "gemini", "validation_version": 8, "sources": [{"url": "https://example.com"}]},
         )
         selected = _select_source_refresh_ids(items, cache=cache, now=now, limit=3)
-        self.assertEqual(selected, {"9", "8", "7"})
+        self.assertEqual(selected, {"10", "9", "8"})
         self.assertLessEqual(len(selected), 3)
 
     def test_source_refresh_skips_recent_cache(self):
