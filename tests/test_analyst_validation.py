@@ -1,12 +1,17 @@
 import unittest
 from types import SimpleNamespace
 
-from app.analyst import _cache_is_compatible, _cache_needs_source_refresh, _extract_grounding_sources, _extract_response_text, _is_groq_daily_limit, _parse_json, _validate_absences
+from app.analyst import _cache_is_compatible, _cache_needs_source_refresh, _normalized_provider, _extract_grounding_sources, _extract_response_text, _is_groq_daily_limit, _parse_json, _validate_absences
 
 
 class CacheCompatibilityTests(unittest.TestCase):
     def test_current_gemini_cache_version_is_compatible(self):
         self.assertTrue(_cache_is_compatible({"provider": "gemini", "validation_version": 8}))
+
+    def test_provider_is_recovered_for_legacy_cache(self):
+        self.assertEqual(_normalized_provider({"validation_version": 4}), "groq")
+        self.assertEqual(_normalized_provider({"validation_version": 8}), "gemini")
+        self.assertTrue(_cache_is_compatible({"validation_version": 4}))
 
     def test_current_groq_cache_version_is_compatible(self):
         self.assertTrue(_cache_is_compatible({"provider": "groq", "validation_version": 4}))
