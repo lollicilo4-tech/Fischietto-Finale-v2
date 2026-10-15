@@ -406,21 +406,42 @@ async def _ask_gemini(fx: dict, base: dict) -> dict:
         "fattore_gol_trasferta (numero), spiegazione (3-4 frasi in italiano)."
     )
     client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+    config = types.GenerateContentConfig(
+        system_instruction=SYSTEM,
+        temperature=0.2,
+        max_output_tokens=650,
+        # Evita la modalità JSON vincolata: in questa configurazione impediva
+        # di ricevere i grounding_metadata necessari a mostrare fonti verificabili.
+        tools=[types.Tool(google_search=types.GoogleSearch())],
+    )
     response = await client.aio.models.generate_content(
         model=os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite"),
         contents=prompt,
-        config=types.GenerateContentConfig(
-            system_instruction=SYSTEM,
-            temperature=0.2,
-            max_output_tokens=650,
-            # Evita la modalità JSON vincolata: in questa configurazione impediva
-            # di ricevere i grounding_metadata necessari a mostrare fonti verificabili.
-            tools=[types.Tool(google_search=types.GoogleSearch())],
-        ),
+        config=config,
     )
+    # Alcune risposte non attivano Google Search anche se lo strumento è abilitato.
+    # Ritenta una sola volta con una richiesta esplicita di ricerca e citazioni;
+    # il retry è limitato alle analisi già selezionate dal refresh controllato.
+    raw_sources = _extract_grounding_sources(response)
+    grounding_retry = False
+    if not raw_sources:
+        grounding_retry = True
+        retry_prompt = (
+            prompt
+            + "\n\nSECONDO TENTATIVO: la risposta precedente non ha prodotto alcuna fonte "
+            "verificabile. Prima di rispondere, esegui Google Search con query che contengano "
+            f"esattamente i nomi {fx['home']} e {fx['away']} e notizie recenti su indisponibilità. "
+            "Se Google Search non restituisce risultati, non inventare URL o notizie: dichiara "
+            "che non hai trovato fonti verificabili."
+        )
+        response = await client.aio.models.generate_content(
+            model=os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite"),
+            contents=retry_prompt,
+            config=config,
+        )
+        raw_sources = _extract_grounding_sources(response)
     # Alcune risposte con grounding espongono il testo solo nelle parti candidate.
     data = _parse_json(_extract_response_text(response))
-    raw_sources = _extract_grounding_sources(response)
     sources = _relevant_sources(raw_sources, fx)
     candidates = _read_field(response, "candidates") or []
     metadata = _read_field(candidates[0], "grounding_metadata", "groundingMetadata") if candidates else None
@@ -429,7 +450,8 @@ async def _ask_gemini(fx: dict, base: dict) -> dict:
           + " metadata=" + ("yes" if metadata is not None else "no")
           + " raw_sources=" + str(len(raw_sources))
           + " relevant_sources=" + str(len(sources))
-          + " search_queries=" + str(len(queries)))
+          + " search_queries=" + str(len(queries))
+          + " retry=" + ("yes" if grounding_retry else "no"))
     checked = _validate_absences(data, fx, sources)
     explanation = str(data.get("spiegazione", "")).strip()
     if checked["validation_warning"]:
@@ -544,9 +566,9 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
         return [fallback_analysis(i["fx"], i["base"], teams, why) for i in items]
 
     _load_persistent_cache()
-    # Non ripetere decine di ricerche a ogni aggiornamento: ritenta al massimo
-    # 8 cache senza fonti per esecuzione, dopo almeno 24 ore, partendo dalle più vecchie.
-    source_refresh_ids = _select_source_refresh_ids(items)
+    # Ritenta al massimo 8 cache senza fonti per esecuzione, partendo dalle più vecchie.
+    # Il limite mantiene controllato il consumo anche quando una cache recente è senza grounding.
+    source_refresh_ids = _select_source_refresh_ids(items, min_age_seconds=0)
     from groq import AsyncGroq
     client = AsyncGroq() if os.getenv('GROQ_API_KEY') else None
     # Limita il carico simultaneo per evitare picchi TPM sul piano on-demand.
