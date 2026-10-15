@@ -469,16 +469,32 @@ def _save_persistent_cache() -> None:
         pass
 
 
+def _normalized_provider(analysis: dict) -> str | None:
+    """Recupera il provider da cache legacy che salvavano la versione ma non il nome."""
+    if not isinstance(analysis, dict):
+        return None
+    provider = analysis.get("provider")
+    if provider in ("groq", "gemini"):
+        return provider
+    version = analysis.get("validation_version")
+    if version == 8:
+        return "gemini"
+    if version in (1, 2, 3, 4, 5, 6):
+        return "groq"
+    return None
+
+
 def _cache_is_compatible(analysis: dict) -> bool:
-    """Accetta le versioni validate per provider senza invalidare la cache Gemini v8."""
+    """Accetta le versioni validate e riconosce le cache legacy prive del provider."""
     if not isinstance(analysis, dict):
         return False
     version = analysis.get("validation_version")
-    provider = analysis.get("provider")
+    provider = _normalized_provider(analysis)
     if provider == "gemini":
         return version == 8
-    # Le versioni storiche Groq restano compatibili; le nuove vengono normalizzate a v4.
-    return version in (1, 2, 3, 4, 5, 6)
+    if provider == "groq":
+        return version in (1, 2, 3, 4, 5, 6)
+    return False
 
 
 def _cache_needs_source_refresh(analysis: dict) -> bool:
@@ -526,6 +542,7 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
                 # Filtra la cache localmente: non richiede nuove chiamate a Groq.
                 # Se nessuna fonte supera i criteri, mostra l'analisi senza link.
                 cached["sources"] = filtered_sources
+                cached["provider"] = _normalized_provider(cached)
                 if "Assenze non confermate automaticamente" in str(cached.get("text", "")):
                     cached["text"] = (
                         "Non ho trovato conferme sufficientemente solide sulle indisponibilità "
