@@ -155,7 +155,7 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
             "analysis": {**{k: an.get(k) for k in ("ai", "text", "factor_home", "factor_away",
                                                     "absences_home", "absences_away", "sources")},
                          "provider": an.get("provider"),
-                         "source_status": "verificate" if an.get("sources") else "nessuna fonte pertinente verificata",
+                         "source_status": "fonti web disponibili; pertinenza non verificata automaticamente" if an.get("sources") else "nessuna fonte web utilizzabile",
                          "validation_warning": an.get("validation_warning")},
         })
         if not ctx["demo"]:
