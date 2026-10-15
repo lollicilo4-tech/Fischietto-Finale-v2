@@ -1,7 +1,7 @@
 import unittest
 from types import SimpleNamespace
 
-from app.analyst import _cache_is_compatible, _cache_needs_source_refresh, _normalized_provider, _extract_grounding_sources, _extract_response_text, _is_groq_daily_limit, _parse_json, _validate_absences
+from app.analyst import _cache_is_compatible, _cache_needs_source_refresh, _select_source_refresh_ids, _normalized_provider, _extract_grounding_sources, _extract_response_text, _is_groq_daily_limit, _parse_json, _validate_absences
 
 
 class CacheCompatibilityTests(unittest.TestCase):
@@ -35,8 +35,32 @@ class CacheCompatibilityTests(unittest.TestCase):
         self.assertTrue(_cache_needs_source_refresh({"provider": "groq", "validation_version": 4, "sources": []}))
         self.assertTrue(_cache_needs_source_refresh({"validation_version": 4, "sources": []}))
 
-    def test_current_gemini_v8_cache_without_sources_is_retained(self):
-        self.assertFalse(_cache_needs_source_refresh({"provider": "gemini", "validation_version": 8, "sources": []}))
+    def test_current_gemini_v8_cache_without_sources_needs_bounded_refresh(self):
+        self.assertTrue(_cache_needs_source_refresh({"provider": "gemini", "validation_version": 8, "sources": []}))
+
+    def test_source_refresh_is_bounded_and_prioritizes_oldest_cache(self):
+        now = 1_800_000.0
+        items = [{"fx": {"id": str(i)}} for i in range(12)]
+        cache = {
+            str(i): (
+                now - (30 + i) * 3600,
+                {"provider": "gemini", "validation_version": 8, "sources": []},
+            )
+            for i in range(12)
+        }
+        cache["11"] = (
+            now - 40 * 3600,
+            {"provider": "gemini", "validation_version": 8, "sources": [{"url": "https://example.com"}]},
+        )
+        selected = _select_source_refresh_ids(items, cache=cache, now=now, limit=3)
+        self.assertEqual(selected, {"9", "8", "7"})
+        self.assertLessEqual(len(selected), 3)
+
+    def test_source_refresh_skips_recent_cache(self):
+        now = 1_800_000.0
+        items = [{"fx": {"id": "recent"}}]
+        cache = {"recent": (now - 2 * 3600, {"provider": "gemini", "validation_version": 8, "sources": []})}
+        self.assertEqual(_select_source_refresh_ids(items, cache=cache, now=now), set())
 
     def test_cache_with_sources_does_not_need_source_refresh(self):
         self.assertFalse(_cache_needs_source_refresh({"provider": "groq", "validation_version": 4, "sources": [{"url": "https://example.com"}]}))
