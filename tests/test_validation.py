@@ -1,6 +1,6 @@
 import unittest
 
-from app.validation import validate_turno_payload
+from app.validation import summarize_source_coverage, validate_turno_payload
 
 
 def valid_payload():
@@ -22,6 +22,36 @@ def valid_payload():
 
 
 class TurnoPayloadValidationTests(unittest.TestCase):
+    def test_source_coverage_counts_only_ai_matches_with_http_sources(self):
+        payload = valid_payload()
+        payload["matches"].extend([
+            {
+                "id": "456", "analysis": {"ai": True, "sources": []},
+            },
+            {
+                "id": "789", "analysis": {"ai": False, "sources": [{"url": "https://example.com"}]},
+            },
+            {
+                "id": "999", "analysis": {"ai": True, "sources": [{"url": "javascript:alert(1)"}]},
+            },
+        ])
+        summary = summarize_source_coverage(payload)
+        self.assertEqual(summary["matches"], 4)
+        self.assertEqual(summary["ai_matches"], 3)
+        self.assertEqual(summary["with_sources"], 1)
+        self.assertEqual(summary["without_sources"], 2)
+        self.assertEqual(summary["source_count"], 1)
+        self.assertAlmostEqual(summary["coverage"], 1 / 3)
+
+    def test_source_coverage_handles_no_ai_matches(self):
+        self.assertEqual(
+            summarize_source_coverage({"matches": [{"analysis": {"ai": False, "sources": []}}]}),
+            {
+                "matches": 1, "ai_matches": 0, "with_sources": 0,
+                "without_sources": 0, "source_count": 0, "coverage": 0.0,
+            },
+        )
+
     def test_valid_payload_passes(self):
         validate_turno_payload(valid_payload())
 
