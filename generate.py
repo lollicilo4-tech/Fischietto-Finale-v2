@@ -19,10 +19,63 @@ except ImportError:
     pass
 
 from app import pipeline  # noqa: E402
-from app.validation import validate_turno_payload  # noqa: E402
+from app.validation import summarize_source_coverage, validate_turno_payload  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "docs"
+SOURCE_COVERAGE_WARNING_THRESHOLD = 0.50
+
+
+def _report_source_coverage(payloads: dict) -> None:
+    """Mostra la copertura delle fonti prima di pubblicare i JSON."""
+    rows = []
+    total_ai = total_with_sources = 0
+    for code, (turno, _, _) in payloads.items():
+        label = turno.get("league_name", code)
+        stats = summarize_source_coverage(turno)
+        total_ai += stats["ai_matches"]
+        total_with_sources += stats["with_sources"]
+        percent = round(stats["coverage"] * 100)
+        rows.append((label, stats, percent))
+        print(
+            f"Fonti AI ({label}): {stats['with_sources']}/{stats['ai_matches']} "
+            f"partite con almeno una fonte utilizzabile ({percent}%)."
+        )
+        if stats["ai_matches"] and stats["coverage"] < SOURCE_COVERAGE_WARNING_THRESHOLD:
+            warning = (
+                f"{label}: fonti utilizzabili solo in {stats['with_sources']}/"
+                f"{stats['ai_matches']} analisi ({percent}%). Pubblicazione consentita, "
+                "ma la copertura AI richiede attenzione."
+            )
+            if os.getenv("GITHUB_ACTIONS") == "true":
+                print(f"::warning title=Copertura fonti AI::{warning}")
+            else:
+                print(f"ATTENZIONE: {warning}")
+    overall = total_with_sources / total_ai if total_ai else 0.0
+    print(
+        f"Copertura fonti AI complessiva: {total_with_sources}/{total_ai} "
+        f"({round(overall * 100)}%)."
+    )
+    summary_path = os.getenv("GITHUB_STEP_SUMMARY")
+    if summary_path:
+        lines = [
+            "## Controllo copertura fonti AI",
+            "",
+            "| Campionato | Analisi AI | Con fonti | Copertura |",
+            "|---|---:|---:|---:|",
+        ]
+        lines.extend(
+            f"| {label} | {stats['ai_matches']} | {stats['with_sources']} | {percent}% |"
+            for label, stats, percent in rows
+        )
+        lines.extend([
+            "",
+            f"**Totale:** {total_with_sources}/{total_ai} analisi con fonti ({round(overall * 100)}%).",
+            "",
+            "Sotto il 50% viene generato un avviso; la pubblicazione non viene bloccata per non lasciare dati sportivi obsoleti.",
+        ])
+        with Path(summary_path).open("a", encoding="utf-8") as summary:
+            summary.write("\\n".join(lines) + "\\n")
 
 
 async def main() -> int:
@@ -51,6 +104,7 @@ async def main() -> int:
     if "SA" not in payloads:
         print("Nessun aggiornamento: dati Serie A non disponibili.")
         return 0
+    _report_source_coverage(payloads)
     OUT.mkdir(exist_ok=True)
     (OUT / ".nojekyll").touch()
     for code, (turno, storico, classifica) in payloads.items():
