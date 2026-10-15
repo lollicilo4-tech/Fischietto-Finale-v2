@@ -395,9 +395,12 @@ async def _ask_gemini(fx: dict, base: dict) -> dict:
         f"Partita: {fx['home']} (casa) contro {fx['away']} (trasferta), {kickoff}.\n"
         f"Gol attesi {d1(base['lh'])}-{d1(base['la'])}; 1 {pc(base['p1'])}, "
         f"X {pc(base['px'])}, 2 {pc(base['p2'])}.\n"
-        "Cerca notizie recenti e attendibili sulle due squadre, soprattutto indisponibilità "
-        "confermate e squalifiche. Scarta pronostici, quote e risultati generici. Non inventare "
-        "assenze. Se non trovi conferme, usa array vuoti e fattori 1.0. I fattori devono essere "
+        "OBBLIGATORIO: usa Google Search in questa risposta. Esegui una ricerca mirata che "
+        "includa entrambe le squadre e questa partita; non rispondere usando soltanto la memoria. "
+        "Cerca notizie recenti e attendibili, soprattutto indisponibilità confermate e squalifiche. "
+        "Scarta pronostici, quote e risultati generici. Non inventare assenze. Se la ricerca non "
+        "fornisce conferme, usa array vuoti e fattori 1.0; non presentare come verificate notizie "
+        "senza fonti grounding. I fattori devono essere "
         "tra 0.85 e 1.15 e giustificati da assenze confermate. Rispondi solo con JSON valido: "
         "assenze_casa (array), assenze_trasferta (array), fattore_gol_casa (numero), "
         "fattore_gol_trasferta (numero), spiegazione (3-4 frasi in italiano)."
@@ -498,15 +501,38 @@ def _cache_is_compatible(analysis: dict) -> bool:
 
 
 def _cache_needs_source_refresh(analysis: dict) -> bool:
-    """Rinnova le vecchie cache prive di fonti, ma conserva la cache Gemini v8 corrente."""
+    """Indica se una cache senza fonti merita una nuova ricerca controllata."""
     if not isinstance(analysis, dict):
         return True
-    if analysis.get("sources"):
-        return False
-    return not (
-        analysis.get("provider") == "gemini"
-        and analysis.get("validation_version") == 8
-    )
+    return not bool(analysis.get("sources"))
+
+
+def _select_source_refresh_ids(
+    items: list[dict],
+    cache: dict | None = None,
+    now: float | None = None,
+    limit: int = 8,
+    min_age_seconds: int = 24 * 3600,
+) -> set[str]:
+    """Seleziona poche cache senza fonti, più vecchie di 24 ore, da ritentare."""
+    cache = _cache if cache is None else cache
+    now = time.time() if now is None else now
+    candidates = []
+    for item in items:
+        fixture = item.get("fx") or {}
+        match_id = str(fixture.get("id", ""))
+        hit = cache.get(match_id)
+        if not match_id or not isinstance(hit, tuple) or len(hit) != 2:
+            continue
+        saved_at, analysis = hit
+        age = now - saved_at
+        if age < min_age_seconds or age >= CACHE_SECONDS:
+            continue
+        if not _cache_is_compatible(analysis) or not _cache_needs_source_refresh(analysis):
+            continue
+        candidates.append((saved_at, match_id))
+    candidates.sort(key=lambda item: (item[0], item[1]))
+    return {match_id for _, match_id in candidates[:max(0, limit)]}
 
 
 async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict]:
@@ -518,6 +544,9 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
         return [fallback_analysis(i["fx"], i["base"], teams, why) for i in items]
 
     _load_persistent_cache()
+    # Non ripetere decine di ricerche a ogni aggiornamento: ritenta al massimo
+    # 8 cache senza fonti per esecuzione, dopo almeno 24 ore, partendo dalle più vecchie.
+    source_refresh_ids = _select_source_refresh_ids(items)
     from groq import AsyncGroq
     client = AsyncGroq() if os.getenv('GROQ_API_KEY') else None
     # Limita il carico simultaneo per evitare picchi TPM sul piano on-demand.
@@ -535,7 +564,10 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
             # Conserva le analisi validate per provider: Gemini v8 e le versioni
             # Groq storiche compatibili. Evita nuove chiamate AI non necessarie.
             cache_compatible = _cache_is_compatible(hit[1])
-            refresh_sources = _cache_needs_source_refresh(hit[1])
+            refresh_sources = (
+                _cache_needs_source_refresh(hit[1])
+                and fx["id"] in source_refresh_ids
+            )
             if isinstance(hit[1], dict) and cache_compatible and not refresh_sources:
                 cached = dict(hit[1])
                 filtered_sources = _relevant_sources(cached.get("sources") or [], fx)
