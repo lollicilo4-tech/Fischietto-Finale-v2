@@ -91,3 +91,39 @@ def validate_turno_payload(payload: dict) -> None:
             for source in analysis["sources"]:
                 if not isinstance(source, dict) or not str(source.get("url", "")).startswith(("https://", "http://")):
                     raise ValueError(f"{prefix}.analysis.sources: URL fonte non valido")
+
+
+def summarize_source_coverage(payload: dict) -> dict:
+    """Riepilogo della copertura delle fonti AI, senza chiamate esterne."""
+    matches = payload.get("matches", []) if isinstance(payload, dict) else []
+    if not isinstance(matches, list):
+        matches = []
+    ai_matches = []
+    with_sources = 0
+    source_count = 0
+    for match in matches:
+        if not isinstance(match, dict):
+            continue
+        analysis = match.get("analysis")
+        if not isinstance(analysis, dict) or not analysis.get("ai"):
+            continue
+        ai_matches.append(match)
+        sources = analysis.get("sources")
+        if isinstance(sources, list):
+            valid_sources = [
+                source for source in sources
+                if isinstance(source, dict)
+                and str(source.get("url", "")).startswith(("https://", "http://"))
+            ]
+            source_count += len(valid_sources)
+            if valid_sources:
+                with_sources += 1
+    total_ai = len(ai_matches)
+    return {
+        "matches": len(matches),
+        "ai_matches": total_ai,
+        "with_sources": with_sources,
+        "without_sources": total_ai - with_sources,
+        "source_count": source_count,
+        "coverage": with_sources / total_ai if total_ai else 0.0,
+    }
