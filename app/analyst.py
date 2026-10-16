@@ -16,6 +16,7 @@ from pathlib import Path
 
 FACTOR_MIN, FACTOR_MAX = 0.85, 1.15
 CACHE_SECONDS = 72 * 3600  # allineata alla finestra delle notizie recenti (72 ore)
+SOURCE_REFRESH_LIMIT_PER_LEAGUE = 1  # generate.py elabora 6 leghe: massimo 6 retry grounding per esecuzione
 _cache: dict = {}
 PERSIST_PATH = Path(__file__).resolve().parent.parent / "docs" / "ai_cache.json"
 ROLE = {"att": "attaccante titolare", "def": "difensore titolare"}
@@ -566,10 +567,12 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
         return [fallback_analysis(i["fx"], i["base"], teams, why) for i in items]
 
     _load_persistent_cache()
-    # Ritenta al massimo 8 cache senza fonti per esecuzione, partendo dalle più vecchie.
-    # Il secondo tentativo Gemini è riservato a queste cache selezionate: non raddoppia
-    # tutte le chiamate quando Groq è fuori quota e molte partite passano al fallback.
-    source_refresh_ids = _select_source_refresh_ids(items, min_age_seconds=0)
+    # Una sola cache senza fonti per campionato: generate.py elabora 6 leghe,
+    # quindi il secondo tentativo Gemini è limitato a massimo 6 partite per esecuzione.
+    # Evita fino a 8 retry per ognuna delle 6 leghe quando Groq è fuori quota.
+    source_refresh_ids = _select_source_refresh_ids(
+        items, min_age_seconds=0, limit=SOURCE_REFRESH_LIMIT_PER_LEAGUE
+    )
     from groq import AsyncGroq
     client = AsyncGroq() if os.getenv('GROQ_API_KEY') else None
     # Limita il carico simultaneo per evitare picchi TPM sul piano on-demand.
