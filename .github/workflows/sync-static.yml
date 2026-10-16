@@ -21,10 +21,16 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v5
-      - name: Copia l'interfaccia e gli asset nella cartella pubblicata
+      - name: Prepara gli asset e riallinea il checkout al main più recente
+        run: |
+          mkdir -p /tmp/fischietto-static
+          cp -a static/. /tmp/fischietto-static/
+          git fetch origin main
+          git reset --hard origin/main
+      - name: Sincronizza l'interfaccia pubblicata
         run: |
           mkdir -p docs
-          cp -a static/. docs/
+          cp -a /tmp/fischietto-static/. docs/
           python - <<'PY'
           from pathlib import Path
           path = Path("docs/index.html")
@@ -44,4 +50,14 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Pubblica interfaccia"
-          git push origin main
+          # Se un altro workflow aggiorna main nel frattempo, integra il commit
+          # e riprova invece di fallire con "fetch first".
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+          done
+          echo "Impossibile pubblicare dopo 3 tentativi." >&2
+          exit 1
