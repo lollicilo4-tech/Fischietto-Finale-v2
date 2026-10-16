@@ -108,6 +108,7 @@ details.match { background: var(--surface); border: 1px solid var(--line); borde
 details.match summary { list-style: none; cursor: pointer; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
 details.match summary::-webkit-details-marker { display: none; }
 .mhead { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: var(--muted); }
+.match-stale-note { margin-top: 8px; color: var(--gold); font-size: 11px; font-weight: 700; letter-spacing: .02em; }
 .conf { font-weight: 600; }
 .conf.alta { color: var(--good); } .conf.media { color: var(--gold); } .conf.bassa { color: var(--bad); }
 .teams { font-family: var(--font-display); font-weight: 700; font-size: 25px; line-height: 1.05; display: flex; justify-content: space-between; gap: 8px; text-transform: uppercase; }
@@ -1003,6 +1004,7 @@ details.match summary{padding:18px!important}
 
   function card(m, i) {
     var p = m.prob, f = m.fair_odds, a = m.analysis, s = m.top_scores[0], rec = deriveRecommendation(m);
+    var kickoffPassed = !!(m.kickoff && Number.isFinite(Date.parse(m.kickoff)) && Date.parse(m.kickoff) <= Date.now());
     var finalOutcome = p.p1 >= p.px && p.p1 >= p.p2
       ? ["1", m.home, p.p1]
       : (p.px >= p.p1 && p.px >= p.p2 ? ["X", "Pareggio", p.px] : ["2", m.away, p.p2]);
@@ -1027,7 +1029,7 @@ details.match summary{padding:18px!important}
       '<i class="h" style="flex:' + p.p1 + '"><small>1</small>' + pc(p.p1) + "</i>" +
       '<i class="d" style="flex:' + p.px + '"><small>X</small>' + pc(p.px) + "</i>" +
       '<i class="a" style="flex:' + p.p2 + '"><small>2</small>' + pc(p.p2) + "</i></div>" +
-      '<div class="match-pick"><span class="pick-pill">Modello</span><span class="value">' + esc(finalOutcome[0] + ' · ' + finalOutcome[1]) + ' <b>' + pc(finalOutcome[2]) + '</b></span></div></summary>' +
+      '<div class="match-pick"><span class="pick-pill">Modello</span><span class="value">' + esc(finalOutcome[0] + ' · ' + finalOutcome[1]) + ' <b>' + pc(finalOutcome[2]) + '</b></span></div>' + (kickoffPassed ? '<div class="match-stale-note">Orario trascorso · risultati live non disponibili</div>' : '') + '</summary>' +
       '<div class="detail">' + matchCenter(m, p, a, s, finalOutcome, prudent, rec) +
       "<div><div class=\"who\">" + (a.ai ? "Analisi con le ultime notizie" : "Analisi statistica") + '</div><p class="expl">' + esc(a.text) + "</p></div>" +
       abs + adj + (a.ai && !a.sources.length ? '<div class="src-status">Analisi AI eseguita, ma nessuna fonte pertinente è stata verificata per questa partita. I fattori restano neutrali.</div>' : "") + src +
