@@ -1,10 +1,13 @@
 import unittest
 from types import SimpleNamespace
 
-from app.analyst import _cache_is_compatible, _cache_needs_source_refresh, _select_source_refresh_ids, _normalized_provider, _extract_grounding_sources, _extract_response_text, _is_groq_daily_limit, _parse_json, _validate_absences
+from app.analyst import SOURCE_REFRESH_LIMIT_PER_LEAGUE, _cache_is_compatible, _cache_needs_source_refresh, _select_source_refresh_ids, _normalized_provider, _extract_grounding_sources, _extract_response_text, _is_groq_daily_limit, _parse_json, _validate_absences
 
 
 class CacheCompatibilityTests(unittest.TestCase):
+    def test_grounding_refresh_budget_is_one_per_league(self):
+        self.assertEqual(SOURCE_REFRESH_LIMIT_PER_LEAGUE, 1)
+
     def test_current_gemini_cache_version_is_compatible(self):
         self.assertTrue(_cache_is_compatible({"provider": "gemini", "validation_version": 8}))
 
