@@ -385,7 +385,7 @@ async def _ask_groq(client, fx: dict, base: dict) -> dict:
     }
 
 
-async def _ask_gemini(fx: dict, base: dict) -> dict:
+async def _ask_gemini(fx: dict, base: dict, retry_grounding: bool = False) -> dict:
     """Provider di riserva: Gemini con ricerca Google."""
     from google import genai
     from google.genai import types
@@ -424,7 +424,7 @@ async def _ask_gemini(fx: dict, base: dict) -> dict:
     # il retry è limitato alle analisi già selezionate dal refresh controllato.
     raw_sources = _extract_grounding_sources(response)
     grounding_retry = False
-    if not raw_sources:
+    if not raw_sources and retry_grounding:
         grounding_retry = True
         retry_prompt = (
             prompt
@@ -567,7 +567,8 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
 
     _load_persistent_cache()
     # Ritenta al massimo 8 cache senza fonti per esecuzione, partendo dalle più vecchie.
-    # Il limite mantiene controllato il consumo anche quando una cache recente è senza grounding.
+    # Il secondo tentativo Gemini è riservato a queste cache selezionate: non raddoppia
+    # tutte le chiamate quando Groq è fuori quota e molte partite passano al fallback.
     source_refresh_ids = _select_source_refresh_ids(items, min_age_seconds=0)
     from groq import AsyncGroq
     client = AsyncGroq() if os.getenv('GROQ_API_KEY') else None
@@ -614,7 +615,7 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
         if rate_limited.is_set():
             if os.getenv("GEMINI_API_KEY"):
                 try:
-                    out = await _ask_gemini(fx, item["base"])
+                    out = await _ask_gemini(fx, item["base"], retry_grounding=fx["id"] in source_refresh_ids)
                     _cache[fx["id"]] = (time.time(), out)
                     return out
                 except Exception as exc:
@@ -625,7 +626,7 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
             if rate_limited.is_set():
                 if os.getenv("GEMINI_API_KEY"):
                     try:
-                        out = await _ask_gemini(fx, item["base"])
+                        out = await _ask_gemini(fx, item["base"], retry_grounding=fx["id"] in source_refresh_ids)
                         _cache[fx["id"]] = (time.time(), out)
                         return out
                     except Exception as exc:
@@ -649,7 +650,7 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
                                 continue
                             raise
                 if out is None and os.getenv("GEMINI_API_KEY"):
-                    out = await _ask_gemini(fx, item["base"])
+                    out = await _ask_gemini(fx, item["base"], retry_grounding=fx["id"] in source_refresh_ids)
                 if out is None:
                     raise RuntimeError("Nessun provider AI disponibile")
             except Exception as exc:  # errore Groq: prova Gemini prima del fallback statistico
@@ -662,7 +663,7 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
                     rate_limited.set()
                 if client is not None and os.getenv("GEMINI_API_KEY"):
                     try:
-                        out = await _ask_gemini(fx, item["base"])
+                        out = await _ask_gemini(fx, item["base"], retry_grounding=fx["id"] in source_refresh_ids)
                         _cache[fx["id"]] = (time.time(), out)
                         return out
                     except Exception as gemini_exc:
