@@ -1156,29 +1156,6 @@ img,svg,canvas{max-width:100%}
 (function () {
   var $ = function (id) { return document.getElementById(id); };
 
-  // Navigazione robusta fra le sei schermate: ogni tab mostra il proprio pannello.
-  var sectionTabs = Array.prototype.slice.call(document.querySelectorAll('.nav [role="tab"][aria-controls]'));
-  function activateSection(tab) {
-    sectionTabs.forEach(function (item) {
-      var panel = document.getElementById(item.getAttribute("aria-controls"));
-      var active = item === tab;
-      item.setAttribute("aria-selected", active ? "true" : "false");
-      item.tabIndex = active ? 0 : -1;
-      if (panel) panel.hidden = !active;
-    });
-  }
-  sectionTabs.forEach(function (tab, index) {
-    tab.addEventListener("click", function () { activateSection(tab); });
-    tab.addEventListener("keydown", function (event) {
-      if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
-      event.preventDefault();
-      var delta = event.key === "ArrowRight" ? 1 : -1;
-      var next = sectionTabs[(index + delta + sectionTabs.length) % sectionTabs.length];
-      next.focus();
-      activateSection(next);
-    });
-  });
-  if (sectionTabs.length) activateSection(sectionTabs.find(function (tab) { return tab.getAttribute("aria-selected") === "true"; }) || sectionTabs[0]);
   var LEAGUE = new URLSearchParams(location.search).get("league") || "SA";
   if (!["SA","PL","CL","BL1","PD","FL1"].includes(LEAGUE)) LEAGUE = "SA";
   var LEAGUE_NAMES = {SA:"Serie A",PL:"Premier League",CL:"Champions League",BL1:"Bundesliga",PD:"LaLiga",FL1:"Ligue 1"};
