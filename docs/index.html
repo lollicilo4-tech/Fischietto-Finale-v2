@@ -1455,6 +1455,18 @@ td{border-color:#1d3650!important}
  #p-classifica table{min-width:480px}
 }
 </style>
+
+<style id="reference-final-model-card-v4">
+.mc-final.reference-final-card{margin:16px 0!important;padding:15px!important;border:1px solid #cda936!important;border-radius:15px!important;background:linear-gradient(145deg,#392e12 0%,#151b25 45%,#081321 100%)!important;box-shadow:0 0 0 1px #ffd34f20,0 12px 28px #0005!important;overflow:hidden}
+.mc-final.reference-final-card>.title{display:flex;align-items:center;gap:7px;color:#ffda64!important;font-size:12px!important;font-weight:900!important;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px!important}
+.reference-final-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.reference-final-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-width:0;min-height:92px;padding:11px 7px;border:1px solid #5c512f;border-radius:10px;background:#07111fd9;text-align:center}
+.reference-final-item small{color:#c4cbd6;font-size:10px;line-height:1.35}
+.reference-final-item b{color:#f6f8fc;font-size:clamp(12px,1.4vw,16px);line-height:1.25;overflow-wrap:anywhere}
+.reference-final-item strong{color:#ffda64;font-size:20px;line-height:1;font-variant-numeric:tabular-nums}
+.reference-final-note{margin:10px 0 0;color:#aab5c4;font-size:10px;line-height:1.5;text-align:center}
+@media(max-width:480px){.mc-final.reference-final-card{padding:11px!important}.reference-final-grid{gap:5px}.reference-final-item{padding:9px 4px;min-height:86px}.reference-final-item small{font-size:9px}.reference-final-item b{font-size:11px}.reference-final-item strong{font-size:17px}}
+</style>
 </head>
 <body>
 <header class="top">
@@ -1714,8 +1726,11 @@ td{border-color:#1d3650!important}
       '<div class="mc-stat"><small>Forma trasferta</small><div class="mc-form">' + chips(m.form && m.form.away) + '</div></div></div>' +
       '<div class="mc-score"><span>Risultato più probabile</span><b>' + s[0] + '-' + s[1] + '</b><span>' + pc(s[2]) + '</span></div>' +
       '<div class="mc-explain"><b>Perché questo esito</b><p class="expl">' + esc(a.text) + '</p></div>' +
-      '<div class="mc-final"><div class="title">Pronostico finale del modello</div><div class="mc-final-main"><b>' + esc(rec.best.label) + '</b><strong>' + pc(rec.best.p) + '</strong></div><div class="row"><span>Tipo</span><b>' + esc(rec.best.kind) + '</b></div>' +
-      '<div class="row"><span>Alternativa prudente</span><b>' + esc(prudent[0]) + ' · ' + pc(prudent[1]) + '</b></div></div></div>';
+      '<div class="mc-final reference-final-card"><div class="title">✦ Pronostico finale del modello</div><div class="reference-final-grid">' +
+      '<div class="reference-final-item"><small>Esito 1X2 più probabile</small><b>' + esc(finalOutcome[0] + ' · ' + finalOutcome[1]) + '</b><strong>' + pc(finalOutcome[2]) + '</strong></div>' +
+      '<div class="reference-final-item"><small>Doppia chance più prudente</small><b>' + esc(prudent[0]) + '</b><strong>' + pc(prudent[1]) + '</strong></div>' +
+      '<div class="reference-final-item"><small>Risultato esatto più probabile</small><b>' + esc(s[0] + '-' + s[1]) + '</b><strong>' + pc(s[2]) + '</strong></div></div>' +
+      '<p class="reference-final-note">Stima statistica del modello: non è una certezza e non costituisce un invito a scommettere.</p></div></div>';
   }
 
   function card(m, i) {
