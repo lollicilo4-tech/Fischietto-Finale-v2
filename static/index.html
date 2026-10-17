@@ -1726,6 +1726,15 @@ a{color:#65baff}
     <div class="list" id="matches"><div class="msg">Carico il turno…</div></div>
     <div id="played"></div>
   </section>
+  <section id="p-live" role="tabpanel" aria-labelledby="t-live" hidden>
+    <div class="live-head">
+      <div><div class="live-kicker">AGGIORNAMENTI PARTITE</div><h2>Live Center</h2><p class="expl">Risultati in diretta dal feed SportScore. Gli aggiornamenti possono avere un ritardo.</p></div>
+      <button id="live-refresh" type="button" class="live-refresh">↻ Aggiorna</button>
+    </div>
+    <div id="live-status" class="panel" role="status" aria-live="polite">Caricamento delle partite live…</div>
+    <div id="live-list" class="live-list"></div>
+    <p class="live-attribution">Dati sportivi forniti da <a href="https://sportscore.com/" target="_blank" rel="noopener noreferrer">SportScore</a>.</p>
+  </section>
   <section id="p-sicure" role="tabpanel" aria-labelledby="t-sicure" hidden>
     <p class="lead">Per ogni partita il modello sceglie l'esito più probabile. Qui li metti insieme e vedi quanto scende la probabilità complessiva.</p>
     <div class="seg" id="seg" role="group" aria-label="Numero di selezioni"><span>Selezioni</span></div>
@@ -1763,6 +1772,8 @@ a{color:#65baff}
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Home</button>
   <button role="tab" id="t-partite" aria-selected="false" aria-controls="p-partite">
     <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M12 5v14M3 12h4M17 12h4"/></svg>Partite</button>
+  <button role="tab" id="t-live" aria-selected="false" aria-controls="p-live">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Live <span class="live-dot" aria-hidden="true"></span></button>
   <button role="tab" id="t-sicure" aria-selected="false" aria-controls="p-sicure">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg>Più sicure</button>
   <button role="tab" id="t-schedina" aria-selected="false" aria-controls="p-schedina">
@@ -2231,7 +2242,7 @@ function slipReason(x){
     $("seg2").appendChild(b);
   });
 
-  var tabs = ["home", "partite", "sicure", "schedina", "classifica", "storico"];
+  var tabs = ["home", "partite", "live", "sicure", "schedina", "classifica", "storico"];
   tabs.forEach(function (t) {
     $("t-" + t).addEventListener("click", function () {
       tabs.forEach(function (u) { $("t-" + u).setAttribute("aria-selected", String(u === t)); $("p-" + u).hidden = u !== t; });
@@ -2240,6 +2251,48 @@ function slipReason(x){
       window.scrollTo(0, 0);
     });
   });
+  var liveLoaded = false;
+  function loadLiveMatches(force) {
+    var status = $("live-status"), list = $("live-list"), refresh = $("live-refresh");
+    if (!status || !list || (!force && liveLoaded)) return;
+    liveLoaded = true;
+    status.hidden = false;
+    status.textContent = "Caricamento delle partite live…";
+    list.innerHTML = "";
+    if (refresh) { refresh.disabled = true; refresh.textContent = "Caricamento…"; }
+    fetch("https://sportscore.com/api/widget/matches/?sport=football&limit=50&src=fischietto-finale", {cache:"no-store"})
+      .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function(data) {
+        var all = Array.isArray(data.matches) ? data.matches : [];
+        var live = all.filter(function(m) {
+          var st = String(m.status || "").toLowerCase().replace(/[_-]+/g," ");
+          var label = String(m.status_text || "").toLowerCase();
+          return /live|in play|in progress|first half|second half|half time|extra time|penalt|1st half|2nd half/.test(st + " " + label);
+        });
+        status.hidden = true;
+        if (!live.length) {
+          status.hidden = false;
+          status.innerHTML = '<strong>Nessuna partita live rilevata.</strong><p class="expl">Il feed non segnala incontri in corso in questo momento. Riprova durante le partite.</p>';
+          return;
+        }
+        list.innerHTML = live.map(function(m) {
+          var home = esc(m.home || "Squadra casa"), away = esc(m.away || "Squadra ospite");
+          var hs = m.home_score == null ? "–" : esc(String(m.home_score));
+          var as = m.away_score == null ? "–" : esc(String(m.away_score));
+          var phase = esc(m.status_text || m.status || "LIVE");
+          return '<article class="live-match"><div class="live-phase"><span class="live-pulse"></span>' + phase + '</div><div class="live-teams"><div class="live-team">' + (m.home_logo ? '<img loading="lazy" src="' + esc(m.home_logo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + home + '</b></div><div class="live-score">' + hs + '<span>:</span>' + as + '</div><div class="live-team away">' + (m.away_logo ? '<img loading="lazy" src="' + esc(m.away_logo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + away + '</b></div></div></article>';
+        }).join("");
+      })
+      .catch(function() {
+        liveLoaded = false;
+        status.hidden = false;
+        status.innerHTML = '<strong>Feed live momentaneamente non raggiungibile.</strong><p class="expl">Non mostriamo risultati inventati. Puoi riprovare tra poco.</p>';
+      })
+      .finally(function() { if (refresh) { refresh.disabled = false; refresh.textContent = "↻ Aggiorna"; } });
+  }
+  $("t-live").addEventListener("click", function() { loadLiveMatches(false); });
+  $("live-refresh").addEventListener("click", function() { loadLiveMatches(true); });
+
   $("back").addEventListener("click", function () { $("t-home").click(); });
   /* Restore a requested tab after page initialization, e.g. league cards on Home. */
   if (new URLSearchParams(location.search).get("tab") === "partite") $("t-partite").click();
@@ -2436,6 +2489,29 @@ function slipReason(x){
  body.nav-scrolling-down .nav{transform:translateY(calc(100% + 20px))!important;opacity:0!important;pointer-events:none!important}
  .nav{transition:transform .18s ease,opacity .18s ease!important}
 }
+</style>
+<style id="sportscore-live-prototype-v1">
+#t-live{position:relative}
+.live-dot,.live-pulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:#e74747;vertical-align:middle}
+.live-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin:8px 0 16px}
+.live-head h2{margin:4px 0;font-size:clamp(26px,5vw,34px)}
+.live-kicker{font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--good)}
+.live-refresh{border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg);padding:10px 12px;font:600 13px var(--font-body);white-space:nowrap}
+.live-refresh:disabled{opacity:.65}
+.live-list{display:grid;gap:10px}
+.live-match{padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);box-shadow:0 4px 14px #0b19300a}
+.live-phase{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.live-pulse{width:6px;height:6px;box-shadow:0 0 0 4px #e747471c}
+.live-teams{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:center}
+.live-team{display:flex;align-items:center;gap:8px;min-width:0}
+.live-team.away{justify-content:flex-end;text-align:right}
+.live-team b{font-size:14px;line-height:1.3;overflow-wrap:anywhere}
+.live-team img{width:25px;height:25px;object-fit:contain;flex:0 0 25px}
+.live-score{font:800 24px var(--font-display);white-space:nowrap;display:flex;gap:5px;align-items:center}
+.live-score span{color:var(--muted);font-size:16px}
+.live-attribution{font-size:11px;color:var(--muted);text-align:center;margin:18px 0}
+.live-attribution a{color:var(--link);font-weight:700}
+@media(max-width:480px){.live-head{align-items:center}.live-team{gap:5px}.live-team b{font-size:12px}.live-team img{width:20px;height:20px;flex-basis:20px}.live-score{font-size:21px}.live-match{padding:12px}}
 </style>
 <script id="reference-dashboard-nav-scroll-v4">
 (function(){
