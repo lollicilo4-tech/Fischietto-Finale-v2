@@ -1359,6 +1359,53 @@ td{border-color:#1d3650!important}
 }
 </style>
 
+
+<style id="reference-home-hero-v2">
+#reference-home-hero{position:relative;isolation:isolate;display:flex;align-items:center;min-height:240px;margin:0 0 14px;overflow:hidden;border:1px solid #28517b;border-radius:17px;background:radial-gradient(ellipse at 75% 20%,#164d78 0,transparent 35%),linear-gradient(110deg,#071525 0%,#0b2945 53%,#06101e 100%);box-shadow:0 16px 38px #0005}
+#reference-home-hero:before{content:"";position:absolute;z-index:-1;inset:0;background:repeating-linear-gradient(116deg,transparent 0 26px,#5bb7ff0a 27px 28px),radial-gradient(ellipse at 76% 110%,#27a66c33,transparent 42%)}
+.reference-hero-copy{position:relative;z-index:2;padding:25px 28px;max-width:58%}
+.reference-eyebrow{font-size:10px;letter-spacing:.17em;font-weight:900;color:#78c7ff}
+.reference-hero-copy h2{font-size:clamp(25px,3vw,39px);line-height:1.04;letter-spacing:-.02em;margin:10px 0 8px;color:#f5f8ff}
+.reference-hero-copy h2 strong{color:#1687ff}
+.reference-hero-copy p{margin:0 0 17px;color:#b2c5d9;font-size:13px}
+.reference-hero-actions{display:flex;gap:9px;flex-wrap:wrap}
+.reference-hero-actions button{border:1px solid #1687ff;background:#0877ef;color:white;border-radius:9px;padding:10px 14px;font-size:12px;font-weight:800}
+.reference-hero-actions button.gold{background:#ffd34f;border-color:#ffd34f;color:#211900}
+.reference-stadium-art{position:absolute;inset:0 0 0 46%;overflow:hidden;z-index:1;pointer-events:none;background:linear-gradient(90deg,#0a1d32 0%,#0a1d3211 50%,#06101e22)}
+.stadium-lights{position:absolute;top:18px;right:12px;width:70%;height:35%;background:repeating-linear-gradient(90deg,#e7f7ff 0 2px,transparent 2px 17px);filter:drop-shadow(0 0 9px #4db5ff);opacity:.55;clip-path:polygon(0 0,100% 0,85% 100%,12% 100%)}
+.stadium-pitch{position:absolute;right:-5%;bottom:-30%;width:105%;height:70%;transform:perspective(170px) rotateX(22deg);border:1px solid #65d9b044;border-radius:50% 50% 0 0;background:repeating-linear-gradient(90deg,#0c543c99 0 34px,#0b402f99 34px 68px);box-shadow:0 -20px 55px #1aa87822}
+.stadium-pitch:before{content:"";position:absolute;left:25%;top:8%;width:45%;height:70%;border:1px solid #b8ffda55;border-radius:50%}
+.stadium-ball{position:absolute;right:12%;bottom:18%;font-size:clamp(48px,8vw,92px);filter:drop-shadow(0 9px 12px #000b);transform:rotate(-16deg)}
+.reference-leagues{margin:0 0 23px}
+.reference-section-title{display:flex;align-items:center;justify-content:space-between;margin:15px 0 10px;gap:10px}
+.reference-section-title h2{font-size:19px;margin:0}
+.reference-section-title>span{font-size:9px;font-weight:900;letter-spacing:.15em;color:#8eabc9}
+.reference-league-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px}
+.reference-league-grid button{min-width:0;display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:4px;padding:12px 10px;border:1px solid #254768;border-radius:12px;background:linear-gradient(150deg,#0d2239,#071321);color:#f0f6ff;cursor:pointer;transition:border-color .15s,transform .15s}
+.reference-league-grid button:hover{border-color:#1687ff;transform:translateY(-2px)}
+.reference-league-grid .league-symbol{font-size:24px;margin-bottom:4px}
+.reference-league-grid b{font-size:12px;line-height:1.2}
+.reference-league-grid small{font-size:10px;color:#91a7c1}
+.reference-league-grid em{font-size:9px;font-style:normal;color:#67bcff;margin-top:7px}
+@media(min-width:760px){#reference-home-hero{min-height:255px}.reference-hero-copy{padding:30px 36px}.reference-stadium-art{left:40%}}
+@media(max-width:759px){#reference-home-hero{min-height:225px}.reference-hero-copy{max-width:76%;padding:19px 17px}.reference-hero-copy h2{font-size:clamp(24px,7vw,32px)}.reference-hero-copy p{font-size:12px}.reference-stadium-art{left:45%;opacity:.85}.stadium-ball{right:5%;bottom:16%;font-size:54px}.reference-league-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.reference-league-grid button{padding:10px 8px;min-height:110px}.reference-league-grid .league-symbol{font-size:21px}.reference-league-grid b{font-size:11px}.reference-league-grid em{font-size:9px}}
+@media(max-width:380px){.reference-hero-copy{max-width:84%;padding:15px 13px}.reference-stadium-art{left:40%;opacity:.6}.reference-hero-actions button{padding:9px 10px;font-size:11px}.reference-league-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.reference-league-grid button{min-height:95px}}
+</style>
+<script id="reference-home-actions-v2">
+(function(){
+ if(window.__referenceHomeActionsV2)return;window.__referenceHomeActionsV2=true;
+ document.addEventListener("click",function(e){
+  var leagueBtn=e.target.closest("[data-league]");
+  if(leagueBtn){
+   var select=document.getElementById("league-select");
+   if(select){select.value=leagueBtn.getAttribute("data-league");select.dispatchEvent(new Event("change",{bubbles:true}));}
+   var matchesBtn=document.querySelector('.nav [data-go="partite"],.nav button[data-tab="partite"],[data-tab="partite"]');
+   if(matchesBtn)matchesBtn.click();
+   else {var homeNav=document.querySelector('[data-go="partite"]');if(homeNav)homeNav.click();}
+  }
+ });
+})();
+</script>
 </head>
 <body>
 <header class="top">
@@ -1370,7 +1417,28 @@ td{border-color:#1d3650!important}
 </header>
 
 <main>
-  <section id="p-home" role="tabpanel" aria-labelledby="t-home"><div id="home-dashboard" hidden><div class="home-kicker"><h2>Partita del giorno</h2><span>modello</span></div><div id="feature-home"></div><div class="home-kicker"><h2>In un colpo d'occhio</h2><span>turno</span></div><div id="quick-home" class="quick-grid"></div><div class="home-section"><div class="home-kicker"><h2>Le previsioni più forti</h2><span>1X2</span></div><div id="strong-home" class="home-list"></div></div></div>
+  <section id="p-home" role="tabpanel" aria-labelledby="t-home">
+<div id="reference-home-hero" class="reference-home-hero">
+  <div class="reference-hero-copy">
+    <span class="reference-eyebrow">IL CALCIO, LETTO DAI NUMERI</span>
+    <h2>ANALISI.<br>STATISTICHE.<br><strong>PRONOSTICI.</strong></h2>
+    <p>Il calcio con i numeri, sempre con te.</p>
+    <div class="reference-hero-actions"><button type="button" data-go="partite">Partite di oggi <span>→</span></button><button type="button" data-go="sicure" class="gold">Più sicure</button></div>
+  </div>
+  <div class="reference-stadium-art" aria-hidden="true"><div class="stadium-lights"></div><div class="stadium-pitch"></div><div class="stadium-ball">⚽</div></div>
+</div>
+<div class="reference-leagues">
+  <div class="reference-section-title"><h2>Campionati</h2><span>SELEZIONA LEGA</span></div>
+  <div class="reference-league-grid">
+    <button type="button" data-league="SA"><span class="league-symbol">🇮🇹</span><b>Serie A</b><small>Italia</small><em>Vedi partite →</em></button>
+    <button type="button" data-league="PL"><span class="league-symbol">🏴</span><b>Premier League</b><small>Inghilterra</small><em>Vedi partite →</em></button>
+    <button type="button" data-league="PD"><span class="league-symbol">🇪🇸</span><b>LaLiga</b><small>Spagna</small><em>Vedi partite →</em></button>
+    <button type="button" data-league="BL1"><span class="league-symbol">🇩🇪</span><b>Bundesliga</b><small>Germania</small><em>Vedi partite →</em></button>
+    <button type="button" data-league="FL1"><span class="league-symbol">🇫🇷</span><b>Ligue 1</b><small>Francia</small><em>Vedi partite →</em></button>
+    <button type="button" data-league="CL"><span class="league-symbol">🏆</span><b>Champions League</b><small>Europa</small><em>Vedi partite →</em></button>
+  </div>
+</div>
+<div id="home-dashboard" hidden><div class="home-kicker"><h2>Partita del giorno</h2><span>modello</span></div><div id="feature-home"></div><div class="home-kicker"><h2>In un colpo d'occhio</h2><span>turno</span></div><div id="quick-home" class="quick-grid"></div><div class="home-section"><div class="home-kicker"><h2>Le previsioni più forti</h2><span>1X2</span></div><div id="strong-home" class="home-list"></div></div></div>
     <p class="lead">Scegli cosa vedere.</p>
     <div class="tiles">
       <button type="button" class="tile main" data-go="partite">
