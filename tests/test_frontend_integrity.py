@@ -79,7 +79,7 @@ class FrontendIntegrityTests(unittest.TestCase):
         for path in (ROOT / "static" / "sw.js", ROOT / "docs" / "sw.js"):
             with self.subTest(path=path):
                 worker = self.read(path)
-                self.assertIn('const CACHE = "fischietto-v5";', worker)
+                self.assertIn('const CACHE = "fischietto-v6";', worker)
                 self.assertIn('url.pathname.endsWith(".json")', worker)
                 self.assertIn('fetch(new Request(req, { cache: "no-store" }))', worker)
 
