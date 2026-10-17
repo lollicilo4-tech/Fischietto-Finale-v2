@@ -1,4 +1,4 @@
-""""Offline regression checks for the static frontend and published GitHub Pages shell.
+"""Offline regression checks for the static frontend and published GitHub Pages shell.
 
 These checks do not call external services or consume AI/API tokens.
 """
@@ -22,24 +22,24 @@ class FrontendIntegrityTests(unittest.TestCase):
             with self.subTest(path=path):
                 html = self.read(path)
                 self.assertEqual(
-                    len(re.findall(r"<style\\b", html, re.IGNORECASE)),
-                    len(re.findall(r"</style\\s*>", html, re.IGNORECASE)),
+                    len(re.findall(r"<style\b", html, re.IGNORECASE)),
+                    len(re.findall(r"</style\s*>", html, re.IGNORECASE)),
                     "Blocchi CSS <style> non bilanciati",
                 )
                 self.assertEqual(
-                    len(re.findall(r"<script\\b", html, re.IGNORECASE)),
-                    len(re.findall(r"</script\\s*>", html, re.IGNORECASE)),
+                    len(re.findall(r"<script\b", html, re.IGNORECASE)),
+                    len(re.findall(r"</script\s*>", html, re.IGNORECASE)),
                     "Blocchi JavaScript <script> non bilanciati",
                 )
 
     def test_static_html_has_no_duplicate_ids_or_broken_tab_targets(self):
         html = self.read(STATIC_HTML)
-        ids = re.findall(r"""\\bid=["']([^"']+)["']""", html)
+        ids = re.findall(r"""\bid=["']([^"']+)["']""", html)
         duplicates = sorted({value for value in ids if ids.count(value) > 1})
         self.assertEqual(duplicates, [], f"ID HTML duplicati: {duplicates}")
 
         id_set = set(ids)
-        targets = re.findall(r"""\\baria-controls=["']([^"']+)["']""", html)
+        targets = re.findall(r"""\baria-controls=["']([^"']+)["']""", html)
         missing = sorted({target for target in targets if target not in id_set})
         self.assertEqual(missing, [], f"Tab senza pannello associato: {missing}")
 
@@ -69,6 +69,7 @@ class FrontendIntegrityTests(unittest.TestCase):
             expected,
             "docs/index.html deve corrispondere a static/index.html, con solo le rotte adattate a Pages",
         )
+
 
     def test_live_data_requests_bypass_browser_http_cache(self):
         source = self.read(STATIC_HTML)
