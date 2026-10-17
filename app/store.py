@@ -61,8 +61,38 @@ def _outcome(m: dict) -> str:
 
 
 def _joined(finished: list[dict]) -> list[tuple[str, dict, dict]]:
-    results = {m["id"]: m for m in finished}
-    rows = [(mid, p, results[mid]) for mid, p in _load().items() if mid in results]
+    """Unisce i risultati appena ricevuti con quelli già archiviati.
+
+    Il provider può restituire solo una finestra limitata di partite concluse.
+    Memorizzare il punteggio nel record del pronostico evita che una partita
+    sparisca dallo storico quando esce da quella finestra.
+    """
+    predictions = _load()
+    results = {str(m["id"]): m for m in finished if m.get("id") is not None}
+    changed = False
+
+    # Prima archivia i nuovi risultati: non sovrascrivere mai un risultato già salvato.
+    for mid, p in predictions.items():
+        result = results.get(str(mid))
+        if result is None or "result" in p:
+            continue
+        try:
+            hg, ag = int(result["hg"]), int(result["ag"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        p["result"] = {"hg": hg, "ag": ag, "date": result.get("date")}
+        changed = True
+
+    if changed:
+        _write(predictions)
+
+    rows = []
+    for mid, p in predictions.items():
+        result = p.get("result")
+        if result and "hg" in result and "ag" in result:
+            m = {"id": mid, "hg": int(result["hg"]), "ag": int(result["ag"]),
+                 "date": result.get("date") or p.get("kickoff")}
+            rows.append((mid, p, m))
     rows.sort(key=lambda r: r[1].get("kickoff") or "", reverse=True)
     return rows
 
