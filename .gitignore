@@ -2,3 +2,4 @@
 data/predictions.db
 __pycache__/
 .venv/
+.dev.vars*
