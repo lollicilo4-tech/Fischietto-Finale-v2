@@ -1969,5 +1969,54 @@ function slipReason(x){
   }).catch(function () { $("table").innerHTML = '<div class="msg">Classifica non disponibile.</div>'; });
 })();
 </script>
+
+<style id="reference-dashboard-layout-fix-v4">
+/* Mobile pass: reduce hero height and prevent the floating tab bar from obscuring dashboard cards. */
+@media(max-width:759px){
+ body{padding:10px 12px calc(112px + env(safe-area-inset-bottom,0px))!important}
+ .top{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:7px!important;padding:16px!important;margin-bottom:18px!important}
+ .top h1{font-size:clamp(28px,7.5vw,36px)!important;line-height:1!important}
+ .top .sub{margin:0!important;font-size:14px!important}
+ .top .league-label{margin-top:5px!important}
+ .top .league-select{min-height:43px!important;padding:8px 12px!important}
+ .top .tags{gap:6px!important;margin-top:0!important}
+ .top .tag{font-size:10px!important;padding:4px 8px!important}
+ .home-kicker{margin-top:16px!important;margin-bottom:8px!important}
+ .home-kicker h2{font-size:20px!important}
+ .feature-card{padding:13px!important;gap:10px!important}
+ .feature-top{gap:6px!important}
+ .feature-match{margin:0!important}
+ .feature-team b{font-size:23px!important}
+ .feature-prob>span{padding:8px 5px!important}
+ .feature-bottom{gap:8px!important}
+ #quick-home{scroll-margin-bottom:100px}
+ .quick-grid{gap:8px!important}
+ .quick-card{padding:11px!important}
+ .q-value{font-size:27px!important}
+ .q-note{font-size:11px!important}
+ .nav{position:fixed!important;bottom:calc(7px + env(safe-area-inset-bottom,0px))!important;z-index:1000!important}
+ /* Hide the fixed tab bar while moving down through content; restore it on upward scroll. */
+ body.nav-scrolling-down .nav{transform:translateY(calc(100% + 20px))!important;opacity:0!important;pointer-events:none!important}
+ .nav{transition:transform .18s ease,opacity .18s ease!important}
+}
+</style>
+<script id="reference-dashboard-nav-scroll-v4">
+(function(){
+ if(window.__ffNavScrollV4) return;
+ window.__ffNavScrollV4=true;
+ var lastY=window.scrollY||0, ticking=false;
+ function update(){
+  var y=window.scrollY||0, delta=y-lastY;
+  if(Math.abs(delta)>5){
+   if(y>120 && delta>0) document.body.classList.add("nav-scrolling-down");
+   else if(delta<0) document.body.classList.remove("nav-scrolling-down");
+  }
+  if(y<60) document.body.classList.remove("nav-scrolling-down");
+  lastY=y;ticking=false;
+ }
+ window.addEventListener("scroll",function(){if(!ticking){window.requestAnimationFrame(update);ticking=true;}},{passive:true});
+})();
+</script>
+
 </body>
 </html>
