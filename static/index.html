@@ -1395,13 +1395,19 @@ td{border-color:#1d3650!important}
 (function(){
  if(window.__referenceHomeActionsV2)return;window.__referenceHomeActionsV2=true;
  document.addEventListener("click",function(e){
+  var heroAction=e.target.closest("#reference-home-hero [data-go]");
+  if(heroAction){
+   var target=heroAction.getAttribute("data-go");
+   var tab=document.getElementById(target==="sicure"?"t-sicure":"t-partite");
+   if(tab)tab.click();
+   return;
+  }
   var leagueBtn=e.target.closest("[data-league]");
   if(leagueBtn){
    var select=document.getElementById("league-select");
    if(select){select.value=leagueBtn.getAttribute("data-league");select.dispatchEvent(new Event("change",{bubbles:true}));}
-   var matchesBtn=document.querySelector('.nav [data-go="partite"],.nav button[data-tab="partite"],[data-tab="partite"]');
+   var matchesBtn=document.getElementById("t-partite");
    if(matchesBtn)matchesBtn.click();
-   else {var homeNav=document.querySelector('[data-go="partite"]');if(homeNav)homeNav.click();}
   }
  });
 })();
