@@ -1668,6 +1668,34 @@ a{color:#65baff}
 }
 @media(prefers-reduced-motion:reduce){button,.back,.cta{transition:none!important}}
 </style>
+<style id="live-score-css">
+#p-live .live-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
+#p-live .live-head h2{font:800 30px/1 var(--font-display);color:#f4f8ff}
+#p-live .live-head .lead{margin:7px 0 0;color:#91a5bb!important;font-size:12px}
+.live-pulse{display:inline-block;color:#ff5b6b;font-size:18px;vertical-align:middle;animation:ff-live-pulse 1.4s ease-in-out infinite}
+@keyframes ff-live-pulse{50%{opacity:.35}}
+.live-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.live-actions button{font:700 11px var(--font-body);padding:9px 10px;border:1px solid #294968;border-radius:10px;background:#102138;color:#eaf3fc;cursor:pointer}
+.live-actions button:disabled{opacity:.5;cursor:wait}
+.live-card{background:linear-gradient(145deg,#102138,#0b1726);border:1px solid rgba(53,167,255,.22);border-radius:18px;padding:14px;box-shadow:0 12px 30px rgba(0,0,0,.16)}
+.live-card-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px;color:#91a5bb;font-size:11px}
+.live-league{font-weight:800;letter-spacing:.07em;text-transform:uppercase}
+.live-state{flex:0 0 auto;border-radius:999px;padding:4px 8px;background:rgba(255,91,107,.12);border:1px solid rgba(255,91,107,.3);color:#ff7c88;font:700 11px var(--font-num)}
+.live-scoreline{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px}
+.live-team{min-width:0;color:#f3f7fd;font:700 19px/1.08 var(--font-display);text-transform:uppercase;overflow-wrap:anywhere}
+.live-team.away{text-align:right}
+.live-score{color:#fff;font:800 34px/1 var(--font-display);white-space:nowrap;letter-spacing:.04em}
+.live-event-list{margin-top:12px;padding-top:10px;border-top:1px solid rgba(116,154,194,.15);display:flex;flex-direction:column;gap:7px}
+.live-event{display:grid;grid-template-columns:38px 20px minmax(0,1fr);gap:7px;align-items:start;color:#c9d7e6;font-size:12px;line-height:1.35}
+.live-event time{font:600 11px var(--font-num);color:#f7c64a;white-space:nowrap}
+.live-event b{color:#f4f8ff}
+.live-empty{color:#91a5bb}
+#p-live .note{color:#91a5bb!important;font-size:11px}
+@media(max-width:420px){#p-live .live-head{display:block}#p-live .live-actions{justify-content:flex-start;margin-top:10px}.live-team{font-size:16px}.live-score{font-size:29px}.live-card{padding:12px}.live-scoreline{gap:6px}}
+@media(prefers-reduced-motion:reduce){.live-pulse{animation:none}}
+</style>
+<script src="live-config.js"></script>
+
 </head>
 <body>
 <header class="top">
@@ -1712,6 +1740,7 @@ a{color:#65baff}
       <button type="button" class="tile" data-go="schedina">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18H6z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>
         <span><b>Schedina modello</b><small>Sicura · Media · Bomba</small></span></button>
+      <button type="button" class="tile" data-go="live"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg><span><b>Live</b><small>Punteggi ed eventi in corso</small></span></button>
       <button type="button" class="tile" data-go="classifica">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
         <span><b>Classifica</b><small id="tile-league-name">Serie A</small></span></button>
@@ -1719,6 +1748,14 @@ a{color:#65baff}
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
         <span><b>Storico</b><small id="tile-storico">Pronostici e risultati veri</small></span></button>
     </div>
+  </section>
+  <section id="p-live" role="tabpanel" aria-labelledby="t-live" hidden>
+    <div class="live-head">
+      <div><h2><span class="live-pulse" aria-hidden="true">●</span> LIVE</h2><p id="live-status" class="lead" aria-live="polite">La diretta mostra solo dati ricevuti dal provider: nessun punteggio simulato.</p></div>
+      <div class="live-actions"><button type="button" id="live-refresh">Aggiorna</button><button type="button" id="live-notifications">Attiva notifiche</button></div>
+    </div>
+    <div class="list" id="live-matches" aria-live="polite"><div class="msg">La Live si avvierà quando sarà configurato il proxy sicuro.</div></div>
+    <p class="note" style="margin-top:12px">Punteggi ed eventi sono forniti da API-Football. La frequenza di aggiornamento dipende dal piano e dalla copertura della competizione. Le notifiche funzionano dopo il consenso del browser e mentre la pagina o la web app è attiva.</p>
   </section>
   <section id="p-partite" role="tabpanel" aria-labelledby="t-partite" hidden>
     <div id="hero"></div>
@@ -1761,6 +1798,7 @@ a{color:#65baff}
 <nav class="nav" role="tablist" aria-label="Sezioni">
   <button role="tab" id="t-home" aria-selected="true" aria-controls="p-home">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Home</button>
+  <button role="tab" id="t-live" aria-selected="false" aria-controls="p-live"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>Live</button>
   <button role="tab" id="t-partite" aria-selected="false" aria-controls="p-partite">
     <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M12 5v14M3 12h4M17 12h4"/></svg>Partite</button>
   <button role="tab" id="t-sicure" aria-selected="false" aria-controls="p-sicure">
@@ -2231,18 +2269,34 @@ function slipReason(x){
     $("seg2").appendChild(b);
   });
 
-  var tabs = ["home", "partite", "sicure", "schedina", "classifica", "storico"];
+  var liveTimer=null,liveFirstPayload=false,liveSeenEvents={},liveScores={},liveHasData=false;
+  var liveNotifyEnabled=typeof Notification!=="undefined"&&Notification.permission==="granted";
+  function liveApiBase(){return String(window.FF_LIVE_API_URL||"").trim().replace(/\/+$/,"");}
+  function liveStatusLabel(m){var s=m.status||{},c=s.short||"";if(c==="HT")return "INTERVALLO";if(c==="ET")return "SUPPLEMENTARI";if(c==="P")return "RIGORI";if(c==="BT")return "SOSTA";if(c==="SUSP")return "SOSPESA";if(c==="INT")return "INTERROTTA";if(s.elapsed!=null)return String(s.elapsed)+(s.extra?"+"+s.extra:"")+"′";return s.long||c||"LIVE";}
+  function liveEventLabel(e){var d=String(e.detail||e.type||"Evento");if(e.type==="Goal"&&/own goal|autogol/i.test(d))return "Autogol";if(e.type==="Goal"&&/penalty|rigore/i.test(d))return "Rigore";if(e.type==="Goal")return "Gol";if(e.type==="Card"&&/red|rosso/i.test(d))return "Cartellino rosso";if(e.type==="Card"&&/yellow|giallo/i.test(d))return "Cartellino giallo";if(e.type==="subst")return "Sostituzione";return d;}
+  function liveEventIcon(e){var l=liveEventLabel(e);if(/rosso/i.test(l))return "🟥";if(/giallo/i.test(l))return "🟨";if(/Gol|Rigore|Autogol/i.test(l))return "⚽";if(/Sostituzione/i.test(l))return "🔁";return "•";}
+  function liveNotify(title,body,tag){if(!liveNotifyEnabled||typeof Notification==="undefined"||Notification.permission!=="granted")return;var opts={body:body,tag:tag,icon:"icon-192.png",badge:"icon-192.png",renotify:false};if("serviceWorker"in navigator){navigator.serviceWorker.ready.then(function(reg){if(reg&&reg.showNotification)return reg.showNotification(title,opts);return new Notification(title,opts);}).catch(function(){});}else{try{new Notification(title,opts);}catch(_){}}}
+  function announceLiveChanges(data){(data.matches||[]).forEach(function(m){var id=String(m.id),score=(m.goals&&m.goals.home!=null?m.goals.home:"–")+"-"+(m.goals&&m.goals.away!=null?m.goals.away:"–"),had=Object.prototype.hasOwnProperty.call(liveScores,id),newGoal=false;(m.events||[]).forEach(function(e){var key=String(e.id||[id,e.minute,e.extra,e.team,e.player,e.type,e.detail].join("|"));if(liveSeenEvents[key])return;liveSeenEvents[key]=true;if(liveFirstPayload&&had&&(e.type==="Goal"||e.type==="Card")){var label=liveEventLabel(e);liveNotify(m.home.name+" – "+m.away.name,label+(e.player?": "+e.player:"")+" · "+(e.minute==null?"":e.minute+"′"),"ff-live-"+key);if(e.type==="Goal")newGoal=true;}});if(liveFirstPayload&&had&&liveScores[id]!==score&&!newGoal)liveNotify("Aggiornamento risultato",m.home.name+" "+score+" "+m.away.name,"ff-live-score-"+id);liveScores[id]=score;});liveFirstPayload=true;}
+  function renderLive(data){var matches=Array.isArray(data.matches)?data.matches:[];announceLiveChanges(data);if(!matches.length){$("live-matches").innerHTML='<div class="msg live-empty"><b>Nessuna partita in diretta</b><br>Al momento non risultano incontri live nelle sei competizioni monitorate. I punteggi non vengono simulati.</div>';return;}$("live-matches").innerHTML=matches.map(function(m){var gh=m.goals&&m.goals.home!=null?m.goals.home:"–",ga=m.goals&&m.goals.away!=null?m.goals.away:"–";var events=(m.events||[]).slice(-8).reverse().map(function(e){var minute=e.minute==null?"–":String(e.minute)+(e.extra?"+"+e.extra:"")+"′",who=e.player||e.assist||"";return '<div class="live-event"><time>'+esc(minute)+'</time><span class="live-event-icon">'+esc(liveEventIcon(e))+'</span><span><b>'+esc(e.team||"")+'</b>'+(who?" · "+esc(who):"")+' — '+esc(liveEventLabel(e))+'</span></div>';}).join("");return '<article class="live-card"><div class="live-card-head"><span class="live-league">'+esc(m.league&&m.league.name||LEAGUE_NAMES[LEAGUE])+'</span><span class="live-state">'+esc(liveStatusLabel(m))+'</span></div><div class="live-scoreline"><div class="live-team">'+esc(m.home&&m.home.name||"Casa")+'</div><div class="live-score">'+esc(String(gh))+' : '+esc(String(ga))+'</div><div class="live-team away">'+esc(m.away&&m.away.name||"Trasferta")+'</div></div><div class="live-event-list">'+(events||'<div class="live-event live-empty"><span></span><span></span><span>Eventi non disponibili per questa partita.</span></div>')+'</div></article>';}).join("");}
+  function loadLive(){var base=liveApiBase();if(!base){$("live-status").textContent="Provider non configurato · la chiave API non viene mai inserita nel browser.";$("live-matches").innerHTML='<div class="msg"><b>La Live non è ancora collegata.</b><br>Per attivarla serve pubblicare il proxy sicuro Cloudflare Worker e impostarne l’indirizzo in <code>static/live-config.js</code>. <a href="https://github.com/lollicilo4-tech/Fischietto-Finale-v2/blob/main/LIVE-SETUP.md" target="_blank" rel="noopener">Apri la guida di attivazione</a>.</div>';return Promise.resolve();}if(window.__ffLiveLoading)return Promise.resolve();window.__ffLiveLoading=true;$("live-refresh").disabled=true;return fetch(base+"/api/live?league="+encodeURIComponent(LEAGUE),{cache:"no-store"}).then(function(r){return r.json().catch(function(){return {};}).then(function(d){if(!r.ok)throw new Error(d.error||"Il provider Live non è disponibile ("+r.status+").");return d;});}).then(function(d){if(!Array.isArray(d.matches))throw new Error("Risposta Live non valida.");renderLive(d);liveHasData=true;var now=new Date();$("live-status").textContent="Aggiornato alle "+String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0")+":"+String(now.getSeconds()).padStart(2,"0")+" · controllo automatico ogni 60 secondi";}).catch(function(e){$("live-status").textContent="Aggiornamento non riuscito · riprovo tra 60 secondi.";if(!liveHasData)$("live-matches").innerHTML='<div class="msg err">'+esc(e.message||"Errore di connessione alla Live.")+'</div>';}).then(function(){window.__ffLiveLoading=false;$("live-refresh").disabled=false;});}
+  function startLive(){stopLive();loadLive();if(liveApiBase())liveTimer=window.setInterval(function(){if(!document.hidden&&!$("p-live").hidden)loadLive();},60000);}
+  function stopLive(){if(liveTimer)window.clearInterval(liveTimer);liveTimer=null;}
+  $("live-refresh").addEventListener("click",function(){loadLive();});
+  $("live-notifications").addEventListener("click",function(){if(typeof Notification==="undefined"){$("live-status").textContent="Questo browser non supporta le notifiche.";return;}Notification.requestPermission().then(function(p){liveNotifyEnabled=p==="granted";$("live-notifications").textContent=liveNotifyEnabled?"Notifiche attive":"Notifiche non autorizzate";$("live-status").textContent=liveNotifyEnabled?"Notifiche attivate per gol e cartellini durante la sessione.":"Per ricevere notifiche, autorizzale dalle impostazioni del browser.";}).catch(function(){$("live-status").textContent="Non è stato possibile richiedere il permesso alle notifiche.";});});
+  var tabs = ["home", "live", "partite", "sicure", "schedina", "classifica", "storico"];
   tabs.forEach(function (t) {
     $("t-" + t).addEventListener("click", function () {
       tabs.forEach(function (u) { $("t-" + u).setAttribute("aria-selected", String(u === t)); $("p-" + u).hidden = u !== t; });
       document.body.classList.toggle("inner", t !== "home");
       $("back").hidden = t === "home";
+      if (t === "live") startLive(); else stopLive();
       window.scrollTo(0, 0);
     });
   });
   $("back").addEventListener("click", function () { $("t-home").click(); });
   /* Restore a requested tab after page initialization, e.g. league cards on Home. */
-  if (new URLSearchParams(location.search).get("tab") === "partite") $("t-partite").click();
+  var requestedTab = new URLSearchParams(location.search).get("tab");
+  if (requestedTab === "partite" || requestedTab === "live") $("t-" + requestedTab).click();
 
   Array.prototype.forEach.call(document.querySelectorAll(".tile"), function (b) {
     b.addEventListener("click", function () { $("t-" + b.getAttribute("data-go")).click(); });

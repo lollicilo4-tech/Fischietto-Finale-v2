@@ -33,7 +33,7 @@ Apri http://localhost:8000.
 ## Pubblicazione gratuita
 
 Il sito online è statico: un'automazione di GitHub (`.github/workflows/update.yml`) esegue `generate.py`
-due volte al giorno, scrive i dati nella cartella `docs/` e la pubblica. Il selettore consente di passare tra Serie A, Premier League, Champions League, Bundesliga, LaLiga e Ligue 1; dati e classifica sono separati per campionato. I visitatori non fanno mai
+ogni quattro ore, scrive i dati nella cartella `docs/` e la pubblica. Il selettore consente di passare tra Serie A, Premier League, Champions League, Bundesliga, LaLiga e Ligue 1; dati e classifica sono separati per campionato. I visitatori non fanno mai
 partire chiamate a football-data.org o all'AI, quindi il costo dell'AI non dipende dal traffico. Il server può restare spento, il sito è sempre acceso e lo Storico non si perde.
 
 1. **GitHub**: crea un account su github.com e un repository nuovo **pubblico**. GitHub Pages è gratuito solo
@@ -73,3 +73,8 @@ football-data.org richiede l'attribuzione, già presente nel piè di pagina.
 - football-data.org non fornisce infortuni: li porta l'AI dalla ricerca web, con le fonti mostrate.
 - Le multiple mostrano la probabilità composta assumendo partite indipendenti.
 - Durante le pause per le nazionali non ci sono partite in programma e il sito resta fermo all'ultimo turno.
+
+
+## Live scores
+
+La sezione LIVE usa un proxy Cloudflare Worker per leggere punteggi, minuti ed eventi da API-Football. Non è attiva finché il proxy non viene distribuito e il suo indirizzo non viene impostato in `static/live-config.js`; la chiave API va conservata come secret del Worker e non nel sito statico. Consulta [`LIVE-SETUP.md`](LIVE-SETUP.md) per i passaggi e il controllo dei limiti del piano. La Live non usa token AI e non modifica il modello statistico o i pronostici.

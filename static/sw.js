@@ -1,5 +1,5 @@
 // Prima la rete, poi l'ultima copia salvata: senza connessione l'app mostra l'ultimo turno visto.
-const CACHE = "fischietto-v7";
+const CACHE = "fischietto-v8";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "icon-192.png"];
 
 self.addEventListener("install", (e) => {
@@ -27,7 +27,7 @@ self.addEventListener("fetch", (e) => {
     return;
   }
   // I dati di partite, storico e classifica devono sempre arrivare dalla rete.
-  if (url.pathname.endsWith(".json") || /\/api\/(turno|storico|classifica)$/.test(url.pathname)) {
+  if (url.pathname.endsWith(".json") || /\/api\/(turno|storico|classifica|live)$/.test(url.pathname)) {
     e.respondWith(fetch(new Request(req, { cache: "no-store" })));
     return;
   }

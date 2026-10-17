@@ -10,6 +10,7 @@ on:
       - "tests/**"
       - "generate.py"
       - "requirements.txt"
+      - "worker/**"
       - ".github/workflows/tests.yml"
   pull_request:
     branches: [main]
@@ -20,6 +21,7 @@ on:
       - "tests/**"
       - "generate.py"
       - "requirements.txt"
+      - "worker/**"
       - ".github/workflows/tests.yml"
   workflow_dispatch:
 
@@ -44,3 +46,8 @@ jobs:
         run: pip install -r requirements.txt
       - name: Esegui tutti i test
         run: python -m unittest discover -s tests -v
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Esegui i test del proxy Live
+        run: npm test --prefix worker
