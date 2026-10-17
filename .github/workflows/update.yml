@@ -9,7 +9,7 @@ on:
       - "requirements.txt"
       - ".github/workflows/update.yml"
   schedule:
-    - cron: "0 6,18 * * *"   # 08:00 e 20:00 in Italia con l'ora legale (07:00 e 19:00 con quella solare)
+    - cron: "0 0,4,8,12,16,20 * * *"   # Ogni 4 ore; la cache AI persistente evita rianalisi inutili degli stessi incontri
   workflow_dispatch:          # pulsante "Run workflow" nella scheda Actions
 
 permissions:
