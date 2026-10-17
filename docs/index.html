@@ -2280,10 +2280,9 @@ function slipReason(x){
     list.innerHTML = "";
     if (refresh) { refresh.disabled = true; refresh.textContent = "Caricamento…"; }
 
-    /* Use SportScore's documented widget feed: it returns live and recent matches
-       with the status fields consumed below. The fixtures endpoint can return an
-       empty day-scoped payload even when the widget feed has live matches. */
-    fetch("https://sportscore.com/api/widget/matches/?sport=football&limit=50&src=fischietto-finale", {cache:"no-store"})
+    /* Request live fixtures explicitly instead of taking the first 50 live/recent
+       matches and filtering them locally. SportScore documents status=live on v1/fixtures. */
+    fetch("https://sportscore.com/api/v1/fixtures/?sport=football&status=live&limit=200", {cache:"no-store"})
       .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
       .then(function(data) {
         var payload = data && data.data && !Array.isArray(data.data) ? data.data : data;
