@@ -158,6 +158,20 @@ def summarize(lh: float, la: float) -> dict:
         if i + j >= 3: r["o25"] += q
         if i + j <= 3: r["u35"] += q
         if i > 0 and j > 0: r["gg"] += q
+        # Mercati goal derivati dalla stessa distribuzione normalizzata.
+        if i + j >= 1: derived["Over 0,5"] += q
+        if i + j == 0: derived["Under 0,5"] += q
+        if i + j >= 4: derived["Over 3,5"] += q
+        if i + j <= 4: derived["Under 4,5"] += q
+        if i + j >= 5: derived["Over 4,5"] += q
+        if i >= 1: derived["Casa Over 0,5"] += q
+        if i >= 2: derived["Casa Over 1,5"] += q
+        if i >= 3: derived["Casa Over 2,5"] += q
+        if i >= 4: derived["Casa Over 3,5"] += q
+        if j >= 1: derived["Trasferta Over 0,5"] += q
+        if j >= 2: derived["Trasferta Over 1,5"] += q
+        if j >= 3: derived["Trasferta Over 2,5"] += q
+        if j >= 4: derived["Trasferta Over 3,5"] += q
         scores.append((i, j, q))
     scores.sort(key=lambda s: -s[2])
     r["u25"] = 1 - r["o25"]
@@ -183,7 +197,7 @@ def summarize(lh: float, la: float) -> dict:
         if i > 0 and j > 0 and i + j >= 3: combos["gg_o25"] += q
         if i == 0 or j == 0:
             if i + j <= 3: combos["ng_u35"] += q
-    r["markets"] = {k: round(v, 4) for k, v in combos.items()}
+    r["markets"] = {k: round(v, 4) for k, v in {**derived, **combos}.items()}
 
     top = max(r["p1"], r["px"], r["p2"])
     r["conf"] = "alta" if top >= 0.55 else "media" if top >= 0.45 else "bassa"
