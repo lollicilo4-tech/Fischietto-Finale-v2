@@ -1055,6 +1055,19 @@ img,svg,canvas{max-width:100%}
  .top .league-select,#league-select{grid-area:league-select!important;align-self:start!important;margin-top:0!important;width:100%}
 }
 </style>
+<style id="fischietto-layout-fix-v15">
+/* Fix the dashboard selector: the second .home-kicker is the third div child. */
+@media(min-width:901px){
+ #home-dashboard>.home-kicker:nth-of-type(3){grid-column:2!important;grid-row:2!important;margin-top:0!important}
+ #home-dashboard>#feature-home{grid-column:1!important;grid-row:2!important}
+ #home-dashboard>#quick-home{grid-column:2!important;grid-row:3!important}
+ #home-dashboard>.home-section{grid-column:1/-1!important;grid-row:4!important}
+}
+@media(max-width:900px){
+ #home-dashboard>.home-kicker:nth-of-type(3){margin-top:24px!important}
+ #home-dashboard>#feature-home,#home-dashboard>#quick-home,#home-dashboard>.home-section{grid-column:auto!important;grid-row:auto!important}
+}
+</style>
 </head>
 <body>
 <header class="top">
