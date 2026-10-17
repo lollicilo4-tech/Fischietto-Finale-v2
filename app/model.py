@@ -152,6 +152,17 @@ def summarize(lh: float, la: float) -> dict:
     r["u25"] = 1 - r["o25"]
     r["ng"] = 1 - r["gg"]
 
+    # Mercati aggiuntivi derivati dalla stessa matrice dei punteggi: nessuna
+    # chiamata API/AI aggiuntiva e probabilità coerenti con il modello esistente.
+    derived = {
+        "Over 0,5": 0.0, "Under 0,5": 0.0,
+        "Over 3,5": 0.0, "Under 4,5": 0.0, "Over 4,5": 0.0,
+        "Casa Over 0,5": 0.0, "Casa Over 1,5": 0.0,
+        "Casa Over 2,5": 0.0, "Casa Over 3,5": 0.0,
+        "Trasferta Over 0,5": 0.0, "Trasferta Over 1,5": 0.0,
+        "Trasferta Over 2,5": 0.0, "Trasferta Over 3,5": 0.0,
+    }
+
     # Mercati combinati: calcolati direttamente dalla matrice dei punteggi,
     # non moltiplicando probabilità marginali. Restano quindi coerenti con
     # lo stesso modello Poisson usato per 1X2, gol e risultati esatti.
