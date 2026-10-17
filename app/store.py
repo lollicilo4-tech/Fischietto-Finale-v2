@@ -92,6 +92,8 @@ def _market_type(code: str) -> str:
         return "1X2"
     if code in ("Gol", "No Gol"):
         return "Gol"
+    if code.startswith("Casa Over") or code.startswith("Trasferta Over"):
+        return "Gol squadra"
     if code.startswith("Over") or code.startswith("Under"):
         return "Over/Under"
     if code == "score":
@@ -114,6 +116,22 @@ def _market_hit(code: str, m: dict, score_code: str | None = None) -> bool:
         return total <= 2
     if code == "Under 3,5":
         return total <= 3
+    if code == "Over 0,5":
+        return total >= 1
+    if code == "Under 0,5":
+        return total == 0
+    if code == "Over 3,5":
+        return total >= 4
+    if code == "Under 4,5":
+        return total <= 4
+    if code == "Over 4,5":
+        return total >= 5
+    if code.startswith("Casa Over "):
+        threshold = {"Casa Over 0,5": 1, "Casa Over 1,5": 2, "Casa Over 2,5": 3, "Casa Over 3,5": 4}.get(code)
+        return m["hg"] >= threshold if threshold is not None else False
+    if code.startswith("Trasferta Over "):
+        threshold = {"Trasferta Over 0,5": 1, "Trasferta Over 1,5": 2, "Trasferta Over 2,5": 3, "Trasferta Over 3,5": 4}.get(code)
+        return m["ag"] >= threshold if threshold is not None else False
     if code == "Gol":
         return m["hg"] > 0 and m["ag"] > 0
     if code == "No Gol":
