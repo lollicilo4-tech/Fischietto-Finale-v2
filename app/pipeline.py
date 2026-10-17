@@ -48,6 +48,13 @@ def _market_predictions(s: dict, recommendation: dict) -> list[dict]:
         ("Under 2,5", p["u25"], "gol"), ("Under 3,5", p["u35"], "gol"),
         ("Gol", p["gg"], "gol"), ("No Gol", p["ng"], "gol"),
     ]
+    for code in (
+        "Over 0,5", "Under 0,5", "Over 3,5", "Under 4,5", "Over 4,5",
+        "Casa Over 0,5", "Casa Over 1,5", "Casa Over 2,5", "Casa Over 3,5",
+        "Trasferta Over 0,5", "Trasferta Over 1,5", "Trasferta Over 2,5", "Trasferta Over 3,5",
+    ):
+        if q.get(code) is not None:
+            items.append((code, q[code], "gol"))
     for code in ("1_o15", "2_o15", "1x_o15", "x2_o15", "1x_u35", "x2_u35", "gg_o25", "ng_u35"):
         if q.get(code) is not None:
             items.append((code, q[code], "combo"))
