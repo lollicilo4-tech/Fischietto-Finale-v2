@@ -138,6 +138,17 @@ def summarize(lh: float, la: float) -> dict:
             total += p
     r = dict(p1=0.0, px=0.0, p2=0.0, o15=0.0, o25=0.0, u35=0.0, gg=0.0)
     scores = []
+    # Mercati aggiuntivi derivati dalla stessa matrice dei punteggi: nessuna
+    # chiamata API/AI aggiuntiva e probabilità coerenti con il modello esistente.
+    derived = {
+        "Over 0,5": 0.0, "Under 0,5": 0.0,
+        "Over 3,5": 0.0, "Under 4,5": 0.0, "Over 4,5": 0.0,
+        "Casa Over 0,5": 0.0, "Casa Over 1,5": 0.0,
+        "Casa Over 2,5": 0.0, "Casa Over 3,5": 0.0,
+        "Trasferta Over 0,5": 0.0, "Trasferta Over 1,5": 0.0,
+        "Trasferta Over 2,5": 0.0, "Trasferta Over 3,5": 0.0,
+    }
+
     for i, j, p in cells:
         q = p / total
         if i > j: r["p1"] += q
@@ -151,17 +162,6 @@ def summarize(lh: float, la: float) -> dict:
     scores.sort(key=lambda s: -s[2])
     r["u25"] = 1 - r["o25"]
     r["ng"] = 1 - r["gg"]
-
-    # Mercati aggiuntivi derivati dalla stessa matrice dei punteggi: nessuna
-    # chiamata API/AI aggiuntiva e probabilità coerenti con il modello esistente.
-    derived = {
-        "Over 0,5": 0.0, "Under 0,5": 0.0,
-        "Over 3,5": 0.0, "Under 4,5": 0.0, "Over 4,5": 0.0,
-        "Casa Over 0,5": 0.0, "Casa Over 1,5": 0.0,
-        "Casa Over 2,5": 0.0, "Casa Over 3,5": 0.0,
-        "Trasferta Over 0,5": 0.0, "Trasferta Over 1,5": 0.0,
-        "Trasferta Over 2,5": 0.0, "Trasferta Over 3,5": 0.0,
-    }
 
     # Mercati combinati: calcolati direttamente dalla matrice dei punteggi,
     # non moltiplicando probabilità marginali. Restano quindi coerenti con
