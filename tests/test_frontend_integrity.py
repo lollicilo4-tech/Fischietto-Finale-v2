@@ -59,5 +59,18 @@ class FrontendIntegrityTests(unittest.TestCase):
             self.assertIn(endpoint, source, f"Endpoint backend rimosso dalla sorgente: {endpoint}")
 
 
+    def test_live_data_requests_bypass_browser_http_cache(self):
+        source = self.read(STATIC_HTML)
+        self.assertEqual(source.count('{ cache: "no-store" }'), 3, "Partite, storico e classifica devono bypassare la cache HTTP")
+
+    def test_service_worker_does_not_cache_dynamic_json(self):
+        for path in (ROOT / "static" / "sw.js", ROOT / "docs" / "sw.js"):
+            with self.subTest(path=path):
+                worker = self.read(path)
+                self.assertIn('const CACHE = "fischietto-v4";', worker)
+                self.assertIn('url.pathname.endsWith(".json")', worker)
+                self.assertIn('fetch(new Request(req, { cache: "no-store" }))', worker)
+
+
 if __name__ == "__main__":
     unittest.main()
