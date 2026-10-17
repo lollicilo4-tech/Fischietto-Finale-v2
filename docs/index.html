@@ -2260,31 +2260,50 @@ function slipReason(x){
     status.textContent = "Caricamento delle partite live…";
     list.innerHTML = "";
     if (refresh) { refresh.disabled = true; refresh.textContent = "Caricamento…"; }
-    fetch("https://sportscore.com/api/v1/fixtures/?sport=football&status=live&limit=50&src=fischietto-finale", {cache:"no-store"})
+    /* The widget endpoint is the documented live + recent feed. The fixtures endpoint
+       can return an empty list when its status filter does not match provider labels. */
+    fetch("https://sportscore.com/api/widget/matches/?sport=football&limit=50&src=fischietto-finale", {cache:"no-store"})
       .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
       .then(function(data) {
         var payload = data && data.data && !Array.isArray(data.data) ? data.data : data;
-        var live = Array.isArray(payload.matches) ? payload.matches : (Array.isArray(payload.fixtures) ? payload.fixtures : (Array.isArray(payload.data) ? payload.data : (Array.isArray(payload.results) ? payload.results : [])));
+        var matches = Array.isArray(payload.matches) ? payload.matches :
+          (Array.isArray(payload.fixtures) ? payload.fixtures :
+          (Array.isArray(payload.data) ? payload.data : (Array.isArray(payload.results) ? payload.results : [])));
+        function matchStatus(m) {
+          return String(m.status_text || m.status_more || m.status || m.phase || "").trim();
+        }
+        function isLive(m) {
+          var s = (String(m.status || "") + " " + String(m.status_text || "") + " " + String(m.status_more || "") + " " + String(m.phase || "")).toLowerCase();
+          return /(live|in[ -]?play|playing|first half|second half|1st half|2nd half|half.?time|halftime|extra.?time|penalt|\bht\b|\b1h\b|\b2h\b|\b45\+|\b90\+)/i.test(s);
+        }
+        var live = matches.filter(isLive);
+        var display = live.length ? live : matches.slice(0, 12);
         status.hidden = true;
-        if (!live.length) {
+        if (!display.length) {
           status.hidden = false;
-          status.innerHTML = '<strong>Nessuna partita live restituita dal feed.</strong><p class="expl">La richiesta è stata completata, ma SportScore non ha restituito incontri live. Riprova tra poco.</p>';
+          status.innerHTML = '<strong>Il feed non ha restituito partite.</strong><p class="expl">Il servizio dati non ha fornito incontri in questo momento. Riprova tra poco con ↻ Aggiorna.</p>';
           return;
         }
-        list.innerHTML = live.map(function(m) {
-          var home = esc(m.home || m.home_team || "Squadra casa"), away = esc(m.away || m.away_team || "Squadra ospite");
+        if (!live.length) {
+          status.hidden = false;
+          status.innerHTML = '<strong>Nessuna partita risulta live nel feed in questo momento.</strong><p class="expl">Per evitare una schermata vuota, mostriamo qui sotto gli ultimi incontri restituiti dal servizio, con il loro stato reale. Non sono presentati come partite in diretta.</p>';
+        }
+        list.innerHTML = display.map(function(m) {
+          var home = esc(m.home || m.home_team || (m.home && m.home.name) || "Squadra casa");
+          var away = esc(m.away || m.away_team || (m.away && m.away.name) || "Squadra ospite");
           var homeScore = m.home_score != null ? m.home_score : (m.score && m.score.home != null ? m.score.home : null);
           var awayScore = m.away_score != null ? m.away_score : (m.score && m.score.away != null ? m.score.away : null);
           var hs = homeScore == null ? "–" : esc(String(homeScore));
           var as = awayScore == null ? "–" : esc(String(awayScore));
-          var phase = esc(m.status_text || m.status_more || m.status || "LIVE");
-          return '<article class="live-match"><div class="live-phase"><span class="live-pulse"></span>' + phase + '</div><div class="live-teams"><div class="live-team">' + (m.home_logo ? '<img loading="lazy" src="' + esc(m.home_logo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + home + '</b></div><div class="live-score">' + hs + '<span>:</span>' + as + '</div><div class="live-team away">' + (m.away_logo ? '<img loading="lazy" src="' + esc(m.away_logo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + away + '</b></div></div></article>';
+          var phase = esc(matchStatus(m) || (live.length ? "LIVE" : "Stato non disponibile"));
+          var liveClass = isLive(m) ? "" : " is-recent";
+          return '<article class="live-match' + liveClass + '"><div class="live-phase">' + (isLive(m) ? '<span class="live-pulse"></span>' : '') + phase + '</div><div class="live-teams"><div class="live-team">' + (m.home_logo ? '<img loading="lazy" src="' + esc(m.home_logo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + home + '</b></div><div class="live-score">' + hs + '<span>:</span>' + as + '</div><div class="live-team away">' + (m.away_logo ? '<img loading="lazy" src="' + esc(m.away_logo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + away + '</b></div></div></article>';
         }).join("");
       })
       .catch(function() {
         liveLoaded = false;
         status.hidden = false;
-        status.innerHTML = '<strong>Feed live momentaneamente non raggiungibile.</strong><p class="expl">Non mostriamo risultati inventati. Puoi riprovare tra poco.</p>';
+        status.innerHTML = '<strong>Feed partite momentaneamente non raggiungibile.</strong><p class="expl">Non mostriamo risultati inventati. Puoi riprovare tra poco.</p>';
       })
       .finally(function() { if (refresh) { refresh.disabled = false; refresh.textContent = "↻ Aggiorna"; } });
   }
