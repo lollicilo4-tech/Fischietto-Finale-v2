@@ -83,6 +83,22 @@ class FrontendIntegrityTests(unittest.TestCase):
                 self.assertIn('url.pathname.endsWith(".json")', worker)
                 self.assertIn('fetch(new Request(req, { cache: "no-store" }))', worker)
 
+    def test_html_navigations_bypass_service_worker_cache(self):
+        """A league URL such as ?league=BL1 must not receive stale cached HTML."""
+        for path in (ROOT / "static" / "sw.js", ROOT / "docs" / "sw.js"):
+            with self.subTest(path=path):
+                worker = self.read(path)
+                navigation_guard = 'if (req.mode === "navigate" || req.destination === "document")'
+                data_guard = 'if (url.pathname.endsWith(".json")'
+                self.assertIn(navigation_guard, worker)
+                self.assertLess(
+                    worker.index(navigation_guard),
+                    worker.index(data_guard),
+                    "Le navigazioni HTML devono bypassare la cache prima del fallback generico",
+                )
+                self.assertIn('fetch(new Request(req, { cache: "no-store" }))', worker)
+                self.assertIn('catch(() => caches.match("./").then((hit) => hit || Response.error()))', worker)
+
 
 if __name__ == "__main__":
     unittest.main()
