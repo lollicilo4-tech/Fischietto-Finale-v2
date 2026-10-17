@@ -2263,15 +2263,22 @@ function slipReason(x){
 
     /* Use the fixtures endpoint filtered to live matches. The widget endpoint also
        returns recent finished games, so it must never be used as a live scoreboard. */
-    fetch("https://sportscore.com/api/widget/matches/?sport=football&limit=50&src=fischietto-finale", {cache:"no-store"})
+    fetch("https://sportscore.com/api/v1/fixtures/?sport=football&status=live&limit=100&src=fischietto-finale", {cache:"no-store"})
       .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
       .then(function(data) {
         var payload = data && data.data && !Array.isArray(data.data) ? data.data : data;
-        var matches = Array.isArray(payload) ? payload :
-          (Array.isArray(payload.fixtures) ? payload.fixtures :
-          (Array.isArray(payload.matches) ? payload.matches :
-          (Array.isArray(payload.data) ? payload.data :
-          (Array.isArray(payload.results) ? payload.results : []))));
+        function arrayFrom(o) {
+          if (Array.isArray(o)) return o;
+          if (!o || typeof o !== "object") return [];
+          if (Array.isArray(o.fixtures)) return o.fixtures;
+          if (Array.isArray(o.matches)) return o.matches;
+          if (Array.isArray(o.results)) return o.results;
+          if (Array.isArray(o.data)) return o.data;
+          if (o.data && typeof o.data === "object") return arrayFrom(o.data);
+          if (o.result && typeof o.result === "object") return arrayFrom(o.result);
+          return [];
+        }
+        var matches = arrayFrom(payload);
 
         function valueText(v) {
           if (v == null) return "";
@@ -2282,16 +2289,14 @@ function slipReason(x){
           var s = m.status || m.fixture_status || m.phase || m.time_status || "";
           return valueText(m.status_text || m.status_more || s).trim();
         }
-        function isLive(m) {
-          var s = m.status || m.fixture_status || {};
-          var raw = [
-            valueText(s), valueText(s.short), valueText(s.long), valueText(s.name),
-            m.status_text, m.status_more, m.phase, m.time_status, m.fixture_status, m.state
-          ].map(valueText).join(" ").toLowerCase().replace(/[_-]+/g, " ");
-          return /\b(live|in play|inplay|playing|1st half|2nd half|first half|second half|half time|halftime|extra time|penalties|penalty shootout|ht|1h|2h|in progress)\b|\b(45|90)\s*\+/i.test(raw);
+        function isExplicitlyFinished(m) {
+          var s = m.status || m.fixture_status || m.phase || m.time_status || m.state || "";
+          var raw = [valueText(s), valueText(s.short), valueText(s.long), valueText(s.name),
+            m.status_text, m.status_more].map(valueText).join(" ").toLowerCase().replace(/[_-]+/g, " ");
+          return /\b(finished|full time|ft|ended|complete|completed|after penalties|cancelled|canceled|postponed|scheduled|upcoming|not started|ns)\b/i.test(raw);
         }
-        /* Never show completed/upcoming fixtures as if they were live. */
-        var live = matches.filter(isLive);
+        /* SportScore has already filtered status=live; reject only explicit non-live records. */
+        var live = matches.filter(function(m) { return !isExplicitlyFinished(m); });
         if (!live.length) {
           status.hidden = false;
           status.innerHTML = '<strong>Nessuna partita in diretta restituita dal servizio.</strong><p class="expl">Il feed live non segnala incontri in corso in questo momento. Premi ↻ Aggiorna tra poco. Le partite concluse non vengono mostrate in questa sezione.</p>';
