@@ -1404,10 +1404,9 @@ td{border-color:#1d3650!important}
   }
   var leagueBtn=e.target.closest("[data-league]");
   if(leagueBtn){
-   var select=document.getElementById("league-select");
-   if(select){select.value=leagueBtn.getAttribute("data-league");select.dispatchEvent(new Event("change",{bubbles:true}));}
-   var matchesBtn=document.getElementById("t-partite");
-   if(matchesBtn)matchesBtn.click();
+   var code=leagueBtn.getAttribute("data-league");
+   /* Carry the destination tab through the league reload so the selected league opens, not Home. */
+   location.href="?league="+encodeURIComponent(code)+"&tab=partite";
   }
  });
 })();
@@ -2242,6 +2241,8 @@ function slipReason(x){
     });
   });
   $("back").addEventListener("click", function () { $("t-home").click(); });
+  /* Restore a requested tab after page initialization, e.g. league cards on Home. */
+  if (new URLSearchParams(location.search).get("tab") === "partite") $("t-partite").click();
 
   Array.prototype.forEach.call(document.querySelectorAll(".tile"), function (b) {
     b.addEventListener("click", function () { $("t-" + b.getAttribute("data-go")).click(); });
