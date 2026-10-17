@@ -1668,6 +1668,31 @@ a{color:#65baff}
 }
 @media(prefers-reduced-motion:reduce){button,.back,.cta{transition:none!important}}
 </style>
+<style id="mobile-contrast-and-h2h-fix-v8">
+#matches .final-prediction{background:linear-gradient(145deg,#182637,#0d1825)!important;color:#edf4fc!important;border-color:#78652e!important}
+#matches .final-prediction .title{color:#ffda64!important}
+#matches .final-prediction .main-outcome .outcome{color:#ffda64!important;line-height:1.08;overflow-wrap:anywhere;text-shadow:0 1px 1px #0008}
+#matches .final-prediction .main-outcome .prob{color:#f6f8fc!important}
+#matches .final-prediction .row{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:10px;align-items:start;color:#b8c8da!important;line-height:1.45}
+#matches .final-prediction .row b{min-width:0;text-align:right;overflow-wrap:anywhere;color:#f6f8fc!important}
+#matches .final-prediction .note{color:#aebed0!important;line-height:1.5;border-top-color:rgba(220,232,245,.18)!important}
+.mc-final.reference-final-card .reference-final-item small{color:#d2dbe6!important;line-height:1.4}
+.mc-final.reference-final-card .reference-final-item b{color:#f6f8fc!important;overflow-wrap:anywhere;line-height:1.25}
+.mc-final.reference-final-card .reference-final-item strong{color:#ffda64!important}
+.res .r.h2h-row{grid-template-columns:76px minmax(0,1fr) auto;gap:8px;align-items:start}
+.res .r.h2h-row small{white-space:nowrap;font-size:11px}
+.res .r.h2h-row span{min-width:0;overflow-wrap:anywhere;line-height:1.4}
+.res .r.h2h-row b{white-space:nowrap;text-align:right}
+@media(max-width:480px){
+#matches .final-prediction{padding:12px}
+#matches .final-prediction .main-outcome{align-items:flex-start;gap:8px}
+#matches .final-prediction .main-outcome .outcome{font-size:clamp(23px,6vw,34px)}
+#matches .final-prediction .main-outcome .prob{font-size:26px}
+#matches .final-prediction .row{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:8px}
+.res .r.h2h-row{grid-template-columns:72px minmax(0,1fr) auto;gap:6px}
+}
+</style>
+
 </head>
 <body>
 <header class="top">
@@ -1853,7 +1878,7 @@ a{color:#65baff}
   function results(m) {
     var h = (m.h2h || []).map(function (x) {
       var d = x.date.slice(8, 10) + "/" + x.date.slice(5, 7) + "/" + x.date.slice(2, 4);
-      return '<div class="r"><small>' + d + "</small><span>" + esc(x.home) + " – " + esc(x.away) + '</span><b>' + esc(x.score) + "</b></div>";
+      return '<div class="r h2h-row"><small>' + d + "</small><span>" + esc(x.home) + " – " + esc(x.away) + '</span><b>' + esc(x.score) + "</b></div>";
     }).join("");
     var l = m.last || {};
     var out = lastRows(l.home, "Ultime di " + m.home) + lastRows(l.away, "Ultime di " + m.away) + (h ? '<div class="t">Ultimi scontri diretti</div>' + h : "");
@@ -2562,23 +2587,3 @@ function slipReason(x){
 
 </body>
 </html>
-
-<style id="mobile-model-card-contrast-and-h2h-v7">
-/* Improve contrast in the final-model card and prevent date/team overlap on narrow screens. */
-.mc-final.reference-final-card .mc-final-main{align-items:flex-start;flex-wrap:wrap;gap:8px 14px}
-.mc-final.reference-final-card .mc-final-main b{color:#f6f8fc!important;text-shadow:0 1px 0 #0008;line-height:1.12!important;overflow-wrap:anywhere}
-.mc-final.reference-final-card .mc-final-main strong{color:#ffda64!important;flex:0 0 auto}
-.mc-final.reference-final-card .row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,auto);gap:10px;align-items:start;color:#aebfd0!important;line-height:1.5}
-.mc-final.reference-final-card .row b{text-align:right;overflow-wrap:anywhere;color:#f3f7fc!important}
-.res .r{grid-template-columns:minmax(72px,88px) minmax(0,1fr) auto;gap:10px;align-items:start}
-.res .r small{white-space:nowrap;font-size:12px}
-.res .r span{min-width:0;overflow-wrap:anywhere;line-height:1.4}
-.res .r b{white-space:nowrap;text-align:right}
-@media(max-width:480px){
- .mc-final.reference-final-card .mc-final-main{display:flex;flex-direction:column;align-items:flex-start}
- .mc-final.reference-final-card .mc-final-main b{font-size:clamp(22px,6vw,30px)!important}
- .mc-final.reference-final-card .row{grid-template-columns:minmax(0,1fr) auto;gap:8px}
- .res .r{grid-template-columns:76px minmax(0,1fr) auto;gap:7px}
- .res .r small{font-size:11px}
-}
-</style>
