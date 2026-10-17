@@ -58,6 +58,18 @@ class FrontendIntegrityTests(unittest.TestCase):
         for endpoint in ("/api/turno", "/api/storico", "/api/classifica"):
             self.assertIn(endpoint, source, f"Endpoint backend rimosso dalla sorgente: {endpoint}")
 
+    def test_published_html_matches_source_except_static_routes(self):
+        source = self.read(STATIC_HTML)
+        expected = source.replace("/api/turno", "turno.json")
+        expected = expected.replace("/api/storico", "storico.json")
+        expected = expected.replace("/api/classifica", "classifica.json")
+        published = self.read(PUBLISHED_HTML)
+        self.assertEqual(
+            published,
+            expected,
+            "docs/index.html deve corrispondere a static/index.html, con solo le rotte adattate a Pages",
+        )
+
 
     def test_live_data_requests_bypass_browser_http_cache(self):
         source = self.read(STATIC_HTML)
