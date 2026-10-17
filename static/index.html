@@ -2260,19 +2260,15 @@ function slipReason(x){
     status.textContent = "Caricamento delle partite live…";
     list.innerHTML = "";
     if (refresh) { refresh.disabled = true; refresh.textContent = "Caricamento…"; }
-    fetch("https://sportscore.com/api/widget/matches/?sport=football&limit=50&src=fischietto-finale", {cache:"no-store"})
+    fetch("https://sportscore.com/api/v1/fixtures/?sport=football&status=live&limit=50&src=fischietto-finale", {cache:"no-store"})
       .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
       .then(function(data) {
-        var all = Array.isArray(data.matches) ? data.matches : (Array.isArray(data.fixtures) ? data.fixtures : (Array.isArray(data.data) ? data.data : []));
-        var live = all.filter(function(m) {
-          var st = String(m.status || "").toLowerCase().replace(/[_-]+/g," ");
-          var label = String(m.status_text || "").toLowerCase();
-          return /live|in play|in progress|first half|second half|half time|extra time|penalt|1st half|2nd half/.test(st + " " + label);
-        });
+        var payload = data && data.data && !Array.isArray(data.data) ? data.data : data;
+        var live = Array.isArray(payload.matches) ? payload.matches : (Array.isArray(payload.fixtures) ? payload.fixtures : (Array.isArray(payload.data) ? payload.data : (Array.isArray(payload.results) ? payload.results : [])));
         status.hidden = true;
         if (!live.length) {
           status.hidden = false;
-          status.innerHTML = '<strong>Nessuna partita live rilevata.</strong><p class="expl">Il feed non segnala incontri in corso in questo momento. Riprova durante le partite.</p>';
+          status.innerHTML = '<strong>Nessuna partita live restituita dal feed.</strong><p class="expl">La richiesta è stata completata, ma SportScore non ha restituito incontri live. Riprova tra poco.</p>';
           return;
         }
         list.innerHTML = live.map(function(m) {
