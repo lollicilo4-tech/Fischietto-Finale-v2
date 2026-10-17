@@ -1733,7 +1733,7 @@ a{color:#65baff}
     </div>
     <div id="live-status" class="panel" role="status" aria-live="polite">Caricamento delle partite live…</div>
     <div id="live-list" class="live-list"></div>
-    <p class="live-attribution">Dati sportivi forniti da <a href="https://sportscore.com/" target="_blank" rel="noopener noreferrer">SportScore</a>.</p>
+    <p class="live-attribution"><a href="https://sportscore.com/" target="_blank" rel="noopener noreferrer">Powered by SportScore</a>.</p>
   </section>
   <section id="p-sicure" role="tabpanel" aria-labelledby="t-sicure" hidden>
     <p class="lead">Per ogni partita il modello sceglie l'esito più probabile. Qui li metti insieme e vedi quanto scende la probabilità complessiva.</p>
@@ -2248,10 +2248,11 @@ function slipReason(x){
       tabs.forEach(function (u) { $("t-" + u).setAttribute("aria-selected", String(u === t)); $("p-" + u).hidden = u !== t; });
       document.body.classList.toggle("inner", t !== "home");
       $("back").hidden = t === "home";
+      if (t !== "live" && liveTimer) { window.clearInterval(liveTimer); liveTimer = null; }
       window.scrollTo(0, 0);
     });
   });
-  var liveLoaded = false;
+  var liveLoaded = false, liveTimer = null;
   function loadLiveMatches(force) {
     var status = $("live-status"), list = $("live-list"), refresh = $("live-refresh");
     if (!status || !list || (!force && liveLoaded)) return;
@@ -2292,7 +2293,13 @@ function slipReason(x){
       })
       .finally(function() { if (refresh) { refresh.disabled = false; refresh.textContent = "↻ Aggiorna"; } });
   }
-  $("t-live").addEventListener("click", function() { loadLiveMatches(false); });
+  $("t-live").addEventListener("click", function() {
+    loadLiveMatches(true);
+    if (liveTimer) window.clearInterval(liveTimer);
+    liveTimer = window.setInterval(function() {
+      if (!document.hidden && !$("p-live").hidden) loadLiveMatches(true);
+    }, 60000);
+  });
   $("live-refresh").addEventListener("click", function() { loadLiveMatches(true); });
 
   $("back").addEventListener("click", function () { $("t-home").click(); });
