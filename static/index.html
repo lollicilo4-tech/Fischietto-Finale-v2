@@ -2275,16 +2275,20 @@ function slipReason(x){
 
         function valueText(v) {
           if (v == null) return "";
-          if (typeof v === "object") return String(v.name || v.short_name || v.label || v.code || "");
+          if (typeof v === "object") return String(v.name || v.short_name || v.short || v.label || v.code || v.long || v.description || "");
           return String(v);
         }
         function matchStatus(m) {
-          return valueText(m.status_text || m.status_more || m.status || m.phase || m.time_status || m.fixture_status).trim();
+          var s = m.status || m.fixture_status || m.phase || m.time_status || "";
+          return valueText(m.status_text || m.status_more || s).trim();
         }
         function isLive(m) {
-          var raw = [m.status, m.status_text, m.status_more, m.phase, m.time_status, m.fixture_status, m.state]
-            .map(valueText).join(" ").toLowerCase().replace(/[_-]+/g, " ");
-          return /\b(live|in play|inplay|playing|1st half|2nd half|first half|second half|half time|halftime|extra time|penalties|penalty shootout|ht|1h|2h)\b|\b(45|90)\s*\+/i.test(raw);
+          var s = m.status || m.fixture_status || {};
+          var raw = [
+            valueText(s), valueText(s.short), valueText(s.long), valueText(s.name),
+            m.status_text, m.status_more, m.phase, m.time_status, m.fixture_status, m.state
+          ].map(valueText).join(" ").toLowerCase().replace(/[_-]+/g, " ");
+          return /\b(live|in play|inplay|playing|1st half|2nd half|first half|second half|half time|halftime|extra time|penalties|penalty shootout|ht|1h|2h|in progress)\b|\b(45|90)\s*\+/i.test(raw);
         }
         /* Never show completed/upcoming fixtures as if they were live. */
         var live = matches.filter(isLive);
