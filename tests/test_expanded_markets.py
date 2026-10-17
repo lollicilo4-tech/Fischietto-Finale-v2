@@ -9,7 +9,7 @@ class ExpandedMarketProbabilityTests(unittest.TestCase):
         markets = result["markets"]
         self.assertAlmostEqual(markets["Over 0,5"] + markets["Under 0,5"], 1.0, places=4)
         self.assertAlmostEqual(result["o15"] + result["u25"], 1.0, places=4)
-        self.assertAlmostEqual(markets["Over 3,5"] + markets["Under 4,5"], 1.0, places=2)
+        self.assertAlmostEqual(markets["Over 3,5"] + result["u35"], 1.0, places=4)
 
     def test_team_goal_markets_are_monotonic(self):
         markets = model.summarize(1.6, 0.8)["markets"]
