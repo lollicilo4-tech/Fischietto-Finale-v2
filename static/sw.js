@@ -1,5 +1,5 @@
 // Prima la rete, poi l'ultima copia salvata: senza connessione l'app mostra l'ultimo turno visto.
-const CACHE = "fischietto-v6";
+const CACHE = "fischietto-v7";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "icon-192.png"];
 
 self.addEventListener("install", (e) => {
@@ -18,6 +18,14 @@ self.addEventListener("fetch", (e) => {
   const req = e.request;
   if (req.method !== "GET" || new URL(req.url).origin !== self.location.origin) return;
   const url = new URL(req.url);
+  // Le navigazioni HTML, incluse le URL ?league=BL1, devono caricare la versione online.
+  if (req.mode === "navigate" || req.destination === "document") {
+    e.respondWith(
+      fetch(new Request(req, { cache: "no-store" }))
+        .catch(() => caches.match("./").then((hit) => hit || Response.error()))
+    );
+    return;
+  }
   // I dati di partite, storico e classifica devono sempre arrivare dalla rete.
   if (url.pathname.endsWith(".json") || /\/api\/(turno|storico|classifica)$/.test(url.pathname)) {
     e.respondWith(fetch(new Request(req, { cache: "no-store" })));
