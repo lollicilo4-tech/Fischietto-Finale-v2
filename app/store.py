@@ -305,8 +305,9 @@ def history(finished: list[dict]) -> dict:
     }
 
     # Metodo di riferimento: usare sempre le frequenze di 1, X, 2 dell'intero campionato
-    tot = len(finished)
-    base = {k: sum(1 for m in finished if _outcome(m) == k) / tot for k in ("1", "X", "2")}
+    # Include all archived outcomes, even when the provider no longer returns them.
+    tot = len(outcomes)
+    base = {k: sum(1 for actual in outcomes if actual == k) / tot for k in ("1", "X", "2")}
     brier_base = sum(sum((base[k] - (1.0 if k == a else 0.0)) ** 2 for k in base) for a in outcomes) / n
     out["brier"] = sum(brier) / n
     out["brier_base"] = brier_base
