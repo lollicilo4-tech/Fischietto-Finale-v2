@@ -1069,6 +1069,27 @@ img,svg,canvas{max-width:100%}
  #home-dashboard>#feature-home,#home-dashboard>#quick-home,#home-dashboard>.home-section{grid-column:auto!important;grid-row:auto!important}
 }
 </style>
+
+<style id="premium-responsive-polish">
+/* Rifinitura progressiva: accessibilità da tastiera e spazi stretti. */
+.nav button:focus-visible,
+.back:focus-visible,
+button:focus-visible,
+a:focus-visible,
+select:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline:2px solid var(--ff-blue,#35a7ff)!important;
+  outline-offset:3px!important;
+  box-shadow:0 0 0 3px rgba(53,167,255,.16)!important;
+}
+.nav button { touch-action:manipulation; }
+@media (max-width:380px) {
+  .model-score-grid { grid-template-columns:minmax(0,1fr)!important; }
+  .model-score-mini { padding:11px 13px!important; }
+  .nav button { padding-left:2px!important; padding-right:2px!important; }
+}
+</style>
 </head>
 <body>
 <header class="top">
