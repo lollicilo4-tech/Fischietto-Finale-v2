@@ -792,6 +792,57 @@ details.match summary{touch-action:manipulation}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
 }
+
+/* Premium desktop/mobile polish — presentation only, no API or model changes */
+:root:not([data-theme="light"]),:root[data-theme="dark"]{
+  --bg:#050b14;--surface:#0b1625;--surface2:#102238;--line:#203b59;
+  --fg:#edf5ff;--muted:#9bb0c8;--home:#168bff;--link:#65b7ff;
+  --good:#36d399;--gold:#f5c84b;--gold-ink:#171200;
+}
+html{scroll-behavior:smooth}
+body{width:min(100% - 28px,1480px);max-width:1480px;margin:0 auto;padding:22px 0 104px;background:radial-gradient(ellipse at 50% -15%,#12345b 0, var(--bg) 55%);line-height:1.55}
+.top{padding:18px 20px 22px;margin-bottom:18px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(125deg,rgba(15,39,67,.96),rgba(7,17,30,.96));box-shadow:0 14px 40px #0004}
+.top h1{font-size:clamp(32px,4vw,52px);letter-spacing:.015em}
+main{min-width:0}
+main>section{min-width:0}
+.hero,details.match,.msg,.card,.panel,.stat,.table-wrap{box-shadow:0 8px 24px #0002}
+button,a,summary{touch-action:manipulation}
+button{transition:transform .16s ease,border-color .16s ease,background-color .16s ease}
+button:hover{border-color:var(--home)}
+button:active{transform:translateY(1px)}
+:where(input,select,textarea,button,summary,a):focus-visible{outline:3px solid var(--link);outline-offset:3px}
+img,svg,canvas{max-width:100%}
+table{width:100%;border-collapse:separate;border-spacing:0}
+th,td{overflow-wrap:anywhere}
+.nav{max-width:1480px;width:min(100%,1480px);padding:8px max(10px,env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));background:rgba(5,11,20,.94);border:1px solid var(--line);border-bottom:0;border-radius:16px 16px 0 0;backdrop-filter:blur(16px)}
+@media(min-width:760px){
+ body{padding-bottom:34px}
+ .top{position:relative;display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:24px;padding:22px 28px}
+ .top h1{max-width:52%;font-size:clamp(36px,3.5vw,54px)}
+ .top .sub{max-width:46%;font-size:15px}
+ main>section:not([hidden]){animation:premium-in .22s ease-out both}
+ .nav{position:sticky;bottom:12px;left:auto;transform:none;width:max-content;max-width:100%;margin:22px auto 0;border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 36px #0008}
+ .nav button{min-width:86px;padding:10px 14px}
+ .list{gap:14px}
+ details.match summary{padding:16px 18px}
+ .hero{padding:clamp(20px,3vw,34px)}
+}
+@media(min-width:1100px){
+ body{width:min(100% - 48px,1480px)}
+ main>section:not([hidden]){max-width:100%}
+ .top{margin-top:12px}
+ .nav button{min-width:104px}
+}
+@media(max-width:759px){
+ body{width:calc(100% - 20px);padding-top:10px;padding-bottom:100px}
+ .top{padding:14px;border-radius:14px}
+ .top h1{font-size:clamp(30px,9vw,42px)}
+ .nav{width:100%;border-radius:14px 14px 0 0}
+ button{min-height:40px}
+}
+@keyframes premium-in{from{opacity:.7;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
 </style>
 </head>
 <body>
