@@ -2263,7 +2263,7 @@ function slipReason(x){
 
     /* Use the fixtures endpoint filtered to live matches. The widget endpoint also
        returns recent finished games, so it must never be used as a live scoreboard. */
-    fetch("https://sportscore.com/api/v1/fixtures/?sport=football&status=live&limit=100&src=fischietto-finale", {cache:"no-store"})
+    fetch("https://sportscore.com/api/widget/matches/?sport=football&limit=50&src=fischietto-finale", {cache:"no-store"})
       .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
       .then(function(data) {
         var payload = data && data.data && !Array.isArray(data.data) ? data.data : data;
@@ -2289,14 +2289,15 @@ function slipReason(x){
           var s = m.status || m.fixture_status || m.phase || m.time_status || "";
           return valueText(m.status_text || m.status_more || s).trim();
         }
-        function isExplicitlyFinished(m) {
+        function isLiveMatch(m) {
           var s = m.status || m.fixture_status || m.phase || m.time_status || m.state || "";
           var raw = [valueText(s), valueText(s.short), valueText(s.long), valueText(s.name),
-            m.status_text, m.status_more].map(valueText).join(" ").toLowerCase().replace(/[_-]+/g, " ");
-          return /\b(finished|full time|ft|ended|complete|completed|after penalties|cancelled|canceled|postponed|scheduled|upcoming|not started|ns)\b/i.test(raw);
+            m.status_text, m.status_more, m.time_status].map(valueText).join(" ").toLowerCase().replace(/[_-]+/g, " ");
+          return /\b(live|in progress|in play|playing|first half|second half|half time|halftime|extra time|penalties|penalty shootout|1h|2h|ht|et|pens|inplay)\b/i.test(raw);
         }
-        /* SportScore has already filtered status=live; reject only explicit non-live records. */
-        var live = matches.filter(function(m) { return !isExplicitlyFinished(m); });
+        /* The documented SportScore endpoint returns live AND recent matches.
+           Only show records whose status explicitly indicates a match in progress. */
+        var live = matches.filter(isLiveMatch);
         if (!live.length) {
           status.hidden = false;
           status.innerHTML = '<strong>Nessuna partita in diretta restituita dal servizio.</strong><p class="expl">Il feed live non segnala incontri in corso in questo momento. Premi ↻ Aggiorna tra poco. Le partite concluse non vengono mostrate in questa sezione.</p>';
