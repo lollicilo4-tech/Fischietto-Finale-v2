@@ -2260,10 +2260,10 @@ function slipReason(x){
     status.textContent = "Caricamento delle partite live…";
     list.innerHTML = "";
     if (refresh) { refresh.disabled = true; refresh.textContent = "Caricamento…"; }
-    fetch("https://sportscore.com/api/widget/matches/?sport=football&limit=50&src=fischietto-finale", {cache:"no-store"})
+    fetch("https://sportscore.com/api/v1/fixtures/?sport=football&status=live&limit=50&src=fischietto-finale", {cache:"no-store"})
       .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
       .then(function(data) {
-        var all = Array.isArray(data.matches) ? data.matches : [];
+        var all = Array.isArray(data.matches) ? data.matches : (Array.isArray(data.fixtures) ? data.fixtures : (Array.isArray(data.data) ? data.data : []));
         var live = all.filter(function(m) {
           var st = String(m.status || "").toLowerCase().replace(/[_-]+/g," ");
           var label = String(m.status_text || "").toLowerCase();
@@ -2276,10 +2276,12 @@ function slipReason(x){
           return;
         }
         list.innerHTML = live.map(function(m) {
-          var home = esc(m.home || "Squadra casa"), away = esc(m.away || "Squadra ospite");
-          var hs = m.home_score == null ? "–" : esc(String(m.home_score));
-          var as = m.away_score == null ? "–" : esc(String(m.away_score));
-          var phase = esc(m.status_text || m.status || "LIVE");
+          var home = esc(m.home || m.home_team || "Squadra casa"), away = esc(m.away || m.away_team || "Squadra ospite");
+          var homeScore = m.home_score != null ? m.home_score : (m.score && m.score.home != null ? m.score.home : null);
+          var awayScore = m.away_score != null ? m.away_score : (m.score && m.score.away != null ? m.score.away : null);
+          var hs = homeScore == null ? "–" : esc(String(homeScore));
+          var as = awayScore == null ? "–" : esc(String(awayScore));
+          var phase = esc(m.status_text || m.status_more || m.status || "LIVE");
           return '<article class="live-match"><div class="live-phase"><span class="live-pulse"></span>' + phase + '</div><div class="live-teams"><div class="live-team">' + (m.home_logo ? '<img loading="lazy" src="' + esc(m.home_logo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + home + '</b></div><div class="live-score">' + hs + '<span>:</span>' + as + '</div><div class="live-team away">' + (m.away_logo ? '<img loading="lazy" src="' + esc(m.away_logo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + away + '</b></div></div></article>';
         }).join("");
       })
