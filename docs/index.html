@@ -1090,6 +1090,86 @@ textarea:focus-visible {
   .nav button { padding-left:2px!important; padding-right:2px!important; }
 }
 </style>
+
+<style id="reference-dashboard-restyle-v2">
+/* Layout pass inspired by the supplied desktop/mobile dashboard reference.
+   Presentation only: existing IDs, data rendering, routes and model stay intact. */
+:root:not([data-theme="light"]),:root[data-theme="dark"]{
+ --bg:#040914;--surface:#091626;--surface2:#0d2035;--line:#1d3b5c;
+ --home:#168bff;--link:#66baff;--good:#39d9a0;--gold:#ffd04d;--gold-ink:#171200;
+}
+body{background:radial-gradient(ellipse at 50% -12%,#123c68 0%,#071221 38%,#040914 76%)!important}
+.top{border-color:#244b72!important;background:linear-gradient(120deg,#102b49 0%,#091a2c 58%,#07111f 100%)!important}
+.top h1{text-transform:uppercase;letter-spacing:.035em}
+.league-select{font-weight:750}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tags>*{border-radius:999px}
+.home-kicker{margin-top:22px}
+.tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tile{border-radius:15px!important;background:linear-gradient(145deg,#10253d,#091523)!important}
+.tile svg{color:var(--home);flex:0 0 28px}
+.tile b{font-size:15px}
+.tile small{line-height:1.4}
+#feature-home .hero{min-height:0}
+#quick-home,.quick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#strong-home,.home-list{display:grid;gap:9px}
+.match-center{border-radius:19px!important;border-color:#244b72!important}
+.match-center .mc-final,.final-model,.model-prediction{border-color:#b78e27}
+.panel,.card,.stat,.table-wrap,.hist-hero{border-color:var(--line)!important;border-radius:16px}
+.table{font-variant-numeric:tabular-nums}
+.table th{color:#9bb5d0;text-transform:uppercase;font-size:10px;letter-spacing:.07em}
+.table td{border-color:#18304a}
+.nav{z-index:50}
+@media(min-width:760px){
+ body{padding-top:86px!important}
+ .nav{position:fixed!important;top:10px!important;bottom:auto!important;left:50%!important;transform:translateX(-50%)!important;
+ width:min(calc(100% - 48px),1480px)!important;display:flex;justify-content:center;gap:5px;
+ margin:0!important;padding:7px 12px!important;border:1px solid #24415f!important;border-radius:14px!important;
+ background:rgba(4,10,20,.94)!important;box-shadow:0 12px 34px #0009;backdrop-filter:blur(18px)}
+ .nav button{min-width:88px!important}
+ .top{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(260px,.7fr);align-items:center;column-gap:26px}
+ .toprow{grid-column:1}
+ .top .sub{grid-column:1}
+ .top .league-label,.top .league-select,.top .tags,.top #aierr{grid-column:2}
+ .top .league-label{grid-row:1;align-self:end}
+ .top .league-select{grid-row:2;align-self:start}
+ .top .tags{grid-row:3}
+ .top #aierr{grid-row:4}
+ #p-home:not([hidden]) .tiles{grid-template-columns:repeat(5,minmax(0,1fr))}
+ #p-home:not([hidden]) .tile{min-height:120px!important}
+ #p-home:not([hidden]) .tile[style*="grid-column"]{grid-column:auto!important}
+ #p-home:not([hidden]) #home-dashboard[hidden]{display:none}
+ #p-home:not([hidden]) #home-dashboard:not([hidden]){display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:0 18px}
+ #p-home:not([hidden]) #home-dashboard>.home-kicker:first-child,
+ #p-home:not([hidden]) #feature-home{grid-column:span 7}
+ #p-home:not([hidden]) #home-dashboard>.home-kicker:nth-of-type(2),
+ #p-home:not([hidden]) #quick-home{grid-column:span 5}
+ #p-home:not([hidden]) #home-dashboard>.home-section{grid-column:1/-1}
+ #p-partite:not([hidden]) #matches{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+ #p-partite:not([hidden]) #matches .match{height:max-content}
+}
+@media(min-width:1120px){
+ body{width:min(100% - 48px,1480px)}
+ #p-home:not([hidden]) .tiles{gap:14px}
+ #p-partite:not([hidden]) #matches{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:759px){
+ body{width:calc(100% - 20px)!important;padding-top:10px!important}
+ .top{padding:15px!important}
+ .top:after{width:170px;height:170px;right:-65px;top:-70px}
+ .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #p-home .tile[style*="grid-column"]{grid-column:1/-1!important}
+ #quick-home,.quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .home-kicker{margin-top:20px}
+ .nav{padding-bottom:calc(7px + env(safe-area-inset-bottom))!important}
+}
+@media(max-width:380px){
+ .tiles{gap:7px}
+ .tile{padding:12px!important}
+ .tile b{font-size:13px}
+}
+</style>
+
 </head>
 <body>
 <header class="top">
