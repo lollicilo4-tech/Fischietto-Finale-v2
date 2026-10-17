@@ -1567,6 +1567,24 @@ td{border-color:#1d3650!important}
  #p-classifica #table table{min-width:480px}
 }
 </style>
+<style id="final-prediction-contrast-fix-v1">
+/* Keep the final model prediction readable when the card uses the dark match-center theme. */
+#matches .final-prediction {
+  background: linear-gradient(145deg, #182637, #0d1825) !important;
+  color: #edf4fc !important;
+  border-color: #78652e !important;
+}
+#matches .final-prediction .title { color: #ffda64 !important; }
+#matches .final-prediction .main-outcome .outcome { color: #ffda64 !important; }
+#matches .final-prediction .main-outcome .prob { color: #f6f8fc !important; }
+#matches .final-prediction .row { color: #b8c8da !important; }
+#matches .final-prediction .row b,
+#matches .final-prediction .row .num { color: #f6f8fc !important; }
+#matches .final-prediction .note {
+  color: #aebed0 !important;
+  border-top-color: rgba(220, 232, 245, .18) !important;
+}
+</style>
 </head>
 <body>
 <header class="top">
