@@ -1522,6 +1522,51 @@ td{border-color:#1d3650!important}
  #matches .mc-stat{padding:9px}
 }
 </style>
+
+<style id="secondary-sections-premium-v6">
+/* Consistent dashboard treatment for safe picks, slips, history and league table. */
+#p-sicure,#p-schedina,#p-storico,#p-classifica{color:#edf4ff}
+#p-sicure>.lead,#p-schedina>.lead,#p-storico>.lead{max-width:900px;margin:0 0 14px;color:#9bb2cb;font-size:12px;line-height:1.65}
+#p-sicure .seg,#p-schedina .slip-toggle{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:12px 0}
+#p-sicure .seg button,#p-schedina .slip-toggle button{border:1px solid #2b4d70!important;border-radius:9px!important;background:#0a1a2c!important;color:#b7cbe0!important;padding:9px 12px!important;font-weight:750!important;transition:background .15s,border-color .15s}
+#p-sicure .seg button[aria-pressed="true"],#p-schedina .slip-toggle button[aria-pressed="true"],#p-sicure .seg button.active,#p-schedina .slip-toggle button.active{background:linear-gradient(135deg,#087cf4,#0759b4)!important;border-color:#48a6ff!important;color:#fff!important;box-shadow:0 4px 14px #087cf42b}
+#p-sicure .panel,#p-schedina .panel,#p-storico .panel,#p-classifica .panel{padding:15px!important;border:1px solid #203e60!important;border-radius:14px!important;background:linear-gradient(145deg,#0c2035,#071321)!important;box-shadow:0 10px 28px #0002!important}
+#p-sicure #combo{margin:14px 0!important}
+#p-sicure #combo .msg,#p-schedina #slip .msg,#p-storico .msg,#p-classifica .msg{border:1px dashed #294a69;border-radius:10px;padding:14px;color:#9cb4cc;background:#081727}
+#p-sicure #decay{display:grid;gap:9px;margin:14px 0}
+#p-sicure #decay>*{min-width:0}
+#p-schedina #slip{display:grid;gap:12px;margin-top:13px}
+#p-schedina #slip>*,#p-schedina #slip .slip-card{min-width:0;border:1px solid #244768!important;border-radius:13px!important;background:linear-gradient(145deg,#0d2239,#071321)!important;box-shadow:0 8px 22px #0002}
+#p-schedina #slip .slip-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid #203e60}
+#p-schedina #slip .slip-head b{color:#ffd34f}
+#p-storico .hist-hero{padding:16px!important;border:1px solid #315679!important;border-radius:14px!important;background:radial-gradient(ellipse at 100% 0%,#15507b55,transparent 45%),linear-gradient(120deg,#102b47,#071321)!important;margin-bottom:12px}
+#p-storico .sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:12px 0}
+#p-storico .sum>*{min-width:0;padding:12px;border:1px solid #234362;border-radius:11px;background:#0a1b2d}
+#p-storico .sum strong,#p-storico .sum b{font-variant-numeric:tabular-nums}
+#p-storico #quality{margin:12px 0}
+#p-storico .perf-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+#p-storico .perf-head h2{margin:0;font-size:17px}
+#p-storico .perf-head small{color:#8fa8c2;font-size:10px}
+#p-storico .hist{overflow-x:auto;max-width:100%}
+#p-storico .hist table{min-width:560px;width:100%;border-collapse:collapse}
+#p-storico .hist th{background:#0d2239;color:#9db6d0;text-align:left;font-size:10px;letter-spacing:.06em;text-transform:uppercase}
+#p-storico .hist td,#p-storico .hist th{padding:10px;border-bottom:1px solid #1e3954}
+#p-classifica #table{max-width:100%;overflow-x:auto}
+#p-classifica #table table{min-width:520px;width:100%;border-collapse:collapse}
+#p-classifica #table th{position:sticky;top:0;background:#0d2239;color:#9db6d0;text-align:left;font-size:10px;letter-spacing:.06em;text-transform:uppercase;z-index:1}
+#p-classifica #table td,#p-classifica #table th{padding:10px 9px;border-bottom:1px solid #1e3954}
+#p-classifica #table tbody tr:nth-child(even){background:#ffffff04}
+#p-classifica #table tbody tr:hover{background:#1687ff12}
+#p-classifica .legend{margin-top:10px;color:#8fa8c2;font-size:10px}
+@media(max-width:759px){
+ #p-sicure .panel,#p-schedina .panel,#p-storico .panel,#p-classifica .panel{padding:11px!important}
+ #p-sicure .seg button,#p-schedina .slip-toggle button{padding:8px 10px!important;font-size:12px}
+ #p-storico .sum{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ #p-storico .hist-hero{padding:12px!important}
+ #p-storico .perf-head{align-items:flex-start;flex-direction:column}
+ #p-classifica #table table{min-width:480px}
+}
+</style>
 </head>
 <body>
 <header class="top">
