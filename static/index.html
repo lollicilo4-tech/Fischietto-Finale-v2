@@ -844,6 +844,64 @@ th,td{overflow-wrap:anywhere}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
 </style>
+
+<style id="premium-restyle-v11">
+/* Restyling visibile: superfici editoriali, card più nette e home a dashboard. */
+:root:not([data-theme="light"]),:root[data-theme="dark"]{
+ --bg:#050914;--surface:#0b1422;--surface2:#101f32;--line:#243b57;
+ --home:#36a4ff;--link:#7bc2ff;--good:#43dfaa;--gold:#ffd04d;--gold-ink:#191300;
+}
+body{background:radial-gradient(ellipse at 50% 0%,#12345a 0%,#070e19 38%,var(--bg) 78%)!important}
+.top{position:relative;overflow:hidden;border:1px solid #274768!important;border-radius:22px!important;
+ background:linear-gradient(135deg,#102b49 0%,#091522 58%,#0a111c 100%)!important;
+ box-shadow:0 18px 42px #0006,inset 0 1px #ffffff0d!important}
+.top:after{content:"";position:absolute;right:-70px;top:-100px;width:230px;height:230px;border:1px solid #36a4ff35;border-radius:50%;box-shadow:0 0 0 24px #36a4ff08,0 0 0 50px #36a4ff05;pointer-events:none}
+.top h1{letter-spacing:.025em!important;text-shadow:0 4px 24px #36a4ff18}
+.top .sub{font-size:clamp(14px,2vw,17px)!important}
+.league-select,select{border-radius:13px!important;border-color:#315780!important;background-color:#0b1929!important}
+.home-kicker{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:28px 2px 14px}
+.home-kicker h2{font-size:clamp(22px,3vw,30px)!important;letter-spacing:.015em}
+.home-kicker>span{color:var(--gold)!important;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.hero{position:relative;overflow:hidden;border:1px solid #28517b!important;border-radius:24px!important;
+ background:linear-gradient(145deg,#102d4c 0%,#0c1b2d 48%,#111a2a 100%)!important;
+ box-shadow:0 18px 44px #0005,inset 0 1px #ffffff0c!important}
+.hero:after{content:"";position:absolute;right:-65px;top:-85px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,#36a4ff20,transparent 68%);pointer-events:none}
+.hero .badge{box-shadow:0 5px 18px #ffd04d20}
+.hero .cta{box-shadow:0 7px 18px #ffd04d22!important;border-radius:13px!important}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.tile{min-width:0!important;min-height:112px!important;display:flex!important;align-items:flex-start!important;gap:13px!important;
+ padding:17px!important;text-align:left!important;border:1px solid #233c59!important;border-radius:17px!important;
+ background:linear-gradient(145deg,#101f32,#0a1421)!important;box-shadow:0 8px 22px #0002!important}
+.tile.main{border-color:#267bc0!important;background:linear-gradient(145deg,#12395d,#0c1d30)!important}
+.tile svg{flex:0 0 24px;color:var(--home)!important;width:24px!important;height:24px!important}
+.tile b{display:block;font-size:15px!important;color:var(--fg)!important}
+.tile small{display:block;margin-top:5px;color:var(--muted)!important;line-height:1.4}
+.quick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.home-list{display:grid;gap:12px}
+details.match{border-radius:16px!important;border-color:#223b57!important;background:linear-gradient(145deg,#0d1928,#0a121e)!important;overflow:hidden}
+details.match[open]{border-color:#2c6595!important;box-shadow:0 12px 30px #0003!important}
+.nav{box-shadow:0 -8px 30px #0003,0 12px 34px #0007!important}
+.nav button[aria-selected="true"]{background:linear-gradient(180deg,#15334f,#0d1b2b)!important;border-radius:13px!important}
+table tr:hover td{background:#14263a}
+@media(min-width:760px){
+ .top{padding:28px 32px!important;min-height:210px}
+ #home-dashboard:not([hidden]){display:block}
+ .tiles{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .tile[style*="grid-column"]{grid-column:auto!important}
+ .quick-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .hero{padding:clamp(24px,3vw,38px)!important}
+}
+@media(max-width:480px){
+ .top{padding:18px 16px!important}
+ .home-kicker{margin-top:24px}
+ .tiles{gap:9px}
+ .tile{padding:13px!important;min-height:104px!important;gap:9px!important}
+ .tile svg{width:21px!important;height:21px!important;flex-basis:21px!important}
+ .tile b{font-size:14px!important}
+ .quick-grid{gap:8px}
+}
+</style>
+
 </head>
 <body>
 <header class="top">
