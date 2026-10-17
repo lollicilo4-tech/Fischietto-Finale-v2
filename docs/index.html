@@ -1048,6 +1048,13 @@ img,svg,canvas{max-width:100%}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style>
 
+<style id="fischietto-header-grid-fix-v14">
+@media(min-width:901px){
+ .top{grid-template-areas:"brand league-label" "sub league-select" "tags tags" "err err"!important;grid-template-columns:minmax(0,1fr) minmax(260px,.7fr)!important}
+ .top .league-label{grid-area:league-label!important;align-self:end!important}
+ .top .league-select,#league-select{grid-area:league-select!important;align-self:start!important;margin-top:0!important;width:100%}
+}
+</style>
 </head>
 <body>
 <header class="top">
