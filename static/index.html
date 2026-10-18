@@ -665,6 +665,28 @@ main{max-width:1040px!important;margin:0 auto!important;padding-bottom:110px!imp
 }
 
 
+/* Live match centre dashboard */
+.live-match-centre{margin-top:14px;border:1px solid rgba(83,153,255,.2);border-radius:18px;overflow:hidden;background:linear-gradient(155deg,#101f3d,#08111e)}
+.live-centre-scoreboard{padding:18px 12px 15px;background:radial-gradient(ellipse at 50% 0%,rgba(49,111,210,.22),transparent 70%),#101a39}
+.live-centre-meta{display:flex;justify-content:center;align-items:center;gap:7px;color:#91a8ca;font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.live-centre-live{width:7px;height:7px;border-radius:50%;background:#ff4c61;box-shadow:0 0 10px #ff4c61}
+.live-centre-scoreline{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:center;margin-top:15px}
+.live-centre-team{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;min-width:0;font-weight:750;font-size:.82rem;line-height:1.25}
+.live-centre-team img{width:38px;height:38px;object-fit:contain}
+.live-centre-team span{overflow-wrap:anywhere}
+.live-centre-score{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:2rem;font-weight:900;letter-spacing:.06em;white-space:nowrap}
+.live-centre-score small{font-size:.7rem;letter-spacing:0;color:#9cb3d2;font-weight:700}
+.live-centre-tabs{display:flex;gap:5px;padding:10px;overflow-x:auto;border-bottom:1px solid rgba(125,160,203,.14);scrollbar-width:none}
+.live-centre-tabs button{flex:0 0 auto;border:1px solid transparent;border-radius:10px;background:transparent;color:#93a8c5;padding:9px 12px;font:inherit;font-size:.78rem;font-weight:700;cursor:pointer}
+.live-centre-tabs button[aria-selected=true]{background:rgba(54,132,255,.14);border-color:rgba(74,151,255,.3);color:#a8d2ff}
+.live-centre-panel{padding:12px}.live-centre-panel[hidden]{display:none!important}
+.live-centre-overview{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.live-centre-info{padding:12px;border:1px solid rgba(117,155,201,.14);border-radius:12px;background:rgba(255,255,255,.025);min-width:0}
+.live-centre-info small{display:block;color:#91a7c4;font-size:.7rem;margin-bottom:5px}
+.live-centre-info b{display:block;overflow-wrap:anywhere;font-size:.84rem}
+.live-centre-empty{padding:18px 12px;text-align:center;color:#9eb0c8;font-size:.82rem;line-height:1.5}
+.live-centre-panel .live-events{margin:0}
+@media(min-width:600px){.live-centre-scoreboard{padding:22px}.live-centre-team{font-size:.95rem}.live-centre-team img{width:46px;height:46px}.live-centre-score{font-size:2.4rem}.live-centre-panel{padding:16px}}
 /* Live Center event timeline refresh */
 .live-events{margin:16px 0 4px;padding:18px 16px 12px;border:1px solid rgba(75,157,255,.22);border-radius:18px;background:linear-gradient(145deg,rgba(17,38,61,.96),rgba(7,18,31,.98));box-shadow:inset 0 1px 0 rgba(255,255,255,.035)}
 .live-events h4{display:flex;align-items:center;gap:9px;margin:0 0 16px;font-size:1rem;font-weight:700;letter-spacing:.015em}
