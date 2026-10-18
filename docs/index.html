@@ -1751,7 +1751,8 @@ a{color:#65baff}
       <button id="live-refresh" type="button" class="live-refresh">↻ Aggiorna</button>
     </div>
     <div id="live-status" class="panel" role="status" aria-live="polite">Caricamento delle partite live…</div>
-    <div class="live-controls"><label for="live-league">Campionato</label><select id="live-league"><option value="all">Tutti i campionati</option></select></div>
+    <div class="live-controls"><div class="live-filter-field"><label for="live-league">Campionato</label><select id="live-league" aria-label="Filtra per campionato"><option value="all">Tutti i campionati</option></select></div><div class="live-filter-field live-search-field"><label for="live-search">Cerca squadra o lega</label><input id="live-search" type="search" placeholder="Es. Inter, Arsenal, Champions…" autocomplete="off" aria-label="Cerca una squadra o un campionato"></div></div>
+    <div id="live-filter-empty" class="panel" role="status" hidden>Nessuna partita live corrisponde ai filtri selezionati.</div>
     <div id="live-list" class="live-list"></div>
     <p class="live-attribution">Dati sportivi forniti da <a class="sportscore-credit" href="https://sportscore.com/" target="_blank" rel="noopener noreferrer" aria-label="Powered by SportScore — apri il sito SportScore">Powered by SportScore ↗</a></p>
   </section>
@@ -2317,21 +2318,58 @@ function slipReason(x){
         }
         /* Keep a client-side guard as a second check even with status=live from the API. */
         var live = matches.filter(isLiveMatch);
+        var leagueSelect = $("live-league");
+        var searchInput = $("live-search");
+        var filterEmpty = $("live-filter-empty");
+        var majorLeagues = [
+          {key:"serie-a",label:"🇮🇹 Serie A"},
+          {key:"premier-league",label:"🏴 Premier League"},
+          {key:"laliga",label:"🇪🇸 LaLiga"},
+          {key:"bundesliga",label:"🇩🇪 Bundesliga"},
+          {key:"ligue-1",label:"🇫🇷 Ligue 1"},
+          {key:"champions-league",label:"🏆 Champions League"},
+          {key:"europa-league",label:"🏆 Europa League"},
+          {key:"serie-b",label:"🇮🇹 Serie B"},
+          {key:"eredivisie",label:"🇳🇱 Eredivisie"},
+          {key:"liga-portugal",label:"🇵🇹 Liga Portugal"}
+        ];
+        function liveLeagueKey(name) {
+          var n = String(name || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
+          if (/serie a|italian serie a/.test(n)) return "serie-a";
+          if (/premier league/.test(n)) return "premier-league";
+          if (/champions league/.test(n)) return "champions-league";
+          if (/europa league/.test(n)) return "europa-league";
+          if (/bundesliga/.test(n)) return "bundesliga";
+          if (/laliga|la liga|primera division/.test(n)) return "laliga";
+          if (/ligue 1/.test(n)) return "ligue-1";
+          if (/serie b/.test(n)) return "serie-b";
+          if (/eredivisie/.test(n)) return "eredivisie";
+          if (/liga portugal|primeira liga/.test(n)) return "liga-portugal";
+          return "other:" + n;
+        }
+        var feedLeagues = {};
+        live.forEach(function(m) {
+          var name = valueText(m.league || m.competition || m.tournament || m.league_name || m.competition_name) || "Competizione non disponibile";
+          var key = liveLeagueKey(name);
+          if (!feedLeagues[key]) feedLeagues[key] = name;
+        });
+        if (leagueSelect) {
+          var presetOptions = majorLeagues.map(function(item){return '<option value="' + item.key + '">' + esc(item.label) + '</option>';}).join("");
+          var extraOptions = Object.keys(feedLeagues).filter(function(key) {
+            return !majorLeagues.some(function(item){return item.key === key;});
+          }).sort(function(a,b){return feedLeagues[a].localeCompare(feedLeagues[b]);}).map(function(key) {
+            return '<option value="' + esc(key) + '">' + esc(feedLeagues[key]) + '</option>';
+          }).join("");
+          leagueSelect.innerHTML = '<option value="all">Tutti i campionati</option>' + presetOptions + extraOptions;
+        }
         if (!live.length) {
           status.hidden = false;
-          status.innerHTML = '<strong>Nessuna partita in diretta restituita dal servizio.</strong><p class="expl">Il feed live non segnala incontri in corso in questo momento. Premi ↻ Aggiorna tra poco. Le partite concluse non vengono mostrate in questa sezione.</p>';
+          status.innerHTML = '<strong>Nessuna partita in diretta restituita dal servizio.</strong><p class="expl">Il feed live non segnala incontri in corso in questo momento. Puoi comunque scegliere una lega o cercare una squadra; le partite concluse non vengono mostrate in questa sezione.</p>';
           list.innerHTML = "";
+          if (filterEmpty) filterEmpty.hidden = true;
           return;
         }
         status.hidden = true;
-        var leagueSelect = $("live-league");
-        var leagueNames = [];
-        live.forEach(function(m) {
-          var name = valueText(m.league || m.competition || m.tournament || m.league_name || m.competition_name) || "Competizione non disponibile";
-          if (leagueNames.indexOf(name) === -1) leagueNames.push(name);
-        });
-        leagueNames.sort(function(a,b){return a.localeCompare(b);});
-        if (leagueSelect) leagueSelect.innerHTML = '<option value="all">Tutti i campionati</option>' + leagueNames.map(function(name){return '<option value="' + esc(name) + '">' + esc(name) + '</option>';}).join("");
         list.innerHTML = live.map(function(m) {
           var homeObj = m.home || m.home_team || m.homeTeam || m.localteam || m.home_participant;
           var awayObj = m.away || m.away_team || m.awayTeam || m.visitorteam || m.away_participant;
@@ -2344,6 +2382,8 @@ function slipReason(x){
           var as = awayScore == null ? "–" : esc(String(awayScore));
           var phase = esc(matchStatus(m) || "LIVE");
           var league = valueText(m.league || m.competition || m.tournament || m.league_name || m.competition_name) || "Competizione non disponibile";
+          var leagueKey = liveLeagueKey(league);
+          var searchText = (league + " " + valueText(homeObj) + " " + valueText(awayObj)).toLocaleLowerCase();
           var homeLogo = m.home_logo || (homeObj && typeof homeObj === "object" ? homeObj.logo || homeObj.image : "") || "";
           var awayLogo = m.away_logo || (awayObj && typeof awayObj === "object" ? awayObj.logo || awayObj.image : "") || "";
           var details = [];
@@ -2353,14 +2393,28 @@ function slipReason(x){
           if (kickoff) details.push('<div><small>Orario</small><b>' + esc(valueText(kickoff)) + '</b></div>');
           if (venue) details.push('<div><small>Stadio</small><b>' + esc(valueText(venue)) + '</b></div>');
           if (round) details.push('<div><small>Turno</small><b>' + esc(valueText(round)) + '</b></div>');
-          return '<article class="live-match" data-live-league="' + esc(league) + '"><div class="live-league-name">' + esc(league) + '</div><div class="live-phase"><span class="live-pulse"></span>' + phase + '</div><div class="live-teams"><div class="live-team">' + (homeLogo ? '<img loading="lazy" src="' + esc(homeLogo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + home + '</b></div><div class="live-score">' + hs + '<span>:</span>' + as + '</div><div class="live-team away">' + (awayLogo ? '<img loading="lazy" src="' + esc(awayLogo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + away + '</b></div></div><button type="button" class="live-detail-toggle" aria-expanded="false">Dettagli partita <span aria-hidden="true">＋</span></button><div class="live-match-details" hidden>' + (details.length ? '<div class="live-detail-grid">' + details.join("") + '</div>' : '<p class="expl">Il feed non fornisce ulteriori dettagli verificabili per questa partita.</p>') + '</div></article>';
+          return '<article class="live-match" data-live-league="' + esc(leagueKey) + '" data-live-search="' + esc(searchText) + '"><div class="live-league-name">' + esc(league) + '</div><div class="live-phase"><span class="live-pulse"></span>' + phase + '</div><div class="live-teams"><div class="live-team">' + (homeLogo ? '<img loading="lazy" src="' + esc(homeLogo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + home + '</b></div><div class="live-score">' + hs + '<span>:</span>' + as + '</div><div class="live-team away">' + (awayLogo ? '<img loading="lazy" src="' + esc(awayLogo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + away + '</b></div></div><button type="button" class="live-detail-toggle" aria-expanded="false">Dettagli partita <span aria-hidden="true">＋</span></button><div class="live-match-details" hidden>' + (details.length ? '<div class="live-detail-grid">' + details.join("") + '</div>' : '<p class="expl">Il feed non fornisce ulteriori dettagli verificabili per questa partita.</p>') + '</div></article>';
         }).join("");
-        if (leagueSelect) leagueSelect.onchange = function() {
-          var chosen = leagueSelect.value;
+        function applyLiveFilters() {
+          var chosen = leagueSelect ? leagueSelect.value : "all";
+          var query = searchInput ? searchInput.value.trim().toLocaleLowerCase() : "";
+          var visible = 0;
           Array.prototype.forEach.call(list.querySelectorAll(".live-match"), function(card) {
-            card.hidden = chosen !== "all" && card.getAttribute("data-live-league") !== chosen;
+            var leagueMatch = chosen === "all" || card.getAttribute("data-live-league") === chosen;
+            var searchMatch = !query || (card.getAttribute("data-live-search") || "").indexOf(query) !== -1;
+            card.hidden = !(leagueMatch && searchMatch);
+            if (!card.hidden) visible++;
           });
-        };
+          if (filterEmpty) filterEmpty.hidden = visible > 0;
+          if (filterEmpty && visible === 0) {
+            filterEmpty.textContent = query || chosen !== "all"
+              ? "Nessuna partita live corrisponde alla ricerca o al campionato selezionato. Prova a cambiare filtro."
+              : "Nessuna partita live disponibile dal feed.";
+          }
+        }
+        if (leagueSelect) leagueSelect.onchange = applyLiveFilters;
+        if (searchInput) searchInput.oninput = applyLiveFilters;
+        applyLiveFilters();
         list.onclick = function(event) {
           var toggle = event.target.closest(".live-detail-toggle");
           if (!toggle) return;
@@ -2581,9 +2635,12 @@ function slipReason(x){
 }
 </style>
 <style id="live-center-safe-controls-v2">
-.live-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0}
+.live-controls{display:grid;grid-template-columns:minmax(190px,.8fr) minmax(220px,1.2fr);align-items:end;gap:10px;margin:12px 0}
+.live-filter-field{display:flex;flex-direction:column;gap:6px;min-width:0}
 .live-controls label{font-size:12px;font-weight:800;color:var(--muted)}
-.live-controls select{max-width:100%;min-height:42px;padding:8px 34px 8px 11px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--fg);font:inherit}
+.live-controls select,.live-controls input{width:100%;min-width:0;min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--fg);font:inherit}
+.live-controls input::placeholder{color:var(--muted);opacity:.85}
+.live-controls select:focus-visible,.live-controls input:focus-visible{outline:3px solid var(--good);outline-offset:2px}
 .live-match[hidden]{display:none!important}
 .live-league-name{margin-bottom:8px;color:var(--link);font-size:11px;font-weight:800}
 .live-detail-toggle{margin-top:10px;display:flex;justify-content:space-between;align-items:center;width:100%;min-height:40px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--fg);font:inherit;font-size:12px;font-weight:750;cursor:pointer}
@@ -2593,7 +2650,7 @@ function slipReason(x){
 .live-detail-grid>div{display:flex;flex-direction:column;gap:4px;min-width:0}
 .live-detail-grid small{color:var(--muted);font-size:10px}
 .live-detail-grid b{overflow-wrap:anywhere;font-size:12px}
-@media(max-width:480px){.live-controls{align-items:stretch;flex-direction:column}.live-controls select{width:100%}}
+@media(max-width:480px){.live-controls{grid-template-columns:minmax(0,1fr)}.live-controls select,.live-controls input{width:100%}}
 </style>
 <style id="sportscore-live-prototype-v1">
 #t-live{position:relative}
