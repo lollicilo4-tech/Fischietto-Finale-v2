@@ -2430,6 +2430,11 @@ function slipReason(x){
             return '<option value="' + esc(key) + '">' + esc(feedLeagues[key]) + '</option>';
           }).join("");
           leagueSelect.innerHTML = '<option value="all">Tutti i campionati</option>' + presetOptions + extraOptions;
+          /* Start with the competition selected in the main header, so the Live Center
+             does not show unrelated leagues while the header says Serie A, etc. */
+          var headerLeagueToLiveKey = {SA:"serie-a",PL:"premier-league",PD:"laliga",BL1:"bundesliga",FL1:"ligue-1",CL:"champions-league"};
+          var headerLiveKey = headerLeagueToLiveKey[LEAGUE];
+          if (headerLiveKey) leagueSelect.value = headerLiveKey;
         }
         if (!live.length) {
           status.hidden = false;
