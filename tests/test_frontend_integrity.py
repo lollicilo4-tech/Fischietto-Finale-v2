@@ -100,5 +100,20 @@ class FrontendIntegrityTests(unittest.TestCase):
                 self.assertIn('catch(() => caches.match("./").then((hit) => hit || Response.error()))', worker)
 
 
+    def test_live_center_trusts_provider_live_filter_without_narrow_local_whitelist(self):
+        source = self.read(STATIC_HTML)
+        self.assertIn(
+            'status=live&limit=200',
+            source,
+            "Il feed deve richiedere al provider soltanto le partite live",
+        )
+        self.assertIn(
+            "var live = matches;",
+            source,
+            "Le partite restituite dall'endpoint live non devono essere scartate da una whitelist locale di stati",
+        )
+        self.assertNotIn("matches.filter(isLiveMatch)", source)
+
+
 if __name__ == "__main__":
     unittest.main()
