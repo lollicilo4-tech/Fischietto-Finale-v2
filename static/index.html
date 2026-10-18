@@ -702,6 +702,21 @@ main{max-width:1040px!important;margin:0 auto!important;padding-bottom:110px!imp
 .live-match .live-events h4{font-size:1.05rem!important}
 @media(max-width:380px){.live-match .live-teams{gap:6px!important}.live-match .live-team b{font-size:.75rem!important}.live-match .live-team img{width:29px!important;height:29px!important}.live-match .live-score{font-size:1.5rem!important}}
 
+/* Compact timeline for phone screens; keep the event order and all available details. */
+@media(max-width:520px){
+  .live-match .live-match-details{padding:8px!important}
+  .live-events{margin:10px 0 2px!important;padding:13px 10px 8px!important;border-radius:14px!important}
+  .live-events h4{margin-bottom:12px!important;font-size:.96rem!important}
+  .live-events ol:before{left:27px!important;top:8px!important;bottom:8px!important}
+  .live-event{grid-template-columns:44px minmax(0,1fr)!important;gap:8px!important;padding-bottom:11px!important}
+  .live-event-minute{min-height:27px!important;padding:3px 2px!important;font-size:.72rem!important}
+  .live-event-body{gap:7px!important}
+  .live-event-icon{flex-basis:25px!important;width:25px!important;height:25px!important;border-radius:8px!important;font-size:14px!important}
+  .live-event-copy{padding-top:1px!important;gap:2px!important}
+  .live-event-copy b{font-size:.82rem!important;line-height:1.3!important}
+  .live-event-copy small{font-size:.72rem!important}
+}
+
 /* Live Center event timeline refresh */
 .live-events{margin:16px 0 4px;padding:18px 16px 12px;border:1px solid rgba(75,157,255,.22);border-radius:18px;background:linear-gradient(145deg,rgba(17,38,61,.96),rgba(7,18,31,.98));box-shadow:inset 0 1px 0 rgba(255,255,255,.035)}
 .live-events h4{display:flex;align-items:center;gap:9px;margin:0 0 16px;font-size:1rem;font-weight:700;letter-spacing:.015em}
@@ -2438,6 +2453,11 @@ function slipReason(x){
             return '<option value="' + esc(key) + '">' + esc(feedLeagues[key]) + '</option>';
           }).join("");
           leagueSelect.innerHTML = '<option value="all">Tutti i campionati</option>' + presetOptions + extraOptions;
+          /* Start with the competition selected in the main header, so the Live Center
+             does not show unrelated leagues while the header says Serie A, etc. */
+          var headerLeagueToLiveKey = {SA:"serie-a",PL:"premier-league",PD:"laliga",BL1:"bundesliga",FL1:"ligue-1",CL:"champions-league"};
+          var headerLiveKey = headerLeagueToLiveKey[LEAGUE];
+          if (headerLiveKey) leagueSelect.value = headerLiveKey;
         }
         if (!live.length) {
           status.hidden = false;
@@ -2499,10 +2519,20 @@ function slipReason(x){
             var assist = eventText(ev, ["assist", "assist_player", "related_player"]);
             var team = eventText(ev, ["team", "team_name", "participant_name"]);
             var minute = eventMinute(ev);
-            var label = [kind, player, assist && "Assist: " + assist].filter(Boolean).join(" · ");
-            if (!label) return null;
             var normalizedKind = kind.toLocaleLowerCase();
-            var eventClass = /goal|gol|scoring/.test(normalizedKind) ? "goal" : /yellow|giallo/.test(normalizedKind) ? "yellow" : /red card|cartellino rosso/.test(normalizedKind) ? "red" : /substitution|sostituzion/.test(normalizedKind) ? "substitution" : "other";
+            var translatedKind = kind;
+            if (/penalty goal|penalty scored/.test(normalizedKind)) translatedKind = "Gol su rigore";
+            else if (/own goal/.test(normalizedKind)) translatedKind = "Autogol";
+            else if (/goal|scoring/.test(normalizedKind)) translatedKind = "Gol";
+            else if (/yellow card/.test(normalizedKind)) translatedKind = "Cartellino giallo";
+            else if (/red card/.test(normalizedKind)) translatedKind = "Cartellino rosso";
+            else if (/second yellow/.test(normalizedKind)) translatedKind = "Secondo cartellino giallo";
+            else if (/substitution/.test(normalizedKind)) translatedKind = "Sostituzione";
+            else if (/var/.test(normalizedKind)) translatedKind = "Revisione VAR";
+            else if (/kick.?off/.test(normalizedKind)) translatedKind = "Calcio d'inizio";
+            var label = [translatedKind, player, assist && "Assist: " + assist].filter(Boolean).join(" · ");
+            if (!label) return null;
+            var eventClass = /goal|gol|scoring|autogol/.test(normalizedKind) ? "goal" : /yellow|giallo/.test(normalizedKind) ? "yellow" : /red card|cartellino rosso/.test(normalizedKind) ? "red" : /substitution|sostituzion/.test(normalizedKind) ? "substitution" : "other";
             var eventIcon = eventClass === "goal" ? "⚽" : eventClass === "yellow" ? "🟨" : eventClass === "red" ? "🟥" : eventClass === "substitution" ? "🔄" : "•";
             return '<li class="live-event live-event-' + eventClass + '"><span class="live-event-minute">' + esc(minute || "•") + '</span><span class="live-event-body"><span class="live-event-icon" aria-hidden="true">' + eventIcon + '</span><span class="live-event-copy"><b>' + esc(label) + '</b>' + (team ? '<small>' + esc(team) + '</small>' : '') + '</span></span></li>';
           }).filter(Boolean);
