@@ -106,7 +106,8 @@ class ArchivedResultsTests(unittest.TestCase):
         finished = [{"id": 42, "hg": 2, "ag": 1, "date": "2026-10-17"}]
 
         with patch("app.store._load", return_value=predictions), patch("app.store._write") as write:
-            rows = store._joined(finished)
+            rows = store._joined(finished, league="SA")
+            self.assertEqual(predictions["42"]["league"], "SA")
             self.assertEqual(predictions["42"]["result"], {
                 "hg": 2, "ag": 1, "date": "2026-10-17"
             })
@@ -114,7 +115,7 @@ class ArchivedResultsTests(unittest.TestCase):
             write.assert_called_once_with(predictions)
 
             # Il provider non restituisce più la partita: lo storico deve conservarla.
-            rows_after = store._joined([])
+            rows_after = store._joined([], league="SA")
             self.assertEqual(len(rows_after), 1)
             self.assertEqual((rows_after[0][2]["hg"], rows_after[0][2]["ag"]), (2, 1))
             write.assert_called_once_with(predictions)
@@ -126,22 +127,42 @@ class ArchivedResultsTests(unittest.TestCase):
         changed_provider_result = [{"id": "42", "hg": 0, "ag": 3, "date": "2026-10-17"}]
 
         with patch("app.store._load", return_value=predictions), patch("app.store._write") as write:
-            rows = store._joined(changed_provider_result)
+            rows = store._joined(changed_provider_result, league="SA")
 
         self.assertEqual((rows[0][2]["hg"], rows[0][2]["ag"]), (1, 0))
         write.assert_not_called()
 
-    def test_history_baseline_uses_archived_outcomes_when_feed_is_empty(self):
+    def test_joined_excludes_archived_results_from_other_leagues(self):
+        home = self.prediction()
+        home.update(league="SA", result={"hg": 2, "ag": 0, "date": "2026-10-17"})
+        away = self.prediction()
+        away.update(league="PL", result={"hg": 0, "ag": 3, "date": "2026-10-17"})
+        predictions = {"sa-id": home, "pl-id": away}
+
+        with patch("app.store._load", return_value=predictions), patch("app.store._write") as write:
+            rows = store._joined([], league="SA")
+
+        self.assertEqual([row[0] for row in rows], ["sa-id"])
+        self.assertEqual((rows[0][2]["hg"], rows[0][2]["ag"]), (2, 0))
+        write.assert_not_called()
+
+    def test_history_baseline_uses_all_finished_matches_in_the_competition(self):
         rows = [
             ("1", self.prediction(), {"id": "1", "hg": 2, "ag": 0}),
             ("2", self.prediction(), {"id": "2", "hg": 0, "ag": 2}),
         ]
+        finished = [
+            {"id": "10", "hg": 2, "ag": 0},
+            {"id": "11", "hg": 1, "ag": 1},
+            {"id": "12", "hg": 0, "ag": 2},
+            {"id": "13", "hg": 3, "ag": 1},
+        ]
 
         with patch("app.store._joined", return_value=rows):
-            actual = store.history([])
+            actual = store.history(finished, league="SA")
 
         self.assertEqual(actual["n"], 2)
-        self.assertEqual(actual["base_rates"], {"1": 0.5, "X": 0.0, "2": 0.5})
+        self.assertEqual(actual["base_rates"], {"1": 0.5, "X": 0.25, "2": 0.25})
 
 
 if __name__ == "__main__":
