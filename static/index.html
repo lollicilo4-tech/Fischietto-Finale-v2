@@ -2342,8 +2342,26 @@ function slipReason(x){
 
     /* Request live fixtures explicitly instead of taking the first 50 live/recent
        matches and filtering them locally. SportScore documents status=live on v1/fixtures. */
+    var usedWidgetFallback = false;
+    function hasFixtureRows(data) {
+      if (Array.isArray(data)) return data.length > 0;
+      if (!data || typeof data !== "object") return false;
+      if (Array.isArray(data.fixtures)) return data.fixtures.length > 0;
+      if (Array.isArray(data.matches)) return data.matches.length > 0;
+      if (Array.isArray(data.results)) return data.results.length > 0;
+      if (Array.isArray(data.data)) return data.data.length > 0;
+      return hasFixtureRows(data.data) || hasFixtureRows(data.result);
+    }
     fetch("https://sportscore.com/api/v1/fixtures/?sport=football&status=live&limit=200", {cache:"no-store"})
       .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function(data) {
+        if (hasFixtureRows(data)) return data;
+        /* The documented fixtures endpoint can occasionally return an empty list
+           while the public live/recent widget still contains active matches. */
+        usedWidgetFallback = true;
+        return fetch("https://sportscore.com/api/widget/matches/?sport=football&limit=50", {cache:"no-store"})
+          .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+      })
       .then(function(data) {
         var payload = data && data.data && !Array.isArray(data.data) ? data.data : data;
         function arrayFrom(o) {
@@ -2368,10 +2386,15 @@ function slipReason(x){
           var s = m.status || m.fixture_status || m.phase || m.time_status || "";
           return valueText(m.status_text || m.status_more || s).trim();
         }
-        /* The provider has already filtered this endpoint with status=live.
-           Do not apply a second, narrower status whitelist here: valid live states
-           can vary by competition and would silently hide matches such as Serie A. */
-        var live = matches;
+        function isLiveStatus(m) {
+          var s = m.status || m.fixture_status || m.phase || m.time_status || m.state || "";
+          var raw = [valueText(s), valueText(s.short), valueText(s.long), valueText(s.name),
+            m.status_text, m.status_more, m.time_status].map(valueText).join(" ").toLowerCase().replace(/[_-]+/g, " ");
+          return /\b(live|in progress|in play|playing|first half|second half|half time|halftime|extra time|penalties|penalty shootout|1h|2h|ht|et|pens|inplay)\b/i.test(raw);
+        }
+        /* The fixtures endpoint is already live-filtered. The widget fallback also
+           contains recent/finished fixtures, so filter that fallback by active status. */
+        var live = usedWidgetFallback ? matches.filter(isLiveStatus) : matches;
         var leagueSelect = $("live-league");
         var searchInput = $("live-search");
         var filterEmpty = $("live-filter-empty");

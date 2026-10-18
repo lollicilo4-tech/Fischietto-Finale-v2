@@ -108,11 +108,29 @@ class FrontendIntegrityTests(unittest.TestCase):
             "Il feed deve richiedere al provider soltanto le partite live",
         )
         self.assertIn(
-            "var live = matches;",
+            "usedWidgetFallback ? matches.filter(isLiveStatus) : matches",
             source,
-            "Le partite restituite dall'endpoint live non devono essere scartate da una whitelist locale di stati",
+            "Il filtro locale va applicato solo al fallback, non al feed live",
         )
         self.assertNotIn("matches.filter(isLiveMatch)", source)
+
+
+    def test_live_center_has_fallback_for_empty_fixtures_feed(self):
+        source = self.read(STATIC_HTML)
+        self.assertIn(
+            "/api/v1/fixtures/?sport=football&status=live&limit=200",
+            source,
+        )
+        self.assertIn(
+            "/api/widget/matches/?sport=football&limit=50",
+            source,
+            "Se il feed fixtures è vuoto, usa il widget pubblico come fallback",
+        )
+        self.assertIn(
+            "usedWidgetFallback ? matches.filter(isLiveStatus) : matches",
+            source,
+            "Il fallback deve escludere partite finite e future",
+        )
 
 
 if __name__ == "__main__":
