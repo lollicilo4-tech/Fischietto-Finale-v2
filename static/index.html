@@ -2357,7 +2357,6 @@ function slipReason(x){
 
     /* Request live fixtures explicitly instead of taking the first 50 live/recent
        matches and filtering them locally. SportScore documents status=live on v1/fixtures. */
-    var usedWidgetFallback = false;
     function rowsFrom(data) {
       if (Array.isArray(data)) return data;
       if (!data || typeof data !== "object") return [];
@@ -2379,23 +2378,55 @@ function slipReason(x){
       return fetch(url, {cache:"no-store"})
         .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
     }
-    /* Try endpoints independently: a failed first request must not block fallback. */
-    function tryLiveEndpoints(endpoints, index) {
-      if (index >= endpoints.length) return Promise.reject(new Error("All SportScore live endpoints failed"));
-      var endpoint = endpoints[index];
-      return fetchLiveSource(endpoint.url).then(function(data) {
-        if (!rowsFrom(data).length) return tryLiveEndpoints(endpoints, index + 1);
-        usedWidgetFallback = endpoint.fallback;
-        return data;
-      }).catch(function() {
-        return tryLiveEndpoints(endpoints, index + 1);
-      });
+    /* Query every source, not just the first non-empty one: the fixtures endpoint
+       can return only a subset. Keep going if any individual source fails. */
+    function sourceText(value) {
+      if (value == null) return "";
+      if (typeof value === "object") return String(value.name || value.short_name || value.short || value.slug || value.label || "");
+      return String(value);
     }
-    tryLiveEndpoints([
-      {url:"https://sportscore.com/api/v1/fixtures/?sport=football&status=live&limit=200",fallback:false},
-      {url:"https://sportscore.com/api/v1/matches/?sport=football&limit=50",fallback:true},
-      {url:"https://sportscore.com/api/widget/matches/?sport=football&limit=50",fallback:true}
-    ], 0)
+    function sourceIdentity(match) {
+      var id = match.id || match.match_id || match.fixture_id || match.event_id || match.slug || match.match_slug;
+      if (id != null && id !== "") return "id:" + String(id).toLowerCase();
+      var home = sourceText(match.home || match.home_team || match.homeTeam || match.localteam || match.home_participant).toLowerCase();
+      var away = sourceText(match.away || match.away_team || match.awayTeam || match.visitorteam || match.away_participant).toLowerCase();
+      var time = sourceText(match.time || match.start_at || match.start_time || match.kickoff || match.date || match.fixture_date);
+      return home && away ? "teams:" + home + "|" + away + "|" + time : "";
+    }
+    var liveEndpoints = [
+      {url:"https://sportscore.com/api/v1/fixtures/?sport=football&status=live&limit=200",verifiedLive:true},
+      {url:"https://sportscore.com/api/v1/matches/?sport=football&limit=50",verifiedLive:false},
+      {url:"https://sportscore.com/api/widget/matches/?sport=football&limit=50",verifiedLive:false}
+    ];
+    Promise.all(liveEndpoints.map(function(endpoint) {
+      return fetchLiveSource(endpoint.url).then(function(data) {
+        return {data:data, verifiedLive:endpoint.verifiedLive, failed:false};
+      }).catch(function() {
+        return {data:null, verifiedLive:endpoint.verifiedLive, failed:true};
+      });
+    })).then(function(results) {
+      if (results.every(function(result) { return result.failed; })) {
+        throw new Error("All SportScore live endpoints failed");
+      }
+      var combined = [], positions = {};
+      results.forEach(function(result) {
+        if (result.failed) return;
+        rowsFrom(result.data).forEach(function(match) {
+          if (!match || typeof match !== "object") return;
+          var candidate = Object.assign({}, match, {_ffLiveVerified: result.verifiedLive});
+          var identity = sourceIdentity(candidate);
+          if (identity && Object.prototype.hasOwnProperty.call(positions, identity)) {
+            var position = positions[identity], previous = combined[position];
+            combined[position] = Object.assign({}, candidate, previous);
+            combined[position]._ffLiveVerified = !!(previous._ffLiveVerified || candidate._ffLiveVerified);
+          } else {
+            if (identity) positions[identity] = combined.length;
+            combined.push(candidate);
+          }
+        });
+      });
+      return {matches:combined};
+    })
       .then(function(data) {
         var matches = rowsFrom(data);
 
@@ -2416,7 +2447,7 @@ function slipReason(x){
         }
         /* The fixtures endpoint is already live-filtered. The widget fallback also
            contains recent/finished fixtures, so filter that fallback by active status. */
-        var live = usedWidgetFallback ? matches.filter(isLiveStatus) : matches;
+        var live = matches.filter(function(m) { return m._ffLiveVerified === true || isLiveStatus(m); });
         var leagueSelect = $("live-league");
         var searchInput = $("live-search");
         var filterEmpty = $("live-filter-empty");
