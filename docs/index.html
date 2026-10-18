@@ -1751,6 +1751,7 @@ a{color:#65baff}
       <button id="live-refresh" type="button" class="live-refresh">↻ Aggiorna</button>
     </div>
     <div id="live-status" class="panel" role="status" aria-live="polite">Caricamento delle partite live…</div>
+    <div class="live-controls"><label for="live-league">Campionato</label><select id="live-league"><option value="all">Tutti i campionati</option></select></div>
     <div id="live-list" class="live-list"></div>
     <p class="live-attribution">Dati sportivi forniti da <a class="sportscore-credit" href="https://sportscore.com/" target="_blank" rel="noopener noreferrer" aria-label="Powered by SportScore — apri il sito SportScore">Powered by SportScore ↗</a></p>
   </section>
@@ -2323,6 +2324,14 @@ function slipReason(x){
           return;
         }
         status.hidden = true;
+        var leagueSelect = $("live-league");
+        var leagueNames = [];
+        live.forEach(function(m) {
+          var name = valueText(m.league || m.competition || m.tournament || m.league_name || m.competition_name) || "Competizione non disponibile";
+          if (leagueNames.indexOf(name) === -1) leagueNames.push(name);
+        });
+        leagueNames.sort(function(a,b){return a.localeCompare(b);});
+        if (leagueSelect) leagueSelect.innerHTML = '<option value="all">Tutti i campionati</option>' + leagueNames.map(function(name){return '<option value="' + esc(name) + '">' + esc(name) + '</option>';}).join("");
         list.innerHTML = live.map(function(m) {
           var homeObj = m.home || m.home_team || m.homeTeam || m.localteam || m.home_participant;
           var awayObj = m.away || m.away_team || m.awayTeam || m.visitorteam || m.away_participant;
@@ -2334,10 +2343,34 @@ function slipReason(x){
           var hs = homeScore == null ? "–" : esc(String(homeScore));
           var as = awayScore == null ? "–" : esc(String(awayScore));
           var phase = esc(matchStatus(m) || "LIVE");
+          var league = valueText(m.league || m.competition || m.tournament || m.league_name || m.competition_name) || "Competizione non disponibile";
           var homeLogo = m.home_logo || (homeObj && typeof homeObj === "object" ? homeObj.logo || homeObj.image : "") || "";
           var awayLogo = m.away_logo || (awayObj && typeof awayObj === "object" ? awayObj.logo || awayObj.image : "") || "";
-          return '<article class="live-match"><div class="live-phase"><span class="live-pulse"></span>' + phase + '</div><div class="live-teams"><div class="live-team">' + (homeLogo ? '<img loading="lazy" src="' + esc(homeLogo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + home + '</b></div><div class="live-score">' + hs + '<span>:</span>' + as + '</div><div class="live-team away">' + (awayLogo ? '<img loading="lazy" src="' + esc(awayLogo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + away + '</b></div></div></article>';
+          var details = [];
+          var kickoff = m.start_at || m.start_time || m.kickoff || m.date || m.fixture_date;
+          var venue = m.venue || m.stadium || m.location;
+          var round = m.round || m.stage || m.matchday;
+          if (kickoff) details.push('<div><small>Orario</small><b>' + esc(valueText(kickoff)) + '</b></div>');
+          if (venue) details.push('<div><small>Stadio</small><b>' + esc(valueText(venue)) + '</b></div>');
+          if (round) details.push('<div><small>Turno</small><b>' + esc(valueText(round)) + '</b></div>');
+          return '<article class="live-match" data-live-league="' + esc(league) + '"><div class="live-league-name">' + esc(league) + '</div><div class="live-phase"><span class="live-pulse"></span>' + phase + '</div><div class="live-teams"><div class="live-team">' + (homeLogo ? '<img loading="lazy" src="' + esc(homeLogo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + home + '</b></div><div class="live-score">' + hs + '<span>:</span>' + as + '</div><div class="live-team away">' + (awayLogo ? '<img loading="lazy" src="' + esc(awayLogo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + away + '</b></div></div><button type="button" class="live-detail-toggle" aria-expanded="false">Dettagli partita <span aria-hidden="true">＋</span></button><div class="live-match-details" hidden>' + (details.length ? '<div class="live-detail-grid">' + details.join("") + '</div>' : '<p class="expl">Il feed non fornisce ulteriori dettagli verificabili per questa partita.</p>') + '</div></article>';
         }).join("");
+        if (leagueSelect) leagueSelect.onchange = function() {
+          var chosen = leagueSelect.value;
+          Array.prototype.forEach.call(list.querySelectorAll(".live-match"), function(card) {
+            card.hidden = chosen !== "all" && card.getAttribute("data-live-league") !== chosen;
+          });
+        };
+        list.onclick = function(event) {
+          var toggle = event.target.closest(".live-detail-toggle");
+          if (!toggle) return;
+          var card = toggle.closest(".live-match"), details = card && card.querySelector(".live-match-details");
+          if (!details) return;
+          var open = toggle.getAttribute("aria-expanded") !== "true";
+          toggle.setAttribute("aria-expanded", String(open));
+          details.hidden = !open;
+          toggle.lastElementChild.textContent = open ? "−" : "＋";
+        };
       })
       .catch(function() {
         liveLoaded = false;
@@ -2546,6 +2579,21 @@ function slipReason(x){
  body.nav-scrolling-down .nav{transform:translateY(calc(100% + 20px))!important;opacity:0!important;pointer-events:none!important}
  .nav{transition:transform .18s ease,opacity .18s ease!important}
 }
+</style>
+<style id="live-center-safe-controls-v2">
+.live-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0}
+.live-controls label{font-size:12px;font-weight:800;color:var(--muted)}
+.live-controls select{max-width:100%;min-height:42px;padding:8px 34px 8px 11px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--fg);font:inherit}
+.live-match[hidden]{display:none!important}
+.live-league-name{margin-bottom:8px;color:var(--link);font-size:11px;font-weight:800}
+.live-detail-toggle{margin-top:10px;display:flex;justify-content:space-between;align-items:center;width:100%;min-height:40px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--fg);font:inherit;font-size:12px;font-weight:750;cursor:pointer}
+.live-detail-toggle:focus-visible,.live-controls select:focus-visible{outline:3px solid var(--good);outline-offset:2px}
+.live-match-details{margin-top:8px;padding:10px;border-radius:9px;background:var(--surface2)}
+.live-detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.live-detail-grid>div{display:flex;flex-direction:column;gap:4px;min-width:0}
+.live-detail-grid small{color:var(--muted);font-size:10px}
+.live-detail-grid b{overflow-wrap:anywhere;font-size:12px}
+@media(max-width:480px){.live-controls{align-items:stretch;flex-direction:column}.live-controls select{width:100%}}
 </style>
 <style id="sportscore-live-prototype-v1">
 #t-live{position:relative}
