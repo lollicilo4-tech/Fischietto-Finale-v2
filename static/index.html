@@ -2379,22 +2379,23 @@ function slipReason(x){
       return fetch(url, {cache:"no-store"})
         .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
     }
-    /* Try the explicit live fixture endpoint first, then the documented today's
-       matches alias, and finally the widget. Normalize their different envelopes. */
-    fetchLiveSource("https://sportscore.com/api/v1/fixtures/?sport=football&status=live&limit=200")
-      .then(function(data) {
-        if (rowsFrom(data).length) return {data:data, fallback:false};
-        return fetchLiveSource("https://sportscore.com/api/v1/matches/?sport=football")
-          .then(function(next) {
-            if (rowsFrom(next).length) return {data:next, fallback:true};
-            return fetchLiveSource("https://sportscore.com/api/widget/matches/?sport=football&limit=50")
-              .then(function(last) { return {data:last, fallback:true}; });
-          });
-      })
-      .then(function(result) {
-        usedWidgetFallback = result.fallback;
-        return result.data;
-      })
+    /* Try endpoints independently: a failed first request must not block fallback. */
+    function tryLiveEndpoints(endpoints, index) {
+      if (index >= endpoints.length) return Promise.reject(new Error("All SportScore live endpoints failed"));
+      var endpoint = endpoints[index];
+      return fetchLiveSource(endpoint.url).then(function(data) {
+        if (!rowsFrom(data).length) return tryLiveEndpoints(endpoints, index + 1);
+        usedWidgetFallback = endpoint.fallback;
+        return data;
+      }).catch(function() {
+        return tryLiveEndpoints(endpoints, index + 1);
+      });
+    }
+    tryLiveEndpoints([
+      {url:"https://sportscore.com/api/v1/fixtures/?sport=football&status=live&limit=200",fallback:false},
+      {url:"https://sportscore.com/api/v1/matches/?sport=football&limit=50",fallback:true},
+      {url:"https://sportscore.com/api/widget/matches/?sport=football&limit=50",fallback:true}
+    ], 0)
       .then(function(data) {
         var matches = rowsFrom(data);
 
