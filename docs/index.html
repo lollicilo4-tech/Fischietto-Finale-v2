@@ -2430,6 +2430,13 @@ function slipReason(x){
             ? '<section class="live-events"><h4>Eventi della partita</h4><ol>' + eventItems.join("") + '</ol></section>'
             : '<p class="expl">Il feed non include eventi verificabili per questa partita. Il risultato e lo stato live restano disponibili.</p>';
           var matchSlug = m.slug || m.match_slug || m.url_slug || "";
+          /* Some SportScore fixture responses expose only the public match URL.
+             Extract its documented match slug when available; never synthesize one from team names. */
+          if (!matchSlug && typeof m.url === "string") {
+            var matchUrl = m.url;
+            var slugMatch = matchUrl.match(/\/football\/match\/([^/?#]+)\//i);
+            if (slugMatch && slugMatch[1]) matchSlug = slugMatch[1];
+          }
           return '<article class="live-match" data-live-slug="' + esc(matchSlug) + '" data-live-league="' + esc(leagueKey) + '" data-live-search="' + esc(searchText) + '"><div class="live-league-name">' + esc(league) + '</div><div class="live-phase"><span class="live-pulse"></span>' + phase + '</div><div class="live-teams"><div class="live-team">' + (homeLogo ? '<img loading="lazy" src="' + esc(homeLogo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + home + '</b></div><div class="live-score">' + hs + '<span>:</span>' + as + '</div><div class="live-team away">' + (awayLogo ? '<img loading="lazy" src="' + esc(awayLogo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + away + '</b></div></div><button type="button" class="live-detail-toggle" aria-expanded="false">Dettagli partita <span aria-hidden="true">＋</span></button><div class="live-match-details" hidden>' + (details.length ? '<div class="live-detail-grid">' + details.join("") + '</div>' : '') + eventMarkup + '</div></article>';
         }).join("");
         function applyLiveFilters() {
