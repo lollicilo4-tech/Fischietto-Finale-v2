@@ -851,6 +851,11 @@
    "label": "1X · Udinese non perde",
    "p": 0.7747
   },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-18T10:30:00Z",
+   "hg": 0
+  },
   "top": [
    1,
    1
@@ -1278,6 +1283,11 @@
    "kind": "doppia",
    "label": "X2 · Como 1907 non perde",
    "p": 0.8022
+  },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-18T13:00:00Z",
+   "hg": 1
   },
   "top": [
    1,
@@ -2092,6 +2102,7 @@
   "gg": 0.5795,
   "home": "Troyes",
   "kickoff": "2026-10-17T18:45:00Z",
+  "league": "FL1",
   "market_predictions": [
    {
     "code": "1",
@@ -2212,6 +2223,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8149
   },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-17T18:45:00Z",
+   "hg": 1
+  },
   "top": [
    1,
    1
@@ -2219,13 +2235,7 @@
   "xg": [
    1.1,
    1.96
-  ],
-  "league": "FL1",
-  "result": {
-   "hg": 1,
-   "ag": 3,
-   "date": "2026-10-17T18:45:00Z"
-  }
+  ]
  },
  "559660": {
   "ai": true,
@@ -2238,6 +2248,7 @@
   "gg": 0.5163,
   "home": "Lille",
   "kickoff": "2026-10-17T18:45:00Z",
+  "league": "FL1",
   "market_predictions": [
    {
     "code": "1",
@@ -2358,6 +2369,11 @@
    "label": "1X · Lille non perde",
    "p": 0.7906
   },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-17T18:45:00Z",
+   "hg": 1
+  },
   "top": [
    1,
    1
@@ -2365,13 +2381,7 @@
   "xg": [
    1.71,
    0.97
-  ],
-  "league": "FL1",
-  "result": {
-   "hg": 1,
-   "ag": 1,
-   "date": "2026-10-17T18:45:00Z"
-  }
+  ]
  },
  "559661": {
   "ai": true,
@@ -2384,6 +2394,7 @@
   "gg": 0.6664,
   "home": "Le Mans",
   "kickoff": "2026-10-16T18:45:00Z",
+  "league": "FL1",
   "market_predictions": [
    {
     "code": "1",
@@ -2504,6 +2515,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8566
   },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-16T18:45:00Z",
+   "hg": 0
+  },
   "top": [
    1,
    1
@@ -2511,13 +2527,7 @@
   "xg": [
    1.87,
    1.52
-  ],
-  "league": "FL1",
-  "result": {
-   "hg": 0,
-   "ag": 3,
-   "date": "2026-10-16T18:45:00Z"
-  }
+  ]
  },
  "559662": {
   "ai": true,
@@ -2530,6 +2540,7 @@
   "gg": 0.6614,
   "home": "Strasbourg",
   "kickoff": "2026-10-17T15:15:00Z",
+  "league": "FL1",
   "market_predictions": [
    {
     "code": "1",
@@ -2650,6 +2661,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8538
   },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-17T15:15:00Z",
+   "hg": 1
+  },
   "top": [
    1,
    1
@@ -2657,13 +2673,7 @@
   "xg": [
    1.49,
    1.87
-  ],
-  "league": "FL1",
-  "result": {
-   "hg": 1,
-   "ag": 3,
-   "date": "2026-10-17T15:15:00Z"
-  }
+  ]
  },
  "559663": {
   "ai": true,
@@ -2938,6 +2948,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7426
   },
+  "result": {
+   "ag": 5,
+   "date": "2026-10-18T13:00:00Z",
+   "hg": 2
+  },
   "top": [
    1,
    1
@@ -3099,6 +3114,7 @@
   "gg": 0.6182,
   "home": "Stade Rennais",
   "kickoff": "2026-10-11T15:15:00Z",
+  "league": "FL1",
   "market_predictions": [
    {
     "code": "1",
@@ -3219,6 +3235,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.837
   },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-11T15:15:00Z",
+   "hg": 4
+  },
   "top": [
    1,
    1
@@ -3226,13 +3247,7 @@
   "xg": [
    1.99,
    1.24
-  ],
-  "league": "FL1",
-  "result": {
-   "hg": 4,
-   "ag": 1,
-   "date": "2026-10-11T15:15:00Z"
-  }
+  ]
  },
  "559670": {
   "ai": false,
@@ -3245,6 +3260,7 @@
   "gg": 0.5807,
   "home": "Nice",
   "kickoff": "2026-10-11T13:00:00Z",
+  "league": "FL1",
   "market_predictions": [
    {
     "code": "1",
@@ -3365,6 +3381,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7862
   },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-11T13:00:00Z",
+   "hg": 2
+  },
   "top": [
    1,
    1
@@ -3372,13 +3393,7 @@
   "xg": [
    1.27,
    1.6
-  ],
-  "league": "FL1",
-  "result": {
-   "hg": 2,
-   "ag": 1,
-   "date": "2026-10-11T13:00:00Z"
-  }
+  ]
  },
  "559671": {
   "ai": false,
@@ -3391,6 +3406,7 @@
   "gg": 0.5958,
   "home": "Troyes",
   "kickoff": "2026-10-11T18:45:00Z",
+  "league": "FL1",
   "market_predictions": [
    {
     "code": "1",
@@ -3511,6 +3527,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7998
   },
+  "result": {
+   "ag": 2,
+   "date": "2026-10-11T18:45:00Z",
+   "hg": 0
+  },
   "top": [
    1,
    1
@@ -3518,13 +3539,7 @@
   "xg": [
    1.31,
    1.65
-  ],
-  "league": "FL1",
-  "result": {
-   "hg": 0,
-   "ag": 2,
-   "date": "2026-10-11T18:45:00Z"
-  }
+  ]
  },
  "560594": {
   "ai": true,
@@ -4534,6 +4549,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7729
   },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-18T13:00:00Z",
+   "hg": 2
+  },
   "top": [
    1,
    1
@@ -4674,6 +4694,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7585
+  },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-18T13:00:00Z",
+   "hg": 1
   },
   "top": [
    1,
@@ -5243,6 +5268,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8376
+  },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-18T13:00:00Z",
+   "hg": 5
   },
   "top": [
    2,
@@ -7127,6 +7157,11 @@
    "label": "Under 3,5 · massimo 3 gol",
    "p": 0.7892
   },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-18T14:15:00Z",
+   "hg": 2
+  },
   "top": [
    1,
    1
@@ -7554,6 +7589,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8904
+  },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-18T12:00:00Z",
+   "hg": 2
   },
   "top": [
    1,
@@ -9145,6 +9185,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.896
+  },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-18T13:30:00Z",
+   "hg": 2
   },
   "top": [
    2,
