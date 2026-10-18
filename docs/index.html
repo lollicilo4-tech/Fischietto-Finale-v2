@@ -664,6 +664,27 @@ main{max-width:1040px!important;margin:0 auto!important;padding-bottom:110px!imp
   .nav button:hover{color:#fff!important;transform:translateY(-1px)}
 }
 
+
+/* Live Center event timeline refresh */
+.live-events{margin:16px 0 4px;padding:18px 16px 12px;border:1px solid rgba(75,157,255,.22);border-radius:18px;background:linear-gradient(145deg,rgba(17,38,61,.96),rgba(7,18,31,.98));box-shadow:inset 0 1px 0 rgba(255,255,255,.035)}
+.live-events h4{display:flex;align-items:center;gap:9px;margin:0 0 16px;font-size:1rem;font-weight:700;letter-spacing:.015em}
+.live-events h4:before{content:"";display:block;width:4px;height:18px;border-radius:8px;background:var(--home,#2588ff);box-shadow:0 0 12px rgba(37,136,255,.45)}
+.live-events ol{list-style:none;position:relative;margin:0;padding:0}
+.live-events ol:before{content:"";position:absolute;left:35px;top:9px;bottom:12px;width:2px;background:linear-gradient(to bottom,rgba(66,151,255,.65),rgba(66,151,255,.08))}
+.live-event{position:relative;display:grid;grid-template-columns:54px minmax(0,1fr);gap:12px;align-items:start;padding:0 0 17px;margin:0}
+.live-event:last-child{padding-bottom:5px}
+.live-event-minute{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;min-height:28px;padding:3px 4px;border:1px solid rgba(80,163,255,.28);border-radius:8px;background:#102b46;color:#8fc7ff;font:600 .78rem var(--font-num,monospace);white-space:nowrap}
+.live-event-body{display:flex;gap:10px;align-items:flex-start;min-width:0}
+.live-event-icon{display:flex;align-items:center;justify-content:center;flex:0 0 30px;width:30px;height:30px;margin-top:-1px;border-radius:10px;background:rgba(117,145,174,.13);font-size:16px}
+.live-event-copy{min-width:0;display:flex;flex-direction:column;gap:3px;padding-top:2px}
+.live-event-copy b{font-size:.9rem;line-height:1.35;overflow-wrap:anywhere}
+.live-event-copy small{color:var(--muted,#a4b5c8);font-size:.78rem;line-height:1.35}
+.live-event-goal .live-event-icon{background:rgba(26,191,126,.15);color:#43e0a2}
+.live-event-yellow .live-event-icon{background:rgba(255,194,50,.15);color:#ffd05b}
+.live-event-red .live-event-icon{background:rgba(255,76,93,.15);color:#ff7584}
+.live-event-substitution .live-event-icon{background:rgba(75,157,255,.15);color:#82beff}
+@media(min-width:600px){.live-events{padding:20px 22px 14px}.live-event{grid-template-columns:62px minmax(0,1fr);gap:14px}.live-events ol:before{left:40px}.live-event-copy b{font-size:.95rem}}
+
 </style>
 <style id="calibration-css">
 .market-perf-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
@@ -2424,7 +2445,10 @@ function slipReason(x){
             var minute = eventMinute(ev);
             var label = [kind, player, assist && "Assist: " + assist].filter(Boolean).join(" · ");
             if (!label) return null;
-            return '<li class="live-event"><span class="live-event-minute">' + esc(minute || "•") + '</span><span><b>' + esc(label) + '</b>' + (team ? '<small>' + esc(team) + '</small>' : '') + '</span></li>';
+            var normalizedKind = kind.toLocaleLowerCase();
+            var eventClass = /goal|gol|scoring/.test(normalizedKind) ? "goal" : /yellow|giallo/.test(normalizedKind) ? "yellow" : /red card|cartellino rosso/.test(normalizedKind) ? "red" : /substitution|sostituzion/.test(normalizedKind) ? "substitution" : "other";
+            var eventIcon = eventClass === "goal" ? "⚽" : eventClass === "yellow" ? "🟨" : eventClass === "red" ? "🟥" : eventClass === "substitution" ? "🔄" : "•";
+            return '<li class="live-event live-event-' + eventClass + '"><span class="live-event-minute">' + esc(minute || "•") + '</span><span class="live-event-body"><span class="live-event-icon" aria-hidden="true">' + eventIcon + '</span><span class="live-event-copy"><b>' + esc(label) + '</b>' + (team ? '<small>' + esc(team) + '</small>' : '') + '</span></span></li>';
           }).filter(Boolean);
           var eventMarkup = eventItems.length
             ? '<section class="live-events"><h4>Eventi della partita</h4><ol>' + eventItems.join("") + '</ol></section>'
