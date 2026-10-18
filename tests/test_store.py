@@ -130,7 +130,9 @@ class ArchivedResultsTests(unittest.TestCase):
             rows = store._joined(changed_provider_result, league="SA")
 
         self.assertEqual((rows[0][2]["hg"], rows[0][2]["ag"]), (1, 0))
-        write.assert_not_called()
+        # La migrazione assegna la lega al record legacy, senza sovrascrivere il punteggio.
+        self.assertEqual(predictions["42"]["league"], "SA")
+        write.assert_called_once_with(predictions)
 
     def test_joined_excludes_archived_results_from_other_leagues(self):
         home = self.prediction()
