@@ -2358,39 +2358,45 @@ function slipReason(x){
     /* Request live fixtures explicitly instead of taking the first 50 live/recent
        matches and filtering them locally. SportScore documents status=live on v1/fixtures. */
     var usedWidgetFallback = false;
-    function hasFixtureRows(data) {
-      if (Array.isArray(data)) return data.length > 0;
-      if (!data || typeof data !== "object") return false;
-      if (Array.isArray(data.fixtures)) return data.fixtures.length > 0;
-      if (Array.isArray(data.matches)) return data.matches.length > 0;
-      if (Array.isArray(data.results)) return data.results.length > 0;
-      if (Array.isArray(data.data)) return data.data.length > 0;
-      return hasFixtureRows(data.data) || hasFixtureRows(data.result);
+    function rowsFrom(data) {
+      if (Array.isArray(data)) return data;
+      if (!data || typeof data !== "object") return [];
+      var keys = ["fixtures", "matches", "results", "items", "events"];
+      for (var ri = 0; ri < keys.length; ri++) {
+        if (Array.isArray(data[keys[ri]])) return data[keys[ri]];
+      }
+      if (data.data != null) {
+        var nested = rowsFrom(data.data);
+        if (nested.length) return nested;
+      }
+      if (data.result != null) {
+        var resultRows = rowsFrom(data.result);
+        if (resultRows.length) return resultRows;
+      }
+      return [];
     }
-    fetch("https://sportscore.com/api/v1/fixtures/?sport=football&status=live&limit=200", {cache:"no-store"})
-      .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+    function fetchLiveSource(url) {
+      return fetch(url, {cache:"no-store"})
+        .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+    }
+    /* Try the explicit live fixture endpoint first, then the documented today's
+       matches alias, and finally the widget. Normalize their different envelopes. */
+    fetchLiveSource("https://sportscore.com/api/v1/fixtures/?sport=football&status=live&limit=200")
       .then(function(data) {
-        if (hasFixtureRows(data)) return data;
-        /* The documented fixtures endpoint can occasionally return an empty list
-           while the public live/recent widget still contains active matches. */
-        usedWidgetFallback = true;
-        return fetch("https://sportscore.com/api/widget/matches/?sport=football&limit=50", {cache:"no-store"})
-          .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+        if (rowsFrom(data).length) return {data:data, fallback:false};
+        return fetchLiveSource("https://sportscore.com/api/v1/matches/?sport=football")
+          .then(function(next) {
+            if (rowsFrom(next).length) return {data:next, fallback:true};
+            return fetchLiveSource("https://sportscore.com/api/widget/matches/?sport=football&limit=50")
+              .then(function(last) { return {data:last, fallback:true}; });
+          });
+      })
+      .then(function(result) {
+        usedWidgetFallback = result.fallback;
+        return result.data;
       })
       .then(function(data) {
-        var payload = data && data.data && !Array.isArray(data.data) ? data.data : data;
-        function arrayFrom(o) {
-          if (Array.isArray(o)) return o;
-          if (!o || typeof o !== "object") return [];
-          if (Array.isArray(o.fixtures)) return o.fixtures;
-          if (Array.isArray(o.matches)) return o.matches;
-          if (Array.isArray(o.results)) return o.results;
-          if (Array.isArray(o.data)) return o.data;
-          if (o.data && typeof o.data === "object") return arrayFrom(o.data);
-          if (o.result && typeof o.result === "object") return arrayFrom(o.result);
-          return [];
-        }
-        var matches = arrayFrom(payload);
+        var matches = rowsFrom(data);
 
         function valueText(v) {
           if (v == null) return "";
