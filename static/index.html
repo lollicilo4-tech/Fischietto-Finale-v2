@@ -687,6 +687,21 @@ main{max-width:1040px!important;margin:0 auto!important;padding-bottom:110px!imp
 .live-centre-empty{padding:18px 12px;text-align:center;color:#9eb0c8;font-size:.82rem;line-height:1.5}
 .live-centre-panel .live-events{margin:0}
 @media(min-width:600px){.live-centre-scoreboard{padding:22px}.live-centre-team{font-size:.95rem}.live-centre-team img{width:46px;height:46px}.live-centre-score{font-size:2.4rem}.live-centre-panel{padding:16px}}
+/* Match-card visual polish: compact scoreboard and stronger mobile hierarchy */
+.live-match{overflow:hidden;border-radius:20px!important;background:linear-gradient(160deg,#10213a 0%,#091525 75%)!important;border:1px solid rgba(76,145,231,.28)!important;box-shadow:0 10px 28px rgba(0,0,0,.16)}
+.live-match .live-league-name{font-size:.72rem!important;font-weight:800!important;letter-spacing:.06em;text-transform:uppercase;color:#82bfff!important}
+.live-match .live-phase{display:flex;align-items:center;gap:7px;font-size:.72rem!important;font-weight:800!important;letter-spacing:.08em}
+.live-match .live-teams{display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;gap:10px!important;align-items:center!important;padding:17px 0!important}
+.live-match .live-team{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:8px!important;text-align:center!important;min-width:0!important}
+.live-match .live-team b{font-size:.83rem!important;line-height:1.3!important;overflow-wrap:anywhere}
+.live-match .live-team img{width:35px!important;height:35px!important;object-fit:contain}
+.live-match .live-score{font-size:1.8rem!important;font-weight:900!important;letter-spacing:.06em!important;white-space:nowrap}
+.live-match .live-detail-toggle{width:100%!important;border-radius:12px!important;min-height:48px!important;background:rgba(6,18,34,.58)!important;border:1px solid rgba(93,156,230,.28)!important;font-weight:750!important}
+.live-match .live-match-details{padding:12px!important;margin-top:12px!important;border-radius:16px!important;background:rgba(18,36,61,.7)!important}
+.live-match .live-events{border-radius:17px!important}
+.live-match .live-events h4{font-size:1.05rem!important}
+@media(max-width:380px){.live-match .live-teams{gap:6px!important}.live-match .live-team b{font-size:.75rem!important}.live-match .live-team img{width:29px!important;height:29px!important}.live-match .live-score{font-size:1.5rem!important}}
+
 /* Live Center event timeline refresh */
 .live-events{margin:16px 0 4px;padding:18px 16px 12px;border:1px solid rgba(75,157,255,.22);border-radius:18px;background:linear-gradient(145deg,rgba(17,38,61,.96),rgba(7,18,31,.98));box-shadow:inset 0 1px 0 rgba(255,255,255,.035)}
 .live-events h4{display:flex;align-items:center;gap:9px;margin:0 0 16px;font-size:1rem;font-weight:700;letter-spacing:.015em}
