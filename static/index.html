@@ -1750,6 +1750,7 @@ a{color:#65baff}
       <div><div class="live-kicker">AGGIORNAMENTI PARTITE</div><h2>Live Center</h2><p class="expl">Risultati in diretta dal feed SportScore. Gli aggiornamenti possono avere un ritardo.</p></div>
       <button id="live-refresh" type="button" class="live-refresh">↻ Aggiorna</button>
     </div>
+    <div class="live-filters"><label for="live-league-filter">Filtra per campionato</label><select id="live-league-filter"><option value="all">Tutti i campionati</option></select></div>
     <div id="live-status" class="panel" role="status" aria-live="polite">Caricamento delle partite live…</div>
     <div id="live-list" class="live-list"></div>
     <p class="live-attribution">Dati sportivi forniti da <a class="sportscore-credit" href="https://sportscore.com/" target="_blank" rel="noopener noreferrer" aria-label="Powered by SportScore — apri il sito SportScore">Powered by SportScore ↗</a></p>
@@ -2264,24 +2265,13 @@ function slipReason(x){
   var tabs = ["home", "partite", "live", "sicure", "schedina", "classifica", "storico"];
   tabs.forEach(function (t) {
     $("t-" + t).addEventListener("click", function () {
-      tabs.forEach(function (u) { $("t-" + u).setAttribute("aria-selected", String(u === t)); $("p-" + u).hidden = u !== t; });
-      document.body.classList.toggle("inner", t !== "home");
-      $("back").hidden = t === "home";
-      window.scrollTo(0, 0);
-    });
-  });
-  var liveLoaded = false;
+      tabs.forEach(function (u) { $("t-" + u).setAttribute("aria-selected", String(u   var liveLoaded = false, liveMatches = [], selectedLiveLeague = "all";
   function loadLiveMatches(force) {
     var status = $("live-status"), list = $("live-list"), refresh = $("live-refresh");
     if (!status || !list || (!force && liveLoaded)) return;
     liveLoaded = true;
-    status.hidden = false;
-    status.textContent = "Caricamento delle partite in diretta…";
-    list.innerHTML = "";
+    status.hidden = false; status.textContent = "Caricamento delle partite in diretta…"; list.innerHTML = "";
     if (refresh) { refresh.disabled = true; refresh.textContent = "Caricamento…"; }
-
-    /* Request live fixtures explicitly instead of taking the first 50 live/recent
-       matches and filtering them locally. SportScore documents status=live on v1/fixtures. */
     fetch("https://sportscore.com/api/v1/fixtures/?sport=football&status=live&limit=200", {cache:"no-store"})
       .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
       .then(function(data) {
@@ -2297,56 +2287,99 @@ function slipReason(x){
           if (o.result && typeof o.result === "object") return arrayFrom(o.result);
           return [];
         }
-        var matches = arrayFrom(payload);
-
-        function valueText(v) {
-          if (v == null) return "";
-          if (typeof v === "object") return String(v.name || v.short_name || v.short || v.label || v.code || v.long || v.description || "");
-          return String(v);
-        }
-        function matchStatus(m) {
-          var s = m.status || m.fixture_status || m.phase || m.time_status || "";
-          return valueText(m.status_text || m.status_more || s).trim();
-        }
-        function isLiveMatch(m) {
-          var s = m.status || m.fixture_status || m.phase || m.time_status || m.state || "";
-          var raw = [valueText(s), valueText(s.short), valueText(s.long), valueText(s.name),
-            m.status_text, m.status_more, m.time_status].map(valueText).join(" ").toLowerCase().replace(/[_-]+/g, " ");
+        function txt(v) { if (v == null) return ""; if (typeof v === "object") return String(v.name || v.short_name || v.short || v.label || v.code || v.long || v.description || ""); return String(v); }
+        function league(m) { return txt(m.league || m.competition || m.tournament || m.league_name || m.competition_name || m.tournament_name || m.leagueName || m.competitionName) || "Campionato non specificato"; }
+        function statusText(m) { var s=m.status||m.fixture_status||m.phase||m.time_status||""; return txt(m.status_text||m.status_more||s).trim(); }
+        function isLive(m) {
+          var s=m.status||m.fixture_status||m.phase||m.time_status||m.state||"";
+          var raw=[txt(s),s&&s.short,s&&s.long,s&&s.name,m.status_text,m.status_more,m.time_status].map(txt).join(" ").toLowerCase().replace(/[_-]+/g," ");
           return /\b(live|in progress|in play|playing|first half|second half|half time|halftime|extra time|penalties|penalty shootout|1h|2h|ht|et|pens|inplay)\b/i.test(raw);
         }
-        /* Keep a client-side guard as a second check even with status=live from the API. */
-        var live = matches.filter(isLiveMatch);
-        if (!live.length) {
-          status.hidden = false;
-          status.innerHTML = '<strong>Nessuna partita in diretta restituita dal servizio.</strong><p class="expl">Il feed live non segnala incontri in corso in questo momento. Premi ↻ Aggiorna tra poco. Le partite concluse non vengono mostrate in questa sezione.</p>';
-          list.innerHTML = "";
-          return;
+        liveMatches = arrayFrom(payload).filter(isLive);
+        var filter=$("live-league-filter");
+        if(filter){
+          var leagues=Array.from(new Set(liveMatches.map(league))).sort(function(a,b){return a.localeCompare(b);});
+          filter.innerHTML='<option value="all">Tutti i campionati ('+liveMatches.length+')</option>'+leagues.map(function(name){return '<option value="'+esc(name)+'">'+esc(name)+'</option>';}).join("");
+          if(selectedLiveLeague!=="all"&&leagues.indexOf(selectedLiveLeague)<0)selectedLiveLeague="all";
+          filter.value=selectedLiveLeague;
         }
-        status.hidden = true;
-        list.innerHTML = live.map(function(m) {
-          var homeObj = m.home || m.home_team || m.homeTeam || m.localteam || m.home_participant;
-          var awayObj = m.away || m.away_team || m.awayTeam || m.visitorteam || m.away_participant;
-          var home = esc(valueText(homeObj) || "Squadra casa");
-          var away = esc(valueText(awayObj) || "Squadra ospite");
-          var score = m.score || m.scores || {};
-          var homeScore = m.home_score != null ? m.home_score : (score.home != null ? score.home : (score.home_score != null ? score.home_score : (m.homeScore != null ? m.homeScore : null)));
-          var awayScore = m.away_score != null ? m.away_score : (score.away != null ? score.away : (score.away_score != null ? score.away_score : (m.awayScore != null ? m.awayScore : null)));
-          var hs = homeScore == null ? "–" : esc(String(homeScore));
-          var as = awayScore == null ? "–" : esc(String(awayScore));
-          var phase = esc(matchStatus(m) || "LIVE");
-          var homeLogo = m.home_logo || (homeObj && typeof homeObj === "object" ? homeObj.logo || homeObj.image : "") || "";
-          var awayLogo = m.away_logo || (awayObj && typeof awayObj === "object" ? awayObj.logo || awayObj.image : "") || "";
-          return '<article class="live-match"><div class="live-phase"><span class="live-pulse"></span>' + phase + '</div><div class="live-teams"><div class="live-team">' + (homeLogo ? '<img loading="lazy" src="' + esc(homeLogo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + home + '</b></div><div class="live-score">' + hs + '<span>:</span>' + as + '</div><div class="live-team away">' + (awayLogo ? '<img loading="lazy" src="' + esc(awayLogo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + away + '</b></div></div></article>';
-        }).join("");
+        renderLiveMatches();
       })
       .catch(function() {
-        liveLoaded = false;
-        status.hidden = false;
-        list.innerHTML = "";
-        status.innerHTML = '<strong>Impossibile caricare il feed live.</strong><p class="expl">Il servizio dati non ha risposto correttamente. Riprova con ↻ Aggiorna; non mostriamo risultati non verificati.</p>';
+        liveLoaded=false; status.hidden=false; list.innerHTML="";
+        status.innerHTML='<strong>Impossibile caricare il feed live.</strong><p class="expl">Il servizio dati non ha risposto correttamente. Riprova con ↻ Aggiorna; non mostriamo risultati non verificati.</p>';
       })
-      .finally(function() { if (refresh) { refresh.disabled = false; refresh.textContent = "↻ Aggiorna"; } });
+      .finally(function(){if(refresh){refresh.disabled=false;refresh.textContent="↻ Aggiorna";}});
   }
+  function liveLeague(m){return String((m.league||m.competition||m.tournament||m.league_name||m.competition_name||m.tournament_name||m.leagueName||m.competitionName)&&((m.league||m.competition||m.tournament||m.league_name||m.competition_name||m.tournament_name||m.leagueName||m.competitionName).name||(m.league||m.competition||m.tournament||m.league_name||m.competition_name||m.tournament_name||m.leagueName||m.competitionName).short_name||(m.league||m.competition||m.tournament||m.league_name||m.competition_name||m.tournament_name||m.leagueName||m.competitionName).label||(m.league||m.competition||m.tournament||m.league_name||m.competition_name||m.tournament_name||m.leagueName||m.competitionName).code)||m.league||m.competition||m.tournament||m.league_name||m.competition_name||m.tournament_name||m.leagueName||m.competitionName||"Campionato non specificato");}
+  function liveText(v){if(v==null)return "";if(typeof v==="object")return String(v.name||v.short_name||v.short||v.label||v.code||v.long||v.description||"");return String(v);}
+  function liveStatus(m){var s=m.status||m.fixture_status||m.phase||m.time_status||"";return liveText(m.status_text||m.status_more||s).trim();}
+  function renderLiveMatches(){
+    var status=$("live-status"),list=$("live-list");
+    var shown=selectedLiveLeague==="all"?liveMatches:liveMatches.filter(function(m){return liveLeague(m)===selectedLiveLeague;});
+    if(!liveMatches.length){status.hidden=false;status.innerHTML='<strong>Nessuna partita in diretta restituita dal servizio.</strong><p class="expl">Il feed live non segnala incontri in corso in questo momento. Premi ↻ Aggiorna tra poco. Le partite concluse non vengono mostrate in questa sezione.</p>';list.innerHTML="";return;}
+    if(!shown.length){status.hidden=false;status.textContent="Nessuna partita live per questo campionato.";list.innerHTML="";return;}
+    status.hidden=true;
+    list.innerHTML=shown.map(function(m,index){
+      var h=m.home||m.home_team||m.homeTeam||m.localteam||m.home_participant,a=m.away||m.away_team||m.awayTeam||m.visitorteam||m.away_participant;
+      var score=m.score||m.scores||{},hs=m.home_score!=null?m.home_score:(score.home!=null?score.home:(score.home_score!=null?score.home_score:(m.homeScore!=null?m.homeScore:null)));
+      var as=m.away_score!=null?m.away_score:(score.away!=null?score.away:(score.away_score!=null?score.away_score:(m.awayScore!=null?m.awayScore:null)));
+      var homeLogo=m.home_logo||(h&&typeof h==="object"?(h.logo||h.image):"")||"",awayLogo=m.away_logo||(a&&typeof a==="object"?(a.logo||a.image):"")||"";
+      var id="live-detail-"+index,events=m.events||m.incidents||m.timeline||m.event_list||[],stats=m.statistics||m.stats||m.team_statistics||m.statistic||[];
+      function detailRows(value,label){
+        if(!value||(Array.isArray(value)&&!value.length))return "";
+        var rows=Array.isArray(value)?value:(typeof value==="object"?Object.keys(value).map(function(k){return {label:k,value:value[k]};}):[]);
+        if(!rows.length)return "";
+        return '<div class="live-detail-group"><b>'+label+'</b><ul>'+rows.slice(0,30).map(function(item){
+          if(item==null)return "";
+          if(typeof item!=="object")return '<li>'+esc(String(item))+'</li>';
+          var minute=item.minute!=null?String(item.minute)+"' · ":(item.time!=null?String(item.time)+" · ":"");
+          var name=item.player||item.player_name||item.team||item.type||item.name||item.label||item.key||"";
+          var value=item.value!=null?item.value:(item.home!=null||item.away!=null?String(item.home==null?"–":item.home)+" – "+String(item.away==null?"–":item.away):(item.detail||item.description||item.result||""));
+          return '<li>'+esc(minute+liveText(name)+(name&&value!==""?": ":"")+(typeof value==="object"?liveText(value):String(value==null?"":value)))+'</li>';
+        }).join("")+'</ul></div>';
+      }
+      var detail=detailRows(events,"Eventi")+detailRows(stats,"Statistiche");
+      if(!detail)detail='<p class="live-detail-empty">Il feed non fornisce eventi o statistiche dettagliate per questa partita.</p>';
+      return '<article class="live-match"><div class="live-league">'+esc(liveLeague(m))+'</div><div class="live-phase"><span class="live-pulse"></span>'+esc(liveStatus(m)||"LIVE")+'</div><div class="live-teams"><div class="live-team">'+(homeLogo?'<img loading="lazy" src="'+esc(homeLogo)+'" alt="" onerror="this.hidden=true">':"")+'<b>'+esc(liveText(h)||"Squadra casa")+'</b></div><div class="live-score">'+(hs==null?"–":esc(String(hs)))+'<span>:</span>'+(as==null?"–":esc(String(as)))+'</div><div class="live-team away">'+(awayLogo?'<img loading="lazy" src="'+esc(awayLogo)+'" alt="" onerror="this.hidden=true">':"")+'<b>'+esc(liveText(a)||"Squadra ospite")+'</b></div></div><button type="button" class="live-detail-toggle" aria-expanded="false" aria-controls="'+id+'" data-live-detail="'+id+'" data-live-slug="'+esc(m.slug||m.match_slug||"")+'">Eventi e statistiche <span>＋</span></button><div class="live-detail" id="'+id+'" hidden>'+detail+'</div></article>';
+    }).join("");
+  }
+  $("live-list").addEventListener("click",function(e){
+    var b=e.target.closest("[data-live-detail]");if(!b)return;
+    var panel=$(b.getAttribute("data-live-detail"));if(!panel)return;
+    var open=b.getAttribute("aria-expanded")==="true";
+    b.setAttribute("aria-expanded",String(!open));panel.hidden=open;b.lastElementChild.textContent=open?"＋":"−";
+    if(open||panel.getAttribute("data-loaded")==="true")return;
+    var slug=b.getAttribute("data-live-slug");
+    if(!slug){panel.innerHTML='<p class="live-detail-empty">Il feed non include un identificativo partita per richiedere il dettaglio.</p>';panel.setAttribute("data-loaded","true");return;}
+    panel.innerHTML='<p class="live-detail-empty">Caricamento di eventi e statistiche…</p>';
+    fetch("https://sportscore.com/api/widget/match/?sport=football&slug="+encodeURIComponent(slug),{cache:"no-store"})
+      .then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json();})
+      .then(function(raw){
+        var detail=raw&&raw.match?raw.match:(raw&&raw.data?raw.data:raw);
+        if(detail&&detail.match&&typeof detail.match==="object")detail=detail.match;
+        var events=detail&&(detail.timeline||detail.events||detail.incidents||detail.event_list)||[];
+        var stats=detail&&(detail.statistics||detail.stats||detail.team_statistics||detail.statistic)||[];
+        function rows(value,label){
+          if(!value||(Array.isArray(value)&&!value.length))return "";
+          var arr=Array.isArray(value)?value:(typeof value==="object"?Object.keys(value).map(function(k){return {label:k,value:value[k]};}):[]);
+          if(!arr.length)return "";
+          return '<div class="live-detail-group"><b>'+label+'</b><ul>'+arr.slice(0,40).map(function(x){
+            if(x==null)return "";
+            if(typeof x!=="object")return '<li>'+esc(String(x))+'</li>';
+            var min=x.minute!=null?String(x.minute)+"' · ":(x.time!=null?String(x.time)+" · ":"");
+            var name=x.player||x.player_name||x.team||x.type||x.name||x.label||x.key||"";
+            var val=x.value!=null?x.value:(x.home!=null||x.away!=null?String(x.home==null?"–":x.home)+" – "+String(x.away==null?"–":x.away):(x.detail||x.description||x.result||""));
+            return '<li>'+esc(min+liveText(name)+(name&&val!==""?": ":"")+(typeof val==="object"?liveText(val):String(val==null?"":val)))+'</li>';
+          }).join("")+'</ul></div>';
+        }
+        var html=rows(events,"Eventi")+rows(stats,"Statistiche");
+        if(!html)html='<p class="live-detail-empty">SportScore non ha fornito eventi o statistiche per questa partita.</p>';
+        panel.innerHTML=html;panel.setAttribute("data-loaded","true");
+      })
+      .catch(function(){panel.innerHTML='<p class="live-detail-empty">Dettagli non disponibili in questo momento. Riprova tra poco.</p>';panel.setAttribute("data-loaded","false");});
+  });
+  $("live-league-filter").addEventListener("change",function(){selectedLiveLeague=this.value;renderLiveMatches();});
   $("t-live").addEventListener("click", function() { loadLiveMatches(false); });
   $("live-refresh").addEventListener("click", function() { loadLiveMatches(true); });
 
@@ -2568,6 +2601,16 @@ function slipReason(x){
 .live-score span{color:var(--muted);font-size:16px}
 .live-attribution{font-size:11px;color:var(--muted);text-align:center;margin:18px 0}
 .live-attribution a{color:var(--link);font-weight:800}\n.live-attribution .sportscore-credit{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:var(--surface);text-decoration:underline;text-underline-offset:3px;min-height:36px}\n.live-attribution .sportscore-credit:focus-visible{outline:3px solid var(--good);outline-offset:3px}
+
+.live-filters{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 14px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.live-filters label{font-size:12px;font-weight:800;color:var(--muted)}
+.live-filters select{flex:1;min-width:160px;max-width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);font:600 13px var(--font-body)}
+.live-league{font-size:11px;font-weight:800;color:var(--good);margin-bottom:7px}
+.live-detail-toggle{display:flex;justify-content:space-between;align-items:center;width:100%;margin-top:12px;padding:10px 0 0;border:0;border-top:1px solid var(--line);background:transparent;color:var(--link);font:700 12px var(--font-body);text-align:left;cursor:pointer}
+.live-detail{padding-top:10px;color:var(--fg);font-size:12px}
+.live-detail-group{margin:0 0 10px}.live-detail-group ul{margin:6px 0 0;padding-left:18px;display:grid;gap:5px}
+.live-detail-empty{color:var(--muted);font-size:12px;margin:4px 0}
+
 @media(max-width:480px){.live-head{align-items:center}.live-team{gap:5px}.live-team b{font-size:12px}.live-team img{width:20px;height:20px;flex-basis:20px}.live-score{font-size:21px}.live-match{padding:12px}}
 </style>
 <script id="reference-dashboard-nav-scroll-v4">
