@@ -2331,14 +2331,10 @@ function slipReason(x){
           var s = m.status || m.fixture_status || m.phase || m.time_status || "";
           return valueText(m.status_text || m.status_more || s).trim();
         }
-        function isLiveMatch(m) {
-          var s = m.status || m.fixture_status || m.phase || m.time_status || m.state || "";
-          var raw = [valueText(s), valueText(s.short), valueText(s.long), valueText(s.name),
-            m.status_text, m.status_more, m.time_status].map(valueText).join(" ").toLowerCase().replace(/[_-]+/g, " ");
-          return /\b(live|in progress|in play|playing|first half|second half|half time|halftime|extra time|penalties|penalty shootout|1h|2h|ht|et|pens|inplay)\b/i.test(raw);
-        }
-        /* Keep a client-side guard as a second check even with status=live from the API. */
-        var live = matches.filter(isLiveMatch);
+        /* The provider has already filtered this endpoint with status=live.
+           Do not apply a second, narrower status whitelist here: valid live states
+           can vary by competition and would silently hide matches such as Serie A. */
+        var live = matches;
         var leagueSelect = $("live-league");
         var searchInput = $("live-search");
         var filterEmpty = $("live-filter-empty");
