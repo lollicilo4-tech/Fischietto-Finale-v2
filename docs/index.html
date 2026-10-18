@@ -2429,7 +2429,8 @@ function slipReason(x){
           var eventMarkup = eventItems.length
             ? '<section class="live-events"><h4>Eventi della partita</h4><ol>' + eventItems.join("") + '</ol></section>'
             : '<p class="expl">Il feed non include eventi verificabili per questa partita. Il risultato e lo stato live restano disponibili.</p>';
-          return '<article class="live-match" data-live-league="' + esc(leagueKey) + '" data-live-search="' + esc(searchText) + '"><div class="live-league-name">' + esc(league) + '</div><div class="live-phase"><span class="live-pulse"></span>' + phase + '</div><div class="live-teams"><div class="live-team">' + (homeLogo ? '<img loading="lazy" src="' + esc(homeLogo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + home + '</b></div><div class="live-score">' + hs + '<span>:</span>' + as + '</div><div class="live-team away">' + (awayLogo ? '<img loading="lazy" src="' + esc(awayLogo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + away + '</b></div></div><button type="button" class="live-detail-toggle" aria-expanded="false">Dettagli partita <span aria-hidden="true">＋</span></button><div class="live-match-details" hidden>' + (details.length ? '<div class="live-detail-grid">' + details.join("") + '</div>' : '') + eventMarkup + '</div></article>';
+          var matchSlug = m.slug || m.match_slug || m.url_slug || "";
+          return '<article class="live-match" data-live-slug="' + esc(matchSlug) + '" data-live-league="' + esc(leagueKey) + '" data-live-search="' + esc(searchText) + '"><div class="live-league-name">' + esc(league) + '</div><div class="live-phase"><span class="live-pulse"></span>' + phase + '</div><div class="live-teams"><div class="live-team">' + (homeLogo ? '<img loading="lazy" src="' + esc(homeLogo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + home + '</b></div><div class="live-score">' + hs + '<span>:</span>' + as + '</div><div class="live-team away">' + (awayLogo ? '<img loading="lazy" src="' + esc(awayLogo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + away + '</b></div></div><button type="button" class="live-detail-toggle" aria-expanded="false">Dettagli partita <span aria-hidden="true">＋</span></button><div class="live-match-details" hidden>' + (details.length ? '<div class="live-detail-grid">' + details.join("") + '</div>' : '') + eventMarkup + '</div></article>';
         }).join("");
         function applyLiveFilters() {
           var chosen = leagueSelect ? leagueSelect.value : "all";
@@ -2460,6 +2461,74 @@ function slipReason(x){
           toggle.setAttribute("aria-expanded", String(open));
           details.hidden = !open;
           toggle.lastElementChild.textContent = open ? "−" : "＋";
+          if (!open || card.dataset.detailsLoaded === "true" || card.dataset.detailsLoading === "true") return;
+
+          var slug = card.getAttribute("data-live-slug");
+          if (!slug) {
+            card.dataset.detailsLoaded = "true";
+            if (!details.querySelector(".live-events")) {
+              var note = document.createElement("p");
+              note.className = "expl";
+              note.textContent = "Il feed non fornisce un identificativo partita utilizzabile per caricare la cronologia.";
+              details.appendChild(note);
+            }
+            return;
+          }
+          card.dataset.detailsLoading = "true";
+          var loading = document.createElement("p");
+          loading.className = "expl live-detail-loading";
+          loading.textContent = "Caricamento eventi e statistiche…";
+          details.appendChild(loading);
+          fetch("https://sportscore.com/api/widget/match/?sport=football&slug=" + encodeURIComponent(slug), {cache:"no-store"})
+            .then(function(response) { if (!response.ok) throw new Error("HTTP " + response.status); return response.json(); })
+            .then(function(payload) {
+              var match = payload && (payload.match || payload.data || payload.result || payload);
+              if (match && match.match && typeof match.match === "object") match = match.match;
+              var timeline = match && (match.timeline || match.events || match.incidents || match.match_events || match.fixture_events);
+              if (timeline && !Array.isArray(timeline)) timeline = timeline.events || timeline.items || timeline.data || [];
+              if (!Array.isArray(timeline)) timeline = [];
+              var existing = details.querySelector(".live-events");
+              if (existing) existing.remove();
+              var items = timeline.map(function(ev) {
+                if (!ev || typeof ev !== "object") return "";
+                function pick(keys) {
+                  for (var i=0;i<keys.length;i++) if (ev[keys[i]] != null && valueText(ev[keys[i]]).trim()) return valueText(ev[keys[i]]).trim();
+                  return "";
+                }
+                var minute = pick(["minute","time","elapsed","match_time"]);
+                if (minute && typeof minute === "object") minute = valueText(minute.elapsed || minute.minute || minute.value);
+                var kind = pick(["type","event_type","incident_type","name","detail","description","comments"]);
+                var player = pick(["player","player_name","participant","athlete"]);
+                var team = pick(["team","team_name","participant_name"]);
+                var label = [kind,player].filter(Boolean).join(" · ");
+                return label ? '<li class="live-event"><span class="live-event-minute">' + esc(minute ? String(minute).replace(/\'$/, "") + "'" : "•") + '</span><span><b>' + esc(label) + '</b>' + (team ? '<small>' + esc(team) + '</small>' : '') + '</span></li>' : "";
+              }).filter(Boolean);
+              if (items.length) {
+                var section = document.createElement("section");
+                section.className = "live-events";
+                section.innerHTML = '<h4>Eventi della partita</h4><ol>' + items.join("") + '</ol>';
+                details.appendChild(section);
+                var fallback = details.querySelector(".expl");
+                if (fallback && fallback.textContent.indexOf("non include eventi") >= 0) fallback.remove();
+              } else if (!details.querySelector(".live-events")) {
+                var empty = document.createElement("p");
+                empty.className = "expl";
+                empty.textContent = "Il dettaglio del servizio non contiene eventi verificabili per questa partita.";
+                details.appendChild(empty);
+              }
+              card.dataset.detailsLoaded = "true";
+            })
+            .catch(function() {
+              var err = document.createElement("p");
+              err.className = "expl";
+              err.textContent = "Non è stato possibile caricare gli eventi dal servizio. Puoi riprovare aggiornando le partite live.";
+              details.appendChild(err);
+            })
+            .finally(function() {
+              card.dataset.detailsLoading = "false";
+              var loader = details.querySelector(".live-detail-loading");
+              if (loader) loader.remove();
+            });
         };
       })
       .catch(function() {
