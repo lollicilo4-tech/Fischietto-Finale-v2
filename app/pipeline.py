@@ -117,7 +117,8 @@ def _recommendations(s: dict, home: str, away: str) -> dict:
 
 
 async def build_turno(competition: str | None = None, use_ai: bool | None = None) -> dict:
-    ctx = await data.get_context(competition)
+    league = competition or data.COMPETITION
+    ctx = await data.get_context(league)
     teams, avg_h, avg_a = ctx["teams"], ctx["avg_h"], ctx["avg_a"]
 
     bases = []
@@ -165,7 +166,7 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
                               "market_predictions": market_predictions,
                               "recommendation": recommendation.get("best"),
                               "base": {k: round(item["base"][k], 4) for k in ("p1", "px", "p2")},
-                              **({"old": {k: round(item["old"][k], 4) for k in ("p1", "px", "p2")}} if item["old"] else {})})
+                              **({"old": {k: round(item["old"][k], 4) for k in ("p1", "px", "p2")}} if item["old"] else {})}, league=league)
 
     ai_count = sum(1 for a in analyses if a["ai"])
     ai_error = next((a.get("reason") for a in analyses if a.get("reason")), None)
@@ -177,14 +178,15 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
         ai_status = "non_disponibile"
     else:
         ai_status = "solo_statistica"
+    history_data = {} if ctx["demo"] else store.history(ctx["finished"], league=league)
     return {"demo": ctx["demo"], "ai": ai_count > 0,
             "ai_error": ai_error,
             "ai_status": ai_status,
             "matchday": ctx.get("matchday"),
-            "played": [] if ctx["demo"] else store.recent(ctx["finished"]),
-            "market_performance": {} if ctx["demo"] else store.history(ctx["finished"]).get("market_performance", {}),
-            "recommendation_performance": {} if ctx["demo"] else store.history(ctx["finished"]).get("recommendation_performance", {}),
-            "backtest": {} if ctx["demo"] else store.history(ctx["finished"]).get("backtest", {}),
+            "played": [] if ctx["demo"] else store.recent(ctx["finished"], league=league),
+            "market_performance": history_data.get("market_performance", {}),
+            "recommendation_performance": history_data.get("recommendation_performance", {}),
+            "backtest": history_data.get("backtest", {}),
             "generated_at": datetime.now(timezone.utc).isoformat(timespec="minutes"),
             "matches": out}
 
@@ -192,8 +194,9 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
 async def build_storico(competition: str | None = None) -> dict:
     if not data.has_key():
         return DEMO_HISTORY
-    ctx = await data.get_context(competition)
-    return {"demo": False, **store.history(ctx["finished"])}
+    league = competition or data.COMPETITION
+    ctx = await data.get_context(league)
+    return {"demo": False, **store.history(ctx["finished"], league=league)}
 
 
 DEMO_CLASSIFICA = [

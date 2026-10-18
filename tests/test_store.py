@@ -89,5 +89,83 @@ class MarketReadinessTests(unittest.TestCase):
         self.assertFalse(actual["recommendation_performance"]["ready"])
 
 
+
+
+class ArchivedResultsTests(unittest.TestCase):
+    @staticmethod
+    def prediction():
+        return {
+            "home": "Casa", "away": "Trasferta",
+            "kickoff": "2026-10-17T18:00:00Z",
+            "p1": 0.6, "px": 0.2, "p2": 0.2,
+            "pick": "1", "pick_p": 0.6,
+        }
+
+    def test_joined_archives_a_new_result_and_keeps_it_after_feed_window(self):
+        predictions = {"42": self.prediction()}
+        finished = [{"id": 42, "hg": 2, "ag": 1, "date": "2026-10-17"}]
+
+        with patch("app.store._load", return_value=predictions), patch("app.store._write") as write:
+            rows = store._joined(finished, league="SA")
+            self.assertEqual(predictions["42"]["league"], "SA")
+            self.assertEqual(predictions["42"]["result"], {
+                "hg": 2, "ag": 1, "date": "2026-10-17"
+            })
+            self.assertEqual(rows[0][2]["hg"], 2)
+            write.assert_called_once_with(predictions)
+
+            # Il provider non restituisce più la partita: lo storico deve conservarla.
+            rows_after = store._joined([], league="SA")
+            self.assertEqual(len(rows_after), 1)
+            self.assertEqual((rows_after[0][2]["hg"], rows_after[0][2]["ag"]), (2, 1))
+            write.assert_called_once_with(predictions)
+
+    def test_joined_does_not_overwrite_an_archived_result(self):
+        prediction = self.prediction()
+        prediction["result"] = {"hg": 1, "ag": 0, "date": "2026-10-17"}
+        predictions = {"42": prediction}
+        changed_provider_result = [{"id": "42", "hg": 0, "ag": 3, "date": "2026-10-17"}]
+
+        with patch("app.store._load", return_value=predictions), patch("app.store._write") as write:
+            rows = store._joined(changed_provider_result, league="SA")
+
+        self.assertEqual((rows[0][2]["hg"], rows[0][2]["ag"]), (1, 0))
+        # La migrazione assegna la lega al record legacy, senza sovrascrivere il punteggio.
+        self.assertEqual(predictions["42"]["league"], "SA")
+        write.assert_called_once_with(predictions)
+
+    def test_joined_excludes_archived_results_from_other_leagues(self):
+        home = self.prediction()
+        home.update(league="SA", result={"hg": 2, "ag": 0, "date": "2026-10-17"})
+        away = self.prediction()
+        away.update(league="PL", result={"hg": 0, "ag": 3, "date": "2026-10-17"})
+        predictions = {"sa-id": home, "pl-id": away}
+
+        with patch("app.store._load", return_value=predictions), patch("app.store._write") as write:
+            rows = store._joined([], league="SA")
+
+        self.assertEqual([row[0] for row in rows], ["sa-id"])
+        self.assertEqual((rows[0][2]["hg"], rows[0][2]["ag"]), (2, 0))
+        write.assert_not_called()
+
+    def test_history_baseline_uses_all_finished_matches_in_the_competition(self):
+        rows = [
+            ("1", self.prediction(), {"id": "1", "hg": 2, "ag": 0}),
+            ("2", self.prediction(), {"id": "2", "hg": 0, "ag": 2}),
+        ]
+        finished = [
+            {"id": "10", "hg": 2, "ag": 0},
+            {"id": "11", "hg": 1, "ag": 1},
+            {"id": "12", "hg": 0, "ag": 2},
+            {"id": "13", "hg": 3, "ag": 1},
+        ]
+
+        with patch("app.store._joined", return_value=rows):
+            actual = store.history(finished, league="SA")
+
+        self.assertEqual(actual["n"], 2)
+        self.assertEqual(actual["base_rates"], {"1": 0.5, "X": 0.25, "2": 0.25})
+
+
 if __name__ == "__main__":
     unittest.main()

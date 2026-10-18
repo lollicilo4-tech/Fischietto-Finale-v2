@@ -45,12 +45,18 @@ def _write(d: dict) -> None:
 
 
 def save(match_id: str, home: str, away: str, kickoff: str, p1: float, px: float, p2: float,
-         extra: dict | None = None) -> None:
+         extra: dict | None = None, league: str | None = None) -> None:
     d = _load()
     if match_id in d:  # il primo pronostico resta quello valido
+        # Backfill del campionato senza riscrivere il pronostico originale.
+        if league and not d[match_id].get("league"):
+            d[match_id]["league"] = league
+            _write(d)
         return
     pick, pick_p = max((("1", p1), ("X", px), ("2", p2)), key=lambda x: x[1])
     d[match_id] = dict(home=home, away=away, kickoff=kickoff, p1=p1, px=px, p2=p2, pick=pick, pick_p=pick_p)
+    if league:
+        d[match_id]["league"] = league
     if extra:  # altri mercati e gol attesi, per la scheda e per le metriche (assenti nei pronostici più vecchi)
         d[match_id].update(extra)
     _write(d)
@@ -60,17 +66,71 @@ def _outcome(m: dict) -> str:
     return "1" if m["hg"] > m["ag"] else "X" if m["hg"] == m["ag"] else "2"
 
 
-def _joined(finished: list[dict]) -> list[tuple[str, dict, dict]]:
-    results = {m["id"]: m for m in finished}
-    rows = [(mid, p, results[mid]) for mid, p in _load().items() if mid in results]
+def _joined(finished: list[dict], league: str | None = None) -> list[tuple[str, dict, dict]]:
+    """Unisce i risultati recenti ai punteggi archiviati, isolando i campionati.
+
+    I record storici più vecchi non hanno il campo league: vengono associati
+    solo quando il loro ID compare nel feed FINISHED della competizione corrente.
+    I risultati archiviati non vengono mai sovrascritti.
+    """
+    predictions = _load()
+    results = {str(m["id"]): m for m in finished if m.get("id") is not None}
+    changed = False
+
+    for mid, p in predictions.items():
+        result = results.get(str(mid))
+        current_league = p.get("league")
+        if league is not None:
+            if current_league and current_league != league:
+                continue
+            if not current_league:
+                # Non assegnare un vecchio record a una lega senza un ID osservato
+                # nel feed di quella stessa competizione.
+                if result is None:
+                    continue
+                p["league"] = league
+                changed = True
+        elif result is None:
+            # Compatibilità per i chiamanti legacy: senza lega, usa solo il feed corrente.
+            continue
+
+        if result is None or "result" in p:
+            continue
+        try:
+            hg, ag = int(result["hg"]), int(result["ag"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        p["result"] = {"hg": hg, "ag": ag, "date": result.get("date")}
+        changed = True
+
+    if changed:
+        _write(predictions)
+
+    rows = []
+    for mid, p in predictions.items():
+        if league is not None:
+            if p.get("league") != league:
+                continue
+        elif str(mid) not in results:
+            continue
+        result = p.get("result")
+        if not isinstance(result, dict) or "hg" not in result or "ag" not in result:
+            continue
+        try:
+            hg, ag = int(result["hg"]), int(result["ag"])
+        except (TypeError, ValueError):
+            continue
+        m = {"id": str(mid), "hg": hg, "ag": ag,
+             "date": result.get("date") or p.get("kickoff")}
+        rows.append((str(mid), p, m))
     rows.sort(key=lambda r: r[1].get("kickoff") or "", reverse=True)
     return rows
 
 
-def recent(finished: list[dict], limit: int = 18) -> list[dict]:
-    """Ultime 18 partite pronosticate e concluse, per mostrare una giornata completa."""
+def recent(finished: list[dict], limit: int = 18, league: str | None = None) -> list[dict]:
+    """Ultime partite pronosticate e concluse per il campionato richiesto."""
     out = []
-    for mid, p, m in _joined(finished)[:limit]:
+    for mid, p, m in _joined(finished, league=league)[:limit]:
         actual = _outcome(m)
         item = {"id": mid, "home": p["home"], "away": p["away"], "kickoff": p.get("kickoff"),
                 "prob": {"p1": p["p1"], "px": p["px"], "p2": p["p2"]},
@@ -234,8 +294,8 @@ def _backtest(rows: list[tuple[str, dict, dict]]) -> dict:
     return {"n":len(ordered),"windows":windows,"markets":code_stats,
             "note":"Valuta solo pronostici già salvati prima dell'esito; non ricalcola retroattivamente le previsioni."}
 
-def history(finished: list[dict]) -> dict:
-    rows = _joined(finished)
+def history(finished: list[dict], league: str | None = None) -> dict:
+    rows = _joined(finished, league=league)
     items, brier, outcomes = [], [], []
     for mid, p, m in rows:
         actual = _outcome(m)
@@ -274,9 +334,10 @@ def history(finished: list[dict]) -> dict:
         "overall_rate": overall_rate
     }
 
-    # Metodo di riferimento: usare sempre le frequenze di 1, X, 2 dell'intero campionato
+    # Metodo di riferimento invariato: frequenze 1/X/2 di tutte le gare concluse
+    # della competizione corrente, non soltanto delle partite per cui esiste un pronostico.
     tot = len(finished)
-    base = {k: sum(1 for m in finished if _outcome(m) == k) / tot for k in ("1", "X", "2")}
+    base = {k: sum(1 for m in finished if _outcome(m) == k) / tot for k in ("1", "X", "2")} if tot else {"1": 1/3, "X": 1/3, "2": 1/3}
     brier_base = sum(sum((base[k] - (1.0 if k == a else 0.0)) ** 2 for k in base) for a in outcomes) / n
     out["brier"] = sum(brier) / n
     out["brier_base"] = brier_base
