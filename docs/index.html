@@ -2393,7 +2393,43 @@ function slipReason(x){
           if (kickoff) details.push('<div><small>Orario</small><b>' + esc(valueText(kickoff)) + '</b></div>');
           if (venue) details.push('<div><small>Stadio</small><b>' + esc(valueText(venue)) + '</b></div>');
           if (round) details.push('<div><small>Turno</small><b>' + esc(valueText(round)) + '</b></div>');
-          return '<article class="live-match" data-live-league="' + esc(leagueKey) + '" data-live-search="' + esc(searchText) + '"><div class="live-league-name">' + esc(league) + '</div><div class="live-phase"><span class="live-pulse"></span>' + phase + '</div><div class="live-teams"><div class="live-team">' + (homeLogo ? '<img loading="lazy" src="' + esc(homeLogo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + home + '</b></div><div class="live-score">' + hs + '<span>:</span>' + as + '</div><div class="live-team away">' + (awayLogo ? '<img loading="lazy" src="' + esc(awayLogo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + away + '</b></div></div><button type="button" class="live-detail-toggle" aria-expanded="false">Dettagli partita <span aria-hidden="true">＋</span></button><div class="live-match-details" hidden>' + (details.length ? '<div class="live-detail-grid">' + details.join("") + '</div>' : '<p class="expl">Il feed non fornisce ulteriori dettagli verificabili per questa partita.</p>') + '</div></article>';
+
+          /* Some fixture feeds include event data inline; render it when present,
+             without fabricating events or assuming an undocumented endpoint. */
+          function firstArray(values) {
+            for (var ai = 0; ai < values.length; ai++) {
+              if (Array.isArray(values[ai])) return values[ai];
+            }
+            return [];
+          }
+          var rawEvents = firstArray([m.events, m.incidents, m.timeline, m.fixture_events, m.match_events, m.event_list]);
+          function eventText(ev, keys) {
+            for (var ei = 0; ei < keys.length; ei++) {
+              var val = ev && ev[keys[ei]];
+              if (val != null && valueText(val).trim()) return valueText(val).trim();
+            }
+            return "";
+          }
+          function eventMinute(ev) {
+            var time = ev && (ev.time || ev.minute || ev.elapsed || ev.match_time);
+            if (time && typeof time === "object") time = time.elapsed || time.minute || time.value || "";
+            return time == null || time === "" ? "" : String(time).replace(/'$/, "") + "'";
+          }
+          var eventItems = rawEvents.map(function(ev) {
+            if (!ev || typeof ev !== "object") return null;
+            var kind = eventText(ev, ["type", "event_type", "incident_type", "name", "detail", "description", "comments"]);
+            var player = eventText(ev, ["player", "player_name", "participant", "athlete"]);
+            var assist = eventText(ev, ["assist", "assist_player", "related_player"]);
+            var team = eventText(ev, ["team", "team_name", "participant_name"]);
+            var minute = eventMinute(ev);
+            var label = [kind, player, assist && "Assist: " + assist].filter(Boolean).join(" · ");
+            if (!label) return null;
+            return '<li class="live-event"><span class="live-event-minute">' + esc(minute || "•") + '</span><span><b>' + esc(label) + '</b>' + (team ? '<small>' + esc(team) + '</small>' : '') + '</span></li>';
+          }).filter(Boolean);
+          var eventMarkup = eventItems.length
+            ? '<section class="live-events"><h4>Eventi della partita</h4><ol>' + eventItems.join("") + '</ol></section>'
+            : '<p class="expl">Il feed non include eventi verificabili per questa partita. Il risultato e lo stato live restano disponibili.</p>';
+          return '<article class="live-match" data-live-league="' + esc(leagueKey) + '" data-live-search="' + esc(searchText) + '"><div class="live-league-name">' + esc(league) + '</div><div class="live-phase"><span class="live-pulse"></span>' + phase + '</div><div class="live-teams"><div class="live-team">' + (homeLogo ? '<img loading="lazy" src="' + esc(homeLogo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + home + '</b></div><div class="live-score">' + hs + '<span>:</span>' + as + '</div><div class="live-team away">' + (awayLogo ? '<img loading="lazy" src="' + esc(awayLogo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + away + '</b></div></div><button type="button" class="live-detail-toggle" aria-expanded="false">Dettagli partita <span aria-hidden="true">＋</span></button><div class="live-match-details" hidden>' + (details.length ? '<div class="live-detail-grid">' + details.join("") + '</div>' : '') + eventMarkup + '</div></article>';
         }).join("");
         function applyLiveFilters() {
           var chosen = leagueSelect ? leagueSelect.value : "all";
