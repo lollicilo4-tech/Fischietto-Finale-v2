@@ -108,10 +108,13 @@ class FrontendIntegrityTests(unittest.TestCase):
             "Il feed deve richiedere al provider soltanto le partite live",
         )
         self.assertIn(
-            "usedWidgetFallback ? matches.filter(isLiveStatus) : matches",
+            "m._ffLiveVerified === true || isLiveStatus(m)",
             source,
-            "Il filtro locale va applicato solo al fallback, non al feed live",
+            "Le righe del feed filtrato dal provider sono attendibili; il fallback va filtrato localmente",
         )
+        self.assertIn("Promise.all(liveEndpoints.map", source)
+        self.assertIn("var combined = [], positions = {};", source)
+        self.assertIn("return {matches:combined};", source)
         self.assertNotIn("matches.filter(isLiveMatch)", source)
 
 
@@ -127,10 +130,21 @@ class FrontendIntegrityTests(unittest.TestCase):
             "Se il feed fixtures è vuoto, usa il widget pubblico come fallback",
         )
         self.assertIn(
-            "usedWidgetFallback ? matches.filter(isLiveStatus) : matches",
+            "/api/v1/matches/?sport=football&limit=50",
             source,
-            "Il fallback deve escludere partite finite e future",
+            "Il secondo endpoint documentato va interrogato come ulteriore fonte",
         )
+        self.assertIn(
+            "Promise.all(liveEndpoints.map",
+            source,
+            "Tutte le fonti devono essere interrogate invece di fermarsi alla prima risposta non vuota",
+        )
+        self.assertIn(
+            "return m._ffLiveVerified === true || isLiveStatus(m)",
+            source,
+            "Le partite provenienti dai fallback devono essere filtrate per stato live",
+        )
+        self.assertIn("sourceIdentity(candidate)", source, "Le partite duplicate tra fonti vanno deduplicate")
 
 
 if __name__ == "__main__":
