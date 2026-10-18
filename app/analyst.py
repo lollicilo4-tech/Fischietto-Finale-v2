@@ -421,16 +421,17 @@ async def _ask_gemini(fx: dict, base: dict, retry_grounding: bool = False) -> di
         config=config,
     )
     # Alcune risposte non attivano Google Search anche se lo strumento è abilitato.
-    # Ritenta una sola volta con una richiesta esplicita di ricerca e citazioni;
-    # il retry è limitato alle analisi già selezionate dal refresh controllato.
+    # Ritenta una sola volta se non ci sono fonti grezze O se le fonti raccolte
+    # non superano il filtro di pertinenza. Il retry resta limitato alle analisi
+    # selezionate dal refresh controllato, per contenere le chiamate AI.
     raw_sources = _extract_grounding_sources(response)
     grounding_retry = False
-    if not raw_sources and retry_grounding:
+    if not _relevant_sources(raw_sources, fx) and retry_grounding:
         grounding_retry = True
         retry_prompt = (
             prompt
-            + "\n\nSECONDO TENTATIVO: la risposta precedente non ha prodotto alcuna fonte "
-            "verificabile. Prima di rispondere, esegui Google Search con query che contengano "
+            + "\n\nSECONDO TENTATIVO: la risposta precedente non ha prodotto fonti pertinenti e "
+            "verificabili. Prima di rispondere, esegui Google Search con query che contengano "
             f"esattamente i nomi {fx['home']} e {fx['away']} e notizie recenti su indisponibilità. "
             "Se Google Search non restituisce risultati, non inventare URL o notizie: dichiara "
             "che non hai trovato fonti verificabili."

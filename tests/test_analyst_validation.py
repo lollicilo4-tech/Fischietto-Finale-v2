@@ -189,5 +189,14 @@ class ValidateAbsencesTests(unittest.TestCase):
         self.assertEqual(result["factor_away"], 1.0)
 
 
+    def test_gemini_retries_when_raw_sources_are_irrelevant(self):
+        from app.analyst import _relevant_sources
+        fx = {"home": "Le Havre", "away": "Auxerre"}
+        irrelevant = [{"title": "Generic live scores", "url": "https://example.com/live-score"}]
+        relevant = [{"title": "Le Havre official team news", "url": "https://club.example/news"}]
+        self.assertEqual(_relevant_sources(irrelevant, fx), [])
+        self.assertEqual(_relevant_sources(relevant, fx), relevant)
+
+
 if __name__ == "__main__":
     unittest.main()
