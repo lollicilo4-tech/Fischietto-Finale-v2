@@ -108,9 +108,9 @@ class FrontendIntegrityTests(unittest.TestCase):
             "Il feed deve richiedere al provider soltanto le partite live",
         )
         self.assertIn(
-            "var live = matches;",
+            "usedWidgetFallback ? matches.filter(isLiveStatus) : matches",
             source,
-            "Le partite restituite dall'endpoint live non devono essere scartate da una whitelist locale di stati",
+            "Il filtro locale va applicato solo al fallback, non al feed live",
         )
         self.assertNotIn("matches.filter(isLiveMatch)", source)
 
