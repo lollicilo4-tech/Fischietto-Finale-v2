@@ -81,7 +81,7 @@ _TEAM_ALIASES = {
     "bayern munich": ("bayern munich", "bayern munchen", "bayern"),
     "bayern munchen": ("bayern munchen", "bayern munich", "bayern"),
     "borussia dortmund": ("borussia dortmund", "dortmund", "bvb"),
-    "real madrid": ("real madrid", "real"),
+    "real madrid": ("real madrid",),
     "athletic bilbao": ("athletic bilbao", "athletic club"),
     "newcastle united": ("newcastle united", "newcastle"),
     "tottenham hotspur": ("tottenham hotspur", "tottenham", "spurs"),
@@ -102,7 +102,7 @@ _TEAM_ALIASES = {
     "real sociedad": ("real sociedad", "sociedad"),
     "real betis": ("real betis", "betis"),
     "celta vigo": ("celta vigo", "celta"),
-    "paris fc": ("paris fc", "paris"),
+    "paris fc": ("paris fc",),
 }
 _CONFIRMED_TERMS = (
     "indisponibile", "indisponibili", "squalificato", "squalificati",
