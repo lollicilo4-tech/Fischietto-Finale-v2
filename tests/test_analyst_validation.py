@@ -119,7 +119,7 @@ class ValidateAbsencesTests(unittest.TestCase):
         from app.analyst import _relevant_sources
         sources = [
             {"title": "instagram.com", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/example"},
-            {"title": "Club official news", "url": "https://club.example/news/team-update"},
+            {"title": "Como official team news", "url": "https://club.example/news/como-team-update"},
         ]
         result = _relevant_sources(sources, {"home": "Como 1907", "away": "Roma"})
         self.assertEqual(len(result), 1)
@@ -196,6 +196,24 @@ class ValidateAbsencesTests(unittest.TestCase):
         relevant = [{"title": "Le Havre official team news", "url": "https://club.example/news"}]
         self.assertEqual(_relevant_sources(irrelevant, fx), [])
         self.assertEqual(_relevant_sources(relevant, fx), relevant)
+
+    def test_relevant_sources_reject_other_match_and_host_only_titles(self):
+        from app.analyst import _relevant_sources
+        fx = {"home": "Le Havre", "away": "Auxerre"}
+        unrelated = [
+            {"title": "Real Madrid injury news", "url": "https://example.com/real-madrid-injuries"},
+            {"title": "sportsmole.co.uk", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/random"},
+        ]
+        self.assertEqual(_relevant_sources(unrelated, fx), [])
+
+    def test_relevant_sources_accepts_common_team_alias(self):
+        from app.analyst import _relevant_sources
+        fx = {"home": "Man City", "away": "PAE AEK"}
+        sources = [{
+            "title": "Manchester City team news ahead of AEK Athens",
+            "url": "https://example.com/manchester-city-team-news",
+        }]
+        self.assertEqual(_relevant_sources(sources, fx), sources)
 
 
 if __name__ == "__main__":
