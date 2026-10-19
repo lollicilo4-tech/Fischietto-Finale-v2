@@ -18,6 +18,8 @@ FACTOR_MIN, FACTOR_MAX = 0.85, 1.15
 CACHE_SECONDS = 72 * 3600  # allineata alla finestra delle notizie recenti (72 ore)
 SOURCE_REFRESH_LIMIT_PER_LEAGUE = 1  # generate.py elabora 6 leghe: massimo 6 retry grounding per esecuzione
 _cache: dict = {}
+# Shared across analyze_all() calls: generate.py processes leagues sequentially in one process.
+_groq_daily_limit_reached = False
 PERSIST_PATH = Path(__file__).resolve().parent.parent / "docs" / "ai_cache.json"
 ROLE = {"att": "attaccante titolare", "def": "difensore titolare"}
 
@@ -577,6 +579,7 @@ def _select_source_refresh_ids(
 
 async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict]:
     """items: [{"fx": fixture, "base": {lh, la, p1, px, p2, ...}}]"""
+    global _groq_daily_limit_reached
     if not use_ai:
         return [fallback_analysis(i["fx"], i["base"], teams) for i in items]
     if not os.getenv("GROQ_API_KEY") and not os.getenv("GEMINI_API_KEY"):
@@ -595,9 +598,14 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
     # Limita il carico simultaneo per evitare picchi TPM sul piano on-demand.
     sem = asyncio.Semaphore(2)
     rate_limited = asyncio.Event()
+    # analyze_all() viene chiamata una volta per lega: conserva il limite giornaliero
+    # anche tra le chiamate, evitando di riprovare Groq nelle leghe successive.
+    if _groq_daily_limit_reached:
+        rate_limited.set()
     rate_limit_message = "Limite Groq temporaneamente raggiunto. L’analisi statistica resta disponibile; l’AI riproverà al prossimo aggiornamento."
 
     async def one(item):
+        global _groq_daily_limit_reached
         fx = item["fx"]
         hit = _cache.get(fx["id"])
         if hit and time.time() - hit[0] < CACHE_SECONDS:
@@ -680,6 +688,7 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
                     "429" in str(exc) and not any(t in str(exc).lower() for t in ("tokens per minute", "tpm", "try again in"))
                 )
                 if daily_limit:
+                    _groq_daily_limit_reached = True
                     rate_limited.set()
                 if client is not None and os.getenv("GEMINI_API_KEY"):
                     try:

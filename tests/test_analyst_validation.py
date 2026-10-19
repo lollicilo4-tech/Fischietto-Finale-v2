@@ -1,6 +1,10 @@
+import asyncio
+import os
 import unittest
 from types import SimpleNamespace
+from unittest.mock import AsyncMock, patch
 
+import app.analyst as analyst
 from app.analyst import SOURCE_REFRESH_LIMIT_PER_LEAGUE, _cache_is_compatible, _cache_needs_source_refresh, _select_source_refresh_ids, _normalized_provider, _extract_grounding_sources, _extract_response_text, _is_groq_daily_limit, _parse_json, _validate_absences
 
 
@@ -113,6 +117,39 @@ class ValidateAbsencesTests(unittest.TestCase):
     def test_groq_daily_limit_is_distinguished_from_tpm(self):
         self.assertTrue(_is_groq_daily_limit(Exception("429 tokens per day (TPD) limit reached")))
         self.assertFalse(_is_groq_daily_limit(Exception("429 tokens per minute (TPM), try again in 3s")))
+
+    def test_groq_daily_limit_is_shared_across_sequential_leagues(self):
+        async def run():
+            original_limit = analyst._groq_daily_limit_reached
+            cache_keys = ("test-daily-limit-league-a", "test-daily-limit-league-b")
+            for key in cache_keys:
+                analyst._cache.pop(key, None)
+            analyst._groq_daily_limit_reached = False
+            async def gemini_result(*args, **kwargs):
+                return {
+                    "ai": True, "text": "Test fallback", "factor_home": 1.0,
+                    "factor_away": 1.0, "absences_home": [], "absences_away": [],
+                    "sources": [], "provider": "gemini", "validation_version": 8,
+                }
+            try:
+                with patch.dict(os.environ, {"GROQ_API_KEY": "test", "GEMINI_API_KEY": "test"}):
+                    with patch.object(analyst, "_ask_groq", new_callable=AsyncMock,
+                                      side_effect=Exception("429 tokens per day (TPD) limit reached")) as groq:
+                        with patch.object(analyst, "_ask_gemini", new_callable=AsyncMock,
+                                          side_effect=gemini_result) as gemini:
+                            for key, home in zip(cache_keys, ("Como 1907", "Roma")):
+                                await analyst.analyze_all(
+                                    [{"fx": {"id": key, "home": home, "away": "Lazio"}, "base": {}}],
+                                    {}, True,
+                                )
+                            self.assertEqual(groq.await_count, 1)
+                            self.assertEqual(gemini.await_count, 2)
+                            self.assertTrue(analyst._groq_daily_limit_reached)
+            finally:
+                analyst._groq_daily_limit_reached = original_limit
+                for key in cache_keys:
+                    analyst._cache.pop(key, None)
+        asyncio.run(run())
 
 
     def test_grounding_sources_exclude_social_media(self):
