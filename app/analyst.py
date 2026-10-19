@@ -605,6 +605,7 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
     rate_limit_message = "Limite Groq temporaneamente raggiunto. L’analisi statistica resta disponibile; l’AI riproverà al prossimo aggiornamento."
 
     async def one(item):
+        global _groq_daily_limit_reached
         fx = item["fx"]
         hit = _cache.get(fx["id"])
         if hit and time.time() - hit[0] < CACHE_SECONDS:
