@@ -260,6 +260,28 @@ class ValidateAbsencesTests(unittest.TestCase):
         }]
         self.assertEqual(_relevant_sources(sources, fx), sources)
 
+    def test_relevant_sources_accepts_major_european_club_aliases(self):
+        from app.analyst import _relevant_sources
+        cases = [
+            ({"home": "Paris Saint-Germain", "away": "Auxerre"},
+             {"title": "PSG team news before Auxerre match", "url": "https://example.com/psg-news"}),
+            ({"home": "Bayer Leverkusen", "away": "Mainz"},
+             {"title": "Leverkusen injury update", "url": "https://example.com/leverkusen-news"}),
+            ({"home": "Borussia Dortmund", "away": "Bayern Munich"},
+             {"title": "BVB and Bayern team news", "url": "https://example.com/bvb-bayern"}),
+        ]
+        for fixture, source in cases:
+            with self.subTest(fixture=fixture):
+                self.assertEqual(_relevant_sources([source], fixture), [source])
+        # Evita alias troppo generici che confonderebbero club diversi.
+        self.assertEqual(
+            _relevant_sources(
+                [{"title": "Paris Saint-Germain team news", "url": "https://example.com/psg"}],
+                {"home": "Paris FC", "away": "Auxerre"},
+            ),
+            [],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
