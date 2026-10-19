@@ -1,6 +1,8 @@
 import asyncio
 import os
+import tempfile
 import unittest
+from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
@@ -121,23 +123,25 @@ class ValidateAbsencesTests(unittest.TestCase):
     def test_groq_daily_limit_is_shared_across_sequential_leagues(self):
         async def run():
             original_limit = analyst._groq_daily_limit_reached
-            cache_keys = ("test-daily-limit-league-a", "test-daily-limit-league-b")
-            for key in cache_keys:
-                analyst._cache.pop(key, None)
             analyst._groq_daily_limit_reached = False
+
             async def gemini_result(*args, **kwargs):
                 return {
                     "ai": True, "text": "Test fallback", "factor_home": 1.0,
                     "factor_away": 1.0, "absences_home": [], "absences_away": [],
                     "sources": [], "provider": "gemini", "validation_version": 8,
                 }
+
             try:
                 with patch.dict(os.environ, {"GROQ_API_KEY": "test", "GEMINI_API_KEY": "test"}):
                     with patch.object(analyst, "_ask_groq", new_callable=AsyncMock,
                                       side_effect=Exception("429 tokens per day (TPD) limit reached")) as groq:
                         with patch.object(analyst, "_ask_gemini", new_callable=AsyncMock,
                                           side_effect=gemini_result) as gemini:
-                            for key, home in zip(cache_keys, ("Como 1907", "Roma")):
+                            for key, home in zip(
+                                ("test-daily-limit-league-a", "test-daily-limit-league-b"),
+                                ("Como 1907", "Roma"),
+                            ):
                                 await analyst.analyze_all(
                                     [{"fx": {"id": key, "home": home, "away": "Lazio"}, "base": {}}],
                                     {}, True,
@@ -147,10 +151,14 @@ class ValidateAbsencesTests(unittest.TestCase):
                             self.assertTrue(analyst._groq_daily_limit_reached)
             finally:
                 analyst._groq_daily_limit_reached = original_limit
-                for key in cache_keys:
-                    analyst._cache.pop(key, None)
-        asyncio.run(run())
 
+        # analyze_all() persists its cache to disk. Isolate both the cache and
+        # persistence path so this regression test cannot pollute docs/ai_cache.json.
+        with tempfile.TemporaryDirectory() as temp_dir:
+            with patch.object(analyst, "_cache", {}), patch.object(
+                analyst, "PERSIST_PATH", Path(temp_dir) / "ai_cache.json"
+            ):
+                asyncio.run(run())
 
     def test_grounding_sources_exclude_social_media(self):
         from app.analyst import _relevant_sources
