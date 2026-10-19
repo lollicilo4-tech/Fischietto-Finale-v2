@@ -61,6 +61,17 @@ _TEAM_ALIASES = {
     "sassuolo": ("sassuolo",), "atalanta": ("atalanta",),
     "venezia fc": ("venezia",), "torino": ("torino",),
     "udinese": ("udinese",),
+    "man city": ("man city", "manchester city"),
+    "man utd": ("man utd", "manchester united", "man united"),
+    "nottingham": ("nottingham", "nottingham forest"),
+    "barca": ("barca", "barcelona"),
+    "atletico madrid": ("atletico madrid", "atletico"),
+    "sl bratislava": ("sl bratislava", "slovan bratislava"),
+    "shaktar": ("shaktar", "shakhtar", "shakhtar donetsk"),
+    "pae aek": ("pae aek", "aek athens"),
+    "rc lens": ("rc lens", "lens"),
+    "psv": ("psv", "psv eindhoven"),
+    "olympique lyon": ("olympique lyon", "lyon"),
 }
 _CONFIRMED_TERMS = (
     "indisponibile", "indisponibili", "squalificato", "squalificati",
@@ -119,9 +130,14 @@ def _relevant_sources(sources: list[dict], fx: dict) -> list[dict]:
             for candidate in (host, title_host) for domain in low_quality_hosts
         )
         is_generic = any(term in f" {title} {normalized_url} " for term in excluded)
-        # Non pretendere che il nome della squadra compaia nel titolo/URL:
-        # alcune fonti grounded pertinenti non lo riportano letteralmente.
-        if not url.startswith(("https://", "http://")) or url in seen_urls or is_generic or is_low_quality:
+        # Una fonte deve citare almeno una squadra nel titolo o nell'URL.
+        # I redirect anonimi con il solo dominio non sono verificabili come pertinenti.
+        is_team_relevant = any(f" {alias} " in evidence for alias in aliases)
+        if (
+            not url.startswith(("https://", "http://"))
+            or url in seen_urls or is_generic or is_low_quality
+            or not is_team_relevant
+        ):
             continue
         relevant.append({"title": raw_title, "url": url})
         seen_urls.add(url)
