@@ -273,6 +273,14 @@ class ValidateAbsencesTests(unittest.TestCase):
         for fixture, source in cases:
             with self.subTest(fixture=fixture):
                 self.assertEqual(_relevant_sources([source], fixture), [source])
+        # Evita alias troppo generici che confonderebbero club diversi.
+        self.assertEqual(
+            _relevant_sources(
+                [{"title": "Paris Saint-Germain team news", "url": "https://example.com/psg"}],
+                {"home": "Paris FC", "away": "Auxerre"},
+            ),
+            [],
+        )
 
 
 if __name__ == "__main__":
