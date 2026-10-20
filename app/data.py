@@ -86,35 +86,45 @@ def _standings(st: dict) -> list[dict]:
     tables = [t for t in st.get("standings", []) if t.get("type") == "TOTAL"] or st.get("standings", [])
     if not tables:
         return []
-    return [{"pos": r["position"], "team": _name(r["team"]), "pg": r["playedGames"], "w": r["won"],
-             "d": r["draw"], "l": r["lost"], "gf": r["goalsFor"], "ga": r["goalsAgainst"], "pts": r["points"]}
+    return [{"pos": r["position"], "team": _name(r["team"]), "team_id": r["team"].get("id"),
+             "pg": r["playedGames"], "w": r["won"], "d": r["draw"], "l": r["lost"],
+             "gf": r["goalsFor"], "ga": r["goalsAgainst"], "pts": r["points"]}
             for r in tables[0]["table"]]
 
-def _reconcile_standings(standings: list[dict], finished: list[dict]) -> list[dict]:
-    """Corregge una classifica palesemente non allineata ai risultati completi disponibili.
 
-    La riconciliazione è volutamente conservativa: procede solo se il feed dei
-    risultati copre esattamente tutte le squadre presenti nella classifica. Se
-    i nomi non coincidono o i risultati sono incompleti/malformati, conserva
-    integralmente la classifica del provider.
+def _reconcile_standings(standings: list[dict], finished: list[dict]) -> list[dict]:
+    """Riconcilia i totali usando gli ID stabili; usa i nomi solo come fallback.
+
+    Si procede solo se ogni partita conclusa si abbina a squadre presenti nella
+    classifica e tutte le squadre hanno almeno una partita nel campione. In caso
+    di dati incompleti o non coerenti, si conserva la classifica del provider.
     """
     if not standings or not finished:
         return standings
 
-    table_teams = [row.get("team") for row in standings]
-    if not all(isinstance(team, str) and team for team in table_teams):
-        return standings
-    if len(set(table_teams)) != len(table_teams):
+    use_ids = (
+        all(row.get("team_id") is not None for row in standings)
+        and all(match.get("home_id") is not None and match.get("away_id") is not None
+                for match in finished)
+    )
+    team_keys = [row.get("team_id") if use_ids else row.get("team") for row in standings]
+    if not all(key is not None and key != "" for key in team_keys) or len(set(team_keys)) != len(team_keys):
         return standings
 
-    stats = {
-        team: {"pos": 0, "team": team, "pg": 0, "w": 0, "d": 0, "l": 0,
-               "gf": 0, "ga": 0, "pts": 0}
-        for team in table_teams
+    display_names = {
+        (row.get("team_id") if use_ids else row.get("team")): row.get("team")
+        for row in standings
     }
-    seen_results = 0
+    stats = {
+        key: {"pos": 0, "team": display_names[key],
+              **({"team_id": key} if use_ids else {}),
+              "pg": 0, "w": 0, "d": 0, "l": 0, "gf": 0, "ga": 0, "pts": 0}
+        for key in team_keys
+    }
+
     for match in finished:
-        home, away = match.get("home"), match.get("away")
+        home = match.get("home_id") if use_ids else match.get("home")
+        away = match.get("away_id") if use_ids else match.get("away")
         if home not in stats or away not in stats or home == away:
             return standings
         try:
@@ -144,20 +154,24 @@ def _reconcile_standings(standings: list[dict], finished: list[dict]) -> list[di
             a["d"] += 1
             h["pts"] += 1
             a["pts"] += 1
-        seen_results += 1
 
-    if not seen_results or any(row["pg"] == 0 for row in stats.values()):
+    if any(row["pg"] == 0 for row in stats.values()):
         return standings
 
     fields = ("pg", "w", "d", "l", "gf", "ga", "pts")
-    provider_by_team = {row["team"]: row for row in standings}
-    if all(all(provider_by_team[team].get(field) == stats[team][field] for field in fields)
-           for team in table_teams):
+    provider_by_key = {
+        (row.get("team_id") if use_ids else row.get("team")): row
+        for row in standings
+    }
+    if all(all(provider_by_key[key].get(field) == stats[key][field] for field in fields)
+           for key in team_keys):
         return standings
 
+    # Ordinamento per punti e criteri generali; a parità esatta conserva
+    # l'ordine ufficiale del provider, che può riflettere scontri diretti.
     ordered = sorted(
         stats.values(),
-        key=lambda row: (-row["pts"], -(row["gf"] - row["ga"]), -row["gf"], row["team"].casefold()),
+        key=lambda row: (-row["pts"], -(row["gf"] - row["ga"]), -row["gf"]),
     )
     for position, row in enumerate(ordered, start=1):
         row["pos"] = position
@@ -360,6 +374,7 @@ async def real_context(competition: str | None = None) -> dict:
 
     finished = [
         {"id": str(m["id"]), "date": m["utcDate"], "home": _name(m["homeTeam"]), "away": _name(m["awayTeam"]),
+         "home_id": m["homeTeam"].get("id"), "away_id": m["awayTeam"].get("id"),
          "hg": m["score"]["fullTime"]["home"], "ag": m["score"]["fullTime"]["away"]}
         for m in fin["matches"]
         if m["score"]["fullTime"]["home"] is not None
