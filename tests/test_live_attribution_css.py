@@ -8,7 +8,7 @@ class LiveAttributionCssTests(unittest.TestCase):
         for relative_path in ("static/index.html", "docs/index.html"):
             with self.subTest(path=relative_path):
                 html = (root / relative_path).read_text(encoding="utf-8")
-                self.assertNotIn(r"\\n.live-attribution", html)
+                self.assertNotIn(r"\n.live-attribution", html)
                 self.assertIn(".live-attribution .sportscore-credit{", html)
                 self.assertIn(
                     ".live-attribution .sportscore-credit:focus-visible{", html
