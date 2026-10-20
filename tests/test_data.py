@@ -198,6 +198,28 @@ class StandingsReconciliationTests(unittest.TestCase):
 
         self.assertEqual(_reconcile_standings(official, finished), official)
 
+
+    def test_reconciles_when_names_differ_but_team_ids_match(self):
+        official = [
+            {**self.row(1, "Alpha", 0, 0, 0, 0, 0, 0, 0), "team_id": 101},
+            {**self.row(2, "Beta", 0, 0, 0, 0, 0, 0, 0), "team_id": 202},
+        ]
+        finished = [{
+            "home": "Alpha FC", "away": "Beta United",
+            "home_id": 101, "away_id": 202, "hg": 2, "ag": 0,
+        }]
+
+        result = _reconcile_standings(official, finished)
+
+        self.assertEqual(result[0]["team"], "Alpha")
+        self.assertEqual(result[0]["team_id"], 101)
+        self.assertEqual(
+            {key: result[0][key] for key in ("pg", "w", "d", "l", "gf", "ga", "pts")},
+            {"pg": 1, "w": 1, "d": 0, "l": 0, "gf": 2, "ga": 0, "pts": 3},
+        )
+        self.assertEqual(result[1]["pg"], 1)
+        self.assertEqual(result[1]["pts"], 0)
+
     def test_empty_results_leave_provider_standings_untouched(self):
         official = [self.row(1, "Alpha", 1, 1, 0, 0, 1, 0, 3)]
         self.assertEqual(_reconcile_standings(official, []), official)
