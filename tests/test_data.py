@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime, timezone
 
-from app.data import _missing_upcoming_matchdays, _select_upcoming_round
+from app.data import _missing_upcoming_matchdays, _recovered_upcoming_round, _select_upcoming_round
 
 
 class UpcomingRoundSelectionTests(unittest.TestCase):
@@ -126,6 +126,33 @@ class UpcomingRoundSelectionTests(unittest.TestCase):
             {"matchday": 2, "score": {"fullTime": {"home": None, "away": None}}},
         ]
         self.assertEqual(_missing_upcoming_matchdays(finished, 4), [])
+
+
+    def test_does_not_report_gap_after_latest_completed_matchday(self):
+        finished = [
+            {"matchday": 2, "score": {"fullTime": {"home": 2, "away": 0}}},
+            {"matchday": 3, "score": {"fullTime": {"home": 1, "away": 1}}},
+        ]
+        self.assertEqual(_missing_upcoming_matchdays(finished, 4), [])
+
+    def test_recovered_round_requires_multiple_future_fixtures(self):
+        now = datetime(2026, 10, 20, 12, 0, tzinfo=timezone.utc)
+        one_postponed_fixture = [
+            {"id": "postponed", "matchday": 3, "utcDate": "2026-10-21T18:00:00Z", "status": "SCHEDULED"},
+        ]
+        self.assertEqual(_recovered_upcoming_round(one_postponed_fixture, 3, now=now), [])
+
+    def test_recovered_round_accepts_multiple_future_fixtures_and_excludes_finished(self):
+        now = datetime(2026, 10, 20, 12, 0, tzinfo=timezone.utc)
+        fixtures = [
+            {"id": "already-finished", "matchday": 3, "utcDate": "2026-10-20T18:00:00Z", "status": "IN_PLAY"},
+            {"id": "later", "matchday": 3, "utcDate": "2026-10-21T19:00:00Z", "status": "SCHEDULED"},
+            {"id": "earlier", "matchday": 3, "utcDate": "2026-10-20T18:45:00Z", "status": "SCHEDULED"},
+        ]
+        recovered = _recovered_upcoming_round(
+            fixtures, 3, now=now, finished_ids={"already-finished"}
+        )
+        self.assertEqual([m["id"] for m in recovered], ["earlier", "later"])
 
 if __name__ == "__main__":
     unittest.main()
