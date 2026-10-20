@@ -167,9 +167,11 @@ def _reconcile_standings(standings: list[dict], finished: list[dict]) -> list[di
            for key in team_keys):
         return standings
 
+    # Ordinamento per punti e criteri generali; a parità esatta conserva
+    # l'ordine ufficiale del provider, che può riflettere scontri diretti.
     ordered = sorted(
         stats.values(),
-        key=lambda row: (-row["pts"], -(row["gf"] - row["ga"]), -row["gf"], row["team"].casefold()),
+        key=lambda row: (-row["pts"], -(row["gf"] - row["ga"]), -row["gf"]),
     )
     for position, row in enumerate(ordered, start=1):
         row["pos"] = position
