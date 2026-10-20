@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime, timezone
 
-from app.data import _missing_upcoming_matchdays, _recovered_upcoming_round, _select_upcoming_round
+from app.data import _missing_upcoming_matchdays, _recovered_upcoming_round, _select_upcoming_round, _reconcile_standings
 
 
 class UpcomingRoundSelectionTests(unittest.TestCase):
@@ -153,6 +153,54 @@ class UpcomingRoundSelectionTests(unittest.TestCase):
             fixtures, 3, now=now, finished_ids={"already-finished"}
         )
         self.assertEqual([m["id"] for m in recovered], ["earlier", "later"])
+
+
+class StandingsReconciliationTests(unittest.TestCase):
+    @staticmethod
+    def row(pos, team, pg, w, d, l, gf, ga, pts):
+        return {"pos": pos, "team": team, "pg": pg, "w": w, "d": d, "l": l,
+                "gf": gf, "ga": ga, "pts": pts}
+
+    def test_rebuilds_stale_standings_from_finished_results(self):
+        stale = [
+            self.row(1, "Alpha", 0, 0, 0, 0, 0, 0, 0),
+            self.row(2, "Beta", 0, 0, 0, 0, 0, 0, 0),
+        ]
+        finished = [{"home": "Alpha", "away": "Beta", "hg": 2, "ag": 0}]
+
+        result = _reconcile_standings(stale, finished)
+
+        self.assertEqual(result[0]["team"], "Alpha")
+        self.assertEqual(
+            result[0],
+            {"pos": 1, "team": "Alpha", "pg": 1, "w": 1, "d": 0,
+             "l": 0, "gf": 2, "ga": 0, "pts": 3},
+        )
+        self.assertEqual(result[1]["pts"], 0)
+        self.assertEqual(result[1]["gf"], 0)
+        self.assertEqual(result[1]["ga"], 2)
+
+    def test_keeps_provider_order_when_totals_are_consistent(self):
+        official = [
+            self.row(1, "Beta", 1, 0, 1, 0, 1, 1, 1),
+            self.row(2, "Alpha", 1, 0, 1, 0, 1, 1, 1),
+        ]
+        finished = [{"home": "Alpha", "away": "Beta", "hg": 1, "ag": 1}]
+
+        self.assertEqual(_reconcile_standings(official, finished), official)
+
+    def test_does_not_guess_when_team_names_do_not_match_provider(self):
+        official = [
+            self.row(1, "Alpha", 1, 1, 0, 0, 1, 0, 3),
+            self.row(2, "Beta", 1, 0, 0, 1, 0, 1, 0),
+        ]
+        finished = [{"home": "Alpha", "away": "Gamma", "hg": 1, "ag": 0}]
+
+        self.assertEqual(_reconcile_standings(official, finished), official)
+
+    def test_empty_results_leave_provider_standings_untouched(self):
+        official = [self.row(1, "Alpha", 1, 1, 0, 0, 1, 0, 3)]
+        self.assertEqual(_reconcile_standings(official, []), official)
 
 if __name__ == "__main__":
     unittest.main()
