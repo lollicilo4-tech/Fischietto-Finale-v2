@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime, timezone
 
-from app.data import _select_upcoming_round
+from app.data import _missing_upcoming_matchdays, _select_upcoming_round
 
 
 class UpcomingRoundSelectionTests(unittest.TestCase):
@@ -105,6 +105,27 @@ class UpcomingRoundSelectionTests(unittest.TestCase):
         self.assertEqual(matchday, 7)
         self.assertEqual([m["id"] for m in fixtures], ["next-a", "next-b"])
 
+
+
+    def test_detects_missing_matchday_before_selected_future_round(self):
+        finished = [
+            {"matchday": 1, "score": {"fullTime": {"home": 1, "away": 0}}},
+            {"matchday": 2, "score": {"fullTime": {"home": 2, "away": 2}}},
+        ]
+        self.assertEqual(_missing_upcoming_matchdays(finished, 4), [3])
+
+    def test_does_not_report_gap_when_next_round_is_selected(self):
+        finished = [
+            {"matchday": 1, "score": {"fullTime": {"home": 1, "away": 0}}},
+            {"matchday": 2, "score": {"fullTime": {"home": 2, "away": 2}}},
+        ]
+        self.assertEqual(_missing_upcoming_matchdays(finished, 3), [])
+
+    def test_ignores_finished_entries_without_complete_scores(self):
+        finished = [
+            {"matchday": 2, "score": {"fullTime": {"home": None, "away": None}}},
+        ]
+        self.assertEqual(_missing_upcoming_matchdays(finished, 4), [])
 
 if __name__ == "__main__":
     unittest.main()
