@@ -2346,9 +2346,11 @@ function slipReason(x){
     });
   });
   var liveLoaded = false;
+  var liveLoading = false;
   function loadLiveMatches(force) {
     var status = $("live-status"), list = $("live-list"), refresh = $("live-refresh");
-    if (!status || !list || (!force && liveLoaded)) return;
+    if (!status || !list || liveLoading || (!force && liveLoaded)) return;
+    liveLoading = true;
     liveLoaded = true;
     status.hidden = false;
     status.textContent = "Caricamento delle partite in diretta…";
@@ -2692,10 +2694,24 @@ function slipReason(x){
         list.innerHTML = "";
         status.innerHTML = '<strong>Impossibile caricare il feed live.</strong><p class="expl">Il servizio dati non ha risposto correttamente. Riprova con ↻ Aggiorna; non mostriamo risultati non verificati.</p>';
       })
-      .finally(function() { if (refresh) { refresh.disabled = false; refresh.textContent = "↻ Aggiorna"; } });
+      .finally(function() {
+        liveLoading = false;
+        if (refresh) { refresh.disabled = false; refresh.textContent = "↻ Aggiorna"; }
+      });
+  }
+  function livePanelIsVisible() {
+    var panel = $("p-live");
+    return !!panel && !panel.hidden && !document.hidden;
   }
   $("t-live").addEventListener("click", function() { loadLiveMatches(false); });
   $("live-refresh").addEventListener("click", function() { loadLiveMatches(true); });
+  /* Keep live scores fresh without polling in background tabs or other sections. */
+  window.setInterval(function() {
+    if (livePanelIsVisible()) loadLiveMatches(true);
+  }, 120000);
+  document.addEventListener("visibilitychange", function() {
+    if (livePanelIsVisible() && liveLoaded) loadLiveMatches(true);
+  });
 
   $("back").addEventListener("click", function () { $("t-home").click(); });
   /* Restore a requested tab after page initialization, e.g. league cards on Home. */
