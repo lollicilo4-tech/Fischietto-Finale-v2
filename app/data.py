@@ -90,6 +90,79 @@ def _standings(st: dict) -> list[dict]:
              "d": r["draw"], "l": r["lost"], "gf": r["goalsFor"], "ga": r["goalsAgainst"], "pts": r["points"]}
             for r in tables[0]["table"]]
 
+def _reconcile_standings(standings: list[dict], finished: list[dict]) -> list[dict]:
+    """Corregge una classifica palesemente non allineata ai risultati completi disponibili.
+
+    La riconciliazione è volutamente conservativa: procede solo se il feed dei
+    risultati copre esattamente tutte le squadre presenti nella classifica. Se
+    i nomi non coincidono o i risultati sono incompleti/malformati, conserva
+    integralmente la classifica del provider.
+    """
+    if not standings or not finished:
+        return standings
+
+    table_teams = [row.get("team") for row in standings]
+    if not all(isinstance(team, str) and team for team in table_teams):
+        return standings
+    if len(set(table_teams)) != len(table_teams):
+        return standings
+
+    stats = {
+        team: {"pos": 0, "team": team, "pg": 0, "w": 0, "d": 0, "l": 0,
+               "gf": 0, "ga": 0, "pts": 0}
+        for team in table_teams
+    }
+    seen_results = 0
+    for match in finished:
+        home, away = match.get("home"), match.get("away")
+        if home not in stats or away not in stats or home == away:
+            return standings
+        try:
+            hg, ag = int(match["hg"]), int(match["ag"])
+        except (KeyError, TypeError, ValueError):
+            return standings
+        if hg < 0 or ag < 0:
+            return standings
+
+        h, a = stats[home], stats[away]
+        h["pg"] += 1
+        a["pg"] += 1
+        h["gf"] += hg
+        h["ga"] += ag
+        a["gf"] += ag
+        a["ga"] += hg
+        if hg > ag:
+            h["w"] += 1
+            h["pts"] += 3
+            a["l"] += 1
+        elif hg < ag:
+            a["w"] += 1
+            a["pts"] += 3
+            h["l"] += 1
+        else:
+            h["d"] += 1
+            a["d"] += 1
+            h["pts"] += 1
+            a["pts"] += 1
+        seen_results += 1
+
+    if not seen_results or any(row["pg"] == 0 for row in stats.values()):
+        return standings
+
+    fields = ("pg", "w", "d", "l", "gf", "ga", "pts")
+    provider_by_team = {row["team"]: row for row in standings}
+    if all(all(provider_by_team[team].get(field) == stats[team][field] for field in fields)
+           for team in table_teams):
+        return standings
+
+    ordered = sorted(
+        stats.values(),
+        key=lambda row: (-row["pts"], -(row["gf"] - row["ga"]), -row["gf"], row["team"].casefold()),
+    )
+    for position, row in enumerate(ordered, start=1):
+        row["pos"] = position
+    return ordered
+
 
 def _select_upcoming_round(matches: list[dict], now=None, finished_ids: set[str] | None = None) -> tuple[int | None, list[dict]]:
     """Seleziona il turno corrente/imminente, ignorando gare passate ancora marcate programmate.
@@ -307,7 +380,7 @@ async def real_context(competition: str | None = None) -> dict:
     return {"demo": False, "teams_simple": simple, "teams": teams, "avg_h": avg_h, "avg_a": avg_a,
             "fixtures": fixtures, "finished": finished, "matchday": matchday,
             "previous": previous,
-            "standings": _standings(st)}
+            "standings": _reconcile_standings(_standings(st), finished)}
 
 
 async def get_context(competition: str | None = None) -> dict:
