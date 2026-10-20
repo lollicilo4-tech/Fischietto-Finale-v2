@@ -161,6 +161,67 @@ def _select_upcoming_round(matches: list[dict], now=None, finished_ids: set[str]
     return matchday, sorted(fixtures, key=kickoff)
 
 
+def _missing_upcoming_matchdays(finished_matches: list[dict], selected_matchday: int | None) -> list[int]:
+    """Individua giornate intermedie mancanti tra l'ultimo turno concluso e quello selezionato.
+
+    Conta una giornata come conclusa solo quando almeno una partita ha un risultato
+    completo; se il turno selezionato salta una giornata intermedia, il chiamante
+    deve verificarla esplicitamente prima di pubblicare.
+    """
+    if selected_matchday is None:
+        return []
+
+    completed_matchdays = set()
+    for match in finished_matches:
+        matchday = match.get("matchday")
+        score = match.get("score") or {}
+        full_time = score.get("fullTime") or {}
+        if (
+            matchday is not None
+            and full_time.get("home") is not None
+            and full_time.get("away") is not None
+        ):
+            completed_matchdays.add(int(matchday))
+
+    if not completed_matchdays:
+        return []
+
+    latest_completed = max(completed_matchdays)
+    if selected_matchday <= latest_completed + 1:
+        return []
+    return list(range(latest_completed + 1, int(selected_matchday)))
+
+
+def _recovered_upcoming_round(
+    matches: list[dict],
+    matchday: int,
+    now=None,
+    finished_ids: set[str] | None = None,
+) -> list[dict]:
+    """Restituisce un turno recuperato solo se contiene almeno due gare ancora pertinenti."""
+    from datetime import datetime, timezone
+
+    now = now or datetime.now(timezone.utc)
+    finished_ids = {str(mid) for mid in (finished_ids or set())}
+    active_statuses = {"IN_PLAY", "PAUSED"}
+    candidates = []
+    for match in matches:
+        if match.get("matchday") != matchday or str(match.get("id", "")) in finished_ids:
+            continue
+        status = str(match.get("status", "")).upper()
+        kickoff = datetime.fromisoformat(match["utcDate"].replace("Z", "+00:00"))
+        if kickoff >= now or status in active_statuses:
+            candidates.append(match)
+
+    # Una singola gara rinviata non deve prevalere su un turno futuro completo.
+    if len(candidates) < 2:
+        return []
+    return sorted(
+        candidates,
+        key=lambda match: datetime.fromisoformat(match["utcDate"].replace("Z", "+00:00")),
+    )
+
+
 async def real_context(competition: str | None = None) -> dict:
     from . import model
     competition = competition or COMPETITION
@@ -185,6 +246,45 @@ async def real_context(competition: str | None = None) -> dict:
         except httpx.HTTPError:
             st = {}
 
+        # Non pubblicare un turno futuro se tra gli ultimi risultati e il turno
+        # selezionato manca una giornata intermedia: recuperala esplicitamente
+        # dall'API e interrompi la generazione se non è possibile verificarla.
+        finished_ids_for_selection = {
+            str(m["id"]) for m in fin.get("matches", [])
+            if m.get("score", {}).get("fullTime", {}).get("home") is not None
+            and m.get("score", {}).get("fullTime", {}).get("away") is not None
+        }
+        matchday, next_round = _select_upcoming_round(
+            sch.get("matches", []), finished_ids=finished_ids_for_selection
+        )
+        missing_matchdays = _missing_upcoming_matchdays(fin.get("matches", []), matchday)
+        for missing_day in missing_matchdays:
+            try:
+                recovered_response = await _get(
+                    client,
+                    f"/competitions/{competition}/matches",
+                    {"matchday": missing_day, "status": "SCHEDULED,TIMED,IN_PLAY,PAUSED"},
+                )
+            except httpx.HTTPError as exc:
+                raise RuntimeError(
+                    f"Impossibile verificare la giornata {missing_day} di {competition}; "
+                    "aggiornamento annullato per evitare di pubblicare un turno successivo errato."
+                ) from exc
+
+            recovered = _recovered_upcoming_round(
+                recovered_response.get("matches", []),
+                missing_day,
+                finished_ids=finished_ids_for_selection,
+            )
+            if not recovered:
+                raise RuntimeError(
+                    f"La giornata {missing_day} di {competition} risulta mancante, ma l'API "
+                    "non ha restituito almeno due partite future valide; aggiornamento annullato."
+                )
+            next_round = recovered
+            matchday = missing_day
+            break
+
     finished = [
         {"id": str(m["id"]), "date": m["utcDate"], "home": _name(m["homeTeam"]), "away": _name(m["awayTeam"]),
          "hg": m["score"]["fullTime"]["home"], "ag": m["score"]["fullTime"]["away"]}
@@ -196,8 +296,6 @@ async def real_context(competition: str | None = None) -> dict:
         raise RuntimeError("Nessuna partita giocata: il modello ha bisogno di almeno qualche giornata.")
     teams, avg_h, avg_a = model.build_teams(finished, previous)
 
-    finished_ids = {m["id"] for m in finished}
-    matchday, next_round = _select_upcoming_round(sch["matches"], finished_ids=finished_ids)
     if not next_round:
         raise RuntimeError("Nessuna partita in programma.")
     fixtures = [
