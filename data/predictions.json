@@ -9846,6 +9846,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7625
   },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-21T18:00:00Z",
+   "hg": 3
+  },
   "top": [
    1,
    1
@@ -20404,6 +20409,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.893
   },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-21T16:45:00Z",
+   "hg": 4
+  },
   "top": [
    2,
    1
@@ -20544,6 +20554,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.885
+  },
+  "result": {
+   "ag": 4,
+   "date": "2026-10-21T16:45:00Z",
+   "hg": 2
   },
   "top": [
    2,
@@ -20686,6 +20701,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8866
   },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-21T19:00:00Z",
+   "hg": 4
+  },
   "top": [
    2,
    1
@@ -20826,6 +20846,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8653
+  },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-21T19:00:00Z",
+   "hg": 1
   },
   "top": [
    1,
@@ -20968,6 +20993,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8758
   },
+  "result": {
+   "ag": 2,
+   "date": "2026-10-21T19:00:00Z",
+   "hg": 2
+  },
   "top": [
    1,
    1
@@ -21108,6 +21138,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.9412
+  },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-21T19:00:00Z",
+   "hg": 3
   },
   "top": [
    2,
@@ -21250,6 +21285,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.9286
   },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-21T19:00:00Z",
+   "hg": 3
+  },
   "top": [
    2,
    1
@@ -21391,6 +21431,11 @@
    "label": "1X · Sporting CP non perde",
    "p": 0.8529
   },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-21T19:00:00Z",
+   "hg": 2
+  },
   "top": [
    2,
    0
@@ -21531,6 +21576,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.9305
+  },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-21T19:00:00Z",
+   "hg": 1
   },
   "top": [
    2,
