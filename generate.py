@@ -96,10 +96,17 @@ async def main() -> int:
             payloads[code] = (turno, await pipeline.build_storico(code), await pipeline.build_classifica(code))
             print(f"{label}: {len(turno['matches'])} partite, analisi {'AI' if turno['ai'] else 'solo statistica'}.")
         except Exception as exc:
+            # Alcune eccezioni HTTP (es. httpx.HTTPStatusError) hanno str(exc) vuoto.
+            # Registra sempre tipo e repr per rendere diagnosticabili i fallimenti senza
+            # esporre chiavi o variabili d'ambiente.
+            detail = f"{type(exc).__name__}: {exc!r}"
             if code == "SA":
-                print(f"Nessun aggiornamento Serie A: {exc}")
+                print(f"Nessun aggiornamento Serie A ({detail})")
                 return 1
-            print(f"Aggiornamento annullato ({label}): {exc}. Nessun JSON verrà pubblicato per mantenere coerenti tutte le leghe.")
+            print(
+                f"Aggiornamento annullato ({label}) ({detail}). "
+                "Nessun JSON verrà pubblicato per mantenere coerenti tutte le leghe."
+            )
             return 1
     if "SA" not in payloads:
         print("Nessun aggiornamento: dati Serie A non disponibili.")
