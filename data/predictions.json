@@ -24128,5 +24128,5081 @@
    2.41,
    1.49
   ]
+ },
+ "EL-3-2026-10-22-Ararat-Armenia-AZ Alkmaar": {
+  "ai": false,
+  "away": "AZ Alkmaar",
+  "base": {
+   "p1": 0.2665,
+   "p2": 0.4889,
+   "px": 0.2446
+  },
+  "gg": 0.6003,
+  "home": "Ararat-Armenia",
+  "kickoff": "2026-10-22T17:45:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.2665
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2446
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.4889
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.5111
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.7335
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8109
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5814
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4186
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6418
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.6003
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.3997
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.2097
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.4086
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.4023
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6013
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3458
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4639
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4844
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3635
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1158,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5814,
+  "old": {
+   "p1": 0.2957,
+   "p2": 0.4384,
+   "px": 0.2659
+  },
+  "p1": 0.2665,
+  "p2": 0.4889,
+  "pick": "2",
+  "pick_p": 0.4889,
+  "px": 0.2446,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8109
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.26,
+   1.77
+  ]
+ },
+ "EL-3-2026-10-22-Besiktas-Crystal Palace": {
+  "ai": false,
+  "away": "Crystal Palace",
+  "base": {
+   "p1": 0.445,
+   "p2": 0.3366,
+   "px": 0.2184
+  },
+  "gg": 0.7256,
+  "home": "Besiktas",
+  "kickoff": "2026-10-22T20:00:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.445
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2184
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.3366
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.6634
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.555
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.897
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.7302
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.2698
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.4735
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.7256
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.2744
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.4026
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2999
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5971
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4944
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3116
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.2719
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.6394
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.2354
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.0862,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.7302,
+  "old": {
+   "p1": 0.6101,
+   "p2": 0.2012,
+   "px": 0.1887
+  },
+  "p1": 0.445,
+  "p2": 0.3366,
+  "pick": "1",
+  "pick_p": 0.445,
+  "px": 0.2184,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.897
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   2.04,
+   1.77
+  ]
+ },
+ "EL-3-2026-10-22-Bournemouth-Milan": {
+  "ai": false,
+  "away": "Milan",
+  "base": {
+   "p1": 0.4324,
+   "p2": 0.3157,
+   "px": 0.2519
+  },
+  "gg": 0.6082,
+  "home": "Bournemouth",
+  "kickoff": "2026-10-22T20:00:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4324
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2519
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.3157
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.6843
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5676
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8085
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5774
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4226
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6458
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.6082
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.3918
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3569
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2526
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5558
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4516
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4399
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3778
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4891
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3607
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.119,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5774,
+  "old": {
+   "p1": 0.3689,
+   "p2": 0.3781,
+   "px": 0.253
+  },
+  "p1": 0.4324,
+  "p2": 0.3157,
+  "pick": "1",
+  "pick_p": 0.4324,
+  "px": 0.2519,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8085
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.64,
+   1.37
+  ]
+ },
+ "EL-3-2026-10-22-Celje-Salzburg": {
+  "ai": false,
+  "away": "Salzburg",
+  "base": {
+   "p1": 0.3442,
+   "p2": 0.3818,
+   "px": 0.274
+  },
+  "gg": 0.5495,
+  "home": "Celje",
+  "kickoff": "2026-10-22T20:00:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.3442
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.274
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.3818
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.6182
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.6558
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.752
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.4962
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.5038
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7225
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5495
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4505
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.2602
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2924
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.4596
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4918
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4534
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4764
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4168
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4259
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1327,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.4962,
+  "old": {
+   "p1": 0.2008,
+   "p2": 0.5357,
+   "px": 0.2636
+  },
+  "p1": 0.3442,
+  "p2": 0.3818,
+  "pick": "2",
+  "pick_p": 0.3818,
+  "px": 0.274,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.752
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.29,
+   1.37
+  ]
+ },
+ "EL-3-2026-10-22-Celtic-Celta": {
+  "ai": false,
+  "away": "Celta",
+  "base": {
+   "p1": 0.3171,
+   "p2": 0.4244,
+   "px": 0.2585
+  },
+  "gg": 0.5884,
+  "home": "Celtic",
+  "kickoff": "2026-10-22T20:00:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.3171
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2585
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.4244
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.5756
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.6829
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7907
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5508
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4492
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.672
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5884
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4116
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.2484
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.3432
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.4475
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.5423
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3975
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4576
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4647
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3824
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1237,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5508,
+  "old": {
+   "p1": 0.3397,
+   "p2": 0.3748,
+   "px": 0.2854
+  },
+  "p1": 0.3171,
+  "p2": 0.4244,
+  "pick": "2",
+  "pick_p": 0.4244,
+  "px": 0.2585,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7907
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.33,
+   1.57
+  ]
+ },
+ "EL-3-2026-10-22-Ferencváros-Torreense": {
+  "ai": false,
+  "away": "Torreense",
+  "base": {
+   "p1": 0.4552,
+   "p2": 0.2998,
+   "px": 0.2451
+  },
+  "gg": 0.6215,
+  "home": "Ferencváros",
+  "kickoff": "2026-10-22T17:45:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4552
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2451
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2998
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7002
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5448
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8222
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.599
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.401
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6238
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.6215
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.3785
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3826
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2425
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5798
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4396
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4328
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3534
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.5071
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3446
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1144,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.599,
+  "old": {
+   "p1": 0.4028,
+   "p2": 0.3425,
+   "px": 0.2547
+  },
+  "p1": 0.4552,
+  "p2": 0.2998,
+  "pick": "1",
+  "pick_p": 0.4552,
+  "px": 0.2451,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8222
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.74,
+   1.37
+  ]
+ },
+ "EL-3-2026-10-22-GNK Dinamo-N.E.C.": {
+  "ai": false,
+  "away": "N.E.C.",
+  "base": {
+   "p1": 0.509,
+   "p2": 0.2213,
+   "px": 0.2697
+  },
+  "gg": 0.4882,
+  "home": "GNK Dinamo",
+  "kickoff": "2026-10-22T17:45:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.509
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2697
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2213
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7787
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.491
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7189
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.4537
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.5463
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7592
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.4882
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.5118
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3887
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1491
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5699
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.3302
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5834
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3938
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3587
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.48
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1295,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.4537,
+  "old": {
+   "p1": 0.6489,
+   "p2": 0.1408,
+   "px": 0.2103
+  },
+  "p1": 0.509,
+  "p2": 0.2213,
+  "pick": "1",
+  "pick_p": 0.509,
+  "px": 0.2697,
+  "recommendation": {
+   "code": "1X",
+   "kind": "doppia",
+   "label": "1X · GNK Dinamo non perde",
+   "p": 0.7787
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.56,
+   0.94
+  ]
+ },
+ "EL-3-2026-10-22-Hoffenheim-Lyon": {
+  "ai": false,
+  "away": "Lyon",
+  "base": {
+   "p1": 0.262,
+   "p2": 0.5089,
+   "px": 0.2291
+  },
+  "gg": 0.6441,
+  "home": "Hoffenheim",
+  "kickoff": "2026-10-22T20:00:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.262
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2291
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.5089
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.4911
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.738
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8486
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6423
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3577
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5775
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.6441
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.3559
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.2159
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.4425
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.4062
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6327
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3024
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4177
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.5404
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3143
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1037,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.6423,
+  "old": {
+   "p1": 0.2663,
+   "p2": 0.5057,
+   "px": 0.228
+  },
+  "p1": 0.262,
+  "p2": 0.5089,
+  "pick": "2",
+  "pick_p": 0.5089,
+  "px": 0.2291,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8486
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.36,
+   1.96
+  ]
+ },
+ "EL-3-2026-10-22-Jagiellonia-Anderlecht": {
+  "ai": false,
+  "away": "Anderlecht",
+  "base": {
+   "p1": 0.4621,
+   "p2": 0.278,
+   "px": 0.2599
+  },
+  "gg": 0.5641,
+  "home": "Jagiellonia",
+  "kickoff": "2026-10-22T20:00:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4621
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2599
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.278
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.722
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5379
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7751
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5284
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4716
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6932
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5641
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4359
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3706
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.21
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5651
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4045
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4958
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3883
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4387
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4052
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1254,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5284,
+  "old": {
+   "p1": 0.5236,
+   "p2": 0.2187,
+   "px": 0.2578
+  },
+  "p1": 0.4621,
+  "p2": 0.278,
+  "pick": "1",
+  "pick_p": 0.4621,
+  "px": 0.2599,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7751
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.61,
+   1.19
+  ]
+ },
+ "EL-3-2026-10-22-Juventus-Rennes": {
+  "ai": false,
+  "away": "Rennes",
+  "base": {
+   "p1": 0.4943,
+   "p2": 0.2559,
+   "px": 0.2499
+  },
+  "gg": 0.5758,
+  "home": "Juventus",
+  "kickoff": "2026-10-22T17:45:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4943
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2499
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2559
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7441
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5057
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.792
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5529
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4471
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.67
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5758
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4242
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.4057
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1954
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5966
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.3863
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4913
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3576
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4558
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3889
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1199,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5529,
+  "old": {
+   "p1": 0.5861,
+   "p2": 0.1767,
+   "px": 0.2372
+  },
+  "p1": 0.4943,
+  "p2": 0.2559,
+  "pick": "1",
+  "pick_p": 0.4943,
+  "px": 0.2499,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.792
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.73,
+   1.18
+  ]
+ },
+ "EL-3-2026-10-22-Lech Poznan-Sunderland": {
+  "ai": false,
+  "away": "Sunderland",
+  "base": {
+   "p1": 0.1642,
+   "p2": 0.6173,
+   "px": 0.2184
+  },
+  "gg": 0.5377,
+  "home": "Lech Poznan",
+  "kickoff": "2026-10-22T17:45:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.1642
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2184
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.6173
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.3827
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.8358
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.803
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5701
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4299
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6534
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5377
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4623
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.1191
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.5203
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.2827
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6839
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.2814
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5322
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4323
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4027
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1054,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5701,
+  "old": {
+   "p1": 0.1639,
+   "p2": 0.6316,
+   "px": 0.2045
+  },
+  "p1": 0.1642,
+  "p2": 0.6173,
+  "pick": "2",
+  "pick_p": 0.6173,
+  "px": 0.2184,
+  "recommendation": {
+   "code": "X2",
+   "kind": "doppia",
+   "label": "X2 · Sunderland non perde",
+   "p": 0.8358
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   0.95,
+   2.03
+  ]
+ },
+ "EL-3-2026-10-22-Lillestrøm-Real Sociedad": {
+  "ai": false,
+  "away": "Real Sociedad",
+  "base": {
+   "p1": 0.364,
+   "p2": 0.3588,
+   "px": 0.2773
+  },
+  "gg": 0.541,
+  "home": "Lillestrøm",
+  "kickoff": "2026-10-22T20:00:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.364
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2773
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.3588
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.6412
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.636
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7434
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.4848
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.5152
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7325
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.541
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.459
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.2744
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.27
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.4735
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.469
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4741
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4709
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4067
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4352
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1343,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.4848,
+  "old": {
+   "p1": 0.3309,
+   "p2": 0.3916,
+   "px": 0.2775
+  },
+  "p1": 0.364,
+  "p2": 0.3588,
+  "pick": "1",
+  "pick_p": 0.364,
+  "px": 0.2773,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7434
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.32,
+   1.31
+  ]
+ },
+ "EL-3-2026-10-22-OFI Crete-Leverkusen": {
+  "ai": false,
+  "away": "Leverkusen",
+  "base": {
+   "p1": 0.2677,
+   "p2": 0.4773,
+   "px": 0.255
+  },
+  "gg": 0.5707,
+  "home": "OFI Crete",
+  "kickoff": "2026-10-22T17:45:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.2677
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.255
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.4773
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.5227
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.7323
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7839
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.541
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.459
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6813
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5707
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4293
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.2035
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.3875
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3965
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.5804
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3731
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.493
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4479
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3965
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1227,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.541,
+  "old": {
+   "p1": 0.2927,
+   "p2": 0.4505,
+   "px": 0.2568
+  },
+  "p1": 0.2677,
+  "p2": 0.4773,
+  "pick": "2",
+  "pick_p": 0.4773,
+  "px": 0.255,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7839
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.19,
+   1.66
+  ]
+ },
+ "EL-3-2026-10-22-Olympiacos-Sparta Praha": {
+  "ai": false,
+  "away": "Sparta Praha",
+  "base": {
+   "p1": 0.3812,
+   "p2": 0.3511,
+   "px": 0.2678
+  },
+  "gg": 0.5689,
+  "home": "Olympiacos",
+  "kickoff": "2026-10-22T20:00:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.3812
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2678
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.3511
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.6489
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.6188
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.77
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.521
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.479
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5689
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4311
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.2979
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2718
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.4983
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4721
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4572
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4395
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4396
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4051
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1292,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.521,
+  "old": {
+   "p1": 0.3267,
+   "p2": 0.4396,
+   "px": 0.2337
+  },
+  "p1": 0.3812,
+  "p2": 0.3511,
+  "pick": "1",
+  "pick_p": 0.3812,
+  "px": 0.2678,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.77
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.42,
+   1.35
+  ]
+ },
+ "EL-3-2026-10-22-Omonia-Benfica": {
+  "ai": false,
+  "away": "Benfica",
+  "base": {
+   "p1": 0.3635,
+   "p2": 0.372,
+   "px": 0.2645
+  },
+  "gg": 0.5796,
+  "home": "Omonia",
+  "kickoff": "2026-10-22T20:00:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.3635
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2645
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.372
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.628
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.6365
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7796
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5346
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4654
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6873
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5796
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4204
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.2857
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2931
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.4865
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4939
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4367
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4415
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4524
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3937
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1272,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5346,
+  "old": {
+   "p1": 0.3289,
+   "p2": 0.3824,
+   "px": 0.2887
+  },
+  "p1": 0.3635,
+  "p2": 0.372,
+  "pick": "2",
+  "pick_p": 0.372,
+  "px": 0.2645,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7796
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.4,
+   1.42
+  ]
+ },
+ "EL-3-2026-10-22-Sturm Graz-Marseille": {
+  "ai": false,
+  "away": "Marseille",
+  "base": {
+   "p1": 0.3795,
+   "p2": 0.3319,
+   "px": 0.2886
+  },
+  "gg": 0.5065,
+  "home": "Sturm Graz",
+  "kickoff": "2026-10-22T17:45:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.3795
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2886
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.3319
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.6681
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.6205
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7098
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.4418
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.5582
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7689
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5065
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4935
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.2766
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2371
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.4727
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4332
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.516
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4844
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3675
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4722
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1389,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.4418,
+  "old": {
+   "p1": 0.4868,
+   "p2": 0.2398,
+   "px": 0.2734
+  },
+  "p1": 0.3795,
+  "p2": 0.3319,
+  "pick": "1",
+  "pick_p": 0.3795,
+  "px": 0.2886,
+  "recommendation": {
+   "code": "Under 3,5",
+   "kind": "gol",
+   "label": "Under 3,5 · massimo 3 gol",
+   "p": 0.7689
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.28,
+   1.18
+  ]
+ },
+ "EL-3-2026-10-22-Union SG-H. Beer-Sheva": {
+  "ai": false,
+  "away": "H. Beer-Sheva",
+  "base": {
+   "p1": 0.4748,
+   "p2": 0.2548,
+   "px": 0.2704
+  },
+  "gg": 0.5182,
+  "home": "Union SG",
+  "kickoff": "2026-10-22T17:45:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4748
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2704
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2548
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7452
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5252
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7367
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.4762
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.5238
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7401
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5182
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4818
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3668
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1805
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5561
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.3699
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5458
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.406
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3874
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4527
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1308,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.4762,
+  "old": {
+   "p1": 0.4377,
+   "p2": 0.2936,
+   "px": 0.2687
+  },
+  "p1": 0.4748,
+  "p2": 0.2548,
+  "pick": "1",
+  "pick_p": 0.4748,
+  "px": 0.2704,
+  "recommendation": {
+   "code": "Under 3,5",
+   "kind": "gol",
+   "label": "Under 3,5 · massimo 3 gol",
+   "p": 0.7401
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.53,
+   1.05
+  ]
+ },
+ "EL-3-2026-10-22-Viktoria Plzen-Levski Sofia": {
+  "ai": false,
+  "away": "Levski Sofia",
+  "base": {
+   "p1": 0.3346,
+   "p2": 0.3792,
+   "px": 0.2862
+  },
+  "gg": 0.5134,
+  "home": "Viktoria Plzen",
+  "kickoff": "2026-10-22T20:00:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.3346
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2862
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.3792
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.6208
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.6654
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7168
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.4504
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.5496
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7617
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5134
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4866
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.2414
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2786
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.4381
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4753
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.48
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5093
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3753
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4648
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1381,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.4504,
+  "old": {
+   "p1": 0.2477,
+   "p2": 0.4833,
+   "px": 0.269
+  },
+  "p1": 0.3346,
+  "p2": 0.3792,
+  "pick": "2",
+  "pick_p": 0.3792,
+  "px": 0.2862,
+  "recommendation": {
+   "code": "Under 3,5",
+   "kind": "gol",
+   "label": "Under 3,5 · massimo 3 gol",
+   "p": 0.7617
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.2,
+   1.29
+  ]
+ },
+ "UECL-2-2026-10-22-Aarhus-Egnatia": {
+  "ai": false,
+  "away": "Egnatia",
+  "base": {
+   "p1": 0.5685,
+   "p2": 0.1789,
+   "px": 0.2526
+  },
+  "gg": 0.4731,
+  "home": "Aarhus",
+  "kickoff": "2026-10-22T20:00:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.5685
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2526
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1789
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8211
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.4315
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7287
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.4665
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.5335
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7484
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.4731
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.5269
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.4434
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1171
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6117
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.2854
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.6039
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3499
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3521
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4846
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1251,
+    "score": "1-0"
+   }
+  ],
+  "o25": 0.4665,
+  "old": {
+   "p1": 0.5642,
+   "p2": 0.1955,
+   "px": 0.2403
+  },
+  "p1": 0.5685,
+  "p2": 0.1789,
+  "pick": "1",
+  "pick_p": 0.5685,
+  "px": 0.2526,
+  "recommendation": {
+   "code": "1X",
+   "kind": "doppia",
+   "label": "1X · Aarhus non perde",
+   "p": 0.8211
+  },
+  "top": [
+   1,
+   0
+  ],
+  "xg": [
+   1.7,
+   0.84
+  ]
+ },
+ "UECL-2-2026-10-22-Ajax-Atalanta": {
+  "ai": false,
+  "away": "Atalanta",
+  "base": {
+   "p1": 0.5447,
+   "p2": 0.22,
+   "px": 0.2353
+  },
+  "gg": 0.5796,
+  "home": "Ajax",
+  "kickoff": "2026-10-22T20:00:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.5447
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2353
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.22
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.78
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.4553
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8086
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.578
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.422
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6453
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5796
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4204
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.4578
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1683
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6403
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.3508
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4925
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3178
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4673
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3763
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1123,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.578,
+  "old": {
+   "p1": 0.5454,
+   "p2": 0.2137,
+   "px": 0.2409
+  },
+  "p1": 0.5447,
+  "p2": 0.22,
+  "pick": "1",
+  "pick_p": 0.5447,
+  "px": 0.2353,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8086
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.89,
+   1.12
+  ]
+ },
+ "UECL-2-2026-10-22-Borac-KuPS Kuopio": {
+  "ai": false,
+  "away": "KuPS Kuopio",
+  "base": {
+   "p1": 0.6854,
+   "p2": 0.1325,
+   "px": 0.1822
+  },
+  "gg": 0.5746,
+  "home": "Borac",
+  "kickoff": "2026-10-22T20:00:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.6854
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1822
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1325
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8675
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.3146
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8581
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6596
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3404
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5586
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5746
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4254
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.6098
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1019
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.7562
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.2483
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4683
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.2112
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4895
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3393
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.0975,
+    "score": "2-0"
+   }
+  ],
+  "o25": 0.6596,
+  "old": {
+   "p1": 0.5737,
+   "p2": 0.1865,
+   "px": 0.2398
+  },
+  "p1": 0.6854,
+  "p2": 0.1325,
+  "pick": "1",
+  "pick_p": 0.6854,
+  "px": 0.1822,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8581
+  },
+  "top": [
+   2,
+   0
+  ],
+  "xg": [
+   2.43,
+   0.98
+  ]
+ },
+ "UECL-2-2026-10-22-Braga-Gent": {
+  "ai": false,
+  "away": "Gent",
+  "base": {
+   "p1": 0.4809,
+   "p2": 0.2487,
+   "px": 0.2704
+  },
+  "gg": 0.513,
+  "home": "Braga",
+  "kickoff": "2026-10-22T20:00:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4809
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2704
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2487
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7513
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5191
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7334
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.472
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.528
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7437
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.513
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.487
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3707
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1747
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5587
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.3627
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5527
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4041
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3823
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4575
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1307,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.472,
+  "old": {
+   "p1": 0.5454,
+   "p2": 0.2137,
+   "px": 0.2409
+  },
+  "p1": 0.4809,
+  "p2": 0.2487,
+  "pick": "1",
+  "pick_p": 0.4809,
+  "px": 0.2704,
+  "recommendation": {
+   "code": "Under 3,5",
+   "kind": "gol",
+   "label": "Under 3,5 · massimo 3 gol",
+   "p": 0.7437
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.54,
+   1.03
+  ]
+ },
+ "UECL-2-2026-10-22-Crvena Zvezda-Copenhagen": {
+  "ai": false,
+  "away": "Copenhagen",
+  "base": {
+   "p1": 0.5195,
+   "p2": 0.2433,
+   "px": 0.2372
+  },
+  "gg": 0.601,
+  "home": "Crvena Zvezda",
+  "kickoff": "2026-10-22T17:45:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.5195
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2372
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2433
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7567
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.4805
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8184
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5932
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4068
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6299
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.601
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.399
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.4394
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1912
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6273
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.3791
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4674
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3237
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4891
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3582
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1119,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5932,
+  "old": {
+   "p1": 0.5454,
+   "p2": 0.2137,
+   "px": 0.2409
+  },
+  "p1": 0.5195,
+  "p2": 0.2433,
+  "pick": "1",
+  "pick_p": 0.5195,
+  "px": 0.2372,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8184
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.87,
+   1.22
+  ]
+ },
+ "UECL-2-2026-10-22-Getafe-Lugano": {
+  "ai": false,
+  "away": "Lugano",
+  "base": {
+   "p1": 0.6144,
+   "p2": 0.1728,
+   "px": 0.2128
+  },
+  "gg": 0.5718,
+  "home": "Getafe",
+  "kickoff": "2026-10-22T17:45:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.6144
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2128
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1728
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8272
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.3856
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8267
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6069
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3931
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6159
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5718
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4282
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.5292
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1312
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6956
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.2976
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4952
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.2681
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4707
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3675
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1011,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.6069,
+  "old": {
+   "p1": 0.5632,
+   "p2": 0.2035,
+   "px": 0.2333
+  },
+  "p1": 0.6144,
+  "p2": 0.1728,
+  "pick": "1",
+  "pick_p": 0.6144,
+  "px": 0.2128,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8267
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   2.11,
+   1.03
+  ]
+ },
+ "UECL-2-2026-10-22-Iberia Tbilisi-Mjällby": {
+  "ai": false,
+  "away": "Mjällby",
+  "base": {
+   "p1": 0.4788,
+   "p2": 0.251,
+   "px": 0.2702
+  },
+  "gg": 0.5155,
+  "home": "Iberia Tbilisi",
+  "kickoff": "2026-10-22T17:45:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4788
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2702
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.251
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.749
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5212
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7352
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.4742
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.5258
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7417
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5155
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4845
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3696
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.177
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5582
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.3656
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5496
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4044
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3849
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4551
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1307,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.4742,
+  "old": {
+   "p1": 0.5454,
+   "p2": 0.2137,
+   "px": 0.2409
+  },
+  "p1": 0.4788,
+  "p2": 0.251,
+  "pick": "1",
+  "pick_p": 0.4788,
+  "px": 0.2702,
+  "recommendation": {
+   "code": "Under 3,5",
+   "kind": "gol",
+   "label": "Under 3,5 · massimo 3 gol",
+   "p": 0.7417
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.54,
+   1.04
+  ]
+ },
+ "UECL-2-2026-10-22-Inter Escaldes-U. Craiova": {
+  "ai": false,
+  "away": "U. Craiova",
+  "base": {
+   "p1": 0.5499,
+   "p2": 0.1969,
+   "px": 0.2533
+  },
+  "gg": 0.4988,
+  "home": "Inter Escaldes",
+  "kickoff": "2026-10-22T17:45:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.5499
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2533
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1969
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8031
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.4501
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7434
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.4855
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.5145
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7321
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.4988
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.5012
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.4339
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1344
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.609
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.3095
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5778
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3547
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3765
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4613
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1223,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.4855,
+  "old": {
+   "p1": 0.5642,
+   "p2": 0.1955,
+   "px": 0.2403
+  },
+  "p1": 0.5499,
+  "p2": 0.1969,
+  "pick": "1",
+  "pick_p": 0.5499,
+  "px": 0.2533,
+  "recommendation": {
+   "code": "1X",
+   "kind": "doppia",
+   "label": "1X · Inter Escaldes non perde",
+   "p": 0.8031
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.7,
+   0.92
+  ]
+ },
+ "UECL-2-2026-10-22-Jablonec-Brighton": {
+  "ai": false,
+  "away": "Brighton",
+  "base": {
+   "p1": 0.5002,
+   "p2": 0.2632,
+   "px": 0.2366
+  },
+  "gg": 0.622,
+  "home": "Jablonec",
+  "kickoff": "2026-10-22T17:45:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.5002
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2366
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2632
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7368
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.4998
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8303
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.612
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.388
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6102
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.622
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.378
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.4268
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.212
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6183
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4035
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4417
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3234
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.5121
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3389
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1099,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.612,
+  "old": {
+   "p1": 0.5454,
+   "p2": 0.2137,
+   "px": 0.2409
+  },
+  "p1": 0.5002,
+  "p2": 0.2632,
+  "pick": "1",
+  "pick_p": 0.5002,
+  "px": 0.2366,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8303
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.87,
+   1.3
+  ]
+ },
+ "UECL-2-2026-10-22-Kairat Almaty-Panathinaikos": {
+  "ai": false,
+  "away": "Panathinaikos",
+  "base": {
+   "p1": 0.5929,
+   "p2": 0.1778,
+   "px": 0.2294
+  },
+  "gg": 0.5324,
+  "home": "Kairat Almaty",
+  "kickoff": "2026-10-22T15:30:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.5929
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2294
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1778
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8222
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.4071
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7886
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5485
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4515
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6744
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5324
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4676
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.4918
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1277
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6609
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.2968
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5417
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3038
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4215
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4153
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1109,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5485,
+  "old": {
+   "p1": 0.5632,
+   "p2": 0.2035,
+   "px": 0.2333
+  },
+  "p1": 0.5929,
+  "p2": 0.1778,
+  "pick": "1",
+  "pick_p": 0.5929,
+  "px": 0.2294,
+  "recommendation": {
+   "code": "1X",
+   "kind": "doppia",
+   "label": "1X · Kairat Almaty non perde",
+   "p": 0.8222
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.93,
+   0.96
+  ]
+ },
+ "UECL-2-2026-10-22-Kauno Žalgiris-Brann": {
+  "ai": false,
+  "away": "Brann",
+  "base": {
+   "p1": 0.483,
+   "p2": 0.2658,
+   "px": 0.2512
+  },
+  "gg": 0.5801,
+  "home": "Kauno Žalgiris",
+  "kickoff": "2026-10-22T17:45:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.483
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2512
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2658
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7342
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.517
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7931
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5545
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4455
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6684
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5801
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4199
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3962
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2043
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5888
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.3969
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4843
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3631
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4597
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3857
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1204,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5545,
+  "old": {
+   "p1": 0.5454,
+   "p2": 0.2137,
+   "px": 0.2409
+  },
+  "p1": 0.483,
+  "p2": 0.2658,
+  "pick": "1",
+  "pick_p": 0.483,
+  "px": 0.2512,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7931
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.7,
+   1.21
+  ]
+ },
+ "UECL-2-2026-10-22-L. Red Imps-Twente": {
+  "ai": false,
+  "away": "Twente",
+  "base": {
+   "p1": 0.5409,
+   "p2": 0.2057,
+   "px": 0.2534
+  },
+  "gg": 0.5106,
+  "home": "L. Red Imps",
+  "kickoff": "2026-10-22T20:00:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.5409
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2534
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2057
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7943
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.4591
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7503
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.4946
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.5054
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.724
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5106
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4894
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.4292
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1431
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6073
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.3211
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5653
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3567
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.388
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4505
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1226,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.4946,
+  "old": {
+   "p1": 0.5454,
+   "p2": 0.2137,
+   "px": 0.2409
+  },
+  "p1": 0.5409,
+  "p2": 0.2057,
+  "pick": "1",
+  "pick_p": 0.5409,
+  "px": 0.2534,
+  "recommendation": {
+   "code": "1X",
+   "kind": "doppia",
+   "label": "1X · L. Red Imps non perde",
+   "p": 0.7943
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.7,
+   0.96
+  ]
+ },
+ "UECL-2-2026-10-22-Midtjylland-Sint-Truidense": {
+  "ai": false,
+  "away": "Sint-Truidense",
+  "base": {
+   "p1": 0.5494,
+   "p2": 0.2011,
+   "px": 0.2495
+  },
+  "gg": 0.5144,
+  "home": "Midtjylland",
+  "kickoff": "2026-10-22T20:00:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.5494
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2495
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2011
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7989
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.4506
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7567
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5033
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4967
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7163
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5144
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4856
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.4393
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1406
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6161
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.3174
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5619
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3479
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3936
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4447
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1208,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5033,
+  "old": {
+   "p1": 0.5632,
+   "p2": 0.2035,
+   "px": 0.2333
+  },
+  "p1": 0.5494,
+  "p2": 0.2011,
+  "pick": "1",
+  "pick_p": 0.5494,
+  "px": 0.2495,
+  "recommendation": {
+   "code": "1X",
+   "kind": "doppia",
+   "label": "1X · Midtjylland non perde",
+   "p": 0.7989
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.74,
+   0.96
+  ]
+ },
+ "UECL-2-2026-10-22-Monaco-Freiburg": {
+  "ai": false,
+  "away": "Freiburg",
+  "base": {
+   "p1": 0.6716,
+   "p2": 0.1427,
+   "px": 0.1857
+  },
+  "gg": 0.5909,
+  "home": "Monaco",
+  "kickoff": "2026-10-22T20:00:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.6716
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1857
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1427
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8573
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.3284
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8622
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6666
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3334
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5505
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5909
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4091
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.5992
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1118
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.7504
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.263
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4557
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.2151
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.5051
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.328
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.0958,
+    "score": "2-1"
+   }
+  ],
+  "o25": 0.6666,
+  "old": {
+   "p1": 0.597,
+   "p2": 0.1845,
+   "px": 0.2184
+  },
+  "p1": 0.6716,
+  "p2": 0.1427,
+  "pick": "1",
+  "pick_p": 0.6716,
+  "px": 0.1857,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8622
+  },
+  "top": [
+   2,
+   1
+  ],
+  "xg": [
+   2.41,
+   1.03
+  ]
+ },
+ "UECL-2-2026-10-22-Nordsjælland-CSKA Sofia": {
+  "ai": false,
+  "away": "CSKA Sofia",
+  "base": {
+   "p1": 0.6627,
+   "p2": 0.132,
+   "px": 0.2054
+  },
+  "gg": 0.5002,
+  "home": "Nordsjælland",
+  "kickoff": "2026-10-22T17:45:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.6627
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2054
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.132
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.868
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.3373
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7971
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5616
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4384
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6619
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5002
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4998
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.5577
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.091
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.7061
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.2393
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.56
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.2584
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4007
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.427
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.118,
+    "score": "2-0"
+   }
+  ],
+  "o25": 0.5616,
+  "old": {
+   "p1": 0.5913,
+   "p2": 0.1772,
+   "px": 0.2315
+  },
+  "p1": 0.6627,
+  "p2": 0.132,
+  "pick": "1",
+  "pick_p": 0.6627,
+  "px": 0.2054,
+  "recommendation": {
+   "code": "1X",
+   "kind": "doppia",
+   "label": "1X · Nordsjælland non perde",
+   "p": 0.868
+  },
+  "top": [
+   2,
+   0
+  ],
+  "xg": [
+   2.11,
+   0.83
+  ]
+ },
+ "UECL-2-2026-10-22-Pafos-Riga": {
+  "ai": false,
+  "away": "Riga",
+  "base": {
+   "p1": 0.5755,
+   "p2": 0.1905,
+   "px": 0.234
+  },
+  "gg": 0.5407,
+  "home": "Pafos",
+  "kickoff": "2026-10-22T17:45:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.5755
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.234
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1905
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8095
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.4245
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7883
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5479
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4521
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6749
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5407
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4593
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.4762
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1384
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6499
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.3121
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5343
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3141
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4276
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4109
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1131,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5479,
+  "old": {
+   "p1": 0.5642,
+   "p2": 0.1955,
+   "px": 0.2403
+  },
+  "p1": 0.5755,
+  "p2": 0.1905,
+  "pick": "1",
+  "pick_p": 0.5755,
+  "px": 0.234,
+  "recommendation": {
+   "code": "1X",
+   "kind": "doppia",
+   "label": "1X · Pafos non perde",
+   "p": 0.8095
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.89,
+   0.99
+  ]
+ },
+ "UECL-2-2026-10-22-Thun-Hajduk Split": {
+  "ai": false,
+  "away": "Hajduk Split",
+  "base": {
+   "p1": 0.5409,
+   "p2": 0.2057,
+   "px": 0.2534
+  },
+  "gg": 0.5106,
+  "home": "Thun",
+  "kickoff": "2026-10-22T20:00:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.5409
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2534
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2057
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7943
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.4591
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7503
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.4946
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.5054
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.724
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5106
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4894
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.4292
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1431
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6073
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.3211
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5653
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3567
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.388
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4505
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1226,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.4946,
+  "old": {
+   "p1": 0.5454,
+   "p2": 0.2137,
+   "px": 0.2409
+  },
+  "p1": 0.5409,
+  "p2": 0.2057,
+  "pick": "1",
+  "pick_p": 0.5409,
+  "px": 0.2534,
+  "recommendation": {
+   "code": "1X",
+   "kind": "doppia",
+   "label": "1X · Thun non perde",
+   "p": 0.7943
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.7,
+   0.96
+  ]
+ },
+ "UECL-2-2026-10-22-Trabzonspor-Hearts": {
+  "ai": false,
+  "away": "Hearts",
+  "base": {
+   "p1": 0.7241,
+   "p2": 0.11,
+   "px": 0.1659
+  },
+  "gg": 0.5596,
+  "home": "Trabzonspor",
+  "kickoff": "2026-10-22T17:45:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.7241
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1659
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.11
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.89
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.2759
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8674
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6762
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3238
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5397
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5596
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4404
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.6505
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.0838
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.7836
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.2168
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4638
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.1864
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.482
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3366
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1008,
+    "score": "2-0"
+   }
+  ],
+  "o25": 0.6762,
+  "old": {
+   "p1": 0.6155,
+   "p2": 0.1681,
+   "px": 0.2165
+  },
+  "p1": 0.7241,
+  "p2": 0.11,
+  "pick": "1",
+  "pick_p": 0.7241,
+  "px": 0.1659,
+  "recommendation": {
+   "code": "1X",
+   "kind": "doppia",
+   "label": "1X · Trabzonspor non perde",
+   "p": 0.89
+  },
+  "top": [
+   2,
+   0
+  ],
+  "xg": [
+   2.58,
+   0.92
+  ]
  }
 }
