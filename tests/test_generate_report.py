@@ -6,7 +6,7 @@ from io import StringIO
 from pathlib import Path
 from unittest.mock import patch
 
-from generate import _report_source_coverage
+from generate import _report_source_coverage, _report_update_failure
 
 
 class SourceCoverageReportTests(unittest.TestCase):
@@ -35,6 +35,24 @@ class SourceCoverageReportTests(unittest.TestCase):
             summary = Path(summary_path).read_text(encoding="utf-8")
             self.assertIn("| Premier League | 3 | 1 | 33% |", summary)
             self.assertNotIn("\\n", summary)
+
+
+class UpdateFailureReportTests(unittest.TestCase):
+    def test_failure_is_written_to_summary_without_publishing_data(self):
+        with tempfile.TemporaryDirectory() as directory:
+            summary_path = Path(directory) / "summary.md"
+            output = StringIO()
+            with patch.dict(os.environ, {
+                "GITHUB_ACTIONS": "true",
+                "GITHUB_STEP_SUMMARY": str(summary_path),
+            }):
+                with redirect_stdout(output):
+                    _report_update_failure("PL", "Premier League", "HTTPStatusError: status 503\\nretry exhausted")
+            self.assertIn("Aggiornamento fallito", output.getvalue())
+            summary = summary_path.read_text(encoding="utf-8")
+            self.assertIn("Premier League (PL)", summary)
+            self.assertIn("HTTPStatusError: status 503 retry exhausted", summary)
+            self.assertIn("i JSON già pubblicati sono preservati", summary)
 
 
 if __name__ == "__main__":
