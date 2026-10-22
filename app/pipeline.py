@@ -232,6 +232,8 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
             "ai_status": ai_status,
             "matchday": ctx.get("matchday"),
             "rho": round(rho, 3),
+            # Coppe: quante squadre partono dalla forza nel proprio campionato (app/strength.py)
+            "cup_prior": ctx.get("cup_prior"),
             "ai_adjusted": sum(1 for m in out if m["analysis"]["adjusted"]),
             "played": [] if ctx["demo"] else store.recent(ctx["finished"], league=league),
             "market_performance": history_data.get("market_performance", {}),

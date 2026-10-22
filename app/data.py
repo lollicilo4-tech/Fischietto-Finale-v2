@@ -312,6 +312,33 @@ def _recovered_upcoming_round(
 
 
 
+# --- Coppe: forza delle squadre dai campionati nazionali ---------------------
+CUPS = {"CL", "EL", "UECL"}
+
+
+def _cached_domestic_contexts() -> dict:
+    """Contesti dei campionati già scaricati in questa esecuzione (nessuna chiamata in più).
+    generate.py elabora i campionati prima delle coppe apposta."""
+    from . import strength
+    now = time.time()
+    return {code: entry["v"] for code, entry in _cache.items()
+            if code in strength.DOMESTIC and now - entry["t"] < CACHE_SECONDS}
+
+
+def _cup_model(finished: list[dict], previous: list[dict], fixtures: list[dict]) -> tuple[dict, float, float, dict]:
+    """Modello di una coppa che parte dalla forza nazionale delle squadre (vedi app/strength.py)."""
+    from . import model, strength
+    names = {m[k] for m in finished + previous for k in ("home", "away")} | \
+            {f[k] for f in fixtures for k in ("home", "away")}
+    priors, report = strength.cup_priors(names, _cached_domestic_contexts())
+    teams, avg_h, avg_a = model.build_teams(finished, previous, priors=priors,
+                                            prior_k=strength.CUP_PRIOR_K if priors else None)
+    for name in names - set(teams):  # squadre senza partite giocate: si parte dal priore
+        if priors and name in priors:
+            teams[name] = {"att": priors[name]["att"], "def": priors[name]["def"], "form": ""}
+    return teams, avg_h, avg_a, report
+
+
 # --- Competizioni UEFA senza copertura nel piano gratuito football-data.org ---
 OPEN_MATCHDAY_LEAGUES = {
     "EL": ("UEFA_1_europa-league", "UEFA Europa League"),
@@ -416,10 +443,10 @@ async def _open_matchday_context(competition: str) -> dict:
                  "away": _name(match["awayTeam"]), "kickoff": match["utcDate"], "label": None}
                 for match in next_round]
     from . import model
-    teams, avg_h, avg_a = model.build_teams(finished, [])
+    teams, avg_h, avg_a, cup_prior = _cup_model(finished, [], fixtures)
     standings = _open_matchday_standings(finished)
     return {"demo": False, "teams_simple": model.build_teams_simple(finished),
-            "teams": teams, "avg_h": avg_h, "avg_a": avg_a,
+            "teams": teams, "avg_h": avg_h, "avg_a": avg_a, "cup_prior": cup_prior,
             "rho": model.fit_rho(finished, [], teams, avg_h, avg_a), "fixtures": fixtures,
             "finished": finished, "matchday": matchday, "previous": [],
             "standings": standings}
@@ -500,8 +527,6 @@ async def real_context(competition: str | None = None) -> dict:
     ]
     if not finished:
         raise RuntimeError("Nessuna partita giocata: il modello ha bisogno di almeno qualche giornata.")
-    teams, avg_h, avg_a = model.build_teams(finished, previous)
-
     if not next_round:
         raise RuntimeError("Nessuna partita in programma.")
     fixtures = [
@@ -509,8 +534,14 @@ async def real_context(competition: str | None = None) -> dict:
          "kickoff": m["utcDate"], "label": None}
         for m in next_round
     ]
+    cup_prior = None
+    if competition in CUPS:
+        teams, avg_h, avg_a, cup_prior = _cup_model(finished, previous, fixtures)
+    else:
+        teams, avg_h, avg_a = model.build_teams(finished, previous)
     simple = model.build_teams_simple(finished)
     return {"demo": False, "teams_simple": simple, "teams": teams, "avg_h": avg_h, "avg_a": avg_a,
+            "cup_prior": cup_prior,
             "rho": model.fit_rho(finished, previous, teams, avg_h, avg_a), "fixtures": fixtures, "finished": finished, "matchday": matchday,
             "previous": previous,
             "standings": _reconcile_standings(_standings(st), finished)}
