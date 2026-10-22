@@ -75,13 +75,21 @@ class FrontendIntegrityTests(unittest.TestCase):
         source = self.read(STATIC_HTML)
         self.assertEqual(source.count('{ cache: "no-store" }'), 3, "Partite, storico e classifica devono bypassare la cache HTTP")
 
-    def test_service_worker_does_not_cache_dynamic_json(self):
+    def test_service_worker_serves_fresh_json_with_offline_fallback(self):
         for path in (ROOT / "static" / "sw.js", ROOT / "docs" / "sw.js"):
             with self.subTest(path=path):
                 worker = self.read(path)
-                self.assertIn('const CACHE = "fischietto-v7";', worker)
+                self.assertIn('const CACHE = "fischietto-v8";', worker)
                 self.assertIn('url.pathname.endsWith(".json")', worker)
                 self.assertIn('fetch(new Request(req, { cache: "no-store" }))', worker)
+                # Rete prima; la copia salvata solo se la rete non risponde.
+                self.assertIn('.catch(() => offlineCopy(req))', worker)
+                self.assertIn('k !== CACHE && k !== DATA_CACHE', worker, "La copia dei dati non va cancellata all'aggiornamento")
+
+    def test_page_warns_when_showing_offline_data(self):
+        source = self.read(ROOT / "static" / "index.html")
+        self.assertIn('r.headers.get("X-Fischietto-Offline")', source)
+        self.assertIn("Offline · ultimi dati salvati", source)
 
     def test_html_navigations_bypass_service_worker_cache(self):
         """A league URL such as ?league=BL1 must not receive stale cached HTML."""

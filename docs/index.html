@@ -2791,9 +2791,10 @@ function slipReason(x){
     return '<div class="panel" style="margin-top:14px"><h2>Affidabilità per mercato</h2><p class="expl">Indicatore 0–100 costruito da calibrazione e Brier score. È un indicatore descrittivo, non una garanzia di rendimento. La Schedina usa lo storico solo quando ci sono almeno 10 osservazioni per categoria.</p><div class="market-perf-grid">'+cards+'</div>'+chart+'<div class="panel" style="margin-top:12px;padding:12px"><p class="lead" style="margin:0">'+(ready?'Calibrazione storica attiva per '+ready+' categorie.':'Campione ancora insufficiente: il sistema continua a raccogliere dati senza modificare le probabilità del modello.')+'</p></div></div>';
   }
 
-  fetch(LEAGUE === "SA" ? "turno.json" : leaguePrefix + "turno.json", { cache: "no-store" }).then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || "Errore"); return j; }); })
+  fetch(LEAGUE === "SA" ? "turno.json" : leaguePrefix + "turno.json", { cache: "no-store" }).then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || "Errore"); if (r.headers.get("X-Fischietto-Offline")) j._offline = true; return j; }); })
     .then(function (d) {
       var tags = [];
+      if (d._offline) tags.push('<span class="tag warn">Offline · ultimi dati salvati</span>');
       tags.push(d.demo ? '<span class="tag warn">Dati di esempio</span>' : '<span class="tag ok">Dati reali</span>');
       if (d.ai_status === "attiva") tags.push('<span class="tag ok">Analisi AI attiva</span>');
       else if (d.ai_status === "parziale") tags.push('<span class="tag warn">AI parzialmente disponibile</span>');
