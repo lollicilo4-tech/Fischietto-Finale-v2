@@ -3,6 +3,8 @@
 Senza chiave FOOTBALL_DATA_KEY parte la modalità demo con dati inventati.
 """
 import asyncio
+import csv
+import io
 import os
 import time
 
@@ -309,9 +311,118 @@ def _recovered_upcoming_round(
     )
 
 
+
+# --- Competizioni UEFA senza copertura nel piano gratuito football-data.org ---
+OPEN_MATCHDAY_LEAGUES = {
+    "EL": ("UEFA_1_europa-league", "UEFA Europa League"),
+    "UECL": ("UEFA_1_conference-league", "UEFA Conference League"),
+}
+OPEN_MATCHDAY_BASE = "https://raw.githubusercontent.com/oladeeayo/open-matchday/master/data"
+
+
+async def _open_matchday_csv(client: httpx.AsyncClient, path: str) -> str:
+    response = await client.get(path, timeout=20)
+    response.raise_for_status()
+    return response.text
+
+
+def _parse_open_matchday_rows(text: str) -> list[dict]:
+    return list(csv.DictReader(io.StringIO(text)))
+
+
+def _open_match_id(competition: str, row: dict) -> str:
+    return "-".join((competition, str(row.get("gw", "")), str(row.get("date", "")),
+                     str(row.get("home", "")), str(row.get("away", ""))))
+
+
+def _open_matchday_standings(finished: list[dict]) -> list[dict]:
+    teams = {}
+    for match in finished:
+        for name in (match["home"], match["away"]):
+            teams.setdefault(name, {"pos": 0, "team": name, "pg": 0, "w": 0, "d": 0,
+                                    "l": 0, "gf": 0, "ga": 0, "pts": 0})
+    return _reconcile_standings(list(teams.values()), finished)
+
+
+async def _open_matchday_context(competition: str) -> dict:
+    """Load UEFA league-phase results and fixtures from the free, keyless CSV mirror.
+
+    This is deliberately separate from football-data.org: EL/UECL are not included
+    in that provider's free-tier coverage. If either CSV is unavailable or malformed,
+    raise and let the generator keep the previously published payloads intact.
+    """
+    folder, _label = OPEN_MATCHDAY_LEAGUES[competition]
+    from datetime import datetime, timezone
+
+    now = datetime.now(timezone.utc)
+    season_start = now.year if now.month >= 7 else now.year - 1
+    season_tag = f"{season_start % 100:02d}{(season_start + 1) % 100:02d}"
+    base = f"{OPEN_MATCHDAY_BASE}/{folder}"
+    async with httpx.AsyncClient(follow_redirects=True) as client:
+        results_text, fixtures_text = await asyncio.gather(
+            _open_matchday_csv(client, f"{base}/results_{season_tag}.csv"),
+            _open_matchday_csv(client, f"{base}/fixtures_{season_tag}.csv"),
+        )
+
+    result_rows = _parse_open_matchday_rows(results_text)
+    fixture_rows = _parse_open_matchday_rows(fixtures_text)
+    if not result_rows or not fixture_rows:
+        raise RuntimeError(f"Dataset UEFA vuoto per {competition}; aggiornamento annullato.")
+
+    finished = []
+    for row in result_rows:
+        try:
+            hg, ag = int(row["ft_home"]), int(row["ft_away"])
+            date = row["date"]
+            home, away = row["home"].strip(), row["away"].strip()
+            if not home or not away:
+                continue
+            kickoff = f"{date}T{(row.get('time') or '00:00')}:00Z"
+            datetime.fromisoformat(kickoff.replace("Z", "+00:00"))
+            finished.append({"id": _open_match_id(competition, row), "date": kickoff,
+                             "home": home, "away": away, "hg": hg, "ag": ag})
+        except (KeyError, TypeError, ValueError):
+            continue
+    if not finished:
+        raise RuntimeError(f"Nessun risultato UEFA valido per {competition}; aggiornamento annullato.")
+
+    upcoming = []
+    for row in fixture_rows:
+        try:
+            home, away = row["home"].strip(), row["away"].strip()
+            date = row["date"]
+            kickoff = f"{date}T{(row.get('time') or '00:00')}:00Z"
+            parsed = datetime.fromisoformat(kickoff.replace("Z", "+00:00"))
+            if not home or not away or parsed < now:
+                continue
+            upcoming.append({"id": _open_match_id(competition, row), "utcDate": kickoff,
+                             "matchday": int(row["gw"]), "status": "SCHEDULED",
+                             "homeTeam": {"name": home, "shortName": home},
+                             "awayTeam": {"name": away, "shortName": away}})
+        except (KeyError, TypeError, ValueError):
+            continue
+    finished_ids = {match["id"] for match in finished}
+    matchday, next_round = _select_upcoming_round(upcoming, now=now, finished_ids=finished_ids)
+    if not next_round:
+        raise RuntimeError(f"Nessuna prossima giornata UEFA valida per {competition}; aggiornamento annullato.")
+
+    fixtures = [{"id": match["id"], "home": _name(match["homeTeam"]),
+                 "away": _name(match["awayTeam"]), "kickoff": match["utcDate"], "label": None}
+                for match in next_round]
+    from . import model
+    teams, avg_h, avg_a = model.build_teams(finished, [])
+    standings = _open_matchday_standings(finished)
+    return {"demo": False, "teams_simple": model.build_teams_simple(finished),
+            "teams": teams, "avg_h": avg_h, "avg_a": avg_a, "fixtures": fixtures,
+            "finished": finished, "matchday": matchday, "previous": [],
+            "standings": standings}
+
+
 async def real_context(competition: str | None = None) -> dict:
     from . import model
     competition = competition or COMPETITION
+    if competition in OPEN_MATCHDAY_LEAGUES:
+        return await _open_matchday_context(competition)
 
     async with httpx.AsyncClient() as client:
         fin = await _get(client, f"/competitions/{competition}/matches", {"status": "FINISHED"})
@@ -400,6 +511,13 @@ async def real_context(competition: str | None = None) -> dict:
 
 async def get_context(competition: str | None = None) -> dict:
     competition = competition or COMPETITION
+    if competition in OPEN_MATCHDAY_LEAGUES:
+        cached = _cache.get(competition)
+        if cached and time.time() - cached["t"] < CACHE_SECONDS:
+            return cached["v"]
+        ctx = await _open_matchday_context(competition)
+        _cache[competition] = {"t": time.time(), "v": ctx}
+        return ctx
     if not has_key():
         return demo_context()
     cached = _cache.get(competition)
