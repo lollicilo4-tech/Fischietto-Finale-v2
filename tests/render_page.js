@@ -1,0 +1,72 @@
+// Esegue gli script di static/index.html con un DOM finto e i JSON di docs/, senza browser.
+// Uso: node tests/render_page.js <radice repo> <lega> <cartella output>  (lo lancia test_frontend_render.py)
+const fs = require("fs"), vm = require("vm"), path = require("path");
+const root = process.argv[2], league = process.argv[3] || "SA";
+const html = fs.readFileSync(path.join(root, "static/index.html"), "utf8");
+const errors = [];
+
+class El {
+  constructor(id) { this.id = id; this._html = ""; this.textContent = ""; this.hidden = false; this.style = {};
+    this.handlers = {}; this.attrs = {}; this.children = [];
+    const cls = new Set(); this.classList = { add: (...c) => c.forEach(x => cls.add(x)), remove: (...c) => c.forEach(x => cls.delete(x)),
+      toggle: (c, f) => { const on = f === undefined ? !cls.has(c) : f; on ? cls.add(c) : cls.delete(c); return on; }, contains: c => cls.has(c) }; }
+  set innerHTML(v) { this._html = String(v); } get innerHTML() { return this._html; }
+  addEventListener(t, f) { (this.handlers[t] = this.handlers[t] || []).push(f); }
+  removeEventListener() {}
+  click() { (this.handlers.click || []).forEach(f => f({ target: this, preventDefault() {}, stopPropagation() {} })); }
+  setAttribute(k, v) { this.attrs[k] = String(v); } getAttribute(k) { return this.attrs[k] ?? null; } removeAttribute(k) { delete this.attrs[k]; }
+  hasAttribute(k) { return k in this.attrs; }
+  querySelector() { return new El(); } querySelectorAll() { return []; } closest() { return null; }
+  appendChild(c) { this.children.push(c); return c; } insertBefore(c) { return c; } remove() {} focus() {} scrollIntoView() {}
+  getBoundingClientRect() { return { top: 0, left: 0, width: 300, height: 100 }; }
+  get value() { return this.attrs.value || ""; } set value(v) { this.attrs.value = v; }
+  get options() { return []; } get dataset() { return {}; }
+}
+const byId = {};
+const special = { "[data-open-info]": [], ".tile[data-go]": [] };
+const document = {
+  getElementById: id => (byId[id] = byId[id] || new El(id)),
+  querySelector: () => new El(), querySelectorAll: sel => special[sel] || [],
+  createElement: () => new El(), addEventListener() {}, body: new El("body"), documentElement: new El("html"),
+  hidden: false, title: "",
+};
+special["[data-open-info]"].push(new El("info-tile"), new El("info-foot"));
+const fetchMap = (url) => {
+  const name = String(url).replace(/^\//, "").replace(/^api\/(turno|storico|classifica)$/, "$1.json");
+  const file = path.join(root, "docs", name);
+  if (!fs.existsSync(file)) return Promise.reject(new Error("404 " + url));
+  const body = fs.readFileSync(file, "utf8");
+  return Promise.resolve({ ok: true, status: 200, headers: { get: () => null }, json: () => Promise.resolve(JSON.parse(body)), text: () => Promise.resolve(body) });
+};
+const ctx = {
+  document, console, URLSearchParams, Promise, setTimeout, clearTimeout, Date, Math, JSON, Number, String, Array, Object, Intl,
+  setInterval: () => 0, clearInterval() {}, requestAnimationFrame: f => setTimeout(f, 0),
+  location: { search: league === "SA" ? "" : "?league=" + league, href: "", pathname: "/" },
+  navigator: {}, localStorage: { getItem: () => null, setItem() {} }, sessionStorage: { getItem: () => null, setItem() {} },
+  matchMedia: () => ({ matches: false, addEventListener() {}, addListener() {} }),
+  scrollTo() {}, addEventListener() {}, fetch: fetchMap,
+  Headers: class {}, Response: class {}, AbortController: class { constructor() { this.signal = {}; } abort() {} },
+};
+ctx.window = ctx; ctx.self = ctx;
+vm.createContext(ctx);
+const re = /<script(?![^>]*src)[^>]*>([\s\S]*?)<\/script>/g; let m;
+while ((m = re.exec(html))) {
+  try { vm.runInContext(m[1], ctx); } catch (e) { errors.push("script: " + e.message); }
+}
+process.on("unhandledRejection", e => errors.push("promise: " + (e && e.message)));
+setTimeout(() => {
+  const out = {
+    errors,
+    matches: byId.matches ? byId.matches.innerHTML : "",
+    verdict: byId.verdict ? byId.verdict.innerHTML : "",
+    quality: byId.quality ? byId.quality.innerHTML : "",
+  };
+  // apri "Come funziona" dal piè di pagina e torna a Home
+  special["[data-open-info]"][1].click();
+  out.infoOpen = !byId["p-info"].hidden && byId["p-home"].hidden && !byId.back.hidden;
+  byId["t-home"].click();
+  out.infoClosed = byId["p-info"].hidden && !byId["p-home"].hidden;
+  fs.writeFileSync(path.join(process.argv[4], `render-${league}.json`), JSON.stringify(out));
+  console.log(league, "errors:", errors.length ? errors : "none", "| matches html:", out.matches.length,
+    "| verdict:", out.verdict.length, "| quality:", out.quality.length, "| info open/close:", out.infoOpen, out.infoClosed);
+}, 600);

@@ -46,6 +46,19 @@ class FrontendIntegrityTests(unittest.TestCase):
         for tab_id in ("t-home", "t-partite", "t-sicure", "t-schedina", "t-classifica", "t-storico"):
             self.assertIn(tab_id, id_set, f"Sezione di navigazione mancante: {tab_id}")
 
+    def test_responsible_gaming_notice_and_how_it_works(self):
+        html = self.read(STATIC_HTML)
+        self.assertIn("vietato ai minori di 18 anni", html)
+        self.assertIn('href="tel:800558822"', html, "Telefono Verde Nazionale (ISS) per il gioco d'azzardo")
+        self.assertIn('id="p-info"', html)
+        self.assertGreaterEqual(html.count("data-open-info"), 2, "Come funziona raggiungibile da Home e piè di pagina")
+        self.assertIn('querySelectorAll(".tile[data-go]")', html, "le tessere senza data-go non devono rompere i clic")
+
+    def test_ai_label_requires_real_sources(self):
+        html = self.read(STATIC_HTML)
+        self.assertIn('a.ai && a.sources.length ? "Analisi con le ultime notizie"', html)
+        self.assertIn("Corretto per assenze", html)
+
     def test_published_html_uses_static_json_routes(self):
         published = self.read(PUBLISHED_HTML)
         for endpoint in ("turno.json", "storico.json", "classifica.json"):
