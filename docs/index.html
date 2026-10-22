@@ -1905,6 +1905,38 @@ a{color:#65baff}
 .site-foot a{color:var(--link,#6db2ff)}
 .foot-link{background:none;border:0;padding:0;font:inherit;font-weight:700;color:var(--link,#6db2ff);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
 .foot-link:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}
+
+/* Stagione, giornata, pagina squadra, preferiti e condivisione. */
+.season-panel h2,.recap-panel h2{margin:0 0 6px}
+#p-classifica table.season-table{min-width:0!important;width:100%;border-collapse:collapse;font-size:12px}
+.season-table th,.season-table td{padding:7px 6px!important;text-align:right;white-space:nowrap}
+.season-table th:first-child,.season-table td:first-child{text-align:left;white-space:normal}
+.season-table td.pct{position:relative;font-variant-numeric:tabular-nums}
+.season-table td.pct span{position:relative;z-index:1}
+.season-table td.pct i{position:absolute;inset:3px auto 3px 0;background:color-mix(in srgb,var(--gold) 22%,transparent);border-radius:4px}
+.team-link{background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer;text-decoration:underline;text-decoration-color:color-mix(in srgb,currentColor 35%,transparent);text-underline-offset:3px}
+.team-link:focus-visible,.fav-btn:focus-visible,.share-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:6px}
+.fav-star{color:var(--gold);margin-right:4px}
+.match.fav{box-shadow:inset 3px 0 0 var(--gold)}
+#fav-strip:empty{display:none}
+.fav-strip{display:flex;flex-direction:column;gap:6px;margin:0 0 14px;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03)}
+.fav-strip h2{margin:0 0 4px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.fav-strip button{display:flex;justify-content:space-between;gap:10px;background:none;border:0;padding:6px 0;color:inherit;font:inherit;text-align:left;cursor:pointer;border-top:1px solid var(--line)}
+.fav-strip button:first-of-type{border-top:0}
+.fav-strip small{color:var(--muted)}
+.fav-btn,.share-btn{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:inherit;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.fav-btn[aria-pressed="true"]{color:var(--gold);border-color:color-mix(in srgb,var(--gold) 55%,transparent)}
+.match-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.team-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+.team-head h2{margin:0;font-size:26px}
+.team-head small{color:var(--muted)}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
+.team-bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin:6px 0 4px}
+.team-bar i{display:block;height:100%;background:var(--gold)}
+.team-list{display:flex;flex-direction:column;gap:6px}
+.team-list div{display:flex;justify-content:space-between;gap:10px;font-size:13px;border-top:1px solid var(--line);padding-top:6px}
+.team-list div:first-child{border-top:0;padding-top:0}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:50;padding:10px 16px;border-radius:999px;background:var(--surface2,#172433);color:var(--fg);border:1px solid var(--line);font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
 </style>
 
 </head>
@@ -1967,6 +1999,7 @@ a{color:#65baff}
   <section id="p-partite" role="tabpanel" aria-labelledby="t-partite" hidden>
     <div id="hero"></div>
     <p class="lead">Tocca una partita per aprire il dettaglio. Le quote eque (1 diviso la probabilità) non sono quote di bookmaker.</p>
+    <div id="fav-strip"></div>
     <div class="list" id="matches"><div class="msg">Carico il turno…</div></div>
     <div id="played"></div>
   </section>
@@ -2001,6 +2034,7 @@ a{color:#65baff}
   <section id="p-storico" role="tabpanel" aria-labelledby="t-storico" hidden>
     <p class="lead" id="hist-lead">Ogni pronostico viene salvato prima della partita e confrontato con il risultato.</p>
     <div id="verdict"></div>
+    <div id="recap"></div>
     <div class="hist-hero" id="hist-hero"></div>
     <div class="sum" id="sum"></div>
     <div id="quality"></div>
@@ -2008,7 +2042,11 @@ a{color:#65baff}
   </section>
   <section id="p-classifica" role="tabpanel" aria-labelledby="t-classifica" hidden>
     <div class="panel"><div id="table"><div class="msg">Carico la classifica…</div></div></div>
-    <p class="legend">Barra blu: prime quattro. Barra rossa: ultime tre.</p>
+    <p class="legend">Barra blu: prime quattro. Barra rossa: ultime tre. Tocca una squadra per aprire la sua scheda.</p>
+    <div id="season"></div>
+  </section>
+  <section id="p-team" aria-labelledby="team-title" hidden>
+    <div id="team-page"></div>
   </section>
   <section id="p-info" aria-labelledby="info-title" hidden>
     <h2 class="sub2" id="info-title">Come funziona</h2>
@@ -2032,11 +2070,15 @@ a{color:#65baff}
       <p>Con assenze confermate l’AI può correggere i gol attesi di una squadra al massimo del 15%, e la partita mostra l’etichetta <b>Corretto per assenze</b> con i link agli articoli. L’AI non inventa probabilità né quote: se non trova fonti verificabili, restano i numeri del modello.</p>
     </div>
     <div class="panel info-section">
-      <h2>5. Come controllarci</h2>
+      <h2>5. Come può finire la stagione</h2>
+      <p>In Classifica il modello gioca migliaia di volte tutte le partite che restano, partendo dai punti di oggi, e conta quante volte ogni squadra arriva prima, tra le prime 4 o nelle ultime posizioni (nelle coppe: prime 8, spareggi, eliminata). A parità di punti contano differenza reti e gol fatti, non gli scontri diretti. Toccando una squadra apri la sua scheda: forza in attacco e in difesa, forma, prossima partita e pronostici passati. Con “Segui” la squadra resta in evidenza: la scelta è salvata solo sul tuo telefono.</p>
+    </div>
+    <div class="panel info-section">
+      <h2>6. Come controllarci</h2>
       <p>Ogni pronostico viene salvato prima del calcio d’inizio e non viene mai modificato. Nello <b>Storico</b> lo confrontiamo con il risultato vero: quante volte abbiamo indovinato e quanto le percentuali sono affidabili (se diciamo 60%, deve succedere circa 6 volte su 10).</p>
     </div>
     <div class="panel info-section">
-      <h2>6. I limiti</h2>
+      <h2>7. I limiti</h2>
       <ul>
         <li>Sono stime, non certezze: una squadra data al 60% non vince 4 volte su 10.</li>
         <li>Le “quote eque” sono solo 1 diviso la probabilità: non sono quote di bookmaker.</li>
@@ -2045,7 +2087,7 @@ a{color:#65baff}
       </ul>
     </div>
     <div class="panel info-section">
-      <h2>7. Gratis e senza scommesse</h2>
+      <h2>8. Gratis e senza scommesse</h2>
       <p>Il sito è gratuito, non accetta giocate e non mostra quote dei bookmaker. È un servizio solo informativo e non è un invito a scommettere.</p>
     </div>
   </section>
@@ -2220,7 +2262,7 @@ a{color:#65baff}
   function matchCenter(m, p, a, s, finalOutcome, prudent, rec) {
     return '<div class="match-center">' +
       '<div class="mc-kicker"><span>Match Center</span><span class="mc-ai">' + (a.ai && a.sources.length ? "AI + statistiche" : "Solo statistiche") + '</span></div>' +
-      '<div class="mc-teams"><div class="mc-team"><small>CASA</small><b>' + esc(m.home) + '</b></div><div class="mc-vs">VS</div><div class="mc-team"><small>TRASFERTA</small><b>' + esc(m.away) + '</b></div></div>' +
+      '<div class="mc-teams"><div class="mc-team"><small>CASA</small><b>' + teamLink(m.home) + '</b></div><div class="mc-vs">VS</div><div class="mc-team"><small>TRASFERTA</small><b>' + teamLink(m.away) + '</b></div></div>' +
       '<div class="mc-probs"><div class="mc-prob ' + (finalOutcome[0] === "1" ? "hot" : "") + '"><small>1</small><strong>' + pc(p.p1) + '</strong></div>' +
       '<div class="mc-prob ' + (finalOutcome[0] === "X" ? "hot" : "") + '"><small>X</small><strong>' + pc(p.px) + '</strong></div>' +
       '<div class="mc-prob ' + (finalOutcome[0] === "2" ? "hot" : "") + '"><small>2</small><strong>' + pc(p.p2) + '</strong></div></div>' +
@@ -2267,8 +2309,9 @@ a{color:#65baff}
     var adjBadge = adjusted && a.ai
       ? '<div class="adj-line"><span class="adj-badge">Corretto per assenze</span><span>' + nAbs + (nAbs === 1 ? " assenza confermata" : " assenze confermate") + "</span></div>" : "";
     var who = a.ai && a.sources.length ? "Analisi con le ultime notizie" : a.ai ? "Analisi AI senza fonti verificabili" : "Analisi statistica";
-    return '<details class="match" id="m-' + esc(m.id) + '" style="--i:' + i + '"><summary>' +
-      '<div class="mhead"><span>' + esc(when(m)) + '</span><span class="conf ' + esc(m.conf) + '">Affidabilità ' + m.conf + "</span></div>" +
+    var fav = isFavMatch(m);
+    return '<details class="match' + (fav ? " fav" : "") + '" id="m-' + esc(m.id) + '" style="--i:' + i + '"><summary>' +
+      '<div class="mhead"><span>' + (fav ? '<span class="fav-star" aria-label="Squadra seguita">★</span>' : "") + esc(when(m)) + '</span><span class="conf ' + esc(m.conf) + '">Affidabilità ' + m.conf + "</span></div>" +
       '<div class="match-summary-main">' +
       '<div class="match-team"><div class="team-side">Casa</div><div class="team-name">' + esc(m.home) + '</div></div>' +
       '<div class="match-score"><strong>' + s[0] + '-' + s[1] + '</strong>probabile</div>' +
@@ -2281,6 +2324,7 @@ a{color:#65baff}
       adjBadge +
       '<div class="match-pick"><span class="pick-pill">Modello</span><span class="value">' + esc(finalOutcome[0] + ' · ' + finalOutcome[1]) + ' <b>' + pc(finalOutcome[2]) + '</b></span></div>' + (kickoffPassed ? '<div class="match-stale-note">Orario trascorso · risultati live non disponibili</div>' : '') + '</summary>' +
       '<div class="detail">' + matchCenter(m, p, a, s, finalOutcome, prudent, rec) +
+      '<div class="match-actions"><button type="button" class="share-btn" data-share="' + esc(m.id) + '">↗ Condividi</button></div>' +
       "<div><div class=\"who\">" + who + '</div><p class="expl">' + esc(a.text) + "</p></div>" +
       abs + adj + (a.ai && !a.sources.length ? '<div class="src-status">Analisi AI eseguita, ma nessuna fonte pertinente è stata verificata per questa partita. I fattori restano neutrali.</div>' : "") + src +
       '<div class="final-prediction" aria-label="Pronostico finale del modello">' +
@@ -2555,6 +2599,7 @@ function slipReason(x){
     $("t-" + t).addEventListener("click", function () {
       tabs.forEach(function (u) { $("t-" + u).setAttribute("aria-selected", String(u === t)); $("p-" + u).hidden = u !== t; });
       $("p-info").hidden = true;
+      $("p-team").hidden = true;
       document.body.classList.toggle("inner", t !== "home");
       $("back").hidden = t === "home";
       window.scrollTo(0, 0);
@@ -2941,6 +2986,7 @@ function slipReason(x){
   /* "Come funziona": pagina senza voce nella barra in basso, aperta dalla Home e dal piè di pagina. */
   function openInfo() {
     tabs.forEach(function (u) { $("t-" + u).setAttribute("aria-selected", "false"); $("p-" + u).hidden = true; });
+    $("p-team").hidden = true;
     $("p-info").hidden = false;
     document.body.classList.add("inner");
     $("back").hidden = false;
@@ -3083,6 +3129,8 @@ function slipReason(x){
       MATCHES = d.matches;
       MARKET_PERFORMANCE = d.market_performance || {}; BACKTEST_MARKETS = (d.backtest && d.backtest.markets) || {};
       $("matches").innerHTML = grouped(d.matches);
+      renderFavStrip();
+      openLinkedMatch();
       if (d.played && d.played.length) {
         var hits = d.played.filter(function (x) { return x.ok; }).length;
         $("played").innerHTML = '<h2 class="sub2">Già giocate</h2><p class="lead">Ultime ' + d.played.length + " partite pronosticate: esito azzeccato " + hits + " volte su " + d.played.length + '.</p><div class="list">' + d.played.map(played).join("") + "</div>";
@@ -3095,7 +3143,9 @@ function slipReason(x){
     if (h.demo) $("hist-lead").textContent = "Esempio dimostrativo. Con i dati reali qui compaiono i pronostici salvati prima di ogni partita e confrontati con il risultato.";
     if (h.n) $("tile-storico").textContent = "Esito azzeccato " + h.hit + " su " + h.n;
     if (!h.n) { $("hist-hero").innerHTML = '<div class="hist-kicker">Performance del modello</div><div style="margin-top:8px;font-family:var(--font-display);font-size:30px;font-weight:800">Nessun dato ancora</div><p class="hist-caption">Quando saranno disponibili risultati reali, qui vedrai precisione, andamento e qualità delle probabilità.</p>'; $("sum").innerHTML = '<div class="stat wide"><div class="k">Ancora vuoto</div><div class="s">Appena si giocano le partite pronosticate, compare il confronto.</div></div>'; return; }
+    HIST = h;
     $("verdict").innerHTML = verdictPanel(h);
+    $("recap").innerHTML = recapPanel(h.recap);
     var histRate = h.hit / h.n;
     var recent = (h.items || []).slice(0, 12);
     var bars = recent.map(function(x){ return '<i class="'+(x.ok?'y':'n')+'" style="height:'+(x.ok?78:34)+'%"><span>'+(x.ok?'✓':'✕')+'</span></i>'; }).join("");
@@ -3145,15 +3195,182 @@ function slipReason(x){
   }).catch(function () {});
 
   fetch(LEAGUE === "SA" ? "classifica.json" : leaguePrefix + "classifica.json", { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (c) {
-    var t = c.table || [];
+    CLASSIFICA = c;
+    renderTable();
+    $("season").innerHTML = seasonPanel(c.season);
+  }).catch(function () { $("table").innerHTML = '<div class="msg">Classifica non disponibile.</div>'; });
+
+  function renderTable() {
+    var t = (CLASSIFICA && CLASSIFICA.table) || [];
     if (!t.length) { $("table").innerHTML = '<div class="msg">Classifica non disponibile.</div>'; return; }
     var n = t.length;
     $("table").innerHTML = '<table class="table"><thead><tr><th>#</th><th>Squadra</th><th>PG</th><th class="hide-s">V</th><th class="hide-s">N</th><th class="hide-s">P</th><th>DR</th><th>Pt</th></tr></thead><tbody>' +
       t.map(function (r) {
         var dr = r.gf - r.ga, cls = r.pos <= 4 ? "ucl" : (n >= 18 && r.pos > n - 3) ? "rel" : "";
-        return '<tr class="' + cls + '"><td>' + r.pos + "</td><td>" + esc(r.team) + "</td><td>" + r.pg + '</td><td class="hide-s">' + r.w + '</td><td class="hide-s">' + r.d + '</td><td class="hide-s">' + r.l + "</td><td>" + (dr > 0 ? "+" : "") + dr + "</td><td>" + r.pts + "</td></tr>";
+        return '<tr class="' + cls + '"><td>' + r.pos + "</td><td>" + (isFav(r.team) ? '<span class="fav-star" aria-label="Squadra seguita">★</span>' : "") + teamLink(r.team) + "</td><td>" + r.pg + '</td><td class="hide-s">' + r.w + '</td><td class="hide-s">' + r.d + '</td><td class="hide-s">' + r.l + "</td><td>" + (dr > 0 ? "+" : "") + dr + "</td><td>" + r.pts + "</td></tr>";
       }).join("") + "</tbody></table>";
-  }).catch(function () { $("table").innerHTML = '<div class="msg">Classifica non disponibile.</div>'; });
+  }
+  /* ---------- Squadre seguite: salvate solo su questo dispositivo, nessun account ---------- */
+  var CLASSIFICA = null, HIST = null, FAV_KEY = "ff-squadre-seguite";
+  function getFavs() {
+    try { var v = JSON.parse(localStorage.getItem(FAV_KEY) || "[]"); return Array.isArray(v) ? v.filter(function (x) { return typeof x === "string"; }) : []; }
+    catch (e) { return []; }
+  }
+  function isFav(name) { return getFavs().indexOf(name) >= 0; }
+  function isFavMatch(m) { var f = getFavs(); return f.indexOf(m.home) >= 0 || f.indexOf(m.away) >= 0; }
+  function toggleFav(name) {
+    var f = getFavs(), i = f.indexOf(name);
+    if (i >= 0) f.splice(i, 1); else f.push(name);
+    try { localStorage.setItem(FAV_KEY, JSON.stringify(f.slice(-30))); } catch (e) {}
+    if (MATCHES.length) { $("matches").innerHTML = grouped(MATCHES); renderFavStrip(); }
+    if (CLASSIFICA) { renderTable(); $("season").innerHTML = seasonPanel(CLASSIFICA.season); }
+    return i < 0;
+  }
+  function teamLink(name) { return '<button type="button" class="team-link" data-team="' + esc(name) + '">' + esc(name) + "</button>"; }
+  function renderFavStrip() {
+    var favs = MATCHES.filter(isFavMatch);
+    $("fav-strip").innerHTML = favs.length ? '<div class="fav-strip"><h2>Le tue squadre</h2>' + favs.map(function (m) {
+      var p = m.prob;
+      return '<button type="button" data-goto-match="' + esc(m.id) + '"><span>' + esc(m.home) + " – " + esc(m.away) + "</span><small>" +
+        esc(dayOf(m) + " " + when(m)) + " · 1 " + pc(p.p1) + " · X " + pc(p.px) + " · 2 " + pc(p.p2) + "</small></button>";
+    }).join("") + "</div>" : "";
+  }
+
+  /* ---------- Link diretto a una partita e condivisione ---------- */
+  function gotoMatch(id) {
+    var el = document.getElementById("m-" + id);
+    if (!el) return;
+    $("t-partite").click();
+    el.open = true;
+    if (el.scrollIntoView) el.scrollIntoView({ block: "start" });
+  }
+  function openLinkedMatch() {
+    var h = location.hash || "";
+    if (h.indexOf("#m-") !== 0) return;
+    try { gotoMatch(decodeURIComponent(h.slice(3))); } catch (e) {}
+  }
+  function toast(msg) {
+    var t = document.createElement("div");
+    t.className = "toast"; t.setAttribute("role", "status"); t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(function () { if (t.remove) t.remove(); }, 2500);
+  }
+  function shareMatch(id) {
+    var m = MATCHES.filter(function (x) { return String(x.id) === String(id); })[0];
+    if (!m) return null;
+    var p = m.prob, s = m.top_scores[0];
+    var top = p.p1 >= p.px && p.p1 >= p.p2 ? ["1", m.home, p.p1] : p.px >= p.p2 ? ["X", "pareggio", p.px] : ["2", m.away, p.p2];
+    var url = location.origin + location.pathname + "?league=" + encodeURIComponent(LEAGUE) + "#m-" + encodeURIComponent(m.id);
+    var text = m.home + " – " + m.away + ": per il modello " + top[0] + " (" + top[1] + ") al " + pc(top[2]) +
+      ", risultato più probabile " + s[0] + "-" + s[1] + ". Stime statistiche, non un invito a scommettere.";
+    var whatsapp = function () { window.open("https://wa.me/?text=" + encodeURIComponent(text + " " + url), "_blank", "noopener"); };
+    if (navigator.share) navigator.share({ title: "Fischietto finale", text: text, url: url }).catch(function () {});
+    else if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text + " " + url).then(function () { toast("Link copiato"); }, whatsapp);
+    else whatsapp();
+    return { text: text, url: url };
+  }
+
+  /* ---------- Fine stagione e ultima giornata ---------- */
+  function seasonPct(v) { return v == null ? "–" : v === 0 ? "0%" : v < 0.005 ? "&lt;1%" : (v > 0.995 && v < 1) ? "&gt;99%" : pc(v); }
+  function seasonPanel(se) {
+    if (!se || !se.teams || !se.teams.length || !se.zones || !se.zones.length) return "";
+    if (!se.remaining) {
+      var cup = se.zones.some(function (z) { return z.key === "top8"; });
+      return '<div class="panel season-panel"><h2>' + (cup ? "Fase a girone unico conclusa" : "Stagione conclusa") + '</h2><p class="expl">' +
+        (cup ? "La classifica della fase a girone unico è definitiva." : "Non restano partite di campionato da giocare.") + "</p></div>";
+    }
+    return '<div class="panel season-panel"><h2>Come può finire la stagione</h2><p class="lead" style="margin:0 0 10px">Il modello ha giocato ' +
+      se.n_sim.toLocaleString("it-IT") + " volte le " + se.remaining + " partite che restano, partendo dalla classifica di oggi. A parità di punti contano " +
+      esc(se.tiebreak || "differenza reti e gol fatti") + ' (non gli scontri diretti). Sono probabilità, non certezze.</p>' +
+      '<table class="season-table"><thead><tr><th>Squadra</th><th>Pos. media</th>' +
+      se.zones.map(function (z) { return "<th>" + esc(z.label) + "</th>"; }).join("") + "</tr></thead><tbody>" +
+      se.teams.map(function (r) {
+        return "<tr><td>" + (isFav(r.team) ? '<span class="fav-star" aria-label="Squadra seguita">★</span>' : "") + teamLink(r.team) + "</td><td>" +
+          r.pos_avg.toFixed(1).replace(".", ",") + "</td>" + se.zones.map(function (z) {
+            var v = r[z.key] || 0;
+            return '<td class="pct"><i style="width:' + Math.round(v * 100) + '%"></i><span>' + seasonPct(r[z.key]) + "</span></td>";
+          }).join("") + "</tr>";
+      }).join("") + "</tbody></table></div>";
+  }
+  function fmtDay(iso) { var d = new Date(iso + "T12:00:00"); return isNaN(d) ? String(iso) : d.getDate() + " " + MONTHS[d.getMonth()]; }
+  function recapPanel(r) {
+    if (!r || !r.n) return "";
+    var range = r.from === r.to ? fmtDay(r.from) : fmtDay(r.from) + " – " + fmtDay(r.to);
+    var rows = function (list, right) { return '<div class="team-list">' + list.map(function (x) { return "<div><span>" + esc(x.match) + " · " + esc(x.score) + "</span><b>" + right(x) + "</b></div>"; }).join("") + "</div>"; };
+    return '<div class="panel recap-panel"><h2>Com’è andata l’ultima giornata</h2><p class="expl">' + esc(range) + " · esito azzeccato <b>" + r.hit + " su " + r.n + "</b> (" + pc(r.rate) + ")" +
+      (r.exact ? " · risultato esatto indovinato " + r.exact + (r.exact === 1 ? " volta" : " volte") : "") + "</p>" +
+      (r.surprises && r.surprises.length ? '<h3 class="sub2" style="font-size:16px;margin:12px 0 6px">Le sorprese</h3>' + rows(r.surprises, function (x) { return "esito dato al " + pc(x.p_actual); }) : "") +
+      (r.best && r.best.length ? '<h3 class="sub2" style="font-size:16px;margin:12px 0 6px">Le previsioni migliori</h3>' + rows(r.best, function (x) { return esc(x.pick) + " al " + pc(x.pick_p) + " ✓"; }) : "") +
+      "</div>";
+  }
+
+  /* ---------- Pagina squadra ---------- */
+  function vsAverage(v, more, less) {
+    var d = Math.round((v - 1) * 100);
+    return d === 0 ? "nella media del campionato" : Math.abs(d) + "% " + (d > 0 ? more : less) + " della media";
+  }
+  function barWidth(v, better) { var x = better === "high" ? (v - 0.5) : (1.5 - v); return Math.round(Math.max(0.04, Math.min(1, x)) * 100); }
+  function openTeam(name) {
+    var t = (CLASSIFICA && CLASSIFICA.table) || [], row = t.filter(function (r) { return r.team === name; })[0];
+    var rating = CLASSIFICA && CLASSIFICA.ratings ? CLASSIFICA.ratings[name] : null;
+    var se = CLASSIFICA && CLASSIFICA.season, srow = se && se.teams ? se.teams.filter(function (r) { return r.team === name; })[0] : null;
+    var next = MATCHES.filter(function (m) { return m.home === name || m.away === name; })[0];
+    var past = ((HIST && HIST.items) || []).filter(function (x) { var parts = String(x.match).split(" – "); return parts[0] === name || parts[1] === name; }).slice(0, 8);
+    var on = isFav(name);
+    var html = '<div class="team-head"><div><small>' + esc(LEAGUE_NAMES[LEAGUE]) + '</small><h2 id="team-title" tabindex="-1">' + esc(name) + "</h2>" +
+      (row ? "<small>" + row.pos + "ª in classifica · " + row.pts + " punti in " + row.pg + " partite · differenza reti " + (row.gf - row.ga > 0 ? "+" : "") + (row.gf - row.ga) + "</small>" : "") +
+      '</div><button type="button" class="fav-btn" data-fav="' + esc(name) + '" aria-pressed="' + on + '">' + (on ? "★ Seguita" : "☆ Segui") + "</button></div>";
+    if (rating) {
+      html += '<div class="team-grid">' +
+        '<div class="panel"><div class="k">Attacco</div><p class="expl" style="margin:4px 0 0">Segna il ' + vsAverage(rating.att, "in più", "in meno") + '</p><div class="team-bar"><i style="width:' + barWidth(rating.att, "high") + '%"></i></div></div>' +
+        '<div class="panel"><div class="k">Difesa</div><p class="expl" style="margin:4px 0 0">Subisce il ' + vsAverage(rating["def"], "in più", "in meno") + '</p><div class="team-bar"><i style="width:' + barWidth(rating["def"], "low") + '%"></i></div></div>' +
+        '<div class="panel"><div class="k">Forma (ultime 5)</div><div style="margin-top:6px">' + chips(rating.form) + "</div></div></div>" +
+        '<p class="lead" style="margin:-4px 0 12px">Forza stimata dal modello tenendo conto degli avversari affrontati: barra più lunga = meglio.</p>';
+    }
+    if (next) {
+      var home = next.home === name, p = next.prob;
+      html += '<div class="panel"><h2>Prossima partita</h2><p class="expl">' + esc(next.home) + " – " + esc(next.away) + " · " + esc(dayOf(next) + " " + when(next)) + "</p>" +
+        '<p class="expl">Vittoria ' + pc(home ? p.p1 : p.p2) + " · pareggio " + pc(p.px) + " · sconfitta " + pc(home ? p.p2 : p.p1) + "</p>" +
+        '<div class="match-actions"><button type="button" class="share-btn" data-goto-match="' + esc(next.id) + '">Apri la partita →</button></div></div>';
+    }
+    if (srow && se.zones && se.zones.length && se.remaining) {
+      html += '<div class="panel"><h2>Come può finire la stagione</h2><div class="team-list">' +
+        "<div><span>Posizione media</span><b>" + srow.pos_avg.toFixed(1).replace(".", ",") + "ª (tra " + srow.best + "ª e " + srow.worst + "ª)</b></div>" +
+        se.zones.map(function (z) { return "<div><span>" + esc(z.label) + "</span><b>" + seasonPct(srow[z.key]) + "</b></div>"; }).join("") +
+        '</div><p class="lead" style="margin:8px 0 0">Su ' + se.n_sim.toLocaleString("it-IT") + " stagioni simulate.</p></div>";
+    }
+    if (past.length) {
+      html += '<div class="panel"><h2>Pronostici passati</h2><div class="team-list">' + past.map(function (x) {
+        return "<div><span>" + esc(x.match) + " · " + esc(x.score) + "</span><b>" + esc(x.pick) + " al " + pc(x.p) + " " + (x.ok ? "✓" : "✕") + "</b></div>";
+      }).join("") + "</div></div>";
+    }
+    if (!row && !rating && !next) html += '<div class="msg">Dati della squadra non ancora disponibili.</div>';
+    $("team-page").innerHTML = html;
+    tabs.forEach(function (u) { $("t-" + u).setAttribute("aria-selected", "false"); $("p-" + u).hidden = true; });
+    $("p-info").hidden = true;
+    $("p-team").hidden = false;
+    document.body.classList.add("inner");
+    $("back").hidden = false;
+    window.scrollTo(0, 0);
+    var title = $("team-title");
+    if (title && title.focus) title.focus({ preventScroll: true });
+    return html;
+  }
+
+  /* Un solo gestore per i clic su squadre, preferiti, condivisione e collegamenti alle partite. */
+  document.addEventListener("click", function (e) {
+    var el = e.target && e.target.closest ? e.target.closest("[data-team],[data-fav],[data-share],[data-goto-match]") : null;
+    if (!el) return;
+    if (el.hasAttribute("data-team")) { e.preventDefault(); openTeam(el.getAttribute("data-team")); }
+    else if (el.hasAttribute("data-fav")) {
+      var name = el.getAttribute("data-fav"), now = toggleFav(name);
+      el.setAttribute("aria-pressed", String(now)); el.textContent = now ? "★ Seguita" : "☆ Segui";
+      toast(now ? "Ora segui " + name : "Non segui più " + name);
+    }
+    else if (el.hasAttribute("data-share")) { e.preventDefault(); shareMatch(el.getAttribute("data-share")); }
+    else if (el.hasAttribute("data-goto-match")) { gotoMatch(el.getAttribute("data-goto-match")); }
+  });
+  window.FF = { openTeam: openTeam, toggleFav: toggleFav, shareMatch: shareMatch };
 })();
 </script>
 

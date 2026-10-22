@@ -314,6 +314,8 @@ def _recovered_upcoming_round(
 
 # --- Coppe: forza delle squadre dai campionati nazionali ---------------------
 CUPS = {"CL", "EL", "UECL"}
+POINTS_STAGES = {"REGULAR_SEASON", "LEAGUE_STAGE"}  # fasi che assegnano punti in classifica
+LEAGUE_PHASE_MATCHDAYS = {"EL": 8, "UECL": 6}       # giornate della fase a girone unico (CSV)
 
 
 def _cached_domestic_contexts() -> dict:
@@ -445,7 +447,10 @@ async def _open_matchday_context(competition: str) -> dict:
     from . import model
     teams, avg_h, avg_a, cup_prior = _cup_model(finished, [], fixtures)
     standings = _open_matchday_standings(finished)
-    return {"demo": False, "teams_simple": model.build_teams_simple(finished),
+    # Solo le giornate della fase a girone unico (le eventuali righe successive sono eliminazione diretta).
+    remaining = [{"home": _name(m["homeTeam"]), "away": _name(m["awayTeam"])} for m in upcoming
+                 if m["matchday"] <= LEAGUE_PHASE_MATCHDAYS.get(competition, 8)]
+    return {"demo": False, "teams_simple": model.build_teams_simple(finished), "remaining": remaining,
             "teams": teams, "avg_h": avg_h, "avg_a": avg_a, "cup_prior": cup_prior,
             "rho": model.fit_rho(finished, [], teams, avg_h, avg_a), "fixtures": fixtures,
             "finished": finished, "matchday": matchday, "previous": [],
@@ -540,8 +545,18 @@ async def real_context(competition: str | None = None) -> dict:
     else:
         teams, avg_h, avg_a = model.build_teams(finished, previous)
     simple = model.build_teams_simple(finished)
+    # Tutte le partite ancora da giocare (per la simulazione di fine stagione). Le gare a
+    # eliminazione con squadre non ancora note non hanno nome e vengono escluse.
+    # Solo stagione regolare / fase a girone unico: spareggi e eliminazione diretta non danno punti.
+    remaining = [
+        {"home": _name(m["homeTeam"]), "away": _name(m["awayTeam"])}
+        for m in sch.get("matches", [])
+        if str(m.get("id", "")) not in finished_ids_for_selection
+        and m.get("stage", "REGULAR_SEASON") in POINTS_STAGES
+        and (m.get("homeTeam") or {}).get("name") and (m.get("awayTeam") or {}).get("name")
+    ]
     return {"demo": False, "teams_simple": simple, "teams": teams, "avg_h": avg_h, "avg_a": avg_a,
-            "cup_prior": cup_prior,
+            "cup_prior": cup_prior, "remaining": remaining,
             "rho": model.fit_rho(finished, previous, teams, avg_h, avg_a), "fixtures": fixtures, "finished": finished, "matchday": matchday,
             "previous": previous,
             "standings": _reconcile_standings(_standings(st), finished)}

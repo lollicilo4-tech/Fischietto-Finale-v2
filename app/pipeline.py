@@ -4,7 +4,7 @@ Usato sia dal server locale (app/main.py) sia dal generatore del sito statico (g
 """
 from datetime import datetime, timezone
 
-from . import analyst, data, model, store
+from . import analyst, data, model, season, store
 
 KEYS = ["p1", "px", "p2", "o15", "o25", "u25", "u35", "gg", "ng"]
 
@@ -283,8 +283,28 @@ DEMO_CLASSIFICA = [
 ]
 
 
+def team_ratings(ctx: dict) -> dict:
+    """Forza di ogni squadra per la pagina squadra: attacco e difesa rispetto alla media (1 = media;
+    per la difesa più basso è meglio) e forma recente."""
+    out = {}
+    for name, rating in (ctx.get("teams") or {}).items():
+        if "att" in rating:
+            out[name] = {"att": round(rating["att"], 3), "def": round(rating["def"], 3),
+                         "form": rating.get("form", "")}
+    return out
+
+
 async def build_classifica(competition: str | None = None) -> dict:
     if not data.has_key():
         return {"demo": True, "table": DEMO_CLASSIFICA}
-    ctx = await data.get_context(competition)
-    return {"demo": False, "table": ctx.get("standings", [])}
+    league = competition or data.COMPETITION
+    ctx = await data.get_context(league)
+    table = ctx.get("standings", [])
+    out = {"demo": False, "table": table, "ratings": team_ratings(ctx)}
+    try:
+        out["season"] = season.simulate(table, ctx.get("remaining", []), ctx["teams"], ctx["avg_h"],
+                                        ctx["avg_a"], ctx.get("rho", model.DEFAULT_RHO), league)
+    except Exception as exc:  # la simulazione è un di più: non deve bloccare la classifica
+        print(f"[season] {league}: simulazione non disponibile ({type(exc).__name__}: {exc})")
+        out["season"] = None
+    return out

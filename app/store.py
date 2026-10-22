@@ -298,6 +298,45 @@ def _backtest(rows: list[tuple[str, dict, dict]]) -> dict:
     return {"n":len(ordered),"windows":windows,"markets":code_stats,
             "note":"Valuta solo pronostici già salvati prima dell'esito; non ricalcola retroattivamente le previsioni."}
 
+ROUND_SPAN_DAYS = 4  # una giornata va di solito dal venerdì al lunedì
+_OUTCOME_KEY = {"1": "p1", "X": "px", "2": "p2"}
+
+
+def round_recap(rows: list[tuple[str, dict, dict]]) -> dict:
+    """Com'è andata l'ultima giornata: le partite concluse negli ultimi giorni prima della più recente.
+
+    Sorprese = esiti che il modello dava meno probabili; previsioni migliori = esiti azzeccati con
+    la probabilità più alta. Usa solo pronostici salvati prima della partita.
+    """
+    from datetime import datetime, timedelta
+
+    def when(p):
+        try:
+            return datetime.fromisoformat(str(p.get("kickoff")).replace("Z", "+00:00"))
+        except ValueError:
+            return None
+
+    dated = [(when(p), mid, p, m) for mid, p, m in rows if when(p) is not None]
+    if not dated:
+        return {}
+    last = max(d for d, *_ in dated)
+    games = sorted((x for x in dated if x[0] >= last - timedelta(days=ROUND_SPAN_DAYS)), key=lambda x: x[0])
+    items = []
+    for date, mid, p, m in games:
+        actual = _outcome(m)
+        items.append({
+            "match": f"{p['home']} – {p['away']}", "score": f"{m['hg']}-{m['ag']}", "date": date.date().isoformat(),
+            "pick": p["pick"], "pick_p": p["pick_p"], "actual": actual, "p_actual": p[_OUTCOME_KEY[actual]],
+            "ok": p["pick"] == actual, "exact": list(p.get("top") or [])[:2] == [m["hg"], m["ag"]],
+        })
+    hit = sum(1 for i in items if i["ok"])
+    surprises = sorted((i for i in items if i["p_actual"] < 0.30), key=lambda i: i["p_actual"])[:3]
+    best = sorted((i for i in items if i["ok"]), key=lambda i: -i["pick_p"])[:3]
+    return {"from": items[0]["date"], "to": items[-1]["date"], "n": len(items), "hit": hit,
+            "rate": hit / len(items), "exact": sum(1 for i in items if i["exact"]),
+            "surprises": surprises, "best": best}
+
+
 def history(finished: list[dict], league: str | None = None) -> dict:
     rows = _joined(finished, league=league)
     items, brier, outcomes = [], [], []
@@ -383,4 +422,5 @@ def history(finished: list[dict], league: str | None = None) -> dict:
     out["market_performance"] = _market_performance(rows)
     out["recommendation_performance"] = _recommendation_performance(rows)
     out["backtest"] = _backtest(rows)
+    out["recap"] = round_recap(rows)
     return out

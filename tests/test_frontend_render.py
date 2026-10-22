@@ -13,13 +13,17 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def run_render(root: Path, league: str) -> dict:
+    with tempfile.TemporaryDirectory() as out:
+        subprocess.run(["node", str(ROOT / "tests" / "render_page.js"), str(root), league, out],
+                       check=True, capture_output=True, timeout=60)
+        return json.loads((Path(out) / f"render-{league}.json").read_text(encoding="utf-8"))
+
+
 @unittest.skipUnless(shutil.which("node"), "Node.js non disponibile")
 class FrontendRenderTests(unittest.TestCase):
     def render(self, league: str) -> dict:
-        with tempfile.TemporaryDirectory() as out:
-            subprocess.run(["node", str(ROOT / "tests" / "render_page.js"), str(ROOT), league, out],
-                           check=True, capture_output=True, timeout=60)
-            return json.loads((Path(out) / f"render-{league}.json").read_text(encoding="utf-8"))
+        return run_render(ROOT, league)
 
     def test_pages_render_without_javascript_errors(self):
         for league in ("SA", "CL", "EL"):
@@ -39,6 +43,70 @@ class FrontendRenderTests(unittest.TestCase):
         if storico.get("n"):
             self.assertIn("In breve", result["verdict"])
             self.assertIn(f"Su {storico['n']} partite", result["verdict"])
+
+
+@unittest.skipUnless(shutil.which("node"), "Node.js non disponibile")
+class NewFeaturesRenderTests(unittest.TestCase):
+    """Stessa pagina con i campi nuovi (fine stagione, forza squadre, ultima giornata), calcolati
+    qui sui dati pubblicati, così il test non dipende dal prossimo aggiornamento automatico."""
+
+    @classmethod
+    def setUpClass(cls):
+        from app import season, store
+        cls.tmp = tempfile.TemporaryDirectory()
+        root = Path(cls.tmp.name)
+        (root / "static").mkdir()
+        shutil.copy(ROOT / "static" / "index.html", root / "static" / "index.html")
+        shutil.copytree(ROOT / "docs", root / "docs", ignore=shutil.ignore_patterns("*.png", "CNAME"))
+        predictions = json.loads((ROOT / "data" / "predictions.json").read_text(encoding="utf-8"))
+        for code in ("SA", "CL"):
+            prefix = "" if code == "SA" else f"league-{code}-"
+            path = root / "docs" / f"{prefix}classifica.json"
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            table = payload["table"]
+            names = [r["team"] for r in table]
+            teams = {n: {"att": 1.0 + (len(names) - k) / (4 * len(names)), "def": 1.0, "form": "VNP"} for k, n in enumerate(names)}
+            remaining = [{"home": names[i], "away": names[(i + 1) % len(names)]} for i in range(len(names))]
+            payload["ratings"] = teams
+            payload["season"] = season.simulate(table, remaining, teams, 1.4, 1.1, -0.05, code, n=200)
+            path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+            hpath = root / "docs" / f"{prefix}storico.json"
+            hist = json.loads(hpath.read_text(encoding="utf-8"))
+            rows = [(k, v, {"id": k, "hg": v["result"]["hg"], "ag": v["result"]["ag"]})
+                    for k, v in predictions.items() if v.get("league") == code and "result" in v]
+            hist["recap"] = store.round_recap(rows)
+            hpath.write_text(json.dumps(hist, ensure_ascii=False), encoding="utf-8")
+        cls.results = {code: run_render(root, code) for code in ("SA", "CL")}
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.tmp.cleanup()
+
+    def test_no_javascript_errors(self):
+        for code, result in self.results.items():
+            with self.subTest(league=code):
+                self.assertEqual(result["errors"], [])
+
+    def test_season_table(self):
+        self.assertIn("Come può finire la stagione", self.results["SA"]["season"])
+        self.assertIn("Primo posto", self.results["SA"]["season"])
+        self.assertIn("Prime 8 (agli ottavi)", self.results["CL"]["season"])
+        self.assertNotIn("<1%", self.results["SA"]["season"].replace("&lt;1%", ""))
+
+    def test_round_recap(self):
+        if self.results["SA"]["recap"]:
+            self.assertIn("ultima giornata", self.results["SA"]["recap"])
+
+    def test_team_page_favourites_and_share(self):
+        result = self.results["SA"]
+        self.assertTrue(result["teamOpen"] and result["teamClosed"])
+        self.assertIn("Segna il", result["team"])
+        self.assertIn("Come può finire la stagione", result["team"])
+        self.assertTrue(result["favOn"])
+        self.assertIn('class="match fav"', result["matchesAfterFav"])
+        self.assertIn("Le tue squadre", result["favStrip"])
+        self.assertIn("non un invito a scommettere", result["share"]["text"])
+        self.assertTrue(result["share"]["url"].startswith("https://fischiettofinale.com/?league=SA#m-"))
 
 
 if __name__ == "__main__":
