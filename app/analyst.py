@@ -14,13 +14,26 @@ import re
 import unicodedata
 from pathlib import Path
 
+from . import evidence
+
 FACTOR_MIN, FACTOR_MAX = 0.85, 1.15
 CACHE_SECONDS = 72 * 3600  # allineata alla finestra delle notizie recenti (72 ore)
-SOURCE_REFRESH_LIMIT_PER_LEAGUE = 1  # generate.py elabora 6 leghe: massimo 6 retry grounding per esecuzione
+SOURCE_REFRESH_LIMIT_PER_LEAGUE = 1  # al massimo un retry grounding per lega a ogni esecuzione
+# Versione della validazione: le analisi in cache con una versione diversa vengono rifatte.
+# 9 = verifica delle assenze sul testo degli articoli (prima solo su titolo e URL).
+VALIDATION_VERSION = 9
+EVIDENCE_WINDOW = 160  # caratteri attorno al nome del giocatore in cui cercare la conferma
 _cache: dict = {}
-# Shared across analyze_all() calls: generate.py processes leagues sequentially in one process.
+# Condiviso tra le chiamate ad analyze_all(): generate.py elabora le leghe in sequenza nello stesso processo.
 _groq_daily_limit_reached = False
-PERSIST_PATH = Path(__file__).resolve().parent.parent / "docs" / "ai_cache.json"
+# La cache sta in data/, non in docs/: non serve pubblicarla sul sito.
+PERSIST_PATH = Path(__file__).resolve().parent.parent / "data" / "ai_cache.json"
+NEUTRAL_TEXT = (
+    "Non ho trovato conferme sufficientemente solide sulle indisponibilità "
+    "per modificare i gol attesi. Per prudenza, non applico correzioni per assenze: "
+    "le probabilità restano quelle del modello statistico. L'analisi delle notizie "
+    "non sostituisce i dati statistici e non implica che le squadre siano al completo."
+)
 ROLE = {"att": "attaccante titolare", "def": "difensore titolare"}
 
 SYSTEM = """Sei l'analista di un'app che spiega come potrebbe andare una partita di calcio.
@@ -111,13 +124,60 @@ _CONFIRMED_TERMS = (
     "frattura", "operato", "operazione", "stop di", "stop per",
     "ruled out", "suspended", "will miss", "out of",
 )
+# Termini usati solo nella verifica sul testo degli articoli, sempre a parola intera
+# e vicino al nome del giocatore.
+_CONFIRMED_TEXT_TERMS = _CONFIRMED_TERMS + (
+    "assente", "assenti", "infortunato", "infortunati", "fermo ai box", "ai box",
+    "out", "ko", "lesione", "rottura", "crociato", "salta", "saltera", "salteranno",
+    "fuori causa", "non convocato", "non convocati", "squalificata",
+    "sidelined", "injured", "unavailable", "will not feature", "wont feature",
+    "misses", "to miss", "banned", "ban", "suspension", "absent",
+    "verletzt", "gesperrt", "fallt aus", "baja", "bajas", "lesionado", "sancionado",
+    "blesse", "forfait", "suspendu",
+)
 _UNCERTAIN_TERMS = (
     "in dubbio", "dubbio", "in recupero", "recupero in corso",
     "pronto a giocare", "pronto per giocare", "rientrato in gruppo",
     "probabile disponibile", "potrebbe giocare", "da valutare",
     "doubtful", "questionable", "expected to return",
 )
+_UNCERTAIN_TEXT_TERMS = _UNCERTAIN_TERMS + (
+    # Niente "disponibile", "convocato" o "available" da soli: comparirebbero anche in
+    # "non sarà disponibile", "non convocato", "not available", che sono conferme.
+    "recuperato", "torna a disposizione", "rientra", "late fitness test", "fitness test",
+    "could return", "back in training", "doubt", "a doubt", "touch and go", "race against time",
+    "50 50", "fraglich", "duda", "incierto", "incertain",
+)
+_NAME_NOISE = {"infortunio", "lesione", "muscolare", "frattura", "squalifica", "squalificato",
+               "out", "indisponibile", "injury", "injured", "suspended"}
 
+
+
+_LOW_QUALITY_HOSTS = (
+    "instagram.com", "facebook.com", "m.facebook.com", "tiktok.com",
+    "x.com", "twitter.com", "reddit.com", "pinterest.com",
+)
+
+
+def _host(value: str) -> str:
+    return value.lower().split("//", 1)[-1].split("/", 1)[0].split(":", 1)[0]
+
+
+def _is_low_quality(url: str, title: str = "") -> bool:
+    """Social e forum non bastano per presentare una notizia come verificata."""
+    return any(candidate == domain or candidate.endswith("." + domain)
+               for candidate in (_host(url), _host(title)) for domain in _LOW_QUALITY_HOSTS)
+
+
+def _team_aliases(team: str) -> list[str]:
+    normalized = _norm(team)
+    return [a for a in (_norm(x) for x in _TEAM_ALIASES.get(normalized, (normalized,))) if a]
+
+
+def _has_term(text: str, terms) -> bool:
+    """Cerca termini a parola intera in un testo già normalizzato con _norm()."""
+    padded = f" {text} "
+    return any(f" {_norm(term)} " in padded for term in terms)
 
 
 def _relevant_sources(sources: list[dict], fx: dict) -> list[dict]:
@@ -142,24 +202,13 @@ def _relevant_sources(sources: list[dict], fx: dict) -> list[dict]:
         "lineups", "lineup", "calendario", "risultati",
         "probabili formazioni", "partita calcio risultati", "statistiche",
     )
-    # I social e le pagine di soli risultati non sono una base sufficiente
-    # per presentare una fonte come notizia verificata.
-    low_quality_hosts = (
-        "instagram.com", "facebook.com", "m.facebook.com", "tiktok.com",
-        "x.com", "twitter.com", "reddit.com", "pinterest.com",
-    )
     for source in sources or []:
         url = str(source.get("url", "")).strip()
         raw_title = str(source.get("title") or url)
         title = _norm(raw_title)
         normalized_url = _norm(url)
         evidence = f" {title} {normalized_url} "
-        host = url.split("//", 1)[-1].split("/", 1)[0].lower().split(":", 1)[0]
-        title_host = raw_title.lower().split("//", 1)[-1].split("/", 1)[0].split(":", 1)[0]
-        is_low_quality = any(
-            candidate == domain or candidate.endswith("." + domain)
-            for candidate in (host, title_host) for domain in low_quality_hosts
-        )
+        is_low_quality = _is_low_quality(url, raw_title)
         is_generic = any(term in f" {title} {normalized_url} " for term in excluded)
         # Una fonte deve citare almeno una squadra nel titolo o nell'URL.
         # I redirect anonimi con il solo dominio non sono verificabili come pertinenti.
@@ -177,16 +226,20 @@ def _relevant_sources(sources: list[dict], fx: dict) -> list[dict]:
     return relevant
 
 
+def _player_tokens(name: str) -> list[str]:
+    """Parti significative del nome: "Lautaro Martínez (lesione)" -> ["lautaro", "martinez"]."""
+    cleaned = re.sub(r"\(.*?\)|\[.*?\]", " ", str(name))
+    cleaned = re.split(r"\s[-–—:]\s|[,;:]", cleaned)[0]
+    return [t for t in _norm(cleaned).split() if len(t) >= 2 and t not in _NAME_NOISE]
+
+
 def _source_confirms_absence(name: str, team: str, sources: list[dict]) -> bool:
-    """Richiede una fonte raccolta che associ esplicitamente giocatore, squadra e indisponibilità."""
-    tokens = _norm(name).split()
-    # Nelle parentesi spesso c'è solo il motivo, non il nome del calciatore.
-    name_tokens = [t for t in tokens if t not in {"infortunio", "lesione", "muscolare", "frattura"}]
+    """Conferma dal solo titolo/URL: giocatore, squadra e indisponibilità nella stessa fonte."""
+    name_tokens = _player_tokens(name)
     if not name_tokens:
         return False
     player_key = name_tokens[-1]
-    team_norm = _norm(team)
-    aliases = _TEAM_ALIASES.get(team_norm, (team_norm,))
+    aliases = _team_aliases(team)
     for source in sources or []:
         title = _norm(source.get("title", ""))
         url = _norm(source.get("url", ""))
@@ -200,35 +253,169 @@ def _source_confirms_absence(name: str, team: str, sources: list[dict]) -> bool:
     return False
 
 
-def _validate_absences(data: dict, fx: dict, sources: list[dict]) -> dict:
-    """Fail closed: se una sola assenza non è corroborata, neutralizza tutti gli aggiustamenti AI."""
+def _segments(text: str) -> list[str]:
+    """Divide il testo in frasi e righe (titoletti, voci di elenco)."""
+    return [seg for seg in re.split(r"(?<=[.!?;])\s+|\n+", text or "") if seg.strip()]
+
+
+def _text_confirms_absence(name: str, team: str, text: str) -> bool:
+    """Conferma dal testo dell'articolo.
+
+    Servono: la squadra citata nell'articolo; il cognome del giocatore in una frase che
+    contiene un termine di indisponibilità certa ("out per", "squalificato", "ruled out"...)
+    e nessun termine di incertezza ("in dubbio", "recuperato", "doubt"...). Se la frase è
+    un elenco sotto un titoletto breve ("Indisponibili:"), conta anche il titoletto.
+    """
+    tokens = _player_tokens(name)
+    if not tokens or len(tokens[-1]) < 3:
+        return False
+    if not any(f" {alias} " in f" {_norm(text)} " for alias in _team_aliases(team)):
+        return False
+    key = f" {tokens[-1]} "
+    segments = _segments(text)
+    for i, segment in enumerate(segments):
+        sentence = f" {_norm(segment)} "
+        pos = sentence.find(key)
+        if pos < 0:
+            continue
+        if len(sentence) > 3 * EVIDENCE_WINDOW:  # frase lunghissima: guarda solo vicino al nome
+            sentence = sentence[max(0, pos - EVIDENCE_WINDOW): pos + len(key) + EVIDENCE_WINDOW]
+        context = sentence
+        if i > 0 and len(segments[i - 1]) <= 60:
+            context = f" {_norm(segments[i - 1])} {sentence} "
+        if _has_term(context, _CONFIRMED_TEXT_TERMS) and not _has_term(sentence, _UNCERTAIN_TEXT_TERMS):
+            return True
+    return False
+
+
+def _confirming_source(name: str, team: str, sources: list[dict], pages: list[dict] | None) -> dict | None:
+    """Prima fonte che conferma l'assenza, dal titolo o dal testo dell'articolo."""
+    for source in sources or []:
+        if _source_confirms_absence(name, team, [source]):
+            return {"title": str(source.get("title") or source.get("url")), "url": source["url"]}
+    for page in pages or []:
+        if _text_confirms_absence(name, team, page.get("text", "")):
+            title = page.get("title") or page.get("source_title") or page.get("final_url")
+            return {"title": str(title), "url": page.get("final_url") or page["url"]}
+    return None
+
+
+def _neutral(warning: str | None) -> dict:
+    return {"absences_home": [], "absences_away": [], "factor_home": 1.0, "factor_away": 1.0,
+            "validation_warning": warning, "evidence": [], "confirmed": 0, "claimed": 0}
+
+
+def _validate_absences(data: dict, fx: dict, sources: list[dict], pages: list[dict] | None = None) -> dict:
+    """Tiene solo le assenze confermate da una fonte e riduce i fattori AI in proporzione.
+
+    - nessuna assenza segnalata: fattori neutri;
+    - tutte confermate: fattori proposti dall'AI (limitati a 0,85-1,15);
+    - solo alcune confermate: la correzione si riduce in proporzione (es. 1 su 2 = metà);
+    - nessuna confermata: fattori neutri e avviso.
+    Chi è indicato "in dubbio", "pronto a giocare" ecc. non conta mai come assente.
+    """
     home = data.get("assenze_casa", [])
     away = data.get("assenze_trasferta", [])
     if not isinstance(home, list) or not isinstance(away, list):
-        return {"absences_home": [], "absences_away": [], "factor_home": 1.0,
-                "factor_away": 1.0, "validation_warning": "Formato assenze non valido; fattori neutrali."}
-    candidates = [(str(x), fx["home"]) for x in home] + [(str(x), fx["away"]) for x in away]
-    # I termini di incertezza non possono essere promossi a indisponibilità confermata.
-    explanation = _norm(data.get("spiegazione", ""))
-    has_uncertainty = any(term in explanation for term in _UNCERTAIN_TERMS) or any(
-        any(term in _norm(name) for term in _UNCERTAIN_TERMS) for name, _ in candidates
-    )
-    verified = bool(candidates) and all(_source_confirms_absence(name, team, sources) for name, team in candidates)
+        return _neutral("Formato assenze non valido; fattori neutrali.")
+    candidates = [(str(x).strip(), fx["home"], "home") for x in home if str(x).strip()] + \
+                 [(str(x).strip(), fx["away"], "away") for x in away if str(x).strip()]
     if not candidates:
-        return {"absences_home": [], "absences_away": [], "factor_home": 1.0,
-                "factor_away": 1.0, "validation_warning": None}
-    if has_uncertainty or not verified:
-        return {
-            "absences_home": [], "absences_away": [],
-            "factor_home": 1.0, "factor_away": 1.0,
-            "validation_warning": "Assenze non confermate automaticamente: elenchi svuotati e fattori AI neutralizzati.",
-        }
+        return _neutral(None)
+
+    confirmed = {"home": [], "away": []}
+    evidence_sources, seen = [], set()
+    for name, team, side in candidates:
+        if any(term in _norm(name) for term in _UNCERTAIN_TERMS):
+            continue  # stato incerto dichiarato nel nome stesso: non è un'assenza
+        source = _confirming_source(name, team, sources, pages)
+        if source:
+            confirmed[side].append(name)
+            if source["url"] not in seen:
+                seen.add(source["url"])
+                evidence_sources.append(source)
+
+    n_ok = len(confirmed["home"]) + len(confirmed["away"])
+    if n_ok == 0:
+        out = _neutral("Assenze non confermate automaticamente: elenchi svuotati e fattori AI neutralizzati.")
+        out["claimed"] = len(candidates)
+        return out
+    share = n_ok / len(candidates)
+    factor_home = 1 + (_clip(data.get("fattore_gol_casa")) - 1) * share
+    factor_away = 1 + (_clip(data.get("fattore_gol_trasferta")) - 1) * share
+    warning = None if n_ok == len(candidates) else (
+        f"Confermate {n_ok} assenze su {len(candidates)}: correzione ridotta in proporzione."
+    )
     return {
-        "absences_home": [str(x) for x in home][:5],
-        "absences_away": [str(x) for x in away][:5],
-        "factor_home": _clip(data.get("fattore_gol_casa")),
-        "factor_away": _clip(data.get("fattore_gol_trasferta")),
-        "validation_warning": None,
+        "absences_home": confirmed["home"][:5], "absences_away": confirmed["away"][:5],
+        "factor_home": round(factor_home, 3), "factor_away": round(factor_away, 3),
+        "validation_warning": warning, "evidence": evidence_sources,
+        "confirmed": n_ok, "claimed": len(candidates),
+    }
+
+
+def _fetchable_sources(raw_sources: list[dict], relevant: list[dict]) -> list[dict]:
+    """Fonti da leggere per la verifica: prima quelle pertinenti, poi le altre non social."""
+    ordered, seen = [], set()
+    for source in list(relevant or []) + list(raw_sources or []):
+        url = str(source.get("url", "")).strip()
+        if not url.startswith(("https://", "http://")) or url in seen:
+            continue
+        if _is_low_quality(url, str(source.get("title") or "")):
+            continue
+        seen.add(url)
+        ordered.append(source)
+    return ordered
+
+
+def _claims_absences(data: dict) -> bool:
+    return any(isinstance(data.get(k), list) and any(str(x).strip() for x in data[k])
+               for k in ("assenze_casa", "assenze_trasferta"))
+
+
+def _explanation(data: dict, checked: dict, fx: dict) -> str:
+    """Il testo dell'AI resta solo se tutte le assenze citate sono state confermate."""
+    original = str(data.get("spiegazione", "")).strip()
+    if not checked["validation_warning"]:
+        return original or NEUTRAL_TEXT
+    if not checked["confirmed"]:
+        return NEUTRAL_TEXT
+    # Conferma parziale: il testo originale potrebbe citare come certe assenze scartate.
+    names = []
+    if checked["absences_home"]:
+        names.append(f"{fx['home']}: " + ", ".join(checked["absences_home"]))
+    if checked["absences_away"]:
+        names.append(f"{fx['away']}: " + ", ".join(checked["absences_away"]))
+    return (
+        "Assenze confermate dalle fonti — " + "; ".join(names) + ". "
+        "Le altre indisponibilità segnalate non hanno trovato conferma e non sono considerate: "
+        "la correzione sui gol attesi è ridotta in proporzione."
+    )
+
+
+async def _finalize(data: dict, fx: dict, raw_sources: list[dict], provider: str) -> dict:
+    """Passaggio comune a Groq e Gemini: verifica le assenze e prepara la risposta."""
+    relevant = _relevant_sources(raw_sources, fx)
+    pages = []
+    if _claims_absences(data):
+        try:
+            pages = await evidence.fetch_pages(_fetchable_sources(raw_sources, relevant))
+        except Exception as exc:  # la lettura delle pagine non deve mai bloccare l'analisi
+            print(f"[analyst] lettura fonti {fx['home']}-{fx['away']}: {type(exc).__name__}")
+    checked = _validate_absences(data, fx, relevant, pages)
+    shown, seen = [], set()
+    for source in list(checked["evidence"]) + relevant:
+        if source["url"] not in seen and len(shown) < 5:
+            seen.add(source["url"])
+            shown.append({"title": source.get("title") or source["url"], "url": source["url"]})
+    print(f"[analyst] provider={provider} match={fx['home']}-{fx['away']} sources={len(shown)} "
+          f"pages={len(pages)} absences={checked['confirmed']}/{checked['claimed']}")
+    return {
+        "ai": True, "text": _explanation(data, checked, fx),
+        "factor_home": checked["factor_home"], "factor_away": checked["factor_away"],
+        "absences_home": checked["absences_home"], "absences_away": checked["absences_away"],
+        "sources": shown, "provider": provider, "validation_version": VALIDATION_VERSION,
+        "validation_warning": checked["validation_warning"],
     }
 
 
@@ -401,36 +588,11 @@ async def _ask_groq(client, fx: dict, base: dict) -> dict:
 
     # Solo se l'SDK non espone risultati strutturati, usa i link nel testo.
     if not sources:
-        import re
         for url in re.findall(r'https?://[^\s\]\)\}>,]+', text):
             add_url(url)
 
-    # Scarta risultati che non citano nessuna delle due squadre: meglio nessun link
-    # che riferimenti di cronaca locale o articoli su eventi non correlati.
-    sources = _relevant_sources(sources, fx)
     data = _parse_json(text)
-    checked = _validate_absences(data, fx, sources)
-    explanation = str(data.get("spiegazione", "")).strip()
-    if checked["validation_warning"]:
-        # Non aggiungere soltanto un avviso al testo originale: potrebbe
-        # continuare ad affermare come certe assenze che la validazione ha
-        # appena rifiutato. In caso di mancata conferma, sostituisci l'intera
-        # spiegazione con un testo neutro coerente con i fattori effettivi.
-        explanation = (
-            "Non ho trovato conferme sufficientemente solide sulle indisponibilità "
-            "per modificare i gol attesi. Per prudenza, non applico correzioni per assenze: "
-            "le probabilità restano quelle del modello statistico. L'analisi delle notizie "
-            "non sostituisce i dati statistici e non implica che le squadre siano al completo."
-        )
-    print(f"[analyst] provider=groq match={fx['home']}-{fx['away']} sources={len(sources)}")
-    return {
-        "ai": True, "text": explanation,
-        "factor_home": checked["factor_home"], "factor_away": checked["factor_away"],
-        "absences_home": checked["absences_home"],
-        "absences_away": checked["absences_away"],
-        "sources": sources, "provider": "groq",
-        "validation_version": 4,
-    }
+    return await _finalize(data, fx, sources, "groq")
 
 
 async def _ask_gemini(fx: dict, base: dict, retry_grounding: bool = False) -> dict:
@@ -491,32 +653,15 @@ async def _ask_gemini(fx: dict, base: dict, retry_grounding: bool = False) -> di
         raw_sources = _extract_grounding_sources(response)
     # Alcune risposte con grounding espongono il testo solo nelle parti candidate.
     data = _parse_json(_extract_response_text(response))
-    sources = _relevant_sources(raw_sources, fx)
     candidates = _read_field(response, "candidates") or []
     metadata = _read_field(candidates[0], "grounding_metadata", "groundingMetadata") if candidates else None
     queries = _read_field(metadata, "web_search_queries", "webSearchQueries") or []
     print("[analyst] Gemini grounding match=" + fx["home"] + "-" + fx["away"]
           + " metadata=" + ("yes" if metadata is not None else "no")
           + " raw_sources=" + str(len(raw_sources))
-          + " relevant_sources=" + str(len(sources))
           + " search_queries=" + str(len(queries))
           + " retry=" + ("yes" if grounding_retry else "no"))
-    checked = _validate_absences(data, fx, sources)
-    explanation = str(data.get("spiegazione", "")).strip()
-    if checked["validation_warning"]:
-        explanation = (
-            "Non ho trovato conferme sufficientemente solide sulle indisponibilità "
-            "per modificare i gol attesi. Per prudenza, non applico correzioni per assenze: "
-            "le probabilità restano quelle del modello statistico. L'analisi delle notizie "
-            "non sostituisce i dati statistici e non implica che le squadre siano al completo."
-        )
-    print(f"[analyst] provider=gemini match={fx['home']}-{fx['away']} sources={len(sources)}")
-    return {
-        "ai": True, "text": explanation,
-        "factor_home": checked["factor_home"], "factor_away": checked["factor_away"],
-        "absences_home": checked["absences_home"], "absences_away": checked["absences_away"],
-        "sources": sources, "provider": "gemini", "validation_version": 8,
-    }
+    return await _finalize(data, fx, raw_sources, "gemini")
 
 
 def _load_persistent_cache() -> None:
@@ -544,31 +689,18 @@ def _save_persistent_cache() -> None:
 
 
 def _normalized_provider(analysis: dict) -> str | None:
-    """Recupera il provider da cache legacy che salvavano la versione ma non il nome."""
     if not isinstance(analysis, dict):
         return None
     provider = analysis.get("provider")
-    if provider in ("groq", "gemini"):
-        return provider
-    version = analysis.get("validation_version")
-    if version == 8:
-        return "gemini"
-    if version in (1, 2, 3, 4, 5, 6):
-        return "groq"
-    return None
+    return provider if provider in ("groq", "gemini") else None
 
 
 def _cache_is_compatible(analysis: dict) -> bool:
-    """Accetta le versioni validate e riconosce le cache legacy prive del provider."""
-    if not isinstance(analysis, dict):
-        return False
-    version = analysis.get("validation_version")
-    provider = _normalized_provider(analysis)
-    if provider == "gemini":
-        return version == 8
-    if provider == "groq":
-        return version in (1, 2, 3, 4, 5, 6)
-    return False
+    """Riusa solo analisi fatte con la validazione attuale: le precedenti verificavano
+    le assenze sul solo titolo delle fonti e annullavano quasi sempre le correzioni."""
+    return (isinstance(analysis, dict)
+            and _normalized_provider(analysis) is not None
+            and analysis.get("validation_version") == VALIDATION_VERSION)
 
 
 def _cache_needs_source_refresh(analysis: dict) -> bool:
@@ -638,37 +770,13 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
         fx = item["fx"]
         hit = _cache.get(fx["id"])
         if hit and time.time() - hit[0] < CACHE_SECONDS:
-            # Le vecchie cache senza fonti non devono impedire una nuova
-            # ricerca web dopo la correzione dell'estrazione.
-            cached_sources = hit[1].get("sources") if isinstance(hit[1], dict) else None
-            # Conserva le analisi validate per provider: Gemini v8 e le versioni
-            # Groq storiche compatibili. Evita nuove chiamate AI non necessarie.
-            cache_compatible = _cache_is_compatible(hit[1])
+            # Le analisi senza fonti possono essere ritentate (poche per esecuzione).
             refresh_sources = (
                 _cache_needs_source_refresh(hit[1])
                 and fx["id"] in source_refresh_ids
             )
-            if isinstance(hit[1], dict) and cache_compatible and not refresh_sources:
-                cached = dict(hit[1])
-                filtered_sources = _relevant_sources(cached.get("sources") or [], fx)
-                # Filtra la cache localmente: non richiede nuove chiamate a Groq.
-                # Se nessuna fonte supera i criteri, mostra l'analisi senza link.
-                cached["sources"] = filtered_sources
-                cached["provider"] = _normalized_provider(cached)
-                if "Assenze non confermate automaticamente" in str(cached.get("text", "")):
-                    cached["text"] = (
-                        "Non ho trovato conferme sufficientemente solide sulle indisponibilità "
-                        "per modificare i gol attesi. Per prudenza, non applico correzioni per assenze: "
-                        "le probabilità restano quelle del modello statistico. L'analisi delle notizie "
-                        "non sostituisce i dati statistici e non implica che le squadre siano al completo."
-                    )
-                    cached["absences_home"] = []
-                    cached["absences_away"] = []
-                    cached["factor_home"] = 1.0
-                    cached["factor_away"] = 1.0
-                cached["validation_version"] = 8 if cached.get("provider") == "gemini" else 4
-                _cache[fx["id"]] = (hit[0], cached)
-                return cached
+            if _cache_is_compatible(hit[1]) and not refresh_sources:
+                return dict(hit[1])
         if rate_limited.is_set():
             if os.getenv("GEMINI_API_KEY"):
                 try:

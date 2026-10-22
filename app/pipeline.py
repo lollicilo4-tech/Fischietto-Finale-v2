@@ -116,7 +116,10 @@ def _recommendations(s: dict, home: str, away: str) -> dict:
     return {"best": best, "alternatives": top[:6], "by_kind": best_by_kind}
 
 
-async def build_turno(competition: str | None = None, use_ai: bool | None = None) -> dict:
+async def build_turno(competition: str | None = None, use_ai: bool | None = None,
+                      persist: bool = True) -> dict:
+    """Costruisce il turno. Con persist=False i pronostici non vengono salvati subito:
+    restano in "_pending_saves" e si salvano con persist_predictions() dopo la validazione."""
     league = competition or data.COMPETITION
     ctx = await data.get_context(league)
     teams, avg_h, avg_a = ctx["teams"], ctx["avg_h"], ctx["avg_a"]
@@ -134,7 +137,7 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
 
     analyses = await analyst.analyze_all(bases, teams, use_ai=(not ctx["demo"] and use_ai is not False))
 
-    out = []
+    out, pending = [], []
     for item, an in zip(bases, analyses):
         fx = item["fx"]
         # Il modello ricalcola le probabilità con i fattori proposti dall'AI (limitati a 0,85-1,15)
@@ -156,17 +159,24 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
             "analysis": {**{k: an.get(k) for k in ("ai", "text", "factor_home", "factor_away",
                                                     "absences_home", "absences_away", "sources")},
                          "provider": an.get("provider"),
+                         # True solo se l'AI ha davvero spostato i gol attesi (assenze confermate)
+                         "adjusted": bool(an.get("ai")) and (abs(an["factor_home"] - 1) > 0.005
+                                                             or abs(an["factor_away"] - 1) > 0.005),
                          "source_status": "fonti web disponibili; pertinenza non verificata automaticamente" if an.get("sources") else "nessuna fonte web utilizzabile",
                          "validation_warning": an.get("validation_warning")},
         })
         if not ctx["demo"]:
-            store.save(fx["id"], fx["home"], fx["away"], fx["kickoff"], prob["p1"], prob["px"], prob["p2"],
-                       extra={"o25": prob["o25"], "gg": prob["gg"], "xg": [round(lh, 2), round(la, 2)],
+            pending.append(dict(match_id=fx["id"], home=fx["home"], away=fx["away"], kickoff=fx["kickoff"],
+                                p1=prob["p1"], px=prob["px"], p2=prob["p2"], league=league,
+                                extra={"o25": prob["o25"], "gg": prob["gg"], "xg": [round(lh, 2), round(la, 2)],
                               "top": s["top_scores"][0][:2], "ai": bool(an["ai"]),
                               "market_predictions": market_predictions,
                               "recommendation": recommendation.get("best"),
                               "base": {k: round(item["base"][k], 4) for k in ("p1", "px", "p2")},
-                              **({"old": {k: round(item["old"][k], 4) for k in ("p1", "px", "p2")}} if item["old"] else {})}, league=league)
+                              **({"old": {k: round(item["old"][k], 4) for k in ("p1", "px", "p2")}} if item["old"] else {})}))
+
+    if persist:
+        _save_all(pending)
 
     ai_count = sum(1 for a in analyses if a["ai"])
     ai_error = next((a.get("reason") for a in analyses if a.get("reason")), None)
@@ -179,16 +189,32 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
     else:
         ai_status = "solo_statistica"
     history_data = {} if ctx["demo"] else store.history(ctx["finished"], league=league)
-    return {"demo": ctx["demo"], "ai": ai_count > 0,
+    result = {"demo": ctx["demo"], "ai": ai_count > 0,
             "ai_error": ai_error,
             "ai_status": ai_status,
             "matchday": ctx.get("matchday"),
+            "ai_adjusted": sum(1 for m in out if m["analysis"]["adjusted"]),
             "played": [] if ctx["demo"] else store.recent(ctx["finished"], league=league),
             "market_performance": history_data.get("market_performance", {}),
             "recommendation_performance": history_data.get("recommendation_performance", {}),
             "backtest": history_data.get("backtest", {}),
             "generated_at": datetime.now(timezone.utc).isoformat(timespec="minutes"),
             "matches": out}
+    if not persist:
+        result["_pending_saves"] = pending
+    return result
+
+
+def _save_all(pending: list[dict]) -> None:
+    for item in pending:
+        store.save(**item)
+
+
+def persist_predictions(turno: dict) -> int:
+    """Salva i pronostici rimasti in sospeso (build_turno con persist=False) e li toglie dal payload."""
+    pending = turno.pop("_pending_saves", [])
+    _save_all(pending)
+    return len(pending)
 
 
 async def build_storico(competition: str | None = None) -> dict:

@@ -38,19 +38,30 @@ jobs:
         run: python -m unittest discover -s tests -v
 
       - name: Genera il sito
+        id: generate
         env:
           FOOTBALL_DATA_KEY: ${{ secrets.FOOTBALL_DATA_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: gemini-3.5-flash-lite
-        run: python generate.py
+        # Uscita 2 = aggiornamento parziale: si salvano comunque le leghe riuscite
+        # e i loro pronostici, poi l'ultimo step segnala l'errore.
+        run: |
+          set +e
+          python generate.py
+          code=$?
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          if [ "$code" -ne 0 ] && [ "$code" -ne 2 ]; then exit "$code"; fi
 
       - name: Salva le modifiche
         run: |
           # Conserva l'output generato prima di riallineare il checkout all'ultimo main.
           mkdir -p /tmp/generated-docs
           cp -a docs/. /tmp/generated-docs/
-          if [ -f data/predictions.json ]; then cp data/predictions.json /tmp/predictions.json; fi
+          mkdir -p /tmp/generated-data
+          for f in predictions.json ai_cache.json; do
+            if [ -f "data/$f" ]; then cp "data/$f" "/tmp/generated-data/$f"; fi
+          done
 
           git fetch origin main
           git reset --hard origin/main
@@ -59,11 +70,13 @@ jobs:
           # sono pubblicati da sync-static.yml e non vanno sovrascritti da un checkout vecchio.
           find /tmp/generated-docs -maxdepth 1 -type f -name '*.json' -exec cp -a {} docs/ \;
           git add docs
-          if [ -f /tmp/predictions.json ]; then
-            mkdir -p data
-            cp /tmp/predictions.json data/predictions.json
-            git add data/predictions.json
-          fi
+          mkdir -p data
+          for f in predictions.json ai_cache.json; do
+            if [ -f "/tmp/generated-data/$f" ]; then
+              cp "/tmp/generated-data/$f" "data/$f"
+              git add "data/$f"
+            fi
+          done
           if git diff --staged --quiet; then
             echo "Nessun dato generato da salvare."
             exit 0
@@ -72,3 +85,9 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Aggiorna pronostici"
           git push origin main
+
+      - name: Segnala le leghe non aggiornate
+        if: steps.generate.outputs.code == '2'
+        run: |
+          echo "::error title=Aggiornamento parziale::Almeno una lega non è stata aggiornata: vedi i dettagli nello step 'Genera il sito'. Le altre leghe sono state pubblicate."
+          exit 1

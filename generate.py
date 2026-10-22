@@ -1,9 +1,10 @@
 """Genera il sito statico nella cartella docs/ (turno.json, storico.json, classifica.json, index.html).
 
-Lo lancia GitHub Actions due volte al giorno; si può provare anche in locale:
+Lo lancia GitHub Actions ogni 4 ore; si può provare anche in locale:
     py generate.py
 Le chiavi vengono lette da .env (in locale) o dai Secrets di GitHub (online).
-Se qualcosa va storto non tocca i file già pubblicati.
+Ogni lega è indipendente: se una fallisce, i suoi file già pubblicati restano intatti
+e le altre vengono aggiornate lo stesso.
 """
 import asyncio
 import json
@@ -92,42 +93,39 @@ def _report_update_failure(code: str, label: str, detail: str) -> None:
                 "\n## Esito aggiornamento dati: ERRORE\n\n"
                 f"- **Campionato:** {label} ({code})\n"
                 f"- **Dettaglio:** {safe_detail}\n"
-                "- **Pubblicazione:** annullata; i JSON già pubblicati sono preservati.\n"
+                "- **Pubblicazione:** lega non aggiornata; i JSON già pubblicati sono preservati. "
+                "Le altre leghe vengono pubblicate normalmente.\n"
             )
 
 
-async def main() -> int:
-    competitions = {"SA": "Serie A", "PL": "Premier League", "CL": "Champions League", "BL1": "Bundesliga", "PD": "LaLiga", "FL1": "Ligue 1", "EL": "Europa League", "UECL": "Conference League"}
-    payloads = {}
-    for code, label in competitions.items():
-        try:
-            turno = await pipeline.build_turno(code, use_ai=code not in {"EL", "UECL"})
-            validate_turno_payload(turno)
-            if turno["demo"] and os.getenv("CI"):
-                print(f"Errore ({label}): dati demo non pubblicabili; annullo l'aggiornamento completo per evitare un sito con leghe non aggiornate.")
-                return 1
-            if turno.get("ai_error"):
-                print(f"Attenzione ({label}): AI non disponibile ({turno['ai_error']}).")
-            turno["ai_error"] = turno.get("ai_error") or None
-            turno["ai_status"] = turno.get("ai_status", "attiva" if turno["ai"] else "solo_statistica")
-            turno["league"], turno["league_name"] = code, label
-            payloads[code] = (turno, await pipeline.build_storico(code), await pipeline.build_classifica(code))
-            print(f"{label}: {len(turno['matches'])} partite, analisi {'AI' if turno['ai'] else 'solo statistica'}.")
-        except Exception as exc:
-            # Alcune eccezioni HTTP (es. httpx.HTTPStatusError) hanno str(exc) vuoto.
-            # Registra sempre tipo e repr per rendere diagnosticabili i fallimenti senza
-            # esporre chiavi o variabili d'ambiente.
-            detail = f"{type(exc).__name__}: {exc!r}"
-            _report_update_failure(code, label, detail)
-            print(
-                "Nessun JSON verrà pubblicato per mantenere coerenti tutte le leghe.",
-                file=sys.stderr,
-            )
-            return 1
-    if "SA" not in payloads:
-        print("Nessun aggiornamento: dati Serie A non disponibili.")
-        return 0
-    _report_source_coverage(payloads)
+COMPETITIONS = {
+    "SA": "Serie A", "PL": "Premier League", "CL": "Champions League", "BL1": "Bundesliga",
+    "PD": "LaLiga", "FL1": "Ligue 1", "EL": "Europa League", "UECL": "Conference League",
+}
+NO_AI = {"EL", "UECL"}  # dati da CSV pubblico, senza analisi AI per contenere le chiamate
+
+EXIT_OK, EXIT_ALL_FAILED, EXIT_PARTIAL = 0, 1, 2
+
+
+async def _build_league(code: str, label: str) -> tuple[dict, dict, dict]:
+    """Costruisce e valida i tre JSON di una lega. Solleva un'eccezione se qualcosa non va."""
+    turno = await pipeline.build_turno(code, use_ai=code not in NO_AI, persist=False)
+    if turno["demo"] and os.getenv("CI"):
+        raise RuntimeError("dati demo non pubblicabili (chiave FOOTBALL_DATA_KEY mancante?)")
+    validate_turno_payload(turno)
+    if turno.get("ai_error"):
+        print(f"Attenzione ({label}): AI non disponibile ({turno['ai_error']}).")
+    turno["ai_error"] = turno.get("ai_error") or None
+    turno["ai_status"] = turno.get("ai_status", "attiva" if turno["ai"] else "solo_statistica")
+    turno["league"], turno["league_name"] = code, label
+    storico = await pipeline.build_storico(code)
+    classifica = await pipeline.build_classifica(code)
+    # Solo dopo la validazione: un turno scartato non lascia pronostici orfani nello storico.
+    pipeline.persist_predictions(turno)
+    return turno, storico, classifica
+
+
+def _publish(payloads: dict) -> None:
     OUT.mkdir(exist_ok=True)
     (OUT / ".nojekyll").touch()
     for code, (turno, storico, classifica) in payloads.items():
@@ -141,8 +139,37 @@ async def main() -> int:
     for f in (ROOT / "static").iterdir():
         if f.is_file() and f.name != "index.html":
             shutil.copy2(f, OUT / f.name)
+
+
+async def main() -> int:
+    """Ogni lega è indipendente: se una fallisce, le altre vengono comunque pubblicate.
+
+    Codici di uscita: 0 tutto aggiornato, 2 aggiornamento parziale, 1 nessuna lega aggiornata.
+    """
+    payloads, failed = {}, []
+    for code, label in COMPETITIONS.items():
+        try:
+            payloads[code] = await _build_league(code, label)
+            turno = payloads[code][0]
+            adjusted = sum(1 for m in turno["matches"] if m["analysis"].get("adjusted"))
+            print(f"{label}: {len(turno['matches'])} partite, analisi "
+                  f"{'AI' if turno['ai'] else 'solo statistica'}, correzioni AI applicate: {adjusted}.")
+        except Exception as exc:
+            # Alcune eccezioni HTTP (es. httpx.HTTPStatusError) hanno str(exc) vuoto:
+            # registra tipo e repr senza esporre chiavi o variabili d'ambiente.
+            _report_update_failure(code, label, f"{type(exc).__name__}: {exc!r}")
+            failed.append(label)
+    if not payloads:
+        print("Nessuna lega aggiornata: i file pubblicati restano invariati.", file=sys.stderr)
+        return EXIT_ALL_FAILED
+    _report_source_coverage(payloads)
+    _publish(payloads)
     print(f"Sito aggiornato: {len(payloads)} campionati pubblicati.")
-    return 0
+    if failed:
+        print(f"Leghe non aggiornate: {', '.join(failed)}.", file=sys.stderr)
+        return EXIT_PARTIAL
+    return EXIT_OK
+
 
 if __name__ == "__main__":
     sys.exit(asyncio.run(main()))
