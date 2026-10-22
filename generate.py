@@ -80,7 +80,7 @@ def _report_source_coverage(payloads: dict) -> None:
 
 def _report_update_failure(code: str, label: str, detail: str) -> None:
     """Registra un errore diagnostico nel log e nel riepilogo GitHub Actions."""
-    safe_detail = " ".join(str(detail).replace("\\r", " ").replace("\\n", " ").split())
+    safe_detail = " ".join(str(detail).replace("\r", " ").replace("\n", " ").split())
     message = f"Aggiornamento fallito per {label} ({code}): {safe_detail}"
     print(message, file=sys.stderr)
     if os.getenv("GITHUB_ACTIONS") == "true":
@@ -89,10 +89,10 @@ def _report_update_failure(code: str, label: str, detail: str) -> None:
     if summary_path:
         with Path(summary_path).open("a", encoding="utf-8") as summary:
             summary.write(
-                "\\n## Esito aggiornamento dati: ERRORE\\n\\n"
-                f"- **Campionato:** {label} ({code})\\n"
-                f"- **Dettaglio:** {safe_detail}\\n"
-                "- **Pubblicazione:** annullata; i JSON già pubblicati sono preservati.\\n"
+                "\n## Esito aggiornamento dati: ERRORE\n\n"
+                f"- **Campionato:** {label} ({code})\n"
+                f"- **Dettaglio:** {safe_detail}\n"
+                "- **Pubblicazione:** annullata; i JSON già pubblicati sono preservati.\n"
             )
 
 
