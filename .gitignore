@@ -1,4 +1,14 @@
+# Environment files and secrets
 .env
+.env.*
+!.env.example
+
+# Local data and Python artifacts
 data/predictions.db
+data/predictions.json
 __pycache__/
+*.py[cod]
 .venv/
+venv/
+.pytest_cache/
+.coverage
