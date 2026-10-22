@@ -352,9 +352,15 @@ async def _open_matchday_context(competition: str) -> dict:
     raise and let the generator keep the previously published payloads intact.
     """
     folder, _label = OPEN_MATCHDAY_LEAGUES[competition]
-    from datetime import datetime, timezone
+    from datetime import datetime, timedelta, timezone
 
     now = datetime.now(timezone.utc)
+
+    def _kickoff_utc(date: str, time: str | None) -> str:
+        # Il CSV usa orari CET fissi (UTC+1), non UTC e non l'ora legale locale.
+        raw = datetime.fromisoformat(f"{date}T{time or '00:00'}:00")
+        cet = timezone(timedelta(hours=1))
+        return raw.replace(tzinfo=cet).astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
     season_start = now.year if now.month >= 7 else now.year - 1
     season_tag = f"{season_start % 100:02d}{(season_start + 1) % 100:02d}"
     base = f"{OPEN_MATCHDAY_BASE}/{folder}"
@@ -377,7 +383,7 @@ async def _open_matchday_context(competition: str) -> dict:
             home, away = row["home"].strip(), row["away"].strip()
             if not home or not away:
                 continue
-            kickoff = f"{date}T{(row.get('time') or '00:00')}:00Z"
+            kickoff = _kickoff_utc(date, row.get("time"))
             datetime.fromisoformat(kickoff.replace("Z", "+00:00"))
             finished.append({"id": _open_match_id(competition, row), "date": kickoff,
                              "home": home, "away": away, "hg": hg, "ag": ag})
@@ -391,7 +397,7 @@ async def _open_matchday_context(competition: str) -> dict:
         try:
             home, away = row["home"].strip(), row["away"].strip()
             date = row["date"]
-            kickoff = f"{date}T{(row.get('time') or '00:00')}:00Z"
+            kickoff = _kickoff_utc(date, row.get("time"))
             parsed = datetime.fromisoformat(kickoff.replace("Z", "+00:00"))
             if not home or not away or parsed < now:
                 continue
