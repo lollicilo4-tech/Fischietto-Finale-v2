@@ -737,6 +737,75 @@ main{max-width:1040px!important;margin:0 auto!important;padding-bottom:110px!imp
 .live-event-substitution .live-event-icon{background:rgba(75,157,255,.15);color:#82beff}
 @media(min-width:600px){.live-events{padding:20px 22px 14px}.live-event{grid-template-columns:62px minmax(0,1fr);gap:14px}.live-events ol:before{left:40px}.live-event-copy b{font-size:.95rem}}
 
+
+/* ===== RESPONSIVE HEADER FIX · OCT 2026 ===== */
+/* La scelta della lega resta nelle schede Campionati della Home. */
+.top .league-label,
+.top .league-select { display: none !important; }
+
+.top .toprow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+.top .toprow h1 {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.top .tags {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  margin-top: 12px;
+}
+.top .tags .tag {
+  box-sizing: border-box;
+  flex: 0 1 auto;
+  max-width: 100%;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: center;
+  line-height: 1.25;
+}
+@media (max-width: 600px) {
+  .top { padding: 18px 16px !important; }
+  .top .toprow {
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 12px;
+    row-gap: 10px;
+  }
+  .top .toprow .back { flex: 0 0 auto; }
+  .top .toprow h1 {
+    flex: 1 1 170px;
+    font-size: clamp(34px, 8vw, 46px);
+    line-height: .98;
+  }
+  .top .tags {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, max-content));
+    justify-content: start;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .top .tags .tag {
+    justify-self: start;
+    padding: 7px 10px;
+    min-height: 34px;
+    font-size: clamp(10px, 2.8vw, 12px);
+    letter-spacing: .035em;
+  }
+}
+@media (max-width: 360px) {
+  .top .tags { grid-template-columns: minmax(0, 1fr); }
+  .top .tags .tag { max-width: 100%; }
+}
 </style>
 <style id="calibration-css">
 .market-perf-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
