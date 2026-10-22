@@ -12,21 +12,31 @@ on:
     - cron: "0 0,4,8,12,16,20 * * *"   # Ogni 4 ore; la cache AI persistente evita rianalisi inutili degli stessi incontri
   workflow_dispatch:          # pulsante "Run workflow" nella scheda Actions
 
+# Sicurezza: due job separati.
+# - "genera" usa le chiavi API, scarica pagine web e avvia SearXNG, ma ha solo permessi di LETTURA
+#   e non conserva le credenziali git: se una dipendenza o una pagina fosse malevola, non potrebbe
+#   modificare il repository.
+# - "pubblica" ha il permesso di scrittura ma non vede nessuna chiave e non esegue codice di terzi:
+#   copia solo file JSON validi con nomi attesi e fa il commit.
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: aggiorna-pronostici
   cancel-in-progress: false
 
 jobs:
-  update:
+  genera:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    outputs:
+      code: ${{ steps.generate.outputs.code }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: "3.12"
           cache: pip
@@ -34,19 +44,21 @@ jobs:
       - name: Installa le dipendenze
         run: pip install -r requirements.txt
 
-      - name: Test automatici della validazione AI
+      - name: Test automatici
         run: python -m unittest discover -s tests -v
 
       # Ricerca notizie gratuita per quando Groq è fuori quota (app/news.py). Se SearXNG non
       # parte, l'aggiornamento continua lo stesso con Tavily o con il solo modello statistico.
+      # Il container non riceve nessuna chiave: solo la sua configurazione in sola lettura.
       - name: Avvia SearXNG
         continue-on-error: true
         run: |
-          docker run -d --name searxng -p 8080:8080 \
+          docker run -d --name searxng -p 127.0.0.1:8080:8080 \
             -e SEARXNG_SECRET="$(openssl rand -hex 32)" \
             -e SEARXNG_BASE_URL=http://localhost:8080/ \
             -v "$PWD/.github/searxng/settings.yml:/etc/searxng/settings.yml:ro" \
             searxng/searxng:latest
+          echo "Immagine SearXNG: $(docker image inspect --format '{{index .RepoDigests 0}}' searxng/searxng:latest)"
           for i in $(seq 1 30); do
             if curl -fsS "http://localhost:8080/search?q=calcio&format=json" >/dev/null 2>&1; then
               echo "SearXNG pronto"; exit 0
@@ -66,7 +78,7 @@ jobs:
           TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
           SEARXNG_URL: http://localhost:8080
         # Uscita 2 = aggiornamento parziale: si salvano comunque le leghe riuscite
-        # e i loro pronostici, poi l'ultimo step segnala l'errore.
+        # e i loro pronostici, poi l'ultimo job segnala l'errore.
         run: |
           set +e
           python generate.py
@@ -74,30 +86,47 @@ jobs:
           echo "code=$code" >> "$GITHUB_OUTPUT"
           if [ "$code" -ne 0 ] && [ "$code" -ne 2 ]; then exit "$code"; fi
 
-      - name: Salva le modifiche
+      - name: Prepara i dati da pubblicare
         run: |
-          # Conserva l'output generato prima di riallineare il checkout all'ultimo main.
-          mkdir -p /tmp/generated-docs
-          cp -a docs/. /tmp/generated-docs/
-          mkdir -p /tmp/generated-data
+          mkdir -p out/docs out/data
+          find docs -maxdepth 1 -type f -name '*.json' -exec cp {} out/docs/ \;
           for f in predictions.json ai_cache.json; do
-            if [ -f "data/$f" ]; then cp "data/$f" "/tmp/generated-data/$f"; fi
+            if [ -f "data/$f" ]; then cp "data/$f" "out/data/$f"; fi
           done
 
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: dati-generati
+          path: out/
+          retention-days: 3
+          if-no-files-found: error
+
+  pubblica:
+    needs: genera
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: main
+
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: dati-generati
+          path: ${{ runner.temp }}/dati-generati
+
+      - name: Salva le modifiche
+        env:
+          SRC: ${{ runner.temp }}/dati-generati
+        run: |
           git fetch origin main
           git reset --hard origin/main
-
-          # Applica soltanto i JSON generati: index.html e gli asset statici
-          # sono pubblicati da sync-static.yml e non vanno sovrascritti da un checkout vecchio.
-          find /tmp/generated-docs -maxdepth 1 -type f -name '*.json' -exec cp -a {} docs/ \;
-          git add docs
-          mkdir -p data
-          for f in predictions.json ai_cache.json; do
-            if [ -f "/tmp/generated-data/$f" ]; then
-              cp "/tmp/generated-data/$f" "data/$f"
-              git add "data/$f"
-            fi
-          done
+          # Solo JSON validi, con nomi attesi e dimensione ragionevole: index.html, gli asset e
+          # il codice non possono arrivare da qui (sono pubblicati da sync-static.yml).
+          python3 .github/scripts/apply_generated.py "$SRC" .
+          git add -A -- docs data
           if git diff --staged --quiet; then
             echo "Nessun dato generato da salvare."
             exit 0
@@ -105,10 +134,14 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Aggiorna pronostici"
-          git push origin main
+          git push origin HEAD:main
 
+  segnala:
+    needs: [genera, pubblica]
+    if: needs.genera.outputs.code == '2'
+    runs-on: ubuntu-latest
+    steps:
       - name: Segnala le leghe non aggiornate
-        if: steps.generate.outputs.code == '2'
         run: |
           echo "::error title=Aggiornamento parziale::Almeno una lega non è stata aggiornata: vedi i dettagli nello step 'Genera il sito'. Le altre leghe sono state pubblicate."
           exit 1

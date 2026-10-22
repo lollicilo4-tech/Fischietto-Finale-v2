@@ -31,6 +31,13 @@ Su questo repository lavorano più agenti AI (Claude e ChatGPT Codex) per conto 
 - `tests/test_frontend_render.py` esegue gli script della pagina con un DOM finto
   (`tests/render_page.js`, serve Node.js) sui JSON di `docs/`: se tocchi l'interfaccia deve restare verde.
 
+## Sicurezza (vedi SECURITY.md)
+
+- Non indebolire le misure attive: job "genera" in sola lettura e "pubblica" senza chiavi,
+  azioni GitHub fissate per SHA, Content Security Policy della pagina, `esc()`/`safeUrl()` per
+  ogni dato inserito nell'HTML, blocco degli indirizzi privati in `app/evidence.py`.
+- Nuove fonti esterne nella pagina vanno aggiunte alla CSP in `static/index.html` (e `docs/`).
+
 ## File da non toccare a mano
 
 - `data/predictions.json`: pronostici salvati prima delle partite, mai riscritti. Li aggiorna solo

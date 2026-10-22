@@ -19,15 +19,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: "3.12"
       - name: Installa httpx
         run: pip install "httpx>=0.27,<1"
       - name: Avvia SearXNG
         run: |
-          docker run -d --name searxng -p 8080:8080 \
+          docker run -d --name searxng -p 127.0.0.1:8080:8080 \
             -e SEARXNG_SECRET="$(openssl rand -hex 32)" \
             -e SEARXNG_BASE_URL=http://localhost:8080/ \
             -v "$PWD/.github/searxng/settings.yml:/etc/searxng/settings.yml:ro" \
