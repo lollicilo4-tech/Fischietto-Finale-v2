@@ -2076,6 +2076,7 @@ a{color:#65baff}
       '<div class="title">Pronostico finale del modello</div>' +
       '<div class="main-outcome"><span class="outcome">' + esc(rec.best.label) + '</span><span class="prob">' + pc(rec.best.p) + '</span></div>' +
       '<div class="rows">' +
+      (rec.best.base != null ? '<div class="row"><span>Media del campionato per questo mercato</span><b class="num">' + pc(rec.best.base) + ' · ' + (rec.best.edge >= 0 ? '+' : '') + Math.round(rec.best.edge * 100) + ' punti</b></div>' : '') +
       '<div class="row"><span>Alternativa più prudente</span><b>' + esc(prudent[0]) + ' · <span class="num">' + pc(prudent[1]) + '</span></b></div>' +
       '<div class="row"><span>Altri mercati forti</span><b class="num">' + rec.alternatives.slice(1,3).map(function(x){return esc(x.label)+" · "+pc(x.p);}).join(" · ") + '</b></div>' +
       '<div class="row"><span>Risultato esatto più probabile</span><b class="num">' + esc(s[0] + "-" + s[1]) + ' · ' + pc(s[2]) + '</b></div>' +

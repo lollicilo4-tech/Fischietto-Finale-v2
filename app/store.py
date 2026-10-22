@@ -161,7 +161,8 @@ def _market_type(code: str) -> str:
     return "Altro"
 
 
-def _market_hit(code: str, m: dict, score_code: str | None = None) -> bool:
+def market_hit(code: str, m: dict, score_code: str | None = None) -> bool:
+    """True se il mercato `code` si è verificato nella partita m ({hg, ag})."""
     total = m["hg"] + m["ag"]
     outcome = _outcome(m)
     if code in ("1", "X", "2", "1X", "X2"):
@@ -197,6 +198,9 @@ def _market_hit(code: str, m: dict, score_code: str | None = None) -> bool:
     if code == "score":
         return score_code == f"{m['hg']}-{m['ag']}"
     return False
+
+
+_market_hit = market_hit  # nome storico, usato nei test
 
 
 def _market_performance(rows: list[tuple[str, dict, dict]]) -> dict:

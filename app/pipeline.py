@@ -61,8 +61,33 @@ def _market_predictions(s: dict, recommendation: dict) -> list[dict]:
 
 
 
-def _recommendations(s: dict, home: str, away: str) -> dict:
-    """Seleziona un pronostico principale tra mercati semplici, gol, combo e score."""
+RECOMMENDED_MIN_P = 0.50   # il consiglio deve restare più probabile che no
+MIN_EDGE = 0.03            # sotto i 3 punti sopra la media, il mercato non dice nulla di speciale
+MIN_BASE_SAMPLE = 40       # partite minime per calcolare le frequenze del campionato
+BASE_CODES = ("1", "X", "2", "1X", "X2", "Over 1,5", "Over 2,5", "Under 2,5", "Under 3,5",
+              "Gol", "No Gol", "1_o15", "2_o15", "1x_o15", "x2_o15", "1x_u35", "x2_u35",
+              "gg_o25", "ng_u35")
+
+
+def market_base_rates(matches: list[dict]) -> dict:
+    """Quanto spesso ogni mercato si è verificato nel campionato (stagione corrente e precedente).
+
+    Serve a capire se una probabilità alta è davvero informativa: l'Over 1,5 al 85% non dice
+    molto se nel campionato esce nel 78% delle partite.
+    """
+    games = [m for m in matches if m.get("hg") is not None and m.get("ag") is not None]
+    if len(games) < MIN_BASE_SAMPLE:
+        return {}
+    return {code: sum(1 for m in games if store.market_hit(code, m)) / len(games) for code in BASE_CODES}
+
+
+def _recommendations(s: dict, home: str, away: str, base_rates: dict | None = None) -> dict:
+    """Sceglie il pronostico principale tra mercati semplici, gol e combo.
+
+    Con le frequenze del campionato disponibili sceglie il mercato con il distacco maggiore
+    dalla media (almeno il 50% di probabilità): così il consiglio dice qualcosa sulla partita,
+    invece di ripetere quasi sempre "Over 1,5". Senza frequenze usa il criterio precedente.
+    """
     p = s
     q = s.get("markets", {})
     z = s.get("top_scores", [])
@@ -97,23 +122,31 @@ def _recommendations(s: dict, home: str, away: str) -> dict:
 
     for x in candidates:
         x["p"] = round(float(x["p"]), 4)
-
-    weighted = {"esito": 1.00, "doppia": 0.99, "gol": 1.015, "combo": 1.035, "score": 0.90}
-    ranked = sorted(candidates, key=lambda x: x["p"] * weighted[x["kind"]], reverse=True)
-    best = ranked[0]
+        if base_rates and x["code"] in base_rates:
+            x["base"] = round(base_rates[x["code"]], 4)
+            x["edge"] = round(x["p"] - base_rates[x["code"]], 4)
 
     best_simple = max((x for x in candidates if x["kind"] in ("esito", "doppia")), key=lambda x: x["p"])
-    if best["kind"] in ("combo", "gol") and best["p"] < 0.55:
-        best = best_simple
-    if best["kind"] == "score" or best["p"] < 0.50:
-        best = best_simple
-
     top = sorted(candidates, key=lambda x: x["p"], reverse=True)
     best_by_kind = {}
     for x in top:
         best_by_kind.setdefault(x["kind"], x)
 
-    return {"best": best, "alternatives": top[:6], "by_kind": best_by_kind}
+    if base_rates:
+        informative = [x for x in candidates
+                       if x.get("edge") is not None and x["p"] >= RECOMMENDED_MIN_P and x["edge"] >= MIN_EDGE]
+        best = max(informative, key=lambda x: (x["edge"], x["p"])) if informative else best_simple
+        return {"best": best, "alternatives": top[:6], "by_kind": best_by_kind, "method": "scarto_media"}
+
+    weighted = {"esito": 1.00, "doppia": 0.99, "gol": 1.015, "combo": 1.035, "score": 0.90}
+    ranked = sorted(candidates, key=lambda x: x["p"] * weighted[x["kind"]], reverse=True)
+    best = ranked[0]
+
+    if best["kind"] in ("combo", "gol") and best["p"] < 0.55:
+        best = best_simple
+    if best["kind"] == "score" or best["p"] < 0.50:
+        best = best_simple
+    return {"best": best, "alternatives": top[:6], "by_kind": best_by_kind, "method": "probabilita"}
 
 
 async def build_turno(competition: str | None = None, use_ai: bool | None = None,
@@ -123,6 +156,7 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
     league = competition or data.COMPETITION
     ctx = await data.get_context(league)
     teams, avg_h, avg_a = ctx["teams"], ctx["avg_h"], ctx["avg_a"]
+    base_rates = market_base_rates(ctx.get("previous", []) + ctx.get("finished", []))
 
     bases = []
     for fx in ctx["fixtures"]:
@@ -146,7 +180,7 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
         if not an["ai"]:  # il testo a regole deve citare le stesse cifre mostrate nella scheda
             an["text"] = analyst.fallback_analysis(fx, {**s, "lh": lh, "la": la}, teams)["text"]
         prob = {k: round(s[k], 4) for k in KEYS}
-        recommendation = _recommendations(s, fx["home"], fx["away"])
+        recommendation = _recommendations(s, fx["home"], fx["away"], base_rates)
         market_predictions = _market_predictions(s, recommendation)
         out.append({
             "id": fx["id"], "home": fx["home"], "away": fx["away"], "kickoff": fx["kickoff"], "label": fx["label"],
