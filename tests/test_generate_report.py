@@ -47,7 +47,7 @@ class UpdateFailureReportTests(unittest.TestCase):
                 "GITHUB_STEP_SUMMARY": str(summary_path),
             }):
                 with redirect_stderr(output):
-                    _report_update_failure("PL", "Premier League", "HTTPStatusError: status 503\\nretry exhausted")
+                    _report_update_failure("PL", "Premier League", "HTTPStatusError: status 503\nretry exhausted")
             self.assertIn("Aggiornamento fallito", output.getvalue())
             summary = summary_path.read_text(encoding="utf-8")
             self.assertIn("Premier League (PL)", summary)
