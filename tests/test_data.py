@@ -243,5 +243,13 @@ class StandingsReconciliationTests(unittest.TestCase):
         self.assertIn('if (/conference league|uefa europa conference/.test(n))', source)
 
 
+    def test_cet_fixed_kickoff_is_converted_to_utc_with_correct_offset(self):
+        from datetime import datetime, timedelta, timezone
+        cet = timezone(timedelta(hours=1))
+        raw = datetime.fromisoformat("2026-10-22T17:45:00").replace(tzinfo=cet)
+        utc = raw.astimezone(timezone.utc)
+        self.assertEqual(utc.isoformat(), "2026-10-22T16:45:00+00:00")
+        self.assertEqual(utc.astimezone(timezone(timedelta(hours=2))).strftime("%H:%M"), "18:45")
+
 if __name__ == "__main__":
     unittest.main()
