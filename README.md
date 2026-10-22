@@ -1,14 +1,22 @@
 # Fischietto finale
 
-App che stima come potrebbe andare ogni partita di Serie A, Premier League, Champions League, Bundesliga, LaLiga e Ligue 1. Soluzione ibrida in tre livelli:
+App che stima come potrebbe andare ogni partita di Serie A, Premier League, Bundesliga, LaLiga, Ligue 1, Champions League, Europa League e Conference League. Soluzione ibrida in tre livelli:
 
 | Livello | Cosa fa | File |
 |---|---|---|
-| Dati | Risultati e calendario da football-data.org | `app/data.py` |
-| Modello | Poisson con correzione sui punteggi bassi, forma recente, quote eque (1 / probabilità) | `app/model.py` |
-| Groq + GPT-OSS, con Gemini di riserva | Cerca notizie e indisponibilità; Gemini interviene se Groq fallisce o raggiunge i limiti | `app/analyst.py` |
+| Dati | Risultati e calendario da football-data.org; Europa e Conference League da un CSV pubblico ([open-matchday](https://github.com/oladeeayo/open-matchday)) | `app/data.py` |
+| Modello | Poisson con correzione di Dixon-Coles stimata dai risultati di ogni campionato, forma recente, quote eque (1 / probabilità) | `app/model.py` |
+| Groq + GPT-OSS, con Gemini di riserva | Cerca notizie e indisponibilità; ogni assenza viene confermata leggendo il testo delle fonti prima di correggere i gol attesi | `app/analyst.py`, `app/evidence.py` |
 
-I numeri restano al modello, quindi sono stabili e verificabili. L'AI non inventa probabilità né quote.
+I numeri restano al modello, quindi sono stabili e verificabili. L'AI non inventa probabilità né quote:
+può solo correggere i gol attesi (tra 0,85 e 1,15) per assenze confermate. Un'assenza conta solo se
+un articolo trovato cita il giocatore e la squadra in una frase che ne conferma l'indisponibilità
+("out per", "squalificato", "ruled out"...) senza parole di incertezza ("in dubbio", "recuperato"...).
+Se solo alcune assenze sono confermate, la correzione si riduce in proporzione.
+
+Il pronostico consigliato non è semplicemente il più probabile (sarebbe quasi sempre "Over 1,5"):
+è il mercato con il distacco maggiore dalla media del campionato, con almeno il 50% di probabilità.
+La scheda mostra la media accanto al consiglio.
 Le quote eque non sono quote di bookmaker: quelle vere richiedono un'API dedicata.
 
 Ogni pronostico viene salvato in `data/predictions.json` prima della partita e mai riscritto
@@ -25,7 +33,7 @@ py -m uvicorn app.main:app --reload
 Apri http://localhost:8000.
 
 - **Senza chiavi**: dati inventati e analisi a regole (etichetta "Dati di esempio").
-- **Con `FOOTBALL_DATA_KEY`**: dati reali dei campionati supportati. Tutti e sei i campionati pubblicati usano l’analisi AI quando disponibile; Groq è il provider principale e Gemini quello di riserva. Se un provider non è disponibile, il modello statistico continua a produrre le probabilità e lo stato dell’analisi segnala il fallback.
+- **Con `FOOTBALL_DATA_KEY`**: dati reali dei campionati supportati. I sei campionati di football-data.org usano l’analisi AI quando disponibile (Europa e Conference League solo statistica); Groq è il provider principale e Gemini quello di riserva. Se un provider non è disponibile, il modello statistico continua a produrre le probabilità e lo stato dell’analisi segnala il fallback.
 - **Con `GROQ_API_KEY`**: Groq è il provider principale e usa `browser_search`.
 - **Con anche `GEMINI_API_KEY`**: Gemini con Google Search grounding entra in funzione solo se Groq fallisce o raggiunge un limite. La cache di 72 ore evita chiamate ripetute.
 - **Facoltativo**: `GEMINI_MODEL` permette di cambiare modello; il predefinito è `gemini-3.5-flash-lite`.
@@ -33,7 +41,10 @@ Apri http://localhost:8000.
 ## Pubblicazione gratuita
 
 Il sito online è statico: un'automazione di GitHub (`.github/workflows/update.yml`) esegue `generate.py`
-due volte al giorno, scrive i dati nella cartella `docs/` e la pubblica. Il selettore consente di passare tra Serie A, Premier League, Champions League, Bundesliga, LaLiga e Ligue 1; dati e classifica sono separati per campionato. I visitatori non fanno mai
+ogni 4 ore, scrive i dati nella cartella `docs/` e la pubblica. Il selettore consente di passare tra gli otto campionati; dati e classifica sono separati per campionato.
+Ogni campionato è indipendente: se uno non si aggiorna (API o CSV non raggiungibili), gli altri vengono
+pubblicati lo stesso, il suo ultimo JSON resta online e l'esecuzione viene segnata come fallita su GitHub.
+I pronostici (`data/predictions.json`) e la cache delle analisi AI (`data/ai_cache.json`) vengono salvati nel repository. I visitatori non fanno mai
 partire chiamate a football-data.org o all'AI, quindi il costo dell'AI non dipende dal traffico. Il server può restare spento, il sito è sempre acceso e lo Storico non si perde.
 
 1. **GitHub**: crea un account su github.com e un repository nuovo **pubblico**. GitHub Pages è gratuito solo
@@ -54,7 +65,8 @@ partire chiamate a football-data.org o all'AI, quindi il costo dell'AI non dipen
 
 Il sito è una web app installabile (PWA), senza App Store e senza costi. Dopo la pubblicazione, su iPhone:
 apri l'indirizzo del sito in **Safari**, tocca il pulsante Condividi, poi "Aggiungi alla schermata Home".
-Compare l'icona del fischietto, si apre a schermo intero e, senza rete, mostra l'ultimo turno visto.
+Compare l'icona del fischietto, si apre a schermo intero e, senza rete, mostra gli ultimi dati scaricati
+con l'avviso "Offline · ultimi dati salvati".
 Funziona solo con un indirizzo `https://`, come quello di GitHub Pages o Cloudflare Pages.
 
 Un'app nativa per l'App Store richiede l'iscrizione al programma sviluppatori Apple (a pagamento) e un Mac,
@@ -71,5 +83,8 @@ football-data.org richiede l'attribuzione, già presente nel piè di pagina.
 
 - A inizio stagione il modello ha pochi dati: le stime sono spostate verso la media del campionato.
 - football-data.org non fornisce infortuni: li porta l'AI dalla ricerca web, con le fonti mostrate.
+  La verifica sul testo non controlla la data dell'articolo: si affida alla ricerca delle ultime 72 ore.
+- Nelle coppe europee la forza delle squadre si stima solo con le partite europee: le stime sono più incerte.
+- Gli orari di Europa e Conference League arrivano dal CSV in ora CET fissa (UTC+1): con l'ora legale conviene verificarli.
 - Le multiple mostrano la probabilità composta assumendo partite indipendenti.
 - Durante le pause per le nazionali non ci sono partite in programma e il sito resta fermo all'ultimo turno.
