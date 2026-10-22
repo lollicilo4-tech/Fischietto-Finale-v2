@@ -1765,7 +1765,7 @@ a{color:#65baff}
 <header class="top">
   <div class="toprow"><button type="button" class="back" id="back" hidden>‹ Home</button><h1>Fischietto <span>finale</span></h1></div>
   <p class="sub" id="sub">Serie A · come potrebbe andare ogni partita</p>
-  <label for="league-select" class="league-label">CAMPIONATO</label><select id="league-select" aria-label="Seleziona campionato" class="league-select"><option value="SA">Serie A</option><option value="PL">Premier League</option><option value="CL">Champions League</option><option value="BL1">Bundesliga</option><option value="PD">LaLiga</option><option value="FL1">Ligue 1</option></select>
+  <label for="league-select" class="league-label">CAMPIONATO</label><select id="league-select" aria-label="Seleziona campionato" class="league-select"><option value="SA">Serie A</option><option value="PL">Premier League</option><option value="CL">Champions League</option><option value="BL1">Bundesliga</option><option value="PD">LaLiga</option><option value="FL1">Ligue 1</option><option value="EL">Europa League</option><option value="UECL">Conference League</option></select>
   <div class="tags" id="tags"></div>
   <div id="aierr"></div>
 </header>
@@ -1790,6 +1790,8 @@ a{color:#65baff}
     <button type="button" data-league="BL1"><span class="league-symbol">🇩🇪</span><b>Bundesliga</b><small>Germania</small><em>Vedi partite →</em></button>
     <button type="button" data-league="FL1"><span class="league-symbol">🇫🇷</span><b>Ligue 1</b><small>Francia</small><em>Vedi partite →</em></button>
     <button type="button" data-league="CL"><span class="league-symbol">🏆</span><b>Champions League</b><small>Europa</small><em>Vedi partite →</em></button>
+    <button type="button" data-league="EL"><span class="league-symbol">🏆</span><b>Europa League</b><small>Europa</small><em>Vedi partite →</em></button>
+    <button type="button" data-league="UECL"><span class="league-symbol">🏆</span><b>Conference League</b><small>Europa</small><em>Vedi partite →</em></button>
   </div>
 </div>
 <div id="home-dashboard" hidden><div class="home-kicker"><h2>Partita del giorno</h2><span>modello</span></div><div id="feature-home"></div><div class="home-kicker"><h2>In un colpo d'occhio</h2><span>turno</span></div><div id="quick-home" class="quick-grid"></div><div class="home-section"><div class="home-kicker"><h2>Le previsioni più forti</h2><span>1X2</span></div><div id="strong-home" class="home-list"></div></div></div>
@@ -1883,8 +1885,8 @@ a{color:#65baff}
   var $ = function (id) { return document.getElementById(id); };
 
   var LEAGUE = new URLSearchParams(location.search).get("league") || "SA";
-  if (!["SA","PL","CL","BL1","PD","FL1"].includes(LEAGUE)) LEAGUE = "SA";
-  var LEAGUE_NAMES = {SA:"Serie A",PL:"Premier League",CL:"Champions League",BL1:"Bundesliga",PD:"LaLiga",FL1:"Ligue 1"};
+  if (!["SA","PL","CL","BL1","PD","FL1","EL","UECL"].includes(LEAGUE)) LEAGUE = "SA";
+  var LEAGUE_NAMES = {SA:"Serie A",PL:"Premier League",CL:"Champions League",BL1:"Bundesliga",PD:"LaLiga",FL1:"Ligue 1",EL:"Europa League",UECL:"Conference League"};
   var leaguePrefix = LEAGUE === "SA" ? "" : "league-" + LEAGUE + "-";
   var leagueSelect = $("league-select");
   if (leagueSelect) { leagueSelect.value = LEAGUE; leagueSelect.addEventListener("change", function(){ location.href = "?league=" + encodeURIComponent(leagueSelect.value); }); }
@@ -2461,6 +2463,7 @@ function slipReason(x){
           {key:"ligue-1",label:"🇫🇷 Ligue 1"},
           {key:"champions-league",label:"🏆 Champions League"},
           {key:"europa-league",label:"🏆 Europa League"},
+          {key:"conference-league",label:"🏆 Conference League"},
           {key:"serie-b",label:"🇮🇹 Serie B"},
           {key:"eredivisie",label:"🇳🇱 Eredivisie"},
           {key:"liga-portugal",label:"🇵🇹 Liga Portugal"}
@@ -2471,6 +2474,7 @@ function slipReason(x){
           if (/premier league/.test(n)) return "premier-league";
           if (/champions league/.test(n)) return "champions-league";
           if (/europa league/.test(n)) return "europa-league";
+          if (/conference league|uefa europa conference/.test(n)) return "conference-league";
           if (/bundesliga/.test(n)) return "bundesliga";
           if (/laliga|la liga|primera division/.test(n)) return "laliga";
           if (/ligue 1/.test(n)) return "ligue-1";
@@ -2495,7 +2499,7 @@ function slipReason(x){
           leagueSelect.innerHTML = '<option value="all">Tutti i campionati</option>' + presetOptions + extraOptions;
           /* Start with the competition selected in the main header, so the Live Center
              does not show unrelated leagues while the header says Serie A, etc. */
-          var headerLeagueToLiveKey = {SA:"serie-a",PL:"premier-league",PD:"laliga",BL1:"bundesliga",FL1:"ligue-1",CL:"champions-league"};
+          var headerLeagueToLiveKey = {SA:"serie-a",PL:"premier-league",PD:"laliga",BL1:"bundesliga",FL1:"ligue-1",CL:"champions-league",EL:"europa-league",UECL:"conference-league"};
           var headerLiveKey = headerLeagueToLiveKey[LEAGUE];
           if (headerLiveKey) leagueSelect.value = headerLiveKey;
         }
