@@ -1,0 +1,62 @@
+name: Prova ricerca notizie gratuita
+
+# Verifica che SearXNG, avviato dentro GitHub Actions, restituisca davvero notizie di calcio.
+# Non usa chiavi né API a pagamento.
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/searxng/**"
+      - ".github/workflows/searxng-check.yml"
+      - "app/news.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  searxng:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Installa httpx
+        run: pip install "httpx>=0.27,<1"
+      - name: Avvia SearXNG
+        run: |
+          docker run -d --name searxng -p 8080:8080 \
+            -e SEARXNG_SECRET="$(openssl rand -hex 32)" \
+            -e SEARXNG_BASE_URL=http://localhost:8080/ \
+            -v "$PWD/.github/searxng/settings.yml:/etc/searxng/settings.yml:ro" \
+            searxng/searxng:latest
+          for i in $(seq 1 30); do
+            if curl -fsS "http://localhost:8080/search?q=calcio&format=json" >/dev/null 2>&1; then
+              echo "SearXNG pronto"; exit 0
+            fi
+            sleep 2
+          done
+          docker logs searxng 2>&1 | tail -40
+          exit 1
+      - name: Cerca notizie su tre partite
+        env:
+          SEARXNG_URL: http://localhost:8080
+        run: |
+          python - <<'PY'
+          import asyncio, sys
+          from app import news
+          cases = [({"home": "Inter", "away": "Napoli"}, "SA"),
+                   ({"home": "Arsenal", "away": "Chelsea"}, "PL"),
+                   ({"home": "Real Madrid", "away": "Barcelona"}, "PD")]
+          ok = 0
+          for fx, league in cases:
+              results, provider = asyncio.run(news.search_news(fx, league))
+              print(f"{fx['home']}-{fx['away']}: {len(results)} risultati da {provider}")
+              for r in results[:3]:
+                  print("   ", r["url"])
+              ok += len(results) >= 2
+          print(f"Partite con almeno 2 risultati: {ok}/{len(cases)}")
+          sys.exit(0 if ok >= 2 else 1)
+          PY

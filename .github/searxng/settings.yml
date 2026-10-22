@@ -1,0 +1,18 @@
+# Configurazione minima di SearXNG per la ricerca gratuita di notizie (vedi app/news.py).
+# Gira solo dentro GitHub Actions, su localhost, per la durata dell'aggiornamento.
+# La chiave segreta arriva dalla variabile SEARXNG_SECRET, generata a ogni esecuzione.
+use_default_settings: true
+
+general:
+  instance_name: "Fischietto finale"
+
+search:
+  safe_search: 1
+  formats:
+    - html
+    - json
+
+server:
+  limiter: false
+  public_instance: false
+  image_proxy: false

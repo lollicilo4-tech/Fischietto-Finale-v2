@@ -136,7 +136,8 @@ class FinalizeTests(unittest.TestCase):
                 {"assenze_casa": ["Malinovskyi"], "assenze_trasferta": [], "fattore_gol_casa": 0.92,
                  "spiegazione": "x"}, self.fx, [], "groq"))
         self.assertEqual(out["factor_home"], 1.0)
-        self.assertEqual(out["text"], analyst.NEUTRAL_TEXT)
+        # Nessuna fonte: il testo dell'AI (scritto a memoria) non viene mostrato.
+        self.assertEqual(out["text"], analyst.NO_SOURCES_TEXT)
 
 
 class DiagnosticsTests(unittest.TestCase):

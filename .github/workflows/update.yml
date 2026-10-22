@@ -37,6 +37,25 @@ jobs:
       - name: Test automatici della validazione AI
         run: python -m unittest discover -s tests -v
 
+      # Ricerca notizie gratuita per quando Groq è fuori quota (app/news.py). Se SearXNG non
+      # parte, l'aggiornamento continua lo stesso con Tavily o con il solo modello statistico.
+      - name: Avvia SearXNG
+        continue-on-error: true
+        run: |
+          docker run -d --name searxng -p 8080:8080 \
+            -e SEARXNG_SECRET="$(openssl rand -hex 32)" \
+            -e SEARXNG_BASE_URL=http://localhost:8080/ \
+            -v "$PWD/.github/searxng/settings.yml:/etc/searxng/settings.yml:ro" \
+            searxng/searxng:latest
+          for i in $(seq 1 30); do
+            if curl -fsS "http://localhost:8080/search?q=calcio&format=json" >/dev/null 2>&1; then
+              echo "SearXNG pronto"; exit 0
+            fi
+            sleep 2
+          done
+          echo "::warning title=SearXNG non disponibile::La ricerca gratuita userà solo Tavily (se configurato)."
+          docker logs searxng 2>&1 | tail -20
+
       - name: Genera il sito
         id: generate
         env:
@@ -44,6 +63,8 @@ jobs:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: gemini-3.5-flash-lite
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+          SEARXNG_URL: http://localhost:8080
         # Uscita 2 = aggiornamento parziale: si salvano comunque le leghe riuscite
         # e i loro pronostici, poi l'ultimo step segnala l'errore.
         run: |

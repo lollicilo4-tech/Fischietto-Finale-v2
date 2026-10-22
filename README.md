@@ -7,6 +7,7 @@ App che stima come potrebbe andare ogni partita di Serie A, Premier League, Bund
 | Dati | Risultati e calendario da football-data.org; Europa e Conference League da un CSV pubblico ([open-matchday](https://github.com/oladeeayo/open-matchday)) | `app/data.py` |
 | Modello | Poisson con correzione di Dixon-Coles stimata dai risultati di ogni campionato, forma recente, quote eque (1 / probabilità) | `app/model.py` |
 | Groq + GPT-OSS, con Gemini di riserva | Cerca notizie e indisponibilità; ogni assenza viene confermata leggendo il testo delle fonti prima di correggere i gol attesi | `app/analyst.py`, `app/evidence.py` |
+| Ricerca gratuita | Quando Groq è fuori quota l'app cerca le notizie da sola (SearXNG, poi Tavily) e Gemini legge gli articoli trovati | `app/news.py` |
 
 I numeri restano al modello, quindi sono stabili e verificabili. L'AI non inventa probabilità né quote:
 può solo correggere i gol attesi (tra 0,85 e 1,15) per assenze confermate. Un'assenza conta solo se
@@ -38,7 +39,8 @@ Apri http://localhost:8000.
 - **Senza chiavi**: dati inventati e analisi a regole (etichetta "Dati di esempio").
 - **Con `FOOTBALL_DATA_KEY`**: dati reali dei campionati supportati. I sei campionati di football-data.org usano l’analisi AI quando disponibile (Europa e Conference League solo statistica); Groq è il provider principale e Gemini quello di riserva. Se un provider non è disponibile, il modello statistico continua a produrre le probabilità e lo stato dell’analisi segnala il fallback.
 - **Con `GROQ_API_KEY`**: Groq è il provider principale e usa `browser_search`.
-- **Con anche `GEMINI_API_KEY`**: Gemini con Google Search grounding entra in funzione solo se Groq fallisce o raggiunge un limite. La cache di 72 ore evita chiamate ripetute.
+- **Con anche `GEMINI_API_KEY`**: Gemini entra in funzione solo se Groq fallisce o raggiunge un limite. Nel piano gratuito Gemini **non può cercare sul web** (Google Search grounding è solo a pagamento): per questo l'app cerca le notizie da sola e Gemini legge gli articoli trovati. La cache di 72 ore evita chiamate ripetute.
+- **Ricerca notizie gratuita**: `SEARXNG_URL` (SearXNG, gratuito e illimitato; nel workflow parte in automatico come container) e `TAVILY_API_KEY` (facoltativo: 1.000 ricerche gratis al mese, senza carta di credito, account su tavily.com). Si prova prima SearXNG, poi Tavily. Senza nessuno dei due si usa Gemini con Google Search, che nel piano gratuito di solito risponde senza fonti: in quel caso non si applicano correzioni e il testo lo dichiara.
 - **Facoltativo**: `GEMINI_MODEL` permette di cambiare modello; il predefinito è `gemini-3.5-flash-lite`.
 
 ## Pubblicazione gratuita
@@ -56,7 +58,7 @@ partire chiamate a football-data.org o all'AI, quindi il costo dell'AI non dipen
 2. **Carica il progetto con GitHub Desktop**, non trascinando i file nel browser: GitHub Desktop rispetta
    `.gitignore` e non carica il file `.env` con le chiavi. Verifica comunque che `.env.example` abbia le righe
    delle chiavi vuote.
-3. **Secrets**: nel repository apri Settings, Secrets and variables, Actions, e crea `FOOTBALL_DATA_KEY`, `GROQ_API_KEY` e `GEMINI_API_KEY` con le rispettive chiavi.
+3. **Secrets**: nel repository apri Settings, Secrets and variables, Actions, e crea `FOOTBALL_DATA_KEY`, `GROQ_API_KEY` e `GEMINI_API_KEY` con le rispettive chiavi; facoltativo `TAVILY_API_KEY`.
 4. **Prima generazione**: scheda Actions, "Aggiorna pronostici", Run workflow. In un paio di minuti compare
    la cartella `docs/` con il sito.
 5. **Pubblica `docs/`** con uno di questi:

@@ -40,9 +40,11 @@ Su questo repository lavorano più agenti AI (Claude e ChatGPT Codex) per conto 
 
 - `app/data.py` dati (football-data.org; Europa e Conference League da CSV pubblico),
   `app/model.py` modello Poisson + Dixon-Coles, `app/analyst.py` + `app/evidence.py` analisi AI
-  con verifica delle assenze sul testo degli articoli, `app/pipeline.py` turno e consiglio,
+  con verifica delle assenze sul testo degli articoli, `app/news.py` ricerca notizie gratuita
+  (SearXNG/Tavily) quando Groq è fuori quota, `app/pipeline.py` turno e consiglio,
   `app/store.py` storico, `generate.py` sito statico in `docs/`.
 - I numeri vengono dal modello statistico; l'AI può solo correggere i gol attesi (0,85-1,15)
   per assenze confermate da una fonte. Non far inventare all'AI probabilità o quote.
 - Ogni campionato si genera in modo indipendente: un errore in una lega non blocca le altre.
 - Il sito non deve incoraggiare le scommesse: niente quote di bookmaker, niente inviti a giocare.
+- Il progetto deve restare gratuito: niente servizi a pagamento o che richiedono la carta di credito.
