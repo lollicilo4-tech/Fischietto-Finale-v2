@@ -198,7 +198,8 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
                          "adjusted": bool(an.get("ai")) and (abs(an["factor_home"] - 1) > 0.005
                                                              or abs(an["factor_away"] - 1) > 0.005),
                          "source_status": "fonti web disponibili; pertinenza non verificata automaticamente" if an.get("sources") else "nessuna fonte web utilizzabile",
-                         "validation_warning": an.get("validation_warning")},
+                         "validation_warning": an.get("validation_warning"),
+                         "verification": an.get("verification")},
         })
         if not ctx["demo"]:
             pending.append(dict(match_id=fx["id"], home=fx["home"], away=fx["away"], kickoff=fx["kickoff"],

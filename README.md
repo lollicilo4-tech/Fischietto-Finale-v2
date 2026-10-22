@@ -13,6 +13,9 @@ può solo correggere i gol attesi (tra 0,85 e 1,15) per assenze confermate. Un'a
 un articolo trovato cita il giocatore e la squadra in una frase che ne conferma l'indisponibilità
 ("out per", "squalificato", "ruled out"...) senza parole di incertezza ("in dubbio", "recuperato"...).
 Se solo alcune assenze sono confermate, la correzione si riduce in proporzione.
+Ogni partita pubblica in `analysis.verification` quante assenze sono state segnalate e confermate,
+il motivo delle mancate conferme e l'esito della lettura di ogni pagina (senza il testo); il
+riepilogo per campionato compare anche nel log di "Aggiorna pronostici".
 
 Il pronostico consigliato non è semplicemente il più probabile (sarebbe quasi sempre "Over 1,5"):
 è il mercato con il distacco maggiore dalla media del campionato, con almeno il 50% di probabilità.

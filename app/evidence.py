@@ -71,14 +71,23 @@ def html_to_text(html: str) -> tuple[str, str]:
     return title, text[:MAX_TEXT_CHARS]
 
 
-async def _fetch_one(client: httpx.AsyncClient, url: str) -> dict | None:
+def _host(url: str) -> str:
+    return url.split("//", 1)[-1].split("/", 1)[0].split(":", 1)[0].lower()
+
+
+async def _fetch_one(client: httpx.AsyncClient, url: str) -> tuple[dict | None, dict]:
+    """Ritorna (pagina o None, esito) — l'esito non contiene testo, solo host, stato e lunghezza."""
+    report = {"host": _host(url), "status": "ok", "chars": 0}
     try:
         async with client.stream("GET", url, timeout=FETCH_TIMEOUT) as response:
+            report["host"] = _host(str(response.url))
             if response.status_code != 200:
-                return None
+                report["status"] = f"http_{response.status_code}"
+                return None, report
             ctype = response.headers.get("content-type", "").lower()
             if ctype and "html" not in ctype and "text" not in ctype:
-                return None
+                report["status"] = "non_html"
+                return None, report
             chunks, size = [], 0
             async for chunk in response.aiter_bytes():
                 chunks.append(chunk)
@@ -88,23 +97,34 @@ async def _fetch_one(client: httpx.AsyncClient, url: str) -> dict | None:
             raw = b"".join(chunks)[:MAX_BYTES]
             encoding = response.encoding or "utf-8"
             final_url = str(response.url)
-    except (httpx.HTTPError, ValueError, OSError):
-        return None
+    except httpx.TimeoutException:
+        report["status"] = "timeout"
+        return None, report
+    except httpx.TooManyRedirects:
+        report["status"] = "troppi_redirect"
+        return None, report
+    except (httpx.HTTPError, ValueError, OSError) as exc:
+        report["status"] = f"errore_{type(exc).__name__}"
+        return None, report
     try:
         html = raw.decode(encoding, errors="replace")
     except LookupError:
         html = raw.decode("utf-8", errors="replace")
     title, text = html_to_text(html)
+    report["chars"] = len(text)
     if not text:
-        return None
-    return {"url": url, "final_url": final_url, "title": title, "text": text}
+        report["status"] = "vuota"  # spesso pagine che caricano il testo via JavaScript
+        return None, report
+    return {"url": url, "final_url": final_url, "title": title, "text": text}, report
 
 
-async def fetch_pages(sources: list[dict], limit: int = MAX_PAGES) -> list[dict]:
+async def fetch_pages(sources: list[dict], limit: int = MAX_PAGES, report: list | None = None,
+                      transport: httpx.AsyncBaseTransport | None = None) -> list[dict]:
     """Scarica in parallelo il testo di al massimo `limit` fonti http(s).
 
     Ritorna [{url, final_url, title, text, source_title}] solo per le pagine lette con successo.
     I redirect (es. i link di Google Search grounding) vengono seguiti fino all'articolo vero.
+    Se `report` è una lista, ci aggiunge l'esito di ogni pagina ({host, status, chars}).
     """
     picked, seen = [], set()
     for source in sources or []:
@@ -117,10 +137,13 @@ async def fetch_pages(sources: list[dict], limit: int = MAX_PAGES) -> list[dict]
     if not picked:
         return []
     headers = {"User-Agent": USER_AGENT, "Accept": "text/html,application/xhtml+xml"}
-    async with httpx.AsyncClient(follow_redirects=True, headers=headers, max_redirects=5) as client:
+    async with httpx.AsyncClient(follow_redirects=True, headers=headers, max_redirects=5,
+                                 transport=transport) as client:  # transport: solo per i test
         results = await asyncio.gather(*(_fetch_one(client, s["url"]) for s in picked))
     pages = []
-    for source, page in zip(picked, results):
+    for source, (page, outcome) in zip(picked, results):
+        if report is not None:
+            report.append(outcome)
         if page:
             page["source_title"] = str(source.get("title") or "")
             pages.append(page)

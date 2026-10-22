@@ -258,8 +258,15 @@ def _segments(text: str) -> list[str]:
     return [seg for seg in re.split(r"(?<=[.!?;])\s+|\n+", text or "") if seg.strip()]
 
 
-def _text_confirms_absence(name: str, team: str, text: str) -> bool:
-    """Conferma dal testo dell'articolo.
+# Esiti della verifica di un'assenza, dal migliore al peggiore. Finiscono nel JSON pubblicato
+# (campo analysis.verification) per capire perché un'assenza non è stata confermata.
+CONFIRMED = "confermata"
+REASONS = ("incertezza", "nessuna_conferma", "giocatore_assente", "squadra_assente",
+           "nome_non_valido", "nessuna_pagina_letta", "dichiarata_incerta")
+
+
+def _text_check(name: str, team: str, text: str) -> str:
+    """Verifica un'assenza sul testo di un articolo e restituisce CONFIRMED o il motivo.
 
     Servono: la squadra citata nell'articolo; il cognome del giocatore in una frase che
     contiene un termine di indisponibilità certa ("out per", "squalificato", "ruled out"...)
@@ -268,11 +275,12 @@ def _text_confirms_absence(name: str, team: str, text: str) -> bool:
     """
     tokens = _player_tokens(name)
     if not tokens or len(tokens[-1]) < 3:
-        return False
+        return "nome_non_valido"
     if not any(f" {alias} " in f" {_norm(text)} " for alias in _team_aliases(team)):
-        return False
+        return "squadra_assente"
     key = f" {tokens[-1]} "
     segments = _segments(text)
+    reason = "giocatore_assente"
     for i, segment in enumerate(segments):
         sentence = f" {_norm(segment)} "
         pos = sentence.find(key)
@@ -283,9 +291,33 @@ def _text_confirms_absence(name: str, team: str, text: str) -> bool:
         context = sentence
         if i > 0 and len(segments[i - 1]) <= 60:
             context = f" {_norm(segments[i - 1])} {sentence} "
-        if _has_term(context, _CONFIRMED_TEXT_TERMS) and not _has_term(sentence, _UNCERTAIN_TEXT_TERMS):
-            return True
-    return False
+        if not _has_term(context, _CONFIRMED_TEXT_TERMS):
+            reason = _best_reason(reason, "nessuna_conferma")
+        elif _has_term(sentence, _UNCERTAIN_TEXT_TERMS):
+            reason = _best_reason(reason, "incertezza")
+        else:
+            return CONFIRMED
+    return reason
+
+
+def _best_reason(a: str, b: str) -> str:
+    """Tra due esiti tiene quello più vicino alla conferma (il più informativo)."""
+    order = (CONFIRMED,) + REASONS
+    return a if order.index(a) <= order.index(b) else b
+
+
+def _text_confirms_absence(name: str, team: str, text: str) -> bool:
+    return _text_check(name, team, text) == CONFIRMED
+
+
+def _absence_reason(name: str, team: str, pages: list[dict] | None) -> str:
+    """Perché un'assenza non è stata confermata, guardando tutte le pagine lette."""
+    if not pages:
+        return "nessuna_pagina_letta"
+    reason = "nome_non_valido" if not _player_tokens(name) else "squadra_assente"
+    for page in pages:
+        reason = _best_reason(reason, _text_check(name, team, page.get("text", "")))
+    return reason
 
 
 def _confirming_source(name: str, team: str, sources: list[dict], pages: list[dict] | None) -> dict | None:
@@ -302,7 +334,7 @@ def _confirming_source(name: str, team: str, sources: list[dict], pages: list[di
 
 def _neutral(warning: str | None) -> dict:
     return {"absences_home": [], "absences_away": [], "factor_home": 1.0, "factor_away": 1.0,
-            "validation_warning": warning, "evidence": [], "confirmed": 0, "claimed": 0}
+            "validation_warning": warning, "evidence": [], "confirmed": 0, "claimed": 0, "reasons": {}}
 
 
 def _validate_absences(data: dict, fx: dict, sources: list[dict], pages: list[dict] | None = None) -> dict:
@@ -325,8 +357,10 @@ def _validate_absences(data: dict, fx: dict, sources: list[dict], pages: list[di
 
     confirmed = {"home": [], "away": []}
     evidence_sources, seen = [], set()
+    reasons: dict[str, int] = {}
     for name, team, side in candidates:
         if any(term in _norm(name) for term in _UNCERTAIN_TERMS):
+            reasons["dichiarata_incerta"] = reasons.get("dichiarata_incerta", 0) + 1
             continue  # stato incerto dichiarato nel nome stesso: non è un'assenza
         source = _confirming_source(name, team, sources, pages)
         if source:
@@ -334,11 +368,15 @@ def _validate_absences(data: dict, fx: dict, sources: list[dict], pages: list[di
             if source["url"] not in seen:
                 seen.add(source["url"])
                 evidence_sources.append(source)
+        else:
+            reason = _absence_reason(name, team, pages)
+            reasons[reason] = reasons.get(reason, 0) + 1
 
     n_ok = len(confirmed["home"]) + len(confirmed["away"])
     if n_ok == 0:
         out = _neutral("Assenze non confermate automaticamente: elenchi svuotati e fattori AI neutralizzati.")
         out["claimed"] = len(candidates)
+        out["reasons"] = reasons
         return out
     share = n_ok / len(candidates)
     factor_home = 1 + (_clip(data.get("fattore_gol_casa")) - 1) * share
@@ -350,7 +388,7 @@ def _validate_absences(data: dict, fx: dict, sources: list[dict], pages: list[di
         "absences_home": confirmed["home"][:5], "absences_away": confirmed["away"][:5],
         "factor_home": round(factor_home, 3), "factor_away": round(factor_away, 3),
         "validation_warning": warning, "evidence": evidence_sources,
-        "confirmed": n_ok, "claimed": len(candidates),
+        "confirmed": n_ok, "claimed": len(candidates), "reasons": reasons,
     }
 
 
@@ -396,12 +434,13 @@ def _explanation(data: dict, checked: dict, fx: dict) -> str:
 async def _finalize(data: dict, fx: dict, raw_sources: list[dict], provider: str) -> dict:
     """Passaggio comune a Groq e Gemini: verifica le assenze e prepara la risposta."""
     relevant = _relevant_sources(raw_sources, fx)
-    pages = []
+    pages, fetch_report = [], []
     if _claims_absences(data):
         try:
-            pages = await evidence.fetch_pages(_fetchable_sources(raw_sources, relevant))
+            pages = await evidence.fetch_pages(_fetchable_sources(raw_sources, relevant), report=fetch_report)
         except Exception as exc:  # la lettura delle pagine non deve mai bloccare l'analisi
             print(f"[analyst] lettura fonti {fx['home']}-{fx['away']}: {type(exc).__name__}")
+            fetch_report.append({"host": "", "status": f"errore_{type(exc).__name__}", "chars": 0})
     checked = _validate_absences(data, fx, relevant, pages)
     shown, seen = [], set()
     for source in list(checked["evidence"]) + relevant:
@@ -409,13 +448,19 @@ async def _finalize(data: dict, fx: dict, raw_sources: list[dict], provider: str
             seen.add(source["url"])
             shown.append({"title": source.get("title") or source["url"], "url": source["url"]})
     print(f"[analyst] provider={provider} match={fx['home']}-{fx['away']} sources={len(shown)} "
-          f"pages={len(pages)} absences={checked['confirmed']}/{checked['claimed']}")
+          f"pages={len(pages)}/{len(fetch_report)} absences={checked['confirmed']}/{checked['claimed']} "
+          f"reasons={checked['reasons']}")
     return {
         "ai": True, "text": _explanation(data, checked, fx),
         "factor_home": checked["factor_home"], "factor_away": checked["factor_away"],
         "absences_home": checked["absences_home"], "absences_away": checked["absences_away"],
         "sources": shown, "provider": provider, "validation_version": VALIDATION_VERSION,
         "validation_warning": checked["validation_warning"],
+        # Diagnostica pubblica (senza testo degli articoli): serve a capire le mancate conferme.
+        "verification": {
+            "claimed": checked["claimed"], "confirmed": checked["confirmed"],
+            "reasons": checked["reasons"], "pages": fetch_report,
+        },
     }
 
 
