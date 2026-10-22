@@ -1,5 +1,8 @@
 import unittest
 from datetime import datetime, timezone
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
 
 from app.data import _missing_upcoming_matchdays, _recovered_upcoming_round, _select_upcoming_round, _reconcile_standings
 
@@ -225,7 +228,7 @@ class StandingsReconciliationTests(unittest.TestCase):
         self.assertEqual(_reconcile_standings(official, []), official)
 
     def test_europa_and_conference_leagues_are_registered_without_paid_api_codes(self):
-        source = self.read(STATIC_HTML)
+        source = (ROOT / "static" / "index.html").read_text(encoding="utf-8")
         generator = (ROOT / "generate.py").read_text(encoding="utf-8")
         data = (ROOT / "app" / "data.py").read_text(encoding="utf-8")
         for code, label in (("EL", "Europa League"), ("UECL", "Conference League")):
