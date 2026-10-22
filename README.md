@@ -38,7 +38,7 @@ Apri http://localhost:8000.
 
 - **Senza chiavi**: dati inventati e analisi a regole (etichetta "Dati di esempio").
 - **Con `FOOTBALL_DATA_KEY`**: dati reali dei campionati supportati. I sei campionati di football-data.org usano l’analisi AI quando disponibile (Europa e Conference League solo statistica); Groq è il provider principale e Gemini quello di riserva. Se un provider non è disponibile, il modello statistico continua a produrre le probabilità e lo stato dell’analisi segnala il fallback.
-- **Con `GROQ_API_KEY`**: Groq è il provider principale e usa `browser_search`.
+- **Con `GROQ_API_KEY`**: Groq è il provider principale e usa `browser_search`. Per restare nella quota gratuita l'AI analizza solo le partite che iniziano entro 48 ore; le altre mostrano l'analisi statistica finché non si avvicinano.
 - **Con anche `GEMINI_API_KEY`**: Gemini entra in funzione solo se Groq fallisce o raggiunge un limite. Nel piano gratuito Gemini **non può cercare sul web** (Google Search grounding è solo a pagamento): per questo l'app cerca le notizie da sola e Gemini legge gli articoli trovati. La cache di 72 ore evita chiamate ripetute.
 - **Ricerca notizie gratuita**: `SEARXNG_URL` (SearXNG, gratuito e illimitato; nel workflow parte in automatico come container) e `TAVILY_API_KEY` (facoltativo: 1.000 ricerche gratis al mese, senza carta di credito, account su tavily.com). Si prova prima SearXNG, poi Tavily. Senza nessuno dei due si usa Gemini con Google Search, che nel piano gratuito di solito risponde senza fonti: in quel caso non si applicano correzioni e il testo lo dichiara.
 - **Facoltativo**: `GEMINI_MODEL` permette di cambiare modello; il predefinito è `gemini-3.5-flash-lite`.

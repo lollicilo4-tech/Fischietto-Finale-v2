@@ -22,6 +22,10 @@ CACHE_SECONDS = 72 * 3600  # allineata alla finestra delle notizie recenti (72 o
 # con assenze segnalate ma non confermate: spesso arrivano da Gemini senza ricerca web e, rifatte
 # quando Groq torna disponibile, ottengono fonti verificabili.
 SOURCE_REFRESH_LIMIT_PER_LEAGUE = 2
+# Le notizie su infortuni e squalifiche contano a ridosso della partita: l'AI analizza solo le
+# partite che iniziano entro questo intervallo. Le altre restano con l'analisi statistica e
+# non consumano la quota gratuita di Groq.
+AI_WINDOW_HOURS = 48
 SOURCE_REFRESH_MIN_AGE = 12 * 3600  # ogni analisi senza fonti viene ritentata al massimo ogni 12 ore
 # Versione della validazione: le analisi in cache con una versione diversa vengono rifatte.
 # 9 = verifica delle assenze sul testo degli articoli (prima solo su titolo e URL).
@@ -901,6 +905,27 @@ def _select_source_refresh_ids(
     return {match_id for _, _, match_id in candidates[:max(0, limit)]}
 
 
+def _within_ai_window(fx: dict, now: float | None = None) -> bool:
+    """True se la partita inizia entro AI_WINDOW_HOURS (o se l'orario non è noto)."""
+    kickoff = fx.get("kickoff")
+    if not kickoff:
+        return True
+    from datetime import datetime
+    try:
+        start = datetime.fromisoformat(str(kickoff).replace("Z", "+00:00")).timestamp()
+    except ValueError:
+        return True
+    now = time.time() if now is None else now
+    return start - now <= AI_WINDOW_HOURS * 3600
+
+
+def deferred_analysis(fx: dict, base: dict, teams: dict) -> dict:
+    """Partita lontana: analisi statistica, l'AI la guarderà nelle 48 ore prima."""
+    out = fallback_analysis(fx, base, teams)
+    out["deferred"] = True
+    return out
+
+
 async def analyze_all(items: list[dict], teams: dict, use_ai: bool, league: str | None = None) -> list[dict]:
     """items: [{"fx": fixture, "base": {lh, la, p1, px, p2, ...}}]"""
     global _groq_daily_limit_reached
@@ -932,6 +957,11 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool, league: str 
         global _groq_daily_limit_reached
         fx = item["fx"]
         hit = _cache.get(fx["id"])
+        if not _within_ai_window(fx):
+            # Un'analisi già fatta resta valida; altrimenti nessuna chiamata AI per ora.
+            if hit and time.time() - hit[0] < CACHE_SECONDS and _cache_is_compatible(hit[1]):
+                return dict(hit[1])
+            return deferred_analysis(fx, item["base"], teams)
         if hit and time.time() - hit[0] < CACHE_SECONDS:
             # Le analisi senza fonti possono essere ritentate (poche per esecuzione).
             refresh_sources = (

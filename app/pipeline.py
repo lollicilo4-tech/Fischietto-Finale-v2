@@ -181,6 +181,9 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
         s = model.summarize(lh, la, rho)
         if not an["ai"]:  # il testo a regole deve citare le stesse cifre mostrate nella scheda
             an["text"] = analyst.fallback_analysis(fx, {**s, "lh": lh, "la": la}, teams)["text"]
+            if an.get("deferred"):
+                an["text"] += (f" Le notizie su infortuni e squalifiche vengono cercate nelle "
+                               f"{analyst.AI_WINDOW_HOURS} ore prima della partita.")
         prob = {k: round(s[k], 4) for k in KEYS}
         recommendation = _recommendations(s, fx["home"], fx["away"], base_rates)
         market_predictions = _market_predictions(s, recommendation)
@@ -195,6 +198,7 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
             "analysis": {**{k: an.get(k) for k in ("ai", "text", "factor_home", "factor_away",
                                                     "absences_home", "absences_away", "sources")},
                          "provider": an.get("provider"),
+                         "deferred": bool(an.get("deferred")),
                          "search_provider": an.get("search_provider"),
                          # True solo se l'AI ha davvero spostato i gol attesi (assenze confermate)
                          "adjusted": bool(an.get("ai")) and (abs(an["factor_home"] - 1) > 0.005
@@ -216,9 +220,13 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
     if persist:
         _save_all(pending)
 
-    ai_count = sum(1 for a in analyses if a["ai"])
-    ai_error = next((a.get("reason") for a in analyses if a.get("reason")), None)
-    if ai_count == len(analyses):
+    # Lo stato dell'AI conta solo le partite che rientrano nelle 48 ore: le altre aspettano.
+    eligible = [a for a in analyses if not a.get("deferred")]
+    ai_count = sum(1 for a in eligible if a["ai"])
+    ai_error = next((a.get("reason") for a in eligible if a.get("reason")), None)
+    if not eligible:
+        ai_status = "solo_statistica"
+    elif ai_count == len(eligible):
         ai_status = "attiva"
     elif ai_count > 0:
         ai_status = "parziale"
