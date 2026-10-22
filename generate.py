@@ -78,6 +78,24 @@ def _report_source_coverage(payloads: dict) -> None:
             summary.write("\n".join(lines) + "\n")
 
 
+def _report_update_failure(code: str, label: str, detail: str) -> None:
+    """Registra un errore diagnostico nel log e nel riepilogo GitHub Actions."""
+    safe_detail = " ".join(str(detail).replace("\r", " ").replace("\n", " ").split())
+    message = f"Aggiornamento fallito per {label} ({code}): {safe_detail}"
+    print(message, file=sys.stderr)
+    if os.getenv("GITHUB_ACTIONS") == "true":
+        print(f"::error title=Aggiornamento fallito::{message}")
+    summary_path = os.getenv("GITHUB_STEP_SUMMARY")
+    if summary_path:
+        with Path(summary_path).open("a", encoding="utf-8") as summary:
+            summary.write(
+                "\n## Esito aggiornamento dati: ERRORE\n\n"
+                f"- **Campionato:** {label} ({code})\n"
+                f"- **Dettaglio:** {safe_detail}\n"
+                "- **Pubblicazione:** annullata; i JSON già pubblicati sono preservati.\n"
+            )
+
+
 async def main() -> int:
     competitions = {"SA": "Serie A", "PL": "Premier League", "CL": "Champions League", "BL1": "Bundesliga", "PD": "LaLiga", "FL1": "Ligue 1", "EL": "Europa League", "UECL": "Conference League"}
     payloads = {}
@@ -100,12 +118,10 @@ async def main() -> int:
             # Registra sempre tipo e repr per rendere diagnosticabili i fallimenti senza
             # esporre chiavi o variabili d'ambiente.
             detail = f"{type(exc).__name__}: {exc!r}"
-            if code == "SA":
-                print(f"Nessun aggiornamento Serie A ({detail})")
-                return 1
+            _report_update_failure(code, label, detail)
             print(
-                f"Aggiornamento annullato ({label}) ({detail}). "
-                "Nessun JSON verrà pubblicato per mantenere coerenti tutte le leghe."
+                "Nessun JSON verrà pubblicato per mantenere coerenti tutte le leghe.",
+                file=sys.stderr,
             )
             return 1
     if "SA" not in payloads:
