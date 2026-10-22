@@ -79,7 +79,7 @@ def _report_source_coverage(payloads: dict) -> None:
 
 
 async def main() -> int:
-    competitions = {"SA": "Serie A", "PL": "Premier League", "CL": "Champions League", "BL1": "Bundesliga", "PD": "LaLiga", "FL1": "Ligue 1"}
+    competitions = {"SA": "Serie A", "PL": "Premier League", "CL": "Champions League", "BL1": "Bundesliga", "PD": "LaLiga", "FL1": "Ligue 1", "EL": "Europa League", "UECL": "Conference League"}
     payloads = {}
     for code, label in competitions.items():
         try:
