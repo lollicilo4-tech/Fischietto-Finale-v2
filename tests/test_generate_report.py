@@ -1,7 +1,7 @@
 import os
 import tempfile
 import unittest
-from contextlib import redirect_stdout
+from contextlib import redirect_stderr, redirect_stdout
 from io import StringIO
 from pathlib import Path
 from unittest.mock import patch
@@ -46,7 +46,7 @@ class UpdateFailureReportTests(unittest.TestCase):
                 "GITHUB_ACTIONS": "true",
                 "GITHUB_STEP_SUMMARY": str(summary_path),
             }):
-                with redirect_stdout(output):
+                with redirect_stderr(output):
                     _report_update_failure("PL", "Premier League", "HTTPStatusError: status 503\\nretry exhausted")
             self.assertIn("Aggiornamento fallito", output.getvalue())
             summary = summary_path.read_text(encoding="utf-8")
