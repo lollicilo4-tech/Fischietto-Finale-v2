@@ -789,13 +789,14 @@ main{max-width:1040px!important;margin:0 auto!important;padding-bottom:110px!imp
   }
   .top .tags {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, max-content));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     justify-content: start;
     gap: 8px;
     margin-top: 14px;
   }
   .top .tags .tag {
-    justify-self: start;
+    justify-self: stretch;
+    width: 100%;
     padding: 7px 10px;
     min-height: 34px;
     font-size: clamp(10px, 2.8vw, 12px);
