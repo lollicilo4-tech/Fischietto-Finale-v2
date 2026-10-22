@@ -1760,6 +1760,47 @@ a{color:#65baff}
  .res .r small{font-size:11px}
 }
 </style>
+
+<style id="header-selector-and-status-badges-fix">
+/* La lega si sceglie dalle schede Campionati; manteniamo il select nel DOM
+   perché la logica esistente lo usa come stato, ma non lo mostriamo nell'header. */
+.top > .league-label,
+.top > .league-select { display: none !important; }
+
+/* Badge di stato compatti, allineati e leggibili anche su mobile. */
+.top .tags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+}
+.top .tags .tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  max-width: 100%;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  line-height: 1.25;
+  letter-spacing: .045em;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+.top .tags .tag.ok {
+  color: var(--good);
+  border-color: color-mix(in srgb, var(--good) 48%, transparent);
+  background: color-mix(in srgb, var(--good) 9%, transparent);
+}
+@media (max-width: 380px) {
+  .top .tags { gap: 5px; }
+  .top .tags .tag { font-size: 10px; padding: 5px 8px; min-height: 28px; }
+}
+</style>
+
 </head>
 <body>
 <header class="top">
