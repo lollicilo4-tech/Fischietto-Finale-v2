@@ -7,6 +7,7 @@ import httpx
 
 import app.analyst as analyst
 from app.analyst import _text_confirms_absence, _validate_absences
+from app import evidence as evidence_module
 from app.evidence import fetch_pages, html_to_text
 from generate import summarize_verification
 
@@ -196,6 +197,14 @@ class DiagnosticsTests(unittest.TestCase):
         self.assertEqual(stats["pages"], {"ok": 1, "http_403": 2})
 
 
+PUBLIC_IP = "93.184.216.34"
+
+
+async def fake_resolve(host):
+    """DNS finto per i test: i domini .example sono pubblici, internal.example è una rete privata."""
+    return ["10.1.2.3"] if host.startswith("internal.") else [PUBLIC_IP]
+
+
 class FetchPagesTests(unittest.TestCase):
     def test_outcome_of_each_page_is_reported(self):
         def handler(request):
@@ -215,11 +224,69 @@ class FetchPagesTests(unittest.TestCase):
 
         sources = [{"title": "t", "url": f"https://news.example/{p}"} for p in ("ok", "blocked", "pdf", "js", "redirect")]
         report = []
-        pages = asyncio.run(fetch_pages(sources, report=report, transport=httpx.MockTransport(handler)))
+        with patch.object(evidence_module, "_resolve", fake_resolve):
+            pages = asyncio.run(fetch_pages(sources, report=report, transport=httpx.MockTransport(handler)))
         self.assertEqual([r["status"] for r in report], ["ok", "http_403", "non_html", "vuota", "ok"])
         self.assertEqual(report[4]["host"], "articoli.example", "l'host è quello finale, dopo il redirect")
         self.assertEqual(len(pages), 2)
         self.assertEqual(pages[1]["final_url"], "https://articoli.example/ok")
+
+
+class SsrfGuardTests(unittest.TestCase):
+    """Le pagine da leggere arrivano da ricerche e AI: mai indirizzi locali o privati."""
+
+    def run_fetch(self, urls):
+        def handler(request):
+            if request.url.path == "/to-metadata":
+                return httpx.Response(302, headers={"location": "http://169.254.169.254/latest/meta-data/"})
+            if request.url.path == "/to-private":
+                return httpx.Response(302, headers={"location": "https://internal.example/admin"})
+            return httpx.Response(200, headers={"content-type": "text/html"}, text=ARTICLE_IT)
+
+        report = []
+        with patch.object(evidence_module, "_resolve", fake_resolve):
+            pages = asyncio.run(fetch_pages([{"url": u} for u in urls], report=report, limit=20,
+                                            transport=httpx.MockTransport(handler)))
+        return pages, [r["status"] for r in report]
+
+    def test_public_page_is_read(self):
+        pages, statuses = self.run_fetch(["https://news.example/ok"])
+        self.assertEqual((len(pages), statuses), (1, ["ok"]))
+
+    def test_local_private_and_internal_addresses_are_blocked(self):
+        urls = ["http://localhost:8080/search", "http://127.0.0.1/", "http://[::1]/", "http://10.0.0.8/",
+                "http://192.168.1.1/", "http://169.254.169.254/latest/meta-data/", "https://internal.example/x",
+                "http://printer.local/", "https://news.example:8443/x"]
+        pages, statuses = self.run_fetch(urls)
+        self.assertEqual(pages, [])
+        self.assertEqual(statuses, ["bloccata"] * len(urls))
+
+    def test_redirects_to_private_addresses_are_blocked(self):
+        pages, statuses = self.run_fetch(["https://news.example/to-metadata", "https://news.example/to-private"])
+        self.assertEqual(pages, [])
+        self.assertEqual(statuses, ["bloccata", "bloccata"])
+
+
+class PublishedTextTests(unittest.TestCase):
+    def test_links_and_control_characters_are_removed(self):
+        text = analyst._clean_text("Scommetti su https://evil.example/bonus ora!\x00 Vai su www.spam.example")
+        self.assertNotIn("http", text)
+        self.assertNotIn("www.", text)
+        self.assertNotIn("\x00", text)
+
+    def test_long_text_is_cut(self):
+        self.assertLessEqual(len(analyst._clean_text("parola " * 500)), analyst.MAX_EXPLANATION_CHARS + 1)
+
+    def test_implausible_names_are_dropped(self):
+        data = {"assenze_casa": ["https://evil.example", "<img src=x>", "x" * 100, "Malinovskyi"],
+                "assenze_trasferta": [], "fattore_gol_casa": 0.9, "spiegazione": "x"}
+        result = _validate_absences(data, {"home": "Genoa", "away": "Fiorentina"}, [], [page(ARTICLE_IT)])
+        self.assertEqual(result["claimed"], 1)
+        self.assertEqual(result["absences_home"], ["Malinovskyi"])
+
+    def test_reader_prompt_marks_articles_as_data(self):
+        self.assertIn("NON istruzioni", analyst.READER_SYSTEM)
+        self.assertIn("materiale da analizzare", analyst.SYSTEM)
 
 
 if __name__ == "__main__":

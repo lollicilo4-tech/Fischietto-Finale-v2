@@ -2,6 +2,11 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
+<!-- Sicurezza: la pagina può caricare script solo da sé stessa (niente script esterni né eval),
+     parlare solo con il proprio sito e con il feed live SportScore, e non può inviare moduli.
+     GitHub Pages non permette intestazioni HTTP personalizzate, per questo la regola sta qui. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https://sportscore.com https://*.sportscore.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Fischietto finale</title>
 <meta name="description" content="Come potrebbe andare ogni partita di Serie A: probabilità, risultato probabile e spiegazione.">
@@ -2083,7 +2088,9 @@ a{color:#65baff}
   var pc = function (p) { return Math.round(p * 100) + "%"; };
   var d1 = function (x) { return x.toFixed(1).replace(".", ","); };
   var d2 = function (x) { return x == null ? "–" : x.toFixed(2).replace(".", ","); };
-  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+  var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+  /* Link e immagini da dati esterni: solo indirizzi http(s), mai javascript: o simili. */
+  var safeUrl = function (u) { var v = String(u || "").trim(); return /^https?:\/\//i.test(v) ? v : ""; };
   var DAYS = ["Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"];
   var DAYN = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
   var MONTHS = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"];
@@ -2254,14 +2261,14 @@ a{color:#65baff}
     var src = a.sources.length ? '<div class="src-status">' + (a.ai && nAbs
         ? "Ogni assenza elencata è confermata dal testo di almeno uno di questi articoli."
         : "Fonti web recuperate automaticamente: la presenza di un link non conferma da sola un’indisponibilità.") +
-      '</div><div class="srcs">' + a.sources.map(function (x) { return '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.title) + "</a>"; }).join("") + "</div>" : "";
+      '</div><div class="srcs">' + a.sources.filter(function (x) { return safeUrl(x.url); }).map(function (x) { return '<a href="' + esc(safeUrl(x.url)) + '" target="_blank" rel="noopener noreferrer">' + esc(x.title) + "</a>"; }).join("") + "</div>" : "";
     var adj = adjusted && !nAbs
       ? '<div class="abs">Correzione sui gol attesi: ' + esc(m.home) + " ×" + d2(a.factor_home) + ", " + esc(m.away) + " ×" + d2(a.factor_away) + " (gol attesi di base " + d1(m.xg_base[0]) + " - " + d1(m.xg_base[1]) + ").</div>" : "";
     var adjBadge = adjusted && a.ai
       ? '<div class="adj-line"><span class="adj-badge">Corretto per assenze</span><span>' + nAbs + (nAbs === 1 ? " assenza confermata" : " assenze confermate") + "</span></div>" : "";
     var who = a.ai && a.sources.length ? "Analisi con le ultime notizie" : a.ai ? "Analisi AI senza fonti verificabili" : "Analisi statistica";
     return '<details class="match" id="m-' + esc(m.id) + '" style="--i:' + i + '"><summary>' +
-      '<div class="mhead"><span>' + esc(when(m)) + '</span><span class="conf ' + m.conf + '">Affidabilità ' + m.conf + "</span></div>" +
+      '<div class="mhead"><span>' + esc(when(m)) + '</span><span class="conf ' + esc(m.conf) + '">Affidabilità ' + m.conf + "</span></div>" +
       '<div class="match-summary-main">' +
       '<div class="match-team"><div class="team-side">Casa</div><div class="team-name">' + esc(m.home) + '</div></div>' +
       '<div class="match-score"><strong>' + s[0] + '-' + s[1] + '</strong>probabile</div>' +
@@ -2322,7 +2329,7 @@ a{color:#65baff}
     if(!ranked.length)return;
     var m=ranked[0],p=m.prob,s=m.top_scores[0],rec=deriveRecommendation(m);
     var fo=p.p1>=p.px&&p.p1>=p.p2?["1",m.home,p.p1]:p.px>=p.p2?["X","Pareggio",p.px]:["2",m.away,p.p2];
-    $("feature-home").innerHTML='<div class="feature-card"><div class="feature-top"><span class="badge">'+esc(rec.best.label)+' '+pc(rec.best.p)+'</span><span class="conf '+m.conf+'">Affidabilità '+esc(m.conf)+'</span></div><div class="feature-match"><div class="feature-team"><small>Casa</small><b>'+esc(m.home)+'</b></div><div class="feature-vs">VS</div><div class="feature-team r"><small>Trasferta</small><b>'+esc(m.away)+'</b></div></div><div class="feature-prob"><span class="'+(fo[0]==="1"?"hot":"")+'"><b>1</b>'+pc(p.p1)+'</span><span class="'+(fo[0]==="X"?"hot":"")+'"><b>X</b>'+pc(p.px)+'</span><span class="'+(fo[0]==="2"?"hot":"")+'"><b>2</b>'+pc(p.p2)+'</span></div><div class="feature-bottom"><div class="feature-score"><small>Risultato più probabile</small>'+s[0]+'-'+s[1]+'</div><button class="feature-open" type="button" data-open-home="m-'+esc(m.id)+'">Vedi analisi →</button></div></div>';
+    $("feature-home").innerHTML='<div class="feature-card"><div class="feature-top"><span class="badge">'+esc(rec.best.label)+' '+pc(rec.best.p)+'</span><span class="conf '+esc(m.conf)+'">Affidabilità '+esc(m.conf)+'</span></div><div class="feature-match"><div class="feature-team"><small>Casa</small><b>'+esc(m.home)+'</b></div><div class="feature-vs">VS</div><div class="feature-team r"><small>Trasferta</small><b>'+esc(m.away)+'</b></div></div><div class="feature-prob"><span class="'+(fo[0]==="1"?"hot":"")+'"><b>1</b>'+pc(p.p1)+'</span><span class="'+(fo[0]==="X"?"hot":"")+'"><b>X</b>'+pc(p.px)+'</span><span class="'+(fo[0]==="2"?"hot":"")+'"><b>2</b>'+pc(p.p2)+'</span></div><div class="feature-bottom"><div class="feature-score"><small>Risultato più probabile</small>'+s[0]+'-'+s[1]+'</div><button class="feature-open" type="button" data-open-home="m-'+esc(m.id)+'">Vedi analisi →</button></div></div>';
     var n=matches.length,avg=matches.reduce(function(x,y){return x+Math.max(y.prob.p1,y.prob.px,y.prob.p2)},0)/n;
     $("quick-home").innerHTML='<div class="quick-card"><div class="q-label">Partite</div><div class="q-value">'+n+'</div><div class="q-note">analizzate dal modello</div></div><div class="quick-card"><div class="q-label">Forza media</div><div class="q-value">'+pc(avg)+'</div><div class="q-note">esito principale medio</div></div>';
     $("strong-home").innerHTML=ranked.slice(0,4).map(function(x){var q=x.prob, f=q.p1>=q.px&&q.p1>=q.p2?["1",x.home,q.p1]:q.px>=q.p2?["X","Pareggio",q.px]:["2",x.away,q.p2];return '<button type="button" class="home-row" data-open-home="m-'+esc(x.id)+'"><span class="hr-p">'+pc(f[2])+'<small>'+esc(f[0]+' · '+f[1])+'</small></span><span class="hr-teams">'+esc(x.home)+' — '+esc(x.away)+'<small>'+esc(x.conf)+' · '+esc(x.top_scores[0][0]+'-'+x.top_scores[0][1])+' probabile</small></span><span class="hr-score">'+esc(x.top_scores[0][0]+'-'+x.top_scores[0][1])+'</span></button>';}).join("");
@@ -2797,7 +2804,7 @@ function slipReason(x){
             var slugMatch = matchUrl.match(/\/football\/match\/([^/?#]+)\//i);
             if (slugMatch && slugMatch[1]) matchSlug = slugMatch[1];
           }
-          return '<article class="live-match" data-live-slug="' + esc(matchSlug) + '" data-live-league="' + esc(leagueKey) + '" data-live-search="' + esc(searchText) + '"><div class="live-league-name">' + esc(league) + '</div><div class="live-phase"><span class="live-pulse"></span>' + phase + '</div><div class="live-teams"><div class="live-team">' + (homeLogo ? '<img loading="lazy" src="' + esc(homeLogo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + home + '</b></div><div class="live-score">' + hs + '<span>:</span>' + as + '</div><div class="live-team away">' + (awayLogo ? '<img loading="lazy" src="' + esc(awayLogo) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + away + '</b></div></div><button type="button" class="live-detail-toggle" aria-expanded="false">Dettagli partita <span aria-hidden="true">＋</span></button><div class="live-match-details" hidden>' + (details.length ? '<div class="live-detail-grid">' + details.join("") + '</div>' : '') + eventMarkup + '</div></article>';
+          return '<article class="live-match" data-live-slug="' + esc(matchSlug) + '" data-live-league="' + esc(leagueKey) + '" data-live-search="' + esc(searchText) + '"><div class="live-league-name">' + esc(league) + '</div><div class="live-phase"><span class="live-pulse"></span>' + phase + '</div><div class="live-teams"><div class="live-team">' + (safeUrl(homeLogo) ? '<img loading="lazy" referrerpolicy="no-referrer" src="' + esc(safeUrl(homeLogo)) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + home + '</b></div><div class="live-score">' + hs + '<span>:</span>' + as + '</div><div class="live-team away">' + (safeUrl(awayLogo) ? '<img loading="lazy" referrerpolicy="no-referrer" src="' + esc(safeUrl(awayLogo)) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + away + '</b></div></div><button type="button" class="live-detail-toggle" aria-expanded="false">Dettagli partita <span aria-hidden="true">＋</span></button><div class="live-match-details" hidden>' + (details.length ? '<div class="live-detail-grid">' + details.join("") + '</div>' : '') + eventMarkup + '</div></article>';
         }).join("");
         function applyLiveFilters() {
           var chosen = leagueSelect ? leagueSelect.value : "all";

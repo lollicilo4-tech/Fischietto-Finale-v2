@@ -6,8 +6,14 @@ Qui si legge il testo dell'articolo; il confronto vero e proprio è in analyst.p
 
 Le pagine vengono scaricate solo quando l'AI segnala almeno un'assenza, con limiti stretti
 su numero di pagine, tempo e dimensione.
+
+Sicurezza: gli indirizzi arrivano da risultati di ricerca e dall'AI, quindi non sono fidati.
+Si scaricano solo pagine http(s) su porte standard di host pubblici: niente localhost, reti
+private o indirizzi interni del server che esegue l'aggiornamento (SSRF). Il controllo vale
+anche per ogni redirect.
 """
 import asyncio
+import ipaddress
 from html.parser import HTMLParser
 
 import httpx
@@ -23,6 +29,50 @@ USER_AGENT = (
 _SKIP_TAGS = {"script", "style", "noscript", "svg", "template", "iframe", "head"}
 _BLOCK_TAGS = {"p", "div", "br", "li", "ul", "ol", "h1", "h2", "h3", "h4", "h5", "h6",
                "section", "article", "tr", "td", "th", "table", "header", "footer"}
+
+
+class BlockedURL(ValueError):
+    """Indirizzo non consentito (host non pubblico, schema o porta non previsti)."""
+
+
+_BLOCKED_SUFFIXES = (".localhost", ".local", ".internal", ".lan", ".home", ".corp")
+
+
+async def _resolve(host: str) -> list[str]:
+    loop = asyncio.get_running_loop()
+    infos = await loop.getaddrinfo(host, None)
+    return [info[4][0] for info in infos]
+
+
+async def check_public_url(url: httpx.URL) -> None:
+    """Solleva BlockedURL se l'indirizzo non è una pagina web pubblica."""
+    if url.scheme not in ("http", "https"):
+        raise BlockedURL(f"schema {url.scheme}")
+    if url.port not in (None, 80, 443):
+        raise BlockedURL(f"porta {url.port}")
+    host = (url.host or "").strip("[]").lower().rstrip(".")
+    if not host or host == "localhost" or host.endswith(_BLOCKED_SUFFIXES):
+        raise BlockedURL("host locale")
+    try:
+        addresses = [host] if _is_ip(host) else await _resolve(host)
+    except OSError:
+        raise BlockedURL("host non risolvibile") from None
+    for address in addresses:
+        ip = ipaddress.ip_address(address.split("%", 1)[0])
+        if not ip.is_global or ip.is_multicast:
+            raise BlockedURL("indirizzo non pubblico")
+
+
+def _is_ip(value: str) -> bool:
+    try:
+        ipaddress.ip_address(value)
+        return True
+    except ValueError:
+        return False
+
+
+async def _guard(request: httpx.Request) -> None:
+    await check_public_url(request.url)
 
 
 class _TextExtractor(HTMLParser):
@@ -103,6 +153,9 @@ async def _fetch_one(client: httpx.AsyncClient, url: str) -> tuple[dict | None, 
     except httpx.TooManyRedirects:
         report["status"] = "troppi_redirect"
         return None, report
+    except BlockedURL:
+        report["status"] = "bloccata"
+        return None, report
     except (httpx.HTTPError, ValueError, OSError) as exc:
         report["status"] = f"errore_{type(exc).__name__}"
         return None, report
@@ -138,6 +191,7 @@ async def fetch_pages(sources: list[dict], limit: int = MAX_PAGES, report: list 
         return []
     headers = {"User-Agent": USER_AGENT, "Accept": "text/html,application/xhtml+xml"}
     async with httpx.AsyncClient(follow_redirects=True, headers=headers, max_redirects=5,
+                                 event_hooks={"request": [_guard]},  # anche sui redirect
                                  transport=transport) as client:  # transport: solo per i test
         results = await asyncio.gather(*(_fetch_one(client, s["url"]) for s in picked))
     pages = []

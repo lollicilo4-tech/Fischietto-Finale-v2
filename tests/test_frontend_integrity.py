@@ -54,6 +54,29 @@ class FrontendIntegrityTests(unittest.TestCase):
         self.assertGreaterEqual(html.count("data-open-info"), 2, "Come funziona raggiungibile da Home e piè di pagina")
         self.assertIn('querySelectorAll(".tile[data-go]")', html, "le tessere senza data-go non devono rompere i clic")
 
+    def test_content_security_policy(self):
+        for path in (STATIC_HTML, PUBLISHED_HTML):
+            with self.subTest(path=path):
+                html = self.read(path)
+                head = html[:html.index("</head>")]
+                self.assertIn('http-equiv="Content-Security-Policy"', head)
+                csp = head.split('http-equiv="Content-Security-Policy" content="', 1)[1].split('"', 1)[0]
+                self.assertIn("script-src 'self' 'unsafe-inline'", csp)
+                self.assertNotIn("unsafe-eval", csp)
+                self.assertIn("object-src 'none'", csp)
+                self.assertIn("base-uri 'self'", csp)
+                self.assertIn("https://sportscore.com", csp, "il Live Center deve poter leggere il feed")
+                self.assertIn("https://fonts.gstatic.com", csp)
+                self.assertLess(head.index("Content-Security-Policy"), head.index("<link"), "la CSP va prima delle risorse")
+        self.assertNotIn("<script src=", self.read(STATIC_HTML), "nessuno script esterno")
+
+    def test_external_urls_are_checked_before_use(self):
+        html = self.read(STATIC_HTML)
+        self.assertIn("var safeUrl = function", html)
+        self.assertIn("esc(safeUrl(x.url))", html)
+        self.assertIn("esc(safeUrl(homeLogo))", html)
+        self.assertIn("esc(safeUrl(awayLogo))", html)
+
     def test_ai_label_requires_real_sources(self):
         html = self.read(STATIC_HTML)
         self.assertIn('a.ai && a.sources.length ? "Analisi con le ultime notizie"', html)
