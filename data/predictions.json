@@ -26667,6 +26667,2544 @@
    1.29
   ]
  },
+ "EL-4-2026-11-05-AZ Alkmaar-Juventus": {
+  "ai": false,
+  "away": "Juventus",
+  "base": {
+   "p1": 0.2631,
+   "p2": 0.493,
+   "px": 0.2439
+  },
+  "gg": 0.5966,
+  "home": "AZ Alkmaar",
+  "kickoff": "2026-11-05T20:00:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.2631
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2439
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.493
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.507
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.7369
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8091
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5811
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4189
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.643
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5966
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4034
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.2077
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.4117
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3974
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6014
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3435
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4669
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4834
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3668
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1133,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5811,
+  "old": {
+   "p1": 0.3648,
+   "p2": 0.3805,
+   "px": 0.2547
+  },
+  "p1": 0.2631,
+  "p2": 0.493,
+  "pick": "2",
+  "pick_p": 0.493,
+  "px": 0.2439,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8091
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.24,
+   1.77
+  ]
+ },
+ "EL-4-2026-11-05-Anderlecht-Salzburg": {
+  "ai": false,
+  "away": "Salzburg",
+  "base": {
+   "p1": 0.4063,
+   "p2": 0.3183,
+   "px": 0.2753
+  },
+  "gg": 0.5321,
+  "home": "Anderlecht",
+  "kickoff": "2026-11-05T17:45:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4063
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2753
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.3183
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.6817
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5937
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7379
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.4803
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.5197
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7371
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5321
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4679
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3087
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2348
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5032
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4292
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5025
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4467
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4008
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4436
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1313,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.4803,
+  "old": {
+   "p1": 0.2676,
+   "p2": 0.4537,
+   "px": 0.2787
+  },
+  "p1": 0.4063,
+  "p2": 0.3183,
+  "pick": "1",
+  "pick_p": 0.4063,
+  "px": 0.2753,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7379
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.39,
+   1.2
+  ]
+ },
+ "EL-4-2026-11-05-Benfica-Lech Poznan": {
+  "ai": false,
+  "away": "Lech Poznan",
+  "base": {
+   "p1": 0.7321,
+   "p2": 0.1045,
+   "px": 0.1634
+  },
+  "gg": 0.5506,
+  "home": "Benfica",
+  "kickoff": "2026-11-05T20:00:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.7321
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1634
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1045
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8955
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.2679
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8651
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6744
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3256
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5423
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5506
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4494
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.6559
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.0803
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.7847
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.2092
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.47
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.182
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4755
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3428
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.103,
+    "score": "2-0"
+   }
+  ],
+  "o25": 0.6744,
+  "old": {
+   "p1": 0.7489,
+   "p2": 0.1014,
+   "px": 0.1497
+  },
+  "p1": 0.7321,
+  "p2": 0.1045,
+  "pick": "1",
+  "pick_p": 0.7321,
+  "px": 0.1634,
+  "recommendation": {
+   "code": "1X",
+   "kind": "doppia",
+   "label": "1X · Benfica non perde",
+   "p": 0.8955
+  },
+  "top": [
+   2,
+   0
+  ],
+  "xg": [
+   2.58,
+   0.9
+  ]
+ },
+ "EL-4-2026-11-05-Celta-Union SG": {
+  "ai": false,
+  "away": "Union SG",
+  "base": {
+   "p1": 0.276,
+   "p2": 0.4521,
+   "px": 0.272
+  },
+  "gg": 0.5213,
+  "home": "Celta",
+  "kickoff": "2026-11-05T20:00:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.276
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.272
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.4521
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.5479
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.724
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7346
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.4761
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.5239
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7407
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5213
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4787
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.1986
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.3461
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3885
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.536
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4199
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5325
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3917
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4519
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1296,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.4761,
+  "old": {
+   "p1": 0.1978,
+   "p2": 0.5699,
+   "px": 0.2323
+  },
+  "p1": 0.276,
+  "p2": 0.4521,
+  "pick": "2",
+  "pick_p": 0.4521,
+  "px": 0.272,
+  "recommendation": {
+   "code": "Under 3,5",
+   "kind": "gol",
+   "label": "Under 3,5 · massimo 3 gol",
+   "p": 0.7407
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.1,
+   1.48
+  ]
+ },
+ "EL-4-2026-11-05-Celtic-Besiktas": {
+  "ai": false,
+  "away": "Besiktas",
+  "base": {
+   "p1": 0.2092,
+   "p2": 0.5961,
+   "px": 0.1947
+  },
+  "gg": 0.6973,
+  "home": "Celtic",
+  "kickoff": "2026-11-05T20:00:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.2092
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1947
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.5961
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.4039
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.7908
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.9022
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.7425
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.2575
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.4591
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.6973
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.3027
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.1832
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.5488
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3534
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.719
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.2096
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3502
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.6211
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.2423
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.0889,
+    "score": "1-2"
+   }
+  ],
+  "o25": 0.7425,
+  "old": {
+   "p1": 0.2288,
+   "p2": 0.562,
+   "px": 0.2092
+  },
+  "p1": 0.2092,
+  "p2": 0.5961,
+  "pick": "2",
+  "pick_p": 0.5961,
+  "px": 0.1947,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.9022
+  },
+  "top": [
+   1,
+   2
+  ],
+  "xg": [
+   1.42,
+   2.45
+  ]
+ },
+ "EL-4-2026-11-05-Crystal Palace-Hoffenheim": {
+  "ai": false,
+  "away": "Hoffenheim",
+  "base": {
+   "p1": 0.5318,
+   "p2": 0.2441,
+   "px": 0.2241
+  },
+  "gg": 0.6422,
+  "home": "Crystal Palace",
+  "kickoff": "2026-11-05T17:45:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.5318
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2241
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2441
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7559
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.4682
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8523
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6508
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3492
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5691
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.6422
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.3578
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.4655
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2023
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6499
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.3867
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4206
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.287
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.5434
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3126
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.0988,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.6508,
+  "old": {
+   "p1": 0.6648,
+   "p2": 0.1318,
+   "px": 0.2034
+  },
+  "p1": 0.5318,
+  "p2": 0.2441,
+  "pick": "1",
+  "pick_p": 0.5318,
+  "px": 0.2241,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8523
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   2.03,
+   1.33
+  ]
+ },
+ "EL-4-2026-11-05-H. Beer-Sheva-OFI Crete": {
+  "ai": false,
+  "away": "OFI Crete",
+  "base": {
+   "p1": 0.3267,
+   "p2": 0.3963,
+   "px": 0.277
+  },
+  "gg": 0.5294,
+  "home": "H. Beer-Sheva",
+  "kickoff": "2026-11-05T20:00:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.3267
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.277
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.3963
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.6037
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.6733
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7344
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.4757
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.5243
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7411
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5294
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4706
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.2407
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.299
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.4354
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4937
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4555
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4999
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3973
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4469
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1321,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.4757,
+  "old": {
+   "p1": 0.3911,
+   "p2": 0.3102,
+   "px": 0.2986
+  },
+  "p1": 0.3267,
+  "p2": 0.3963,
+  "pick": "2",
+  "pick_p": 0.3963,
+  "px": 0.277,
+  "recommendation": {
+   "code": "Under 3,5",
+   "kind": "gol",
+   "label": "Under 3,5 · massimo 3 gol",
+   "p": 0.7411
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.21,
+   1.36
+  ]
+ },
+ "EL-4-2026-11-05-Leverkusen-Marseille": {
+  "ai": false,
+  "away": "Marseille",
+  "base": {
+   "p1": 0.6291,
+   "p2": 0.1569,
+   "px": 0.214
+  },
+  "gg": 0.5326,
+  "home": "Leverkusen",
+  "kickoff": "2026-11-05T20:00:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.6291
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.214
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1569
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8431
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.3709
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8034
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5733
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4267
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6508
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5326
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4674
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.53
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1147
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6887
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.2733
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5351
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.2725
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4312
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4052
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1068,
+    "score": "2-0"
+   }
+  ],
+  "o25": 0.5733,
+  "old": {
+   "p1": 0.6539,
+   "p2": 0.1483,
+   "px": 0.1978
+  },
+  "p1": 0.6291,
+  "p2": 0.1569,
+  "pick": "1",
+  "pick_p": 0.6291,
+  "px": 0.214,
+  "recommendation": {
+   "code": "1X",
+   "kind": "doppia",
+   "label": "1X · Leverkusen non perde",
+   "p": 0.8431
+  },
+  "top": [
+   2,
+   0
+  ],
+  "xg": [
+   2.06,
+   0.93
+  ]
+ },
+ "EL-4-2026-11-05-Levski Sofia-Jagiellonia": {
+  "ai": false,
+  "away": "Jagiellonia",
+  "base": {
+   "p1": 0.3035,
+   "p2": 0.4267,
+   "px": 0.2698
+  },
+  "gg": 0.543,
+  "home": "Levski Sofia",
+  "kickoff": "2026-11-05T17:45:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.3035
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2698
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.4267
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.5733
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.6965
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7506
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.4972
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.5028
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7223
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.543
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.457
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.226
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.3307
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.42
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.5246
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4252
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5014
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4145
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4308
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1285,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.4972,
+  "old": {
+   "p1": 0.3506,
+   "p2": 0.3631,
+   "px": 0.2862
+  },
+  "p1": 0.3035,
+  "p2": 0.4267,
+  "pick": "2",
+  "pick_p": 0.4267,
+  "px": 0.2698,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7506
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.2,
+   1.46
+  ]
+ },
+ "EL-4-2026-11-05-Lillestrøm-Viktoria Plzen": {
+  "ai": false,
+  "away": "Viktoria Plzen",
+  "base": {
+   "p1": 0.4541,
+   "p2": 0.282,
+   "px": 0.2639
+  },
+  "gg": 0.5491,
+  "home": "Lillestrøm",
+  "kickoff": "2026-11-05T17:45:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4541
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2639
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.282
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.718
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5459
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7607
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5109
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4891
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.71
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5491
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4509
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.358
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2107
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5499
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4027
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5059
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4016
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4236
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.422
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1255,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5109,
+  "old": {
+   "p1": 0.3841,
+   "p2": 0.3491,
+   "px": 0.2668
+  },
+  "p1": 0.4541,
+  "p2": 0.282,
+  "pick": "1",
+  "pick_p": 0.4541,
+  "px": 0.2639,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7607
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.55,
+   1.17
+  ]
+ },
+ "EL-4-2026-11-05-Milan-Ferencváros": {
+  "ai": false,
+  "away": "Ferencváros",
+  "base": {
+   "p1": 0.398,
+   "p2": 0.3505,
+   "px": 0.2515
+  },
+  "gg": 0.6166,
+  "home": "Milan",
+  "kickoff": "2026-11-05T17:45:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.398
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2515
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.3505
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.6495
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.602
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8133
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5874
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4126
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6366
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.6166
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.3834
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3286
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2862
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5271
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4847
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4151
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3901
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.501
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3532
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1156,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5874,
+  "old": {
+   "p1": 0.2028,
+   "p2": 0.5708,
+   "px": 0.2264
+  },
+  "p1": 0.398,
+  "p2": 0.3505,
+  "pick": "1",
+  "pick_p": 0.398,
+  "px": 0.2515,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8133
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.58,
+   1.47
+  ]
+ },
+ "EL-4-2026-11-05-N.E.C.-Omonia": {
+  "ai": false,
+  "away": "Omonia",
+  "base": {
+   "p1": 0.1823,
+   "p2": 0.5907,
+   "px": 0.227
+  },
+  "gg": 0.5439,
+  "home": "N.E.C.",
+  "kickoff": "2026-11-05T17:45:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.1823
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.227
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.5907
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.4093
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.8177
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.796
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.562
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.438
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6619
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5439
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4561
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.1348
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.4925
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3035
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6612
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.2987
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5289
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4364
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4042
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1075,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.562,
+  "old": {
+   "p1": 0.2283,
+   "p2": 0.5212,
+   "px": 0.2505
+  },
+  "p1": 0.1823,
+  "p2": 0.5907,
+  "pick": "2",
+  "pick_p": 0.5907,
+  "px": 0.227,
+  "recommendation": {
+   "code": "X2",
+   "kind": "doppia",
+   "label": "X2 · Omonia non perde",
+   "p": 0.8177
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   0.99,
+   1.94
+  ]
+ },
+ "EL-4-2026-11-05-Real Sociedad-Lyon": {
+  "ai": false,
+  "away": "Lyon",
+  "base": {
+   "p1": 0.3172,
+   "p2": 0.4346,
+   "px": 0.2482
+  },
+  "gg": 0.6177,
+  "home": "Real Sociedad",
+  "kickoff": "2026-11-05T17:45:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.3172
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2482
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.4346
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.5654
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.6828
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.817
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5932
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4068
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6307
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.6177
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.3823
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.2578
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.3627
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.4544
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.5592
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3675
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4287
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.5038
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3503
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1138,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5932,
+  "old": {
+   "p1": 0.2665,
+   "p2": 0.487,
+   "px": 0.2465
+  },
+  "p1": 0.3172,
+  "p2": 0.4346,
+  "pick": "2",
+  "pick_p": 0.4346,
+  "px": 0.2482,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.817
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.4,
+   1.67
+  ]
+ },
+ "EL-4-2026-11-05-Rennes-Olympiacos": {
+  "ai": false,
+  "away": "Olympiacos",
+  "base": {
+   "p1": 0.3432,
+   "p2": 0.3703,
+   "px": 0.2865
+  },
+  "gg": 0.5036,
+  "home": "Rennes",
+  "kickoff": "2026-11-05T17:45:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.3432
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2865
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.3703
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.6297
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.6568
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7074
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.4416
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.5584
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7696
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5036
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4964
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.246
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2682
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.4391
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4614
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4904
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5086
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3676
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4753
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1361,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.4416,
+  "old": {
+   "p1": 0.356,
+   "p2": 0.3675,
+   "px": 0.2765
+  },
+  "p1": 0.3432,
+  "p2": 0.3703,
+  "pick": "2",
+  "pick_p": 0.3703,
+  "px": 0.2865,
+  "recommendation": {
+   "code": "Under 3,5",
+   "kind": "gol",
+   "label": "Under 3,5 · massimo 3 gol",
+   "p": 0.7696
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.19,
+   1.25
+  ]
+ },
+ "EL-4-2026-11-05-Sparta Praha-Bournemouth": {
+  "ai": false,
+  "away": "Bournemouth",
+  "base": {
+   "p1": 0.3367,
+   "p2": 0.4139,
+   "px": 0.2495
+  },
+  "gg": 0.6202,
+  "home": "Sparta Praha",
+  "kickoff": "2026-11-05T17:45:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.3367
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2495
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.4139
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.5861
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.6633
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8173
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5935
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4065
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6303
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.6202
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.3798
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.2752
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.3442
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.4731
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.5421
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.378
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4182
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.506
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3487
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1142,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5935,
+  "old": {
+   "p1": 0.3247,
+   "p2": 0.4135,
+   "px": 0.2618
+  },
+  "p1": 0.3367,
+  "p2": 0.4139,
+  "pick": "2",
+  "pick_p": 0.4139,
+  "px": 0.2495,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8173
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.45,
+   1.63
+  ]
+ },
+ "EL-4-2026-11-05-Sturm Graz-Celje": {
+  "ai": false,
+  "away": "Celje",
+  "base": {
+   "p1": 0.4042,
+   "p2": 0.3085,
+   "px": 0.2872
+  },
+  "gg": 0.494,
+  "home": "Sturm Graz",
+  "kickoff": "2026-11-05T20:00:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4042
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2872
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.3085
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.6915
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5958
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7002
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.4329
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.5671
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7766
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.494
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.506
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.2936
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2157
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.4845
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4066
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.537
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.472
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3579
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4845
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.136,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.4329,
+  "old": {
+   "p1": 0.442,
+   "p2": 0.2481,
+   "px": 0.3099
+  },
+  "p1": 0.4042,
+  "p2": 0.3085,
+  "pick": "1",
+  "pick_p": 0.4042,
+  "px": 0.2872,
+  "recommendation": {
+   "code": "Under 3,5",
+   "kind": "gol",
+   "label": "Under 3,5 · massimo 3 gol",
+   "p": 0.7766
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.3,
+   1.11
+  ]
+ },
+ "EL-4-2026-11-05-Sunderland-GNK Dinamo": {
+  "ai": false,
+  "away": "GNK Dinamo",
+  "base": {
+   "p1": 0.3976,
+   "p2": 0.3038,
+   "px": 0.2987
+  },
+  "gg": 0.4609,
+  "home": "Sunderland",
+  "kickoff": "2026-11-05T20:00:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.3976
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2987
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.3038
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.6962
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.6024
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.6652
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.3919
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.6081
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.8085
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.4609
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.5391
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.276
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.202
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.4632
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.3892
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5631
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4959
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3218
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.5202
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.139,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.3919,
+  "old": {
+   "p1": 0.4115,
+   "p2": 0.277,
+   "px": 0.3115
+  },
+  "p1": 0.3976,
+  "p2": 0.3038,
+  "pick": "1",
+  "pick_p": 0.3976,
+  "px": 0.2987,
+  "recommendation": {
+   "code": "Under 3,5",
+   "kind": "gol",
+   "label": "Under 3,5 · massimo 3 gol",
+   "p": 0.8085
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.22,
+   1.03
+  ]
+ },
+ "EL-4-2026-11-05-Torreense-Ararat-Armenia": {
+  "ai": false,
+  "away": "Ararat-Armenia",
+  "base": {
+   "p1": 0.5274,
+   "p2": 0.2454,
+   "px": 0.2272
+  },
+  "gg": 0.6335,
+  "home": "Torreense",
+  "kickoff": "2026-11-05T20:00:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.5274
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2272
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2454
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7546
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.4726
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.845
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6384
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3616
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5827
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.6335
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.3665
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.4582
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2016
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6433
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.3867
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4304
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.2958
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.5321
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3226
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1014,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.6384,
+  "old": {
+   "p1": 0.4454,
+   "p2": 0.3041,
+   "px": 0.2505
+  },
+  "p1": 0.5274,
+  "p2": 0.2454,
+  "pick": "1",
+  "pick_p": 0.5274,
+  "px": 0.2272,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.845
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.98,
+   1.3
+  ]
+ },
  "UECL-2-2026-10-22-Aarhus-Egnatia": {
   "ai": false,
   "away": "Egnatia",
@@ -29203,6 +31741,2544 @@
   "xg": [
    2.58,
    0.92
+  ]
+ },
+ "UECL-3-2026-11-05-Aarhus-Braga": {
+  "ai": false,
+  "away": "Braga",
+  "base": {
+   "p1": 0.6152,
+   "p2": 0.1531,
+   "px": 0.2316
+  },
+  "gg": 0.4724,
+  "home": "Aarhus",
+  "kickoff": "2026-11-05T17:45:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.6152
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2316
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1531
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8469
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.3848
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7489
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.4961
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.5039
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7233
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.4724
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.5276
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.4908
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1017
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6472
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.2581
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.6006
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3081
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3624
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4741
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1244,
+    "score": "1-0"
+   }
+  ],
+  "o25": 0.4961,
+  "old": {
+   "p1": 0.6669,
+   "p2": 0.124,
+   "px": 0.2092
+  },
+  "p1": 0.6152,
+  "p2": 0.1531,
+  "pick": "1",
+  "pick_p": 0.6152,
+  "px": 0.2316,
+  "recommendation": {
+   "code": "1X",
+   "kind": "doppia",
+   "label": "1X · Aarhus non perde",
+   "p": 0.8469
+  },
+  "top": [
+   1,
+   0
+  ],
+  "xg": [
+   1.85,
+   0.81
+  ]
+ },
+ "UECL-3-2026-11-05-Atalanta-Kairat Almaty": {
+  "ai": false,
+  "away": "Kairat Almaty",
+  "base": {
+   "p1": 0.6041,
+   "p2": 0.1751,
+   "px": 0.2208
+  },
+  "gg": 0.5495,
+  "home": "Atalanta",
+  "kickoff": "2026-11-05T17:45:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.6041
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2208
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1751
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8249
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.3959
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8056
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5764
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4236
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6477
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5495
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4505
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.509
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1306
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.675
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.2966
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5214
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.2854
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4452
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3947
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1042,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5764,
+  "old": {
+   "p1": 0.6187,
+   "p2": 0.1663,
+   "px": 0.215
+  },
+  "p1": 0.6041,
+  "p2": 0.1751,
+  "pick": "1",
+  "pick_p": 0.6041,
+  "px": 0.2208,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8056
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   2.01,
+   0.99
+  ]
+ },
+ "UECL-3-2026-11-05-Copenhagen-Iberia Tbilisi": {
+  "ai": false,
+  "away": "Iberia Tbilisi",
+  "base": {
+   "p1": 0.6885,
+   "p2": 0.1174,
+   "px": 0.1941
+  },
+  "gg": 0.4897,
+  "home": "Copenhagen",
+  "kickoff": "2026-11-05T20:00:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.6885
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1941
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1174
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8826
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.3115
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8019
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5717
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4283
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6524
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.4897
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.5103
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.5816
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.0815
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.7203
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.2203
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5616
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.2386
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3972
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4288
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1218,
+    "score": "2-0"
+   }
+  ],
+  "o25": 0.5717,
+  "old": {
+   "p1": 0.7536,
+   "p2": 0.0768,
+   "px": 0.1696
+  },
+  "p1": 0.6885,
+  "p2": 0.1174,
+  "pick": "1",
+  "pick_p": 0.6885,
+  "px": 0.1941,
+  "recommendation": {
+   "code": "1X",
+   "kind": "doppia",
+   "label": "1X · Copenhagen non perde",
+   "p": 0.8826
+  },
+  "top": [
+   2,
+   0
+  ],
+  "xg": [
+   2.19,
+   0.79
+  ]
+ },
+ "UECL-3-2026-11-05-Crvena Zvezda-Inter Escaldes": {
+  "ai": false,
+  "away": "Inter Escaldes",
+  "base": {
+   "p1": 0.629,
+   "p2": 0.1587,
+   "px": 0.2124
+  },
+  "gg": 0.5419,
+  "home": "Crvena Zvezda",
+  "kickoff": "2026-11-05T17:45:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.629
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2124
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1587
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8413
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.371
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8102
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5837
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4163
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6404
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5419
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4581
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.5334
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1175
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6927
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.2768
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.525
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.2687
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4416
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3953
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1044,
+    "score": "2-0"
+   }
+  ],
+  "o25": 0.5837,
+  "old": {
+   "p1": 0.627,
+   "p2": 0.1421,
+   "px": 0.2309
+  },
+  "p1": 0.629,
+  "p2": 0.1587,
+  "pick": "1",
+  "pick_p": 0.629,
+  "px": 0.2124,
+  "recommendation": {
+   "code": "1X",
+   "kind": "doppia",
+   "label": "1X · Crvena Zvezda non perde",
+   "p": 0.8413
+  },
+  "top": [
+   2,
+   0
+  ],
+  "xg": [
+   2.08,
+   0.95
+  ]
+ },
+ "UECL-3-2026-11-05-Getafe-Brighton": {
+  "ai": false,
+  "away": "Brighton",
+  "base": {
+   "p1": 0.5164,
+   "p2": 0.2358,
+   "px": 0.2478
+  },
+  "gg": 0.5575,
+  "home": "Getafe",
+  "kickoff": "2026-11-05T20:00:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.5164
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2478
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2358
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7642
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.4836
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7824
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5416
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4584
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6815
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5575
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4425
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.421
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1772
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6052
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.3614
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5124
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3501
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4402
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4051
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1173,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5416,
+  "old": {
+   "p1": 0.5657,
+   "p2": 0.2023,
+   "px": 0.232
+  },
+  "p1": 0.5164,
+  "p2": 0.2358,
+  "pick": "1",
+  "pick_p": 0.5164,
+  "px": 0.2478,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7824
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.74,
+   1.11
+  ]
+ },
+ "UECL-3-2026-11-05-KuPS Kuopio-Gent": {
+  "ai": false,
+  "away": "Gent",
+  "base": {
+   "p1": 0.4839,
+   "p2": 0.2669,
+   "px": 0.2492
+  },
+  "gg": 0.5831,
+  "home": "KuPS Kuopio",
+  "kickoff": "2026-11-05T17:45:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4839
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2492
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2669
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7331
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5161
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7961
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5615
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4385
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6624
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5831
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4169
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3982
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2075
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5886
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.3979
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4794
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3587
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4663
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3824
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1168,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5615,
+  "old": {
+   "p1": 0.4139,
+   "p2": 0.3559,
+   "px": 0.2302
+  },
+  "p1": 0.4839,
+  "p2": 0.2669,
+  "pick": "1",
+  "pick_p": 0.4839,
+  "px": 0.2492,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7961
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.71,
+   1.22
+  ]
+ },
+ "UECL-3-2026-11-05-L. Red Imps-Hajduk Split": {
+  "ai": false,
+  "away": "Hajduk Split",
+  "base": {
+   "p1": 0.5666,
+   "p2": 0.2001,
+   "px": 0.2333
+  },
+  "gg": 0.5544,
+  "home": "L. Red Imps",
+  "kickoff": "2026-11-05T17:45:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.5666
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2333
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2001
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7999
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.4334
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7955
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.561
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.439
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6629
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5544
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4456
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.471
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1498
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6457
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.3244
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5189
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3128
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4441
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3988
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1102,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.561,
+  "old": {
+   "p1": 0.548,
+   "p2": 0.2126,
+   "px": 0.2394
+  },
+  "p1": 0.5666,
+  "p2": 0.2001,
+  "pick": "1",
+  "pick_p": 0.5666,
+  "px": 0.2333,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7955
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.89,
+   1.04
+  ]
+ },
+ "UECL-3-2026-11-05-Lugano-Kauno Žalgiris": {
+  "ai": false,
+  "away": "Kauno Žalgiris",
+  "base": {
+   "p1": 0.7106,
+   "p2": 0.1184,
+   "px": 0.1711
+  },
+  "gg": 0.5721,
+  "home": "Lugano",
+  "kickoff": "2026-11-05T20:00:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.7106
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1711
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1184
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8816
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.2894
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8671
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6778
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3222
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5384
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5721
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4279
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.6373
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.0929
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.7742
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.2298
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4589
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.1914
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4944
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3314
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.0976,
+    "score": "2-0"
+   }
+  ],
+  "o25": 0.6778,
+  "old": {
+   "p1": 0.7589,
+   "p2": 0.0927,
+   "px": 0.1484
+  },
+  "p1": 0.7106,
+  "p2": 0.1184,
+  "pick": "1",
+  "pick_p": 0.7106,
+  "px": 0.1711,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8671
+  },
+  "top": [
+   2,
+   0
+  ],
+  "xg": [
+   2.53,
+   0.96
+  ]
+ },
+ "UECL-3-2026-11-05-Midtjylland-Ajax": {
+  "ai": false,
+  "away": "Ajax",
+  "base": {
+   "p1": 0.6124,
+   "p2": 0.1626,
+   "px": 0.225
+  },
+  "gg": 0.5115,
+  "home": "Midtjylland",
+  "kickoff": "2026-11-05T17:45:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.6124
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.225
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1626
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8374
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.3876
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7795
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5383
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4617
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6847
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5115
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4885
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.5035
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.115
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6646
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.276
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5608
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.2952
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4043
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4329
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1104,
+    "score": "2-0"
+   }
+  ],
+  "o25": 0.5383,
+  "old": {
+   "p1": 0.597,
+   "p2": 0.1745,
+   "px": 0.2285
+  },
+  "p1": 0.6124,
+  "p2": 0.1626,
+  "pick": "1",
+  "pick_p": 0.6124,
+  "px": 0.225,
+  "recommendation": {
+   "code": "1X",
+   "kind": "doppia",
+   "label": "1X · Midtjylland non perde",
+   "p": 0.8374
+  },
+  "top": [
+   2,
+   0
+  ],
+  "xg": [
+   1.94,
+   0.9
+  ]
+ },
+ "UECL-3-2026-11-05-Mjällby-Borac": {
+  "ai": false,
+  "away": "Borac",
+  "base": {
+   "p1": 0.6356,
+   "p2": 0.1493,
+   "px": 0.2151
+  },
+  "gg": 0.5116,
+  "home": "Mjällby",
+  "kickoff": "2026-11-05T17:45:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.6356
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2151
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1493
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8507
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.3644
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7904
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5542
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4458
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6695
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5116
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4884
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.5292
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.106
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6845
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.2613
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5561
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.2757
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4092
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4255
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1126,
+    "score": "2-0"
+   }
+  ],
+  "o25": 0.5542,
+  "old": {
+   "p1": 0.6785,
+   "p2": 0.1188,
+   "px": 0.2027
+  },
+  "p1": 0.6356,
+  "p2": 0.1493,
+  "pick": "1",
+  "pick_p": 0.6356,
+  "px": 0.2151,
+  "recommendation": {
+   "code": "1X",
+   "kind": "doppia",
+   "label": "1X · Mjällby non perde",
+   "p": 0.8507
+  },
+  "top": [
+   2,
+   0
+  ],
+  "xg": [
+   2.02,
+   0.88
+  ]
+ },
+ "UECL-3-2026-11-05-Monaco-Nordsjælland": {
+  "ai": false,
+  "away": "Nordsjælland",
+  "base": {
+   "p1": 0.6269,
+   "p2": 0.1567,
+   "px": 0.2163
+  },
+  "gg": 0.525,
+  "home": "Monaco",
+  "kickoff": "2026-11-05T20:00:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.6269
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2163
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1567
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8433
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.3731
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7967
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5633
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4367
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6607
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.525
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.475
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.5247
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1133
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6834
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.2719
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5437
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.2775
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4223
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.414
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1085,
+    "score": "2-0"
+   }
+  ],
+  "o25": 0.5633,
+  "old": {
+   "p1": 0.5748,
+   "p2": 0.1901,
+   "px": 0.2351
+  },
+  "p1": 0.6269,
+  "p2": 0.1567,
+  "pick": "1",
+  "pick_p": 0.6269,
+  "px": 0.2163,
+  "recommendation": {
+   "code": "1X",
+   "kind": "doppia",
+   "label": "1X · Monaco non perde",
+   "p": 0.8433
+  },
+  "top": [
+   2,
+   0
+  ],
+  "xg": [
+   2.03,
+   0.91
+  ]
+ },
+ "UECL-3-2026-11-05-Panathinaikos-CSKA Sofia": {
+  "ai": false,
+  "away": "CSKA Sofia",
+  "base": {
+   "p1": 0.6677,
+   "p2": 0.135,
+   "px": 0.1974
+  },
+  "gg": 0.5311,
+  "home": "Panathinaikos",
+  "kickoff": "2026-11-05T20:00:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.6677
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1974
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.135
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.865
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.3323
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8203
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5996
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4004
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6242
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5311
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4689
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.573
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.0992
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.7211
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.2473
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5253
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.2414
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4379
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3932
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1095,
+    "score": "2-0"
+   }
+  ],
+  "o25": 0.5996,
+  "old": {
+   "p1": 0.6303,
+   "p2": 0.1571,
+   "px": 0.2126
+  },
+  "p1": 0.6677,
+  "p2": 0.135,
+  "pick": "1",
+  "pick_p": 0.6677,
+  "px": 0.1974,
+  "recommendation": {
+   "code": "1X",
+   "kind": "doppia",
+   "label": "1X · Panathinaikos non perde",
+   "p": 0.865
+  },
+  "top": [
+   2,
+   0
+  ],
+  "xg": [
+   2.21,
+   0.9
+  ]
+ },
+ "UECL-3-2026-11-05-Riga-Jablonec": {
+  "ai": false,
+  "away": "Jablonec",
+  "base": {
+   "p1": 0.5698,
+   "p2": 0.2003,
+   "px": 0.2299
+  },
+  "gg": 0.5652,
+  "home": "Riga",
+  "kickoff": "2026-11-05T20:00:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.5698
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2299
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2003
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7997
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.4302
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.805
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5754
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4246
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6487
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5652
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4348
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.4782
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1521
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6529
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.3268
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5072
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3048
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4571
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3866
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1081,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5754,
+  "old": {
+   "p1": 0.5501,
+   "p2": 0.2172,
+   "px": 0.2327
+  },
+  "p1": 0.5698,
+  "p2": 0.2003,
+  "pick": "1",
+  "pick_p": 0.5698,
+  "px": 0.2299,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.805
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.93,
+   1.06
+  ]
+ },
+ "UECL-3-2026-11-05-Sint-Truidense-Brann": {
+  "ai": false,
+  "away": "Brann",
+  "base": {
+   "p1": 0.6195,
+   "p2": 0.1623,
+   "px": 0.2182
+  },
+  "gg": 0.5314,
+  "home": "Sint-Truidense",
+  "kickoff": "2026-11-05T20:00:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.6195
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2182
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1623
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8377
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.3805
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7982
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5656
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4344
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6584
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5314
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4686
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.519
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1183
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.68
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.2793
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5383
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.2809
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4279
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4094
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1063,
+    "score": "2-0"
+   }
+  ],
+  "o25": 0.5656,
+  "old": {
+   "p1": 0.6525,
+   "p2": 0.1386,
+   "px": 0.2089
+  },
+  "p1": 0.6195,
+  "p2": 0.1623,
+  "pick": "1",
+  "pick_p": 0.6195,
+  "px": 0.2182,
+  "recommendation": {
+   "code": "1X",
+   "kind": "doppia",
+   "label": "1X · Sint-Truidense non perde",
+   "p": 0.8377
+  },
+  "top": [
+   2,
+   0
+  ],
+  "xg": [
+   2.02,
+   0.94
+  ]
+ },
+ "UECL-3-2026-11-05-Thun-Hearts": {
+  "ai": false,
+  "away": "Hearts",
+  "base": {
+   "p1": 0.5728,
+   "p2": 0.1778,
+   "px": 0.2494
+  },
+  "gg": 0.4715,
+  "home": "Thun",
+  "kickoff": "2026-11-05T17:45:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.5728
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2494
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1778
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8222
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.4272
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7279
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.4683
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.5317
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7474
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.4715
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.5285
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.4449
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1175
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6104
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.283
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.6041
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3452
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3534
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4861
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1278,
+    "score": "1-0"
+   }
+  ],
+  "o25": 0.4683,
+  "old": {
+   "p1": 0.5673,
+   "p2": 0.1943,
+   "px": 0.2384
+  },
+  "p1": 0.5728,
+  "p2": 0.1778,
+  "pick": "1",
+  "pick_p": 0.5728,
+  "px": 0.2494,
+  "recommendation": {
+   "code": "1X",
+   "kind": "doppia",
+   "label": "1X · Thun non perde",
+   "p": 0.8222
+  },
+  "top": [
+   1,
+   0
+  ],
+  "xg": [
+   1.71,
+   0.84
+  ]
+ },
+ "UECL-3-2026-11-05-Trabzonspor-Freiburg": {
+  "ai": false,
+  "away": "Freiburg",
+  "base": {
+   "p1": 0.7215,
+   "p2": 0.1216,
+   "px": 0.157
+  },
+  "gg": 0.638,
+  "home": "Trabzonspor",
+  "kickoff": "2026-11-05T17:45:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.7215
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.157
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1216
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8784
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.2785
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.9071
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.7531
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.2469
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.4455
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.638
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.362
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.6698
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1028
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.8043
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.2373
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3752
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.1573
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.5733
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.2595
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.0868,
+    "score": "2-1"
+   }
+  ],
+  "o25": 0.7531,
+  "old": {
+   "p1": 0.5994,
+   "p2": 0.1831,
+   "px": 0.2175
+  },
+  "p1": 0.7215,
+  "p2": 0.1216,
+  "pick": "1",
+  "pick_p": 0.7215,
+  "px": 0.157,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.9071
+  },
+  "top": [
+   2,
+   1
+  ],
+  "xg": [
+   2.82,
+   1.12
+  ]
+ },
+ "UECL-3-2026-11-05-Twente-Pafos": {
+  "ai": false,
+  "away": "Pafos",
+  "base": {
+   "p1": 0.6319,
+   "p2": 0.1511,
+   "px": 0.217
+  },
+  "gg": 0.5103,
+  "home": "Twente",
+  "kickoff": "2026-11-05T20:00:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.6319
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.217
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1511
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8489
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.3681
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7876
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5501
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4499
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6735
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5103
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4897
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.5245
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.107
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6807
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.2631
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5584
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.2793
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4069
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4282
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1127,
+    "score": "2-0"
+   }
+  ],
+  "o25": 0.5501,
+  "old": {
+   "p1": 0.6742,
+   "p2": 0.1207,
+   "px": 0.2051
+  },
+  "p1": 0.6319,
+  "p2": 0.1511,
+  "pick": "1",
+  "pick_p": 0.6319,
+  "px": 0.217,
+  "recommendation": {
+   "code": "1X",
+   "kind": "doppia",
+   "label": "1X · Twente non perde",
+   "p": 0.8489
+  },
+  "top": [
+   2,
+   0
+  ],
+  "xg": [
+   2.01,
+   0.88
+  ]
+ },
+ "UECL-3-2026-11-05-U. Craiova-Egnatia": {
+  "ai": false,
+  "away": "Egnatia",
+  "base": {
+   "p1": 0.5719,
+   "p2": 0.1855,
+   "px": 0.2426
+  },
+  "gg": 0.5033,
+  "home": "U. Craiova",
+  "kickoff": "2026-11-05T20:00:00Z",
+  "league": "UECL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.5719
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2426
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1855
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8145
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.4281
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7553
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5043
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4957
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.716
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5033
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4967
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.4569
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1291
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6262
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.2984
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5723
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3326
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3877
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4521
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1156,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5043,
+  "old": {
+   "p1": 0.542,
+   "p2": 0.2085,
+   "px": 0.2495
+  },
+  "p1": 0.5719,
+  "p2": 0.1855,
+  "pick": "1",
+  "pick_p": 0.5719,
+  "px": 0.2426,
+  "recommendation": {
+   "code": "1X",
+   "kind": "doppia",
+   "label": "1X · U. Craiova non perde",
+   "p": 0.8145
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.78,
+   0.91
   ]
  }
 }
