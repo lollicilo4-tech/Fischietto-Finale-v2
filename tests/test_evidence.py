@@ -152,6 +152,9 @@ class DiagnosticsTests(unittest.TestCase):
         self.assertEqual(self.reasons(["Frendrup"], it), {"incertezza": 1})
         self.assertEqual(self.reasons(["Retegui"], it), {"giocatore_assente": 1})
         self.assertEqual(self.reasons(["Malinovskyi"], []), {"nessuna_pagina_letta": 1})
+        data = {"assenze_casa": ["Malinovskyi"], "assenze_trasferta": [], "spiegazione": "x"}
+        no_sources = _validate_absences(data, self.fx, [], [], attempted=False)
+        self.assertEqual(no_sources["reasons"], {"nessuna_fonte": 1})
         self.assertEqual(self.reasons(["Obert (in dubbio)"], it), {"dichiarata_incerta": 1})
         other_team = {"url": "u", "final_url": "u", "title": "", "text": "Torino: Zapata out per infortunio."}
         self.assertEqual(self.reasons(["Zapata"], [other_team]), {"squadra_assente": 1})

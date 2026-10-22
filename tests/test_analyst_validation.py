@@ -11,8 +11,20 @@ from app.analyst import SOURCE_REFRESH_LIMIT_PER_LEAGUE, VALIDATION_VERSION, _ca
 
 
 class CacheCompatibilityTests(unittest.TestCase):
-    def test_grounding_refresh_budget_is_one_per_league(self):
-        self.assertEqual(SOURCE_REFRESH_LIMIT_PER_LEAGUE, 1)
+    def test_refresh_budget_is_small_per_league(self):
+        self.assertEqual(SOURCE_REFRESH_LIMIT_PER_LEAGUE, 2)
+
+    def test_unconfirmed_absences_are_refreshed_first(self):
+        now = 1_800_000.0
+        items = [{"fx": {"id": i}} for i in ("vecchia", "assenze", "assenze-vecchio-formato")]
+        base = {"provider": "gemini", "validation_version": VALIDATION_VERSION, "sources": []}
+        cache = {
+            "vecchia": (now - 60 * 3600, dict(base)),
+            "assenze": (now - 13 * 3600, {**base, "verification": {"claimed": 3, "confirmed": 0}}),
+            "assenze-vecchio-formato": (now - 14 * 3600, {**base, "validation_warning": "Assenze non confermate automaticamente"}),
+        }
+        selected = _select_source_refresh_ids(items, cache=cache, now=now, limit=2, min_age_seconds=12 * 3600)
+        self.assertEqual(selected, {"assenze", "assenze-vecchio-formato"})
 
     def test_current_validation_version_is_compatible_for_both_providers(self):
         for provider in ("groq", "gemini"):

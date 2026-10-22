@@ -18,7 +18,11 @@ from . import evidence
 
 FACTOR_MIN, FACTOR_MAX = 0.85, 1.15
 CACHE_SECONDS = 72 * 3600  # allineata alla finestra delle notizie recenti (72 ore)
-SOURCE_REFRESH_LIMIT_PER_LEAGUE = 1  # al massimo un retry grounding per lega a ogni esecuzione
+# Analisi in cache senza fonti da rifare a ogni esecuzione, per lega. Hanno la precedenza quelle
+# con assenze segnalate ma non confermate: spesso arrivano da Gemini senza ricerca web e, rifatte
+# quando Groq torna disponibile, ottengono fonti verificabili.
+SOURCE_REFRESH_LIMIT_PER_LEAGUE = 2
+SOURCE_REFRESH_MIN_AGE = 12 * 3600  # ogni analisi senza fonti viene ritentata al massimo ogni 12 ore
 # Versione della validazione: le analisi in cache con una versione diversa vengono rifatte.
 # 9 = verifica delle assenze sul testo degli articoli (prima solo su titolo e URL).
 VALIDATION_VERSION = 9
@@ -262,7 +266,7 @@ def _segments(text: str) -> list[str]:
 # (campo analysis.verification) per capire perché un'assenza non è stata confermata.
 CONFIRMED = "confermata"
 REASONS = ("incertezza", "nessuna_conferma", "giocatore_assente", "squadra_assente",
-           "nome_non_valido", "nessuna_pagina_letta", "dichiarata_incerta")
+           "nome_non_valido", "nessuna_pagina_letta", "nessuna_fonte", "dichiarata_incerta")
 
 
 def _text_check(name: str, team: str, text: str) -> str:
@@ -310,10 +314,14 @@ def _text_confirms_absence(name: str, team: str, text: str) -> bool:
     return _text_check(name, team, text) == CONFIRMED
 
 
-def _absence_reason(name: str, team: str, pages: list[dict] | None) -> str:
-    """Perché un'assenza non è stata confermata, guardando tutte le pagine lette."""
+def _absence_reason(name: str, team: str, pages: list[dict] | None, attempted: bool = True) -> str:
+    """Perché un'assenza non è stata confermata, guardando tutte le pagine lette.
+
+    "nessuna_fonte": l'AI non ha indicato pagine da leggere (risposta senza ricerca web);
+    "nessuna_pagina_letta": c'erano pagine, ma nessuna è stata scaricata.
+    """
     if not pages:
-        return "nessuna_pagina_letta"
+        return "nessuna_pagina_letta" if attempted else "nessuna_fonte"
     reason = "nome_non_valido" if not _player_tokens(name) else "squadra_assente"
     for page in pages:
         reason = _best_reason(reason, _text_check(name, team, page.get("text", "")))
@@ -337,7 +345,8 @@ def _neutral(warning: str | None) -> dict:
             "validation_warning": warning, "evidence": [], "confirmed": 0, "claimed": 0, "reasons": {}}
 
 
-def _validate_absences(data: dict, fx: dict, sources: list[dict], pages: list[dict] | None = None) -> dict:
+def _validate_absences(data: dict, fx: dict, sources: list[dict], pages: list[dict] | None = None,
+                       attempted: bool = True) -> dict:
     """Tiene solo le assenze confermate da una fonte e riduce i fattori AI in proporzione.
 
     - nessuna assenza segnalata: fattori neutri;
@@ -369,7 +378,7 @@ def _validate_absences(data: dict, fx: dict, sources: list[dict], pages: list[di
                 seen.add(source["url"])
                 evidence_sources.append(source)
         else:
-            reason = _absence_reason(name, team, pages)
+            reason = _absence_reason(name, team, pages, attempted)
             reasons[reason] = reasons.get(reason, 0) + 1
 
     n_ok = len(confirmed["home"]) + len(confirmed["away"])
@@ -441,7 +450,7 @@ async def _finalize(data: dict, fx: dict, raw_sources: list[dict], provider: str
         except Exception as exc:  # la lettura delle pagine non deve mai bloccare l'analisi
             print(f"[analyst] lettura fonti {fx['home']}-{fx['away']}: {type(exc).__name__}")
             fetch_report.append({"host": "", "status": f"errore_{type(exc).__name__}", "chars": 0})
-    checked = _validate_absences(data, fx, relevant, pages)
+    checked = _validate_absences(data, fx, relevant, pages, attempted=bool(fetch_report))
     shown, seen = [], set()
     for source in list(checked["evidence"]) + relevant:
         if source["url"] not in seen and len(shown) < 5:
@@ -755,6 +764,13 @@ def _cache_needs_source_refresh(analysis: dict) -> bool:
     return not bool(analysis.get("sources"))
 
 
+def _has_unconfirmed_absences(analysis: dict) -> bool:
+    info = analysis.get("verification") or {}
+    if info:
+        return info.get("claimed", 0) > info.get("confirmed", 0)
+    return "non confermate" in str(analysis.get("validation_warning") or "")
+
+
 def _select_source_refresh_ids(
     items: list[dict],
     cache: dict | None = None,
@@ -762,7 +778,10 @@ def _select_source_refresh_ids(
     limit: int = 8,
     min_age_seconds: int = 24 * 3600,
 ) -> set[str]:
-    """Seleziona poche cache senza fonti, più vecchie di 24 ore, da ritentare."""
+    """Seleziona poche analisi in cache senza fonti da rifare.
+
+    Prima quelle con assenze segnalate ma non confermate, poi le più vecchie.
+    """
     cache = _cache if cache is None else cache
     now = time.time() if now is None else now
     candidates = []
@@ -778,9 +797,9 @@ def _select_source_refresh_ids(
             continue
         if not _cache_is_compatible(analysis) or not _cache_needs_source_refresh(analysis):
             continue
-        candidates.append((saved_at, match_id))
-    candidates.sort(key=lambda item: (item[0], item[1]))
-    return {match_id for _, match_id in candidates[:max(0, limit)]}
+        candidates.append((0 if _has_unconfirmed_absences(analysis) else 1, saved_at, match_id))
+    candidates.sort()
+    return {match_id for _, _, match_id in candidates[:max(0, limit)]}
 
 
 async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict]:
@@ -797,7 +816,7 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
     # quindi il secondo tentativo Gemini è limitato a massimo 6 partite per esecuzione.
     # Evita fino a 8 retry per ognuna delle 6 leghe quando Groq è fuori quota.
     source_refresh_ids = _select_source_refresh_ids(
-        items, min_age_seconds=0, limit=SOURCE_REFRESH_LIMIT_PER_LEAGUE
+        items, min_age_seconds=SOURCE_REFRESH_MIN_AGE, limit=SOURCE_REFRESH_LIMIT_PER_LEAGUE
     )
     from groq import AsyncGroq
     client = AsyncGroq() if os.getenv('GROQ_API_KEY') else None
