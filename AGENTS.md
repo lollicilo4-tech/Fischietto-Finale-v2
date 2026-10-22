@@ -28,6 +28,8 @@ Su questo repository lavorano più agenti AI (Claude e ChatGPT Codex) per conto 
   `docs/index.html` è `static/index.html` con `/api/turno`, `/api/storico`, `/api/classifica`
   sostituiti da `turno.json`, `storico.json`, `classifica.json` (lo controlla un test).
 - Non chiamare API a pagamento o con quote (football-data.org, Groq, Gemini) nei test: usa mock.
+- `tests/test_frontend_render.py` esegue gli script della pagina con un DOM finto
+  (`tests/render_page.js`, serve Node.js) sui JSON di `docs/`: se tocchi l'interfaccia deve restare verde.
 
 ## File da non toccare a mano
 

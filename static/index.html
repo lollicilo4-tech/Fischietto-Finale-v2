@@ -1869,6 +1869,37 @@ a{color:#65baff}
   .top .tags { gap: 5px; }
   .top .tags .tag { font-size: 10px; padding: 5px 8px; min-height: 28px; }
 }
+
+/* Trasparenza: assenze confermate, Storico in breve, "Come funziona", avviso a piè di pagina. */
+.adj-line{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:8px 0 2px;font-size:11px;color:var(--muted)}
+.adj-badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--gold);border:1px solid color-mix(in srgb,var(--gold) 45%,transparent);background:color-mix(in srgb,var(--gold) 10%,transparent)}
+.abs-confirmed{margin:12px 0;padding:12px 14px;border-left:3px solid var(--gold);border-radius:0 12px 12px 0;background:rgba(255,255,255,.03)}
+.abs-confirmed h4{margin:0 0 6px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.abs-confirmed>div{font-size:13px;line-height:1.45;margin:2px 0;overflow-wrap:anywhere}
+.abs-confirmed .s{font-size:11px;color:var(--muted);margin-top:6px}
+.verdict{margin:0 0 14px;padding:14px 16px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.03)}
+.verdict h2{margin:0 0 6px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.verdict p{margin:0;font-size:14px;line-height:1.5}
+.verdict p+p{margin-top:6px;font-size:12px;color:var(--muted)}
+.cal-chart{margin:4px 0 12px}
+.cal-chart svg{display:block;width:100%;max-width:420px;height:auto;margin:0 auto}
+.cal-chart .axis{stroke:var(--line);stroke-width:1}
+.cal-chart .ideal{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:4 4}
+.cal-chart .dot{fill:var(--gold);fill-opacity:.85;stroke:var(--bg);stroke-width:1.5}
+.cal-chart text{fill:var(--muted);font-size:10px;font-family:inherit}
+.cal-chart .lbl{fill:var(--fg);font-size:10px;font-weight:700}
+#p-info .info-section{margin-bottom:12px}
+#p-info .info-section h2{margin:0 0 8px;font-size:18px}
+#p-info .info-section p{margin:0 0 8px;font-size:14px;line-height:1.55;color:var(--fg)}
+#p-info .info-section p:last-child{margin-bottom:0}
+#p-info .info-section ul{margin:0;padding-left:18px;font-size:14px;line-height:1.55}
+.site-foot{margin-top:24px;padding-bottom:8px}
+.site-foot .note{max-width:72ch}
+.site-foot .note+.note{border-top:0;padding-top:0;margin-top:10px}
+.site-foot .responsible b{color:var(--fg)}
+.site-foot a{color:var(--link,#6db2ff)}
+.foot-link{background:none;border:0;padding:0;font:inherit;font-weight:700;color:var(--link,#6db2ff);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.foot-link:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}
 </style>
 
 </head>
@@ -1923,6 +1954,9 @@ a{color:#65baff}
       <button type="button" class="tile" data-go="storico" style="grid-column: 1 / -1; min-height: 100px">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
         <span><b>Storico</b><small id="tile-storico">Pronostici e risultati veri</small></span></button>
+      <button type="button" class="tile" data-open-info style="grid-column: 1 / -1">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>
+        <span><b>Come funziona</b><small>Modello, AI e verifica delle fonti</small></span></button>
     </div>
   </section>
   <section id="p-partite" role="tabpanel" aria-labelledby="t-partite" hidden>
@@ -1961,6 +1995,7 @@ a{color:#65baff}
   </section>
   <section id="p-storico" role="tabpanel" aria-labelledby="t-storico" hidden>
     <p class="lead" id="hist-lead">Ogni pronostico viene salvato prima della partita e confrontato con il risultato.</p>
+    <div id="verdict"></div>
     <div class="hist-hero" id="hist-hero"></div>
     <div class="sum" id="sum"></div>
     <div id="quality"></div>
@@ -1970,8 +2005,50 @@ a{color:#65baff}
     <div class="panel"><div id="table"><div class="msg">Carico la classifica…</div></div></div>
     <p class="legend">Barra blu: prime quattro. Barra rossa: ultime tre.</p>
   </section>
-  <p class="note">Sono stime statistiche, non certezze: una squadra data al 60% non vince 4 volte su 10, succede spesso. I numeri vengono da un modello statistico; le spiegazioni sono generate automaticamente a partire dalle notizie più recenti.</p>
-  <p class="note" style="margin-top:12px">Servizio solo informativo, non è un invito a scommettere. Il gioco d'azzardo può causare dipendenza ed è vietato ai minori di 18 anni. Football data provided by the Football-Data.org API.</p>
+  <section id="p-info" aria-labelledby="info-title" hidden>
+    <h2 class="sub2" id="info-title">Come funziona</h2>
+    <p class="lead">Fischietto finale stima come potrebbe andare una partita. Ecco da dove vengono i numeri e cosa fa l’intelligenza artificiale.</p>
+    <div class="panel info-section">
+      <h2>1. I numeri vengono da un modello statistico</h2>
+      <p>Partiamo dai risultati veri di tutte le partite. Ogni squadra riceve una forza in attacco e una in difesa: segnare alla squadra più forte vale di più, e le partite recenti contano più di quelle vecchie. A inizio stagione si parte anche dalla stagione scorsa.</p>
+      <p>Da queste forze nascono i gol attesi di ogni squadra e, da lì, la probabilità di ogni risultato possibile (0-0, 1-0, 2-1…). Una piccola correzione, stimata per ogni campionato, tiene conto che i pareggi a basso punteggio sono un po’ più frequenti di quanto direbbe il calcolo puro.</p>
+    </div>
+    <div class="panel info-section">
+      <h2>2. Le coppe europee</h2>
+      <p>In Champions, Europa e Conference League ogni squadra gioca poche partite. Per questo il modello parte dal livello del suo campionato (Premier League, LaLiga, Serie A, Bundesliga e Ligue 1 più in alto, gli altri campionati un po’ più in basso) e dalla sua forza in campionato. Le partite europee poi correggono la stima.</p>
+    </div>
+    <div class="panel info-section">
+      <h2>3. Il pronostico consigliato</h2>
+      <p>Non è semplicemente il più probabile. Un “Over 1,5” all’85% sembra forte, ma succede quasi sempre: non dice nulla sulla partita. Il consiglio è il mercato che più si stacca dalla media del campionato, purché abbia almeno il 50% di probabilità. Nella scheda trovi la media accanto al consiglio.</p>
+    </div>
+    <div class="panel info-section">
+      <h2>4. Il ruolo dell’AI</h2>
+      <p>Nelle 48 ore prima della partita l’AI cerca notizie su infortuni e squalifiche. Un’assenza conta solo se un articolo trovato la conferma: nome del giocatore, squadra giusta e una frase che lo dà indisponibile, senza parole come “in dubbio” o “recuperato”.</p>
+      <p>Con assenze confermate l’AI può correggere i gol attesi di una squadra al massimo del 15%, e la partita mostra l’etichetta <b>Corretto per assenze</b> con i link agli articoli. L’AI non inventa probabilità né quote: se non trova fonti verificabili, restano i numeri del modello.</p>
+    </div>
+    <div class="panel info-section">
+      <h2>5. Come controllarci</h2>
+      <p>Ogni pronostico viene salvato prima del calcio d’inizio e non viene mai modificato. Nello <b>Storico</b> lo confrontiamo con il risultato vero: quante volte abbiamo indovinato e quanto le percentuali sono affidabili (se diciamo 60%, deve succedere circa 6 volte su 10).</p>
+    </div>
+    <div class="panel info-section">
+      <h2>6. I limiti</h2>
+      <ul>
+        <li>Sono stime, non certezze: una squadra data al 60% non vince 4 volte su 10.</li>
+        <li>Le “quote eque” sono solo 1 diviso la probabilità: non sono quote di bookmaker.</li>
+        <li>Nelle multiple le partite sono trattate come indipendenti.</li>
+        <li>A inizio stagione e nelle coppe ci sono pochi dati, quindi le stime sono più incerte.</li>
+      </ul>
+    </div>
+    <div class="panel info-section">
+      <h2>7. Gratis e senza scommesse</h2>
+      <p>Il sito è gratuito, non accetta giocate e non mostra quote dei bookmaker. È un servizio solo informativo e non è un invito a scommettere.</p>
+    </div>
+  </section>
+  <footer class="site-foot">
+    <p class="note">Sono stime statistiche, non certezze: una squadra data al 60% non vince 4 volte su 10, e succede spesso. I numeri vengono da un modello statistico; l'AI aggiunge le assenze solo quando le conferma un articolo. <button type="button" class="foot-link" data-open-info>Come funziona →</button></p>
+    <p class="note responsible"><b>Solo informazione, nessuna scommessa.</b> Fischietto finale non accetta giocate, non mostra quote dei bookmaker e non è un invito a scommettere. Il gioco d'azzardo è vietato ai minori di 18 anni e può causare dipendenza. Se il gioco ti crea problemi, puoi chiamare il Telefono Verde Nazionale dell'Istituto Superiore di Sanità: <a href="tel:800558822">800 55 88 22</a> (<a href="https://www.iss.it/dipendenze/-/asset_publisher/zwfXwoiZC6zu/content/telefono-verde-nazionale-per-le-problematiche-legate-al-gioco-d-azzardo-tvnga-800-55-88-22" target="_blank" rel="noopener">informazioni</a>).</p>
+    <p class="note">Football data provided by the Football-Data.org API.</p>
+  </footer>
 </main>
 
 <nav class="nav" role="tablist" aria-label="Sezioni">
@@ -2135,7 +2212,7 @@ a{color:#65baff}
 
   function matchCenter(m, p, a, s, finalOutcome, prudent, rec) {
     return '<div class="match-center">' +
-      '<div class="mc-kicker"><span>Match Center</span><span class="mc-ai">' + (a.ai ? "AI + statistiche" : "Solo statistiche") + '</span></div>' +
+      '<div class="mc-kicker"><span>Match Center</span><span class="mc-ai">' + (a.ai && a.sources.length ? "AI + statistiche" : "Solo statistiche") + '</span></div>' +
       '<div class="mc-teams"><div class="mc-team"><small>CASA</small><b>' + esc(m.home) + '</b></div><div class="mc-vs">VS</div><div class="mc-team"><small>TRASFERTA</small><b>' + esc(m.away) + '</b></div></div>' +
       '<div class="mc-probs"><div class="mc-prob ' + (finalOutcome[0] === "1" ? "hot" : "") + '"><small>1</small><strong>' + pc(p.p1) + '</strong></div>' +
       '<div class="mc-prob ' + (finalOutcome[0] === "X" ? "hot" : "") + '"><small>X</small><strong>' + pc(p.px) + '</strong></div>' +
@@ -2162,12 +2239,27 @@ a{color:#65baff}
       ? ["1X", p.p1 + p.px]
       : ["X2", p.px + p.p2];
     var alt = m.top_scores.slice(1).map(function (x) { return x[0] + "-" + x[1]; }).join(", ");
+    var absHome = a.absences_home || [], absAway = a.absences_away || [], nAbs = absHome.length + absAway.length;
+    var adjusted = a.adjusted != null ? !!a.adjusted : (Math.abs(a.factor_home - 1) > 0.005 || Math.abs(a.factor_away - 1) > 0.005);
     var abs = "";
-    if (a.absences_home.length) abs += "<div><b>" + esc(m.home) + ":</b> " + a.absences_home.map(esc).join(", ") + "</div>";
-    if (a.absences_away.length) abs += "<div><b>" + esc(m.away) + ":</b> " + a.absences_away.map(esc).join(", ") + "</div>";
-    var src = a.sources.length ? '<div class="src-status">Fonti web recuperate automaticamente: la presenza di un link non conferma da sola un’indisponibilità.</div><div class="srcs">' + a.sources.map(function (x) { return '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.title) + "</a>"; }).join("") + "</div>" : "";
-    var adj = (Math.abs(a.factor_home - 1) > 0.005 || Math.abs(a.factor_away - 1) > 0.005)
+    if (nAbs) {
+      abs = '<div class="abs-confirmed"><h4>' + (a.ai ? "Assenze confermate dalle fonti" : "Assenze") + "</h4>" +
+        (absHome.length ? "<div><b>" + esc(m.home) + ":</b> " + absHome.map(esc).join(", ") + "</div>" : "") +
+        (absAway.length ? "<div><b>" + esc(m.away) + ":</b> " + absAway.map(esc).join(", ") + "</div>" : "") +
+        (adjusted ? '<div class="s">Gol attesi corretti: ' + [[m.home, a.factor_home, 0], [m.away, a.factor_away, 1]]
+          .filter(function (t) { return Math.abs(t[1] - 1) > 0.005; })
+          .map(function (t) { return esc(t[0]) + " " + d2(m.xg_base[t[2]]) + " → " + d2(m.xg[t[2]]); }).join(" · ") + "</div>" : "") +
+        "</div>";
+    }
+    var src = a.sources.length ? '<div class="src-status">' + (a.ai && nAbs
+        ? "Ogni assenza elencata è confermata dal testo di almeno uno di questi articoli."
+        : "Fonti web recuperate automaticamente: la presenza di un link non conferma da sola un’indisponibilità.") +
+      '</div><div class="srcs">' + a.sources.map(function (x) { return '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.title) + "</a>"; }).join("") + "</div>" : "";
+    var adj = adjusted && !nAbs
       ? '<div class="abs">Correzione sui gol attesi: ' + esc(m.home) + " ×" + d2(a.factor_home) + ", " + esc(m.away) + " ×" + d2(a.factor_away) + " (gol attesi di base " + d1(m.xg_base[0]) + " - " + d1(m.xg_base[1]) + ").</div>" : "";
+    var adjBadge = adjusted && a.ai
+      ? '<div class="adj-line"><span class="adj-badge">Corretto per assenze</span><span>' + nAbs + (nAbs === 1 ? " assenza confermata" : " assenze confermate") + "</span></div>" : "";
+    var who = a.ai && a.sources.length ? "Analisi con le ultime notizie" : a.ai ? "Analisi AI senza fonti verificabili" : "Analisi statistica";
     return '<details class="match" id="m-' + esc(m.id) + '" style="--i:' + i + '"><summary>' +
       '<div class="mhead"><span>' + esc(when(m)) + '</span><span class="conf ' + m.conf + '">Affidabilità ' + m.conf + "</span></div>" +
       '<div class="match-summary-main">' +
@@ -2179,9 +2271,10 @@ a{color:#65baff}
       '<i class="h" style="flex:' + p.p1 + '"><small>1</small>' + pc(p.p1) + "</i>" +
       '<i class="d" style="flex:' + p.px + '"><small>X</small>' + pc(p.px) + "</i>" +
       '<i class="a" style="flex:' + p.p2 + '"><small>2</small>' + pc(p.p2) + "</i></div>" +
+      adjBadge +
       '<div class="match-pick"><span class="pick-pill">Modello</span><span class="value">' + esc(finalOutcome[0] + ' · ' + finalOutcome[1]) + ' <b>' + pc(finalOutcome[2]) + '</b></span></div>' + (kickoffPassed ? '<div class="match-stale-note">Orario trascorso · risultati live non disponibili</div>' : '') + '</summary>' +
       '<div class="detail">' + matchCenter(m, p, a, s, finalOutcome, prudent, rec) +
-      "<div><div class=\"who\">" + (a.ai ? "Analisi con le ultime notizie" : "Analisi statistica") + '</div><p class="expl">' + esc(a.text) + "</p></div>" +
+      "<div><div class=\"who\">" + who + '</div><p class="expl">' + esc(a.text) + "</p></div>" +
       abs + adj + (a.ai && !a.sources.length ? '<div class="src-status">Analisi AI eseguita, ma nessuna fonte pertinente è stata verificata per questa partita. I fattori restano neutrali.</div>' : "") + src +
       '<div class="final-prediction" aria-label="Pronostico finale del modello">' +
       '<div class="title">Pronostico finale del modello</div>' +
@@ -2454,6 +2547,7 @@ function slipReason(x){
   tabs.forEach(function (t) {
     $("t-" + t).addEventListener("click", function () {
       tabs.forEach(function (u) { $("t-" + u).setAttribute("aria-selected", String(u === t)); $("p-" + u).hidden = u !== t; });
+      $("p-info").hidden = true;
       document.body.classList.toggle("inner", t !== "home");
       $("back").hidden = t === "home";
       window.scrollTo(0, 0);
@@ -2833,9 +2927,67 @@ function slipReason(x){
   /* Restore a requested tab after page initialization, e.g. league cards on Home. */
   if (new URLSearchParams(location.search).get("tab") === "partite") $("t-partite").click();
 
-  Array.prototype.forEach.call(document.querySelectorAll(".tile"), function (b) {
+  Array.prototype.forEach.call(document.querySelectorAll(".tile[data-go]"), function (b) {
     b.addEventListener("click", function () { $("t-" + b.getAttribute("data-go")).click(); });
   });
+
+  /* "Come funziona": pagina senza voce nella barra in basso, aperta dalla Home e dal piè di pagina. */
+  function openInfo() {
+    tabs.forEach(function (u) { $("t-" + u).setAttribute("aria-selected", "false"); $("p-" + u).hidden = true; });
+    $("p-info").hidden = false;
+    document.body.classList.add("inner");
+    $("back").hidden = false;
+    window.scrollTo(0, 0);
+    var title = $("info-title");
+    if (title) { title.setAttribute("tabindex", "-1"); title.focus({ preventScroll: true }); }
+  }
+  Array.prototype.forEach.call(document.querySelectorAll("[data-open-info]"), function (b) {
+    b.addEventListener("click", openInfo);
+  });
+  if (new URLSearchParams(location.search).get("tab") === "info") openInfo();
+
+  /* Storico in breve: il risultato del modello confrontato con due riferimenti che tutti capiscono. */
+  function verdictPanel(h){
+    var n = h.n || 0;
+    if (!n) return "";
+    var rate = h.hit / n, br = h.base_rates || {};
+    var top = ["1", "X", "2"].reduce(function (a, k) { return (br[k] || 0) > (br[a] || 0) ? k : a; }, "1");
+    var names = {"1": "la vittoria della squadra di casa", "X": "il pareggio", "2": "la vittoria della squadra in trasferta"};
+    var first = "Su " + n + " partite il modello ha indovinato l’esito (1, X o 2) nel " + pc(rate) + " dei casi.";
+    if (br[top] != null) first += " Scegliendo sempre " + names[top] + " si indovinerebbe circa il " + pc(br[top]) + ".";
+    var second = "";
+    if (h.brier != null && h.brier_base) {
+      var d = 1 - h.brier / h.brier_base;
+      second = d > 0.005 ? " Le sue percentuali sbagliano il " + Math.round(d * 100) + "% in meno di quelle ricavate dalle sole medie del campionato."
+        : d < -0.005 ? " Per ora le sue percentuali non fanno meglio delle sole medie del campionato."
+        : " Per ora le sue percentuali valgono quanto le sole medie del campionato.";
+    }
+    var caveat = n < 30 ? "Con meno di 30 partite è solo un primo assaggio: i numeri possono cambiare molto."
+      : n < 100 ? "Con " + n + " partite il quadro è indicativo; diventa solido verso le 100."
+      : "Il campione è abbastanza ampio per fidarsi del confronto.";
+    return '<div class="verdict"><h2>In breve</h2><p>' + esc(first + second) + '</p><p>' + esc(caveat) + "</p></div>";
+  }
+
+  /* Calibrazione come grafico: ogni punto è una fascia di probabilità; sulla diagonale è perfetta. */
+  function calChart(cal){
+    if (!cal || !cal.length) return "";
+    var W = 320, H = 230, L = 42, R = 14, T = 12, B = 38, lo = 0.3, hi = 1;
+    function x(v){ return L + (Math.max(lo, Math.min(hi, v)) - lo) / (hi - lo) * (W - L - R); }
+    function y(v){ return H - B - Math.max(0, Math.min(1, v)) * (H - T - B); }
+    var g = '<line class="axis" x1="' + L + '" y1="' + (H - B) + '" x2="' + (W - R) + '" y2="' + (H - B) + '"/>' +
+      '<line class="axis" x1="' + L + '" y1="' + T + '" x2="' + L + '" y2="' + (H - B) + '"/>' +
+      '<line class="ideal" x1="' + x(lo) + '" y1="' + y(lo) + '" x2="' + x(hi) + '" y2="' + y(hi) + '"/>';
+    [0.4, 0.6, 0.8, 1].forEach(function (v) { g += '<text x="' + x(v) + '" y="' + (H - B + 14) + '" text-anchor="middle">' + Math.round(v * 100) + '%</text>'; });
+    [0, 0.5, 1].forEach(function (v) { g += '<text x="' + (L - 6) + '" y="' + (y(v) + 3) + '" text-anchor="end">' + Math.round(v * 100) + '%</text>'; });
+    g += '<text x="' + ((L + W - R) / 2) + '" y="' + (H - 4) + '" text-anchor="middle">Probabilità dichiarata</text>';
+    g += '<text x="12" y="' + ((T + H - B) / 2) + '" text-anchor="middle" transform="rotate(-90 12 ' + ((T + H - B) / 2) + ')">Successi reali</text>';
+    cal.forEach(function (b) {
+      var r = 4 + Math.min(7, Math.sqrt(b.n || 1));
+      g += '<circle class="dot" cx="' + x(b.avg_p) + '" cy="' + y(b.hit) + '" r="' + r.toFixed(1) + '"><title>' + esc(b.label) + ": detto " + pc(b.avg_p) + ", reale " + pc(b.hit) + " su " + b.n + " partite</title></circle>";
+      g += '<text class="lbl" x="' + (x(b.avg_p) + r + 3) + '" y="' + (y(b.hit) + 3) + '">' + b.n + "</text>";
+    });
+    return '<div class="cal-chart"><svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Calibrazione: probabilità dichiarate contro successi reali">' + g + "</svg></div>";
+  }
 
   function modelReliability(h){
     var n=h.n||0, rate=n?h.hit/n:0, brier=h.brier;
@@ -2936,6 +3088,7 @@ function slipReason(x){
     if (h.demo) $("hist-lead").textContent = "Esempio dimostrativo. Con i dati reali qui compaiono i pronostici salvati prima di ogni partita e confrontati con il risultato.";
     if (h.n) $("tile-storico").textContent = "Esito azzeccato " + h.hit + " su " + h.n;
     if (!h.n) { $("hist-hero").innerHTML = '<div class="hist-kicker">Performance del modello</div><div style="margin-top:8px;font-family:var(--font-display);font-size:30px;font-weight:800">Nessun dato ancora</div><p class="hist-caption">Quando saranno disponibili risultati reali, qui vedrai precisione, andamento e qualità delle probabilità.</p>'; $("sum").innerHTML = '<div class="stat wide"><div class="k">Ancora vuoto</div><div class="s">Appena si giocano le partite pronosticate, compare il confronto.</div></div>'; return; }
+    $("verdict").innerHTML = verdictPanel(h);
     var histRate = h.hit / h.n;
     var recent = (h.items || []).slice(0, 12);
     var bars = recent.map(function(x){ return '<i class="'+(x.ok?'y':'n')+'" style="height:'+(x.ok?78:34)+'%"><span>'+(x.ok?'✓':'✕')+'</span></i>'; }).join("");
@@ -2976,7 +3129,7 @@ function slipReason(x){
           ? "Il modello sbaglia il " + Math.round(diff * 100) + "% in meno del metodo semplice."
           : "Per ora il modello non fa meglio del metodo semplice (" + Math.round(diff * 100) + "% di errore in più).") +
         (h.n < 50 ? " Con " + h.n + " partite il dato è ancora ballerino: serve almeno una cinquantina di partite, meglio cento." : "") + "</p></div>" +
-        (cal ? '<div class="panel"><h2>Quando dico 60%, succede?</h2><div class="cal" style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em"><span>Probabilità</span><span>Successi</span><span>Detto</span><span>Reale</span></div><div style="display:flex;flex-direction:column;gap:8px">' + cal + '</div><p class="lead" style="margin:0">Se "Detto" e "Reale" sono vicini, le percentuali sono affidabili.</p></div>' : "") + cl;
+        (cal ? '<div class="panel"><h2>Quando dico 60%, succede?</h2>' + calChart(h.calibration) + '<p class="lead" style="margin:0 0 10px">Ogni punto è una fascia di pronostici (il numero accanto dice quante partite). Più i punti stanno vicino alla linea tratteggiata, più le percentuali sono affidabili.</p><div class="cal" style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em"><span>Probabilità</span><span>Successi</span><span>Detto</span><span>Reale</span></div><div style="display:flex;flex-direction:column;gap:8px">' + cal + '</div><p class="lead" style="margin:0">Se "Detto" e "Reale" sono vicini, le percentuali sono affidabili.</p></div>' : "") + cl;
     }
     $("quality").innerHTML += marketPerformancePanel(h);
     $("hist").innerHTML = h.items.map(function (x) {
