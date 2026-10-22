@@ -128,7 +128,7 @@ _CONFIRMED_TERMS = (
 # e vicino al nome del giocatore.
 _CONFIRMED_TEXT_TERMS = _CONFIRMED_TERMS + (
     "assente", "assenti", "infortunato", "infortunati", "fermo ai box", "ai box",
-    "out", "ko", "lesione", "rottura", "crociato", "salta", "saltera", "salteranno",
+    "out", "lesione", "rottura", "crociato", "salta", "saltera", "salteranno",
     "fuori causa", "non convocato", "non convocati", "squalificata",
     "sidelined", "injured", "unavailable", "will not feature", "wont feature",
     "misses", "to miss", "banned", "ban", "suspension", "absent",
@@ -146,11 +146,11 @@ _UNCERTAIN_TEXT_TERMS = _UNCERTAIN_TERMS + (
     # "non sarà disponibile", "non convocato", "not available", che sono conferme.
     "recuperato", "torna a disposizione", "rientra", "late fitness test", "fitness test",
     "could return", "back in training", "doubt", "a doubt", "touch and go", "race against time",
-    "50 50", "fraglich", "duda", "incierto", "incertain",
+    "50 50", "is back", "returns from", "back from injury", "torna in campo", "torna titolare",
+    "di nuovo disponibile", "fraglich", "duda", "incierto", "incertain",
 )
 _NAME_NOISE = {"infortunio", "lesione", "muscolare", "frattura", "squalifica", "squalificato",
                "out", "indisponibile", "injury", "injured", "suspended"}
-
 
 
 _LOW_QUALITY_HOSTS = (
