@@ -49,7 +49,11 @@ class PublishedLeaguePayloadTests(unittest.TestCase):
                 storico = read_json(storico_path)
                 self.assertFalse(storico.get("demo"), f"{label}: storico dimostrativo")
                 self.assertIsInstance(storico.get("items"), list)
-                self.assertEqual(storico.get("n"), len(storico["items"]))
+                # "n" rappresenta il totale dello storico; "items" è intenzionalmente
+                # limitato agli ultimi 30 risultati per contenere la dimensione del JSON.
+                self.assertIsInstance(storico.get("n"), int)
+                self.assertGreaterEqual(storico["n"], len(storico["items"]))
+                self.assertEqual(len(storico["items"]), min(storico["n"], 30))
                 performance = storico.get("performance", {})
                 if 0 < storico["n"] < 30:
                     self.assertEqual(
