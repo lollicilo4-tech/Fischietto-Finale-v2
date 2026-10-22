@@ -1,5 +1,8 @@
 import unittest
 from datetime import datetime, timezone
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
 
 from app.data import _missing_upcoming_matchdays, _recovered_upcoming_round, _select_upcoming_round, _reconcile_standings
 
@@ -223,6 +226,22 @@ class StandingsReconciliationTests(unittest.TestCase):
     def test_empty_results_leave_provider_standings_untouched(self):
         official = [self.row(1, "Alpha", 1, 1, 0, 0, 1, 0, 3)]
         self.assertEqual(_reconcile_standings(official, []), official)
+
+    def test_europa_and_conference_leagues_are_registered_without_paid_api_codes(self):
+        source = (ROOT / "static" / "index.html").read_text(encoding="utf-8")
+        generator = (ROOT / "generate.py").read_text(encoding="utf-8")
+        data = (ROOT / "app" / "data.py").read_text(encoding="utf-8")
+        for code, label in (("EL", "Europa League"), ("UECL", "Conference League")):
+            with self.subTest(league=label):
+                self.assertIn(f'"{code}": "{label}"', generator)
+                self.assertIn(f'value="{code}"', source)
+                self.assertIn(f'data-league="{code}"', source)
+                self.assertIn(f'{code}:"{label}"', source)
+                self.assertIn(f'"{code}":', data)
+        self.assertIn("raw.githubusercontent.com/oladeeayo/open-matchday", data)
+        self.assertIn('key:"conference-league"', source)
+        self.assertIn('if (/conference league|uefa europa conference/.test(n))', source)
+
 
 if __name__ == "__main__":
     unittest.main()

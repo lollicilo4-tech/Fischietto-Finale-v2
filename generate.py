@@ -79,11 +79,11 @@ def _report_source_coverage(payloads: dict) -> None:
 
 
 async def main() -> int:
-    competitions = {"SA": "Serie A", "PL": "Premier League", "CL": "Champions League", "BL1": "Bundesliga", "PD": "LaLiga", "FL1": "Ligue 1"}
+    competitions = {"SA": "Serie A", "PL": "Premier League", "CL": "Champions League", "BL1": "Bundesliga", "PD": "LaLiga", "FL1": "Ligue 1", "EL": "Europa League", "UECL": "Conference League"}
     payloads = {}
     for code, label in competitions.items():
         try:
-            turno = await pipeline.build_turno(code, use_ai=True)
+            turno = await pipeline.build_turno(code, use_ai=code not in {"EL", "UECL"})
             validate_turno_payload(turno)
             if turno["demo"] and os.getenv("CI"):
                 print(f"Errore ({label}): dati demo non pubblicabili; annullo l'aggiornamento completo per evitare un sito con leghe non aggiornate.")
