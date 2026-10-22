@@ -40,11 +40,15 @@ def _days(date: str, now) -> float:
     return max((now - d).total_seconds() / 86400, 0.0)
 
 
-def build_teams(finished: list[dict], previous: list[dict] | None = None, now=None) -> tuple[dict, float, float]:
+def build_teams(finished: list[dict], previous: list[dict] | None = None, now=None,
+                priors: dict | None = None, prior_k: float | None = None) -> tuple[dict, float, float]:
     """Forza di attacco e difesa di ogni squadra, corretta per il livello degli avversari.
 
     - finished: partite della stagione in corso [{date, home, away, hg, ag}]
     - previous: partite della stagione scorsa, usate come punto di partenza (pesano meno col passare dei giorni)
+    - priors: {squadra: {"att", "def"}} punto di partenza per squadra (nelle coppe: la forza nel
+      campionato nazionale). Senza priori si parte dalla media (1,0), come nei campionati.
+    - prior_k: peso del punto di partenza, in gol attesi "virtuali" (default PRIOR_K)
     Ritorna (teams, media gol in casa, media gol fuori).
     """
     from datetime import datetime, timezone
@@ -57,8 +61,11 @@ def build_teams(finished: list[dict], previous: list[dict] | None = None, now=No
     mu_a = sum(w * m["ag"] for m, w in games) / wsum
 
     names = {m["home"] for m, _ in games} | {m["away"] for m, _ in games}
-    att = {t: 1.0 for t in names}
-    dff = {t: 1.0 for t in names}
+    k = PRIOR_K if prior_k is None else prior_k
+    p_att = {t: (priors or {}).get(t, {}).get("att", 1.0) for t in names}
+    p_def = {t: (priors or {}).get(t, {}).get("def", 1.0) for t in names}
+    att = dict(p_att)
+    dff = dict(p_def)
     for _ in range(80):
         an, ad, dn, dd = ({t: 0.0 for t in names} for _ in range(4))
         for m, w in games:
@@ -67,8 +74,9 @@ def build_teams(finished: list[dict], previous: list[dict] | None = None, now=No
             an[a] += w * m["ag"]; ad[a] += w * mu_a * dff[h]
             dn[h] += w * m["ag"]; dd[h] += w * mu_a * att[a]
             dn[a] += w * m["hg"]; dd[a] += w * mu_h * att[h]
-        na = {t: (an[t] + PRIOR_K) / (ad[t] + PRIOR_K) for t in names}
-        nd = {t: (dn[t] + PRIOR_K) / (dd[t] + PRIOR_K) for t in names}
+        # k gol attesi "virtuali" al ritmo del punto di partenza: con pochi dati la stima resta lì
+        na = {t: (an[t] + k * p_att[t]) / (ad[t] + k) for t in names}
+        nd = {t: (dn[t] + k * p_def[t]) / (dd[t] + k) for t in names}
         ma, md = sum(na.values()) / len(na), sum(nd.values()) / len(nd)
         # media tra vecchio e nuovo valore (damping): evita oscillazioni e converge sempre
         att = {t: math.sqrt(att[t] * na[t] / ma) for t in names}

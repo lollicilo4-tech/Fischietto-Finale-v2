@@ -136,9 +136,11 @@ def _report_update_failure(code: str, label: str, detail: str) -> None:
             )
 
 
+# I campionati prima delle coppe: le coppe usano la forza delle squadre nei campionati
+# già scaricati in questa esecuzione (app/strength.py), senza chiamate API in più.
 COMPETITIONS = {
-    "SA": "Serie A", "PL": "Premier League", "CL": "Champions League", "BL1": "Bundesliga",
-    "PD": "LaLiga", "FL1": "Ligue 1", "EL": "Europa League", "UECL": "Conference League",
+    "SA": "Serie A", "PL": "Premier League", "BL1": "Bundesliga", "PD": "LaLiga", "FL1": "Ligue 1",
+    "CL": "Champions League", "EL": "Europa League", "UECL": "Conference League",
 }
 NO_AI = {"EL", "UECL"}  # dati da CSV pubblico, senza analisi AI per contenere le chiamate
 

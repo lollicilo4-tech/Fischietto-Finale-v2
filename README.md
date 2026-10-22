@@ -89,7 +89,10 @@ football-data.org richiede l'attribuzione, già presente nel piè di pagina.
 - A inizio stagione il modello ha pochi dati: le stime sono spostate verso la media del campionato.
 - football-data.org non fornisce infortuni: li porta l'AI dalla ricerca web, con le fonti mostrate.
   La verifica sul testo non controlla la data dell'articolo: si affida alla ricerca delle ultime 72 ore.
-- Nelle coppe europee la forza delle squadre si stima solo con le partite europee: le stime sono più incerte.
+- Nelle coppe europee ogni squadra parte dal livello del suo campionato (Premier, Liga, Serie A,
+  Bundesliga, Ligue 1; le altre leghe con un livello unico più basso) e, in misura minore, dalla sua
+  forza nel campionato; le partite europee poi correggono la stima (`app/strength.py`). Il peso della
+  forza nazionale è tarato su poche partite: va ricontrollato quando lo storico delle coppe crescerà.
 - Gli orari di Europa e Conference League arrivano dal CSV in ora CET fissa (UTC+1): con l'ora legale conviene verificarli.
 - Le multiple mostrano la probabilità composta assumendo partite indipendenti.
 - Durante le pause per le nazionali non ci sono partite in programma e il sito resta fermo all'ultimo turno.
