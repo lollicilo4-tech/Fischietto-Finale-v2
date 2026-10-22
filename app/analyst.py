@@ -14,7 +14,7 @@ import re
 import unicodedata
 from pathlib import Path
 
-from . import evidence
+from . import evidence, news
 
 FACTOR_MIN, FACTOR_MAX = 0.85, 1.15
 CACHE_SECONDS = 72 * 3600  # allineata alla finestra delle notizie recenti (72 ore)
@@ -440,11 +440,28 @@ def _explanation(data: dict, checked: dict, fx: dict) -> str:
     )
 
 
-async def _finalize(data: dict, fx: dict, raw_sources: list[dict], provider: str) -> dict:
-    """Passaggio comune a Groq e Gemini: verifica le assenze e prepara la risposta."""
+NO_SOURCES_TEXT = (
+    "Per questa partita non sono state trovate fonti web verificabili: non applico correzioni "
+    "per assenze e le probabilità restano quelle del modello statistico."
+)
+
+
+async def _finalize(data: dict, fx: dict, raw_sources: list[dict], provider: str,
+                    pages: list[dict] | None = None, fetch_report: list[dict] | None = None,
+                    search_provider: str | None = None) -> dict:
+    """Passaggio comune a Groq e Gemini: verifica le assenze e prepara la risposta.
+
+    `pages` già scaricate (ricerca fatta dall'app) evitano di leggere due volte gli articoli.
+    """
     relevant = _relevant_sources(raw_sources, fx)
-    pages, fetch_report = [], []
-    if _claims_absences(data):
+    prefetched = pages is not None
+    pages, fetch_report = list(pages or []), list(fetch_report or [])
+    if prefetched:
+        # Gli articoli trovati dalla ricerca dell'app parlano della partita anche se il titolo
+        # non cita le squadre: si mostrano quelli letti davvero.
+        relevant = relevant or [{"title": p.get("title") or p.get("source_title") or p["final_url"],
+                                 "url": p.get("final_url") or p["url"]} for p in pages][:4]
+    elif _claims_absences(data):
         try:
             pages = await evidence.fetch_pages(_fetchable_sources(raw_sources, relevant), report=fetch_report)
         except Exception as exc:  # la lettura delle pagine non deve mai bloccare l'analisi
@@ -459,8 +476,10 @@ async def _finalize(data: dict, fx: dict, raw_sources: list[dict], provider: str
     print(f"[analyst] provider={provider} match={fx['home']}-{fx['away']} sources={len(shown)} "
           f"pages={len(pages)}/{len(fetch_report)} absences={checked['confirmed']}/{checked['claimed']} "
           f"reasons={checked['reasons']}")
+    # Nessuna fonte del tutto (es. Gemini gratuito senza ricerca): il testo dell'AI sarebbe a memoria.
+    text = _explanation(data, checked, fx) if (shown or raw_sources) else NO_SOURCES_TEXT
     return {
-        "ai": True, "text": _explanation(data, checked, fx),
+        "ai": True, "text": text, "search_provider": search_provider,
         "factor_home": checked["factor_home"], "factor_away": checked["factor_away"],
         "absences_home": checked["absences_home"], "absences_away": checked["absences_away"],
         "sources": shown, "provider": provider, "validation_version": VALIDATION_VERSION,
@@ -718,6 +737,86 @@ async def _ask_gemini(fx: dict, base: dict, retry_grounding: bool = False) -> di
     return await _finalize(data, fx, raw_sources, "gemini")
 
 
+READER_SYSTEM = """Sei l'analista di un'app che spiega come potrebbe andare una partita di calcio.
+Ricevi alcuni articoli recenti trovati dall'app. Usa SOLO quello che c'è scritto in questi articoli:
+non aggiungere nulla dalla tua memoria e non fare ricerche.
+Inserisci in "assenze_casa" e "assenze_trasferta" SOLO giocatori che gli articoli danno come
+indisponibili o squalificati per questa partita. Chi è in dubbio, in recupero o rientrato non va
+negli elenchi: puoi citarlo nella spiegazione. Non confondere giocatori di squadre diverse.
+Se gli articoli non parlano di assenze per questa partita, restituisci array vuoti e fattori 1.0.
+Non citare quote dei bookmaker e non incoraggiare a scommettere.
+Rispondi SOLO con un oggetto JSON con questi campi:
+{"assenze_casa": [str], "assenze_trasferta": [str],
+ "fattore_gol_casa": numero tra 0.85 e 1.15, "fattore_gol_trasferta": numero tra 0.85 e 1.15,
+ "spiegazione": "3-4 frasi in italiano, coerenti con gli articoli e con i numeri del modello"}
+Il fattore moltiplica i gol attesi della squadra: sotto 1 se un'assenza offensiva confermata ne riduce
+l'attacco; può aumentare moderatamente se l'avversario perde un difensore titolare."""
+EXCERPT_CHARS = 3500  # testo per articolo passato a Gemini
+MAX_ARTICLES = 4
+
+
+def _excerpt(text: str, fx: dict, limit: int = EXCERPT_CHARS) -> str:
+    """Le frasi utili di un articolo: quelle che citano le squadre o parlano di assenze."""
+    aliases = _team_aliases(fx["home"]) + _team_aliases(fx["away"])
+    keep, size = [], 0
+    for segment in _segments(text):
+        norm = f" {_norm(segment)} "
+        if (any(f" {a} " in norm for a in aliases) or _has_term(norm, _CONFIRMED_TEXT_TERMS)
+                or _has_term(norm, _UNCERTAIN_TEXT_TERMS)):
+            keep.append(segment)
+            size += len(segment) + 1
+            if size >= limit:
+                break
+    excerpt = "\n".join(keep) if keep else text
+    return excerpt[:limit]
+
+
+async def _ask_gemini_reader(fx: dict, base: dict, pages: list[dict]) -> dict:
+    """Gemini gratuito come lettore: estrae le assenze dagli articoli forniti, senza ricerca."""
+    from google import genai
+    from google.genai import types
+
+    articles = "\n\n".join(
+        f"[{i}] {p.get('title') or p.get('source_title') or ''} — {p.get('final_url') or p['url']}\n"
+        f"{_excerpt(p.get('text', ''), fx)}"
+        for i, p in enumerate(pages[:MAX_ARTICLES], start=1)
+    )
+    kickoff = fx.get("kickoff") or "prossimo turno"
+    prompt = (
+        f"Partita: {fx['home']} (casa) contro {fx['away']} (trasferta), {kickoff}.\n"
+        f"Gol attesi {d1(base['lh'])}-{d1(base['la'])}; 1 {pc(base['p1'])}, "
+        f"X {pc(base['px'])}, 2 {pc(base['p2'])}.\n\nARTICOLI:\n{articles}"
+    )
+    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+    config = types.GenerateContentConfig(system_instruction=READER_SYSTEM, temperature=0.2,
+                                         max_output_tokens=650)
+    response = await client.aio.models.generate_content(
+        model=os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite"), contents=prompt, config=config)
+    return _parse_json(_extract_response_text(response))
+
+
+async def _ask_fallback(fx: dict, base: dict, league: str | None, retry_grounding: bool = False) -> dict:
+    """Provider di riserva quando Groq non è disponibile.
+
+    1. Se è configurata una ricerca gratuita (SearXNG o Tavily), l'app cerca le notizie,
+       scarica gli articoli e Gemini li legge: le assenze hanno sempre una fonte verificabile.
+    2. Altrimenti Gemini con Google Search (nel piano gratuito di solito risponde senza fonti,
+       e allora la verifica non applica correzioni).
+    """
+    if news.configured() and os.getenv("GEMINI_API_KEY"):
+        sources, search_provider = await news.search_news(fx, league)
+        report: list[dict] = []
+        pages = await evidence.fetch_pages(sources, report=report) if sources else []
+        if pages:
+            data = await _ask_gemini_reader(fx, base, pages)
+            print(f"[analyst] ricerca={search_provider} match={fx['home']}-{fx['away']} articoli={len(pages)}")
+            return await _finalize(data, fx, sources, "gemini", pages=pages, fetch_report=report,
+                                   search_provider=search_provider)
+        print(f"[analyst] ricerca={search_provider or 'nessuna'} match={fx['home']}-{fx['away']}: "
+              "nessun articolo leggibile, provo Gemini con Google Search")
+    return await _ask_gemini(fx, base, retry_grounding=retry_grounding)
+
+
 def _load_persistent_cache() -> None:
     try:
         raw = json.loads(PERSIST_PATH.read_text(encoding="utf-8"))
@@ -802,7 +901,7 @@ def _select_source_refresh_ids(
     return {match_id for _, _, match_id in candidates[:max(0, limit)]}
 
 
-async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict]:
+async def analyze_all(items: list[dict], teams: dict, use_ai: bool, league: str | None = None) -> list[dict]:
     """items: [{"fx": fixture, "base": {lh, la, p1, px, p2, ...}}]"""
     global _groq_daily_limit_reached
     if not use_ai:
@@ -844,7 +943,7 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
         if rate_limited.is_set():
             if os.getenv("GEMINI_API_KEY"):
                 try:
-                    out = await _ask_gemini(fx, item["base"], retry_grounding=fx["id"] in source_refresh_ids)
+                    out = await _ask_fallback(fx, item["base"], league, retry_grounding=fx["id"] in source_refresh_ids)
                     _cache[fx["id"]] = (time.time(), out)
                     return out
                 except Exception as exc:
@@ -855,7 +954,7 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
             if rate_limited.is_set():
                 if os.getenv("GEMINI_API_KEY"):
                     try:
-                        out = await _ask_gemini(fx, item["base"], retry_grounding=fx["id"] in source_refresh_ids)
+                        out = await _ask_fallback(fx, item["base"], league, retry_grounding=fx["id"] in source_refresh_ids)
                         _cache[fx["id"]] = (time.time(), out)
                         return out
                     except Exception as exc:
@@ -879,7 +978,7 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
                                 continue
                             raise
                 if out is None and os.getenv("GEMINI_API_KEY"):
-                    out = await _ask_gemini(fx, item["base"], retry_grounding=fx["id"] in source_refresh_ids)
+                    out = await _ask_fallback(fx, item["base"], league, retry_grounding=fx["id"] in source_refresh_ids)
                 if out is None:
                     raise RuntimeError("Nessun provider AI disponibile")
             except Exception as exc:  # errore Groq: prova Gemini prima del fallback statistico
@@ -893,7 +992,7 @@ async def analyze_all(items: list[dict], teams: dict, use_ai: bool) -> list[dict
                     rate_limited.set()
                 if client is not None and os.getenv("GEMINI_API_KEY"):
                     try:
-                        out = await _ask_gemini(fx, item["base"], retry_grounding=fx["id"] in source_refresh_ids)
+                        out = await _ask_fallback(fx, item["base"], league, retry_grounding=fx["id"] in source_refresh_ids)
                         _cache[fx["id"]] = (time.time(), out)
                         return out
                     except Exception as gemini_exc:

@@ -170,7 +170,8 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
             old = model.summarize(*model.expected_goals_simple(ts, sh, sa, fx["home"], fx["away"]))
         bases.append({"fx": fx, "base": base, "old": old})
 
-    analyses = await analyst.analyze_all(bases, teams, use_ai=(not ctx["demo"] and use_ai is not False))
+    analyses = await analyst.analyze_all(bases, teams, use_ai=(not ctx["demo"] and use_ai is not False),
+                                         league=league)
 
     out, pending = [], []
     for item, an in zip(bases, analyses):
@@ -194,6 +195,7 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
             "analysis": {**{k: an.get(k) for k in ("ai", "text", "factor_home", "factor_away",
                                                     "absences_home", "absences_away", "sources")},
                          "provider": an.get("provider"),
+                         "search_provider": an.get("search_provider"),
                          # True solo se l'AI ha davvero spostato i gol attesi (assenze confermate)
                          "adjusted": bool(an.get("ai")) and (abs(an["factor_home"] - 1) > 0.005
                                                              or abs(an["factor_away"] - 1) > 0.005),
