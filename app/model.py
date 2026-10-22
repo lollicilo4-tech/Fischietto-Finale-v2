@@ -1,4 +1,4 @@
-"""Modello statistico: Poisson con correzione sui punteggi bassi.
+"""Modello statistico: Poisson con correzione di Dixon-Coles sui punteggi bassi.
 
 Ogni squadra ha una forza in attacco e una in difesa, stimate tenendo conto di chi ha affrontato
 (segnare alla più forte vale di più) e dando più peso alle partite recenti. Come punto di partenza
@@ -125,15 +125,68 @@ def _expected_goals_demo(teams: dict, avg_h: float, avg_a: float, home: str, awa
             A["agf"] * H["hga"] / avg_a * form_factor(A["form"]))
 
 
-def summarize(lh: float, la: float) -> dict:
+# Correzione di Dixon-Coles (1997): i punteggi 0-0, 1-0, 0-1 e 1-1 non sono indipendenti come
+# prevede Poisson. Con rho negativo 0-0 e 1-1 diventano più probabili, 1-0 e 0-1 meno.
+# rho viene stimato dai risultati del campionato (fit_rho); questo è il valore di riserva.
+DEFAULT_RHO = -0.05
+RHO_MIN, RHO_MAX, RHO_STEP = -0.25, 0.10, 0.005
+MIN_RHO_WEIGHT = 60.0  # partite (pesate) minime per stimare rho invece di usare il default
+
+
+def tau(i: int, j: int, lh: float, la: float, rho: float) -> float:
+    if i == 0 and j == 0:
+        return 1 - lh * la * rho
+    if i == 0 and j == 1:
+        return 1 + lh * rho
+    if i == 1 and j == 0:
+        return 1 + la * rho
+    if i == 1 and j == 1:
+        return 1 - rho
+    return 1.0
+
+
+def fit_rho(finished: list[dict], previous: list[dict] | None, teams: dict,
+            mu_h: float, mu_a: float, now=None) -> float:
+    """Stima rho per massima verosimiglianza sui risultati, con gli stessi pesi di build_teams.
+
+    Solo il fattore tau dipende da rho, quindi basta massimizzare la somma pesata di log(tau)
+    su una griglia. Con pochi dati (inizio stagione, coppe) restituisce DEFAULT_RHO.
+    """
+    from datetime import datetime, timezone
+    now = now or datetime.now(timezone.utc)
+    low = []  # solo i punteggi bassi contano: per gli altri tau vale 1
+    total_w = 0.0
+    for m in (previous or []) + finished:
+        H, A = teams.get(m["home"]), teams.get(m["away"])
+        if not H or not A or "att" not in H or "att" not in A:
+            continue
+        w = 0.5 ** (_days(m["date"], now) / HALF_LIFE)
+        total_w += w
+        if m["hg"] <= 1 and m["ag"] <= 1:
+            low.append((m["hg"], m["ag"], mu_h * H["att"] * A["def"], mu_a * A["att"] * H["def"], w))
+    if total_w < MIN_RHO_WEIGHT or not low:
+        return DEFAULT_RHO
+    best_rho, best_ll = DEFAULT_RHO, -math.inf
+    steps = int(round((RHO_MAX - RHO_MIN) / RHO_STEP))
+    for k in range(steps + 1):
+        rho = RHO_MIN + k * RHO_STEP
+        ll = 0.0
+        for i, j, lh, la, w in low:
+            t = tau(i, j, lh, la, rho)
+            if t <= 0:
+                ll = -math.inf
+                break
+            ll += w * math.log(t)
+        if ll > best_ll:
+            best_rho, best_ll = rho, ll
+    return round(best_rho, 3)
+
+
+def summarize(lh: float, la: float, rho: float = DEFAULT_RHO) -> dict:
     cells, total = [], 0.0
     for i in range(MAX_GOALS):
         for j in range(MAX_GOALS):
-            p = pois(lh, i) * pois(la, j)
-            if i == j and i <= 1:
-                p *= 1.08
-            elif i + j == 1:
-                p *= 0.94
+            p = pois(lh, i) * pois(la, j) * max(tau(i, j, lh, la, rho), 0.0)
             cells.append((i, j, p))
             total += p
     r = dict(p1=0.0, px=0.0, p2=0.0, o15=0.0, o25=0.0, u35=0.0, gg=0.0)

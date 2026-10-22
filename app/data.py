@@ -419,7 +419,8 @@ async def _open_matchday_context(competition: str) -> dict:
     teams, avg_h, avg_a = model.build_teams(finished, [])
     standings = _open_matchday_standings(finished)
     return {"demo": False, "teams_simple": model.build_teams_simple(finished),
-            "teams": teams, "avg_h": avg_h, "avg_a": avg_a, "fixtures": fixtures,
+            "teams": teams, "avg_h": avg_h, "avg_a": avg_a,
+            "rho": model.fit_rho(finished, [], teams, avg_h, avg_a), "fixtures": fixtures,
             "finished": finished, "matchday": matchday, "previous": [],
             "standings": standings}
 
@@ -510,7 +511,7 @@ async def real_context(competition: str | None = None) -> dict:
     ]
     simple = model.build_teams_simple(finished)
     return {"demo": False, "teams_simple": simple, "teams": teams, "avg_h": avg_h, "avg_a": avg_a,
-            "fixtures": fixtures, "finished": finished, "matchday": matchday,
+            "rho": model.fit_rho(finished, previous, teams, avg_h, avg_a), "fixtures": fixtures, "finished": finished, "matchday": matchday,
             "previous": previous,
             "standings": _reconcile_standings(_standings(st), finished)}
 

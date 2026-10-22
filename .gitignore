@@ -5,7 +5,7 @@
 
 # Local data and Python artifacts
 data/predictions.db
-data/predictions.json
+# data/predictions.json e data/ai_cache.json sono salvati di proposito nel repository
 __pycache__/
 *.py[cod]
 .venv/

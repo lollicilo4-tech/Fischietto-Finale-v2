@@ -7,28 +7,27 @@ from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
 import app.analyst as analyst
-from app.analyst import SOURCE_REFRESH_LIMIT_PER_LEAGUE, _cache_is_compatible, _cache_needs_source_refresh, _select_source_refresh_ids, _normalized_provider, _extract_grounding_sources, _extract_response_text, _is_groq_daily_limit, _parse_json, _validate_absences
+from app.analyst import SOURCE_REFRESH_LIMIT_PER_LEAGUE, VALIDATION_VERSION, _cache_is_compatible, _cache_needs_source_refresh, _select_source_refresh_ids, _normalized_provider, _extract_grounding_sources, _extract_response_text, _is_groq_daily_limit, _parse_json, _validate_absences
 
 
 class CacheCompatibilityTests(unittest.TestCase):
     def test_grounding_refresh_budget_is_one_per_league(self):
         self.assertEqual(SOURCE_REFRESH_LIMIT_PER_LEAGUE, 1)
 
-    def test_current_gemini_cache_version_is_compatible(self):
-        self.assertTrue(_cache_is_compatible({"provider": "gemini", "validation_version": 8}))
+    def test_current_validation_version_is_compatible_for_both_providers(self):
+        for provider in ("groq", "gemini"):
+            with self.subTest(provider=provider):
+                self.assertTrue(_cache_is_compatible({"provider": provider, "validation_version": VALIDATION_VERSION}))
 
-    def test_provider_is_recovered_for_legacy_cache(self):
-        self.assertEqual(_normalized_provider({"validation_version": 4}), "groq")
-        self.assertEqual(_normalized_provider({"validation_version": 8}), "gemini")
-        self.assertTrue(_cache_is_compatible({"validation_version": 4}))
+    def test_analyses_from_title_only_validation_are_redone(self):
+        # Le versioni precedenti annullavano quasi sempre le correzioni: vanno rifatte.
+        for provider, version in (("groq", 4), ("groq", 6), ("gemini", 8)):
+            with self.subTest(provider=provider, version=version):
+                self.assertFalse(_cache_is_compatible({"provider": provider, "validation_version": version}))
 
-    def test_current_groq_cache_version_is_compatible(self):
-        self.assertTrue(_cache_is_compatible({"provider": "groq", "validation_version": 4}))
-
-    def test_legacy_groq_cache_versions_remain_compatible(self):
-        for version in (1, 2, 3, 4, 5, 6):
-            with self.subTest(version=version):
-                self.assertTrue(_cache_is_compatible({"provider": "groq", "validation_version": version}))
+    def test_cache_without_provider_is_rejected(self):
+        self.assertIsNone(_normalized_provider({"validation_version": VALIDATION_VERSION}))
+        self.assertFalse(_cache_is_compatible({"validation_version": VALIDATION_VERSION}))
 
     def test_old_gemini_cache_versions_are_rejected(self):
         for version in (1, 2, 3, 4, 5, 6, 7):
@@ -37,7 +36,7 @@ class CacheCompatibilityTests(unittest.TestCase):
 
     def test_malformed_cache_entry_is_rejected(self):
         self.assertFalse(_cache_is_compatible(None))
-        self.assertFalse(_cache_is_compatible({"provider": "gemini", "validation_version": "8"}))
+        self.assertFalse(_cache_is_compatible({"provider": "gemini", "validation_version": str(VALIDATION_VERSION)}))
 
 
     def test_legacy_cache_without_sources_is_refreshed(self):
@@ -45,7 +44,7 @@ class CacheCompatibilityTests(unittest.TestCase):
         self.assertTrue(_cache_needs_source_refresh({"validation_version": 4, "sources": []}))
 
     def test_current_gemini_v8_cache_without_sources_needs_bounded_refresh(self):
-        self.assertTrue(_cache_needs_source_refresh({"provider": "gemini", "validation_version": 8, "sources": []}))
+        self.assertTrue(_cache_needs_source_refresh({"provider": "gemini", "validation_version": VALIDATION_VERSION, "sources": []}))
 
     def test_source_refresh_is_bounded_and_prioritizes_oldest_cache(self):
         now = 1_800_000.0
@@ -53,13 +52,13 @@ class CacheCompatibilityTests(unittest.TestCase):
         cache = {
             str(i): (
                 now - (30 + i) * 3600,
-                {"provider": "gemini", "validation_version": 8, "sources": []},
+                {"provider": "gemini", "validation_version": VALIDATION_VERSION, "sources": []},
             )
             for i in range(12)
         }
         cache["11"] = (
             now - 40 * 3600,
-            {"provider": "gemini", "validation_version": 8, "sources": [{"url": "https://example.com"}]},
+            {"provider": "gemini", "validation_version": VALIDATION_VERSION, "sources": [{"url": "https://example.com"}]},
         )
         selected = _select_source_refresh_ids(items, cache=cache, now=now, limit=3)
         self.assertEqual(selected, {"10", "9", "8"})
@@ -68,7 +67,7 @@ class CacheCompatibilityTests(unittest.TestCase):
     def test_source_refresh_skips_recent_cache(self):
         now = 1_800_000.0
         items = [{"fx": {"id": "recent"}}]
-        cache = {"recent": (now - 2 * 3600, {"provider": "gemini", "validation_version": 8, "sources": []})}
+        cache = {"recent": (now - 2 * 3600, {"provider": "gemini", "validation_version": VALIDATION_VERSION, "sources": []})}
         self.assertEqual(_select_source_refresh_ids(items, cache=cache, now=now), set())
 
     def test_cache_with_sources_does_not_need_source_refresh(self):
@@ -129,7 +128,7 @@ class ValidateAbsencesTests(unittest.TestCase):
                 return {
                     "ai": True, "text": "Test fallback", "factor_home": 1.0,
                     "factor_away": 1.0, "absences_home": [], "absences_away": [],
-                    "sources": [], "provider": "gemini", "validation_version": 8,
+                    "sources": [], "provider": "gemini", "validation_version": VALIDATION_VERSION,
                 }
 
             try:
@@ -153,7 +152,7 @@ class ValidateAbsencesTests(unittest.TestCase):
                 analyst._groq_daily_limit_reached = original_limit
 
         # analyze_all() persists its cache to disk. Isolate both the cache and
-        # persistence path so this regression test cannot pollute docs/ai_cache.json.
+        # persistence path so this regression test cannot pollute data/ai_cache.json.
         with tempfile.TemporaryDirectory() as temp_dir:
             with patch.object(analyst, "_cache", {}), patch.object(
                 analyst, "PERSIST_PATH", Path(temp_dir) / "ai_cache.json"
