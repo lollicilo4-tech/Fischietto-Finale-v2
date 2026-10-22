@@ -47,11 +47,28 @@ class DixonColesTests(unittest.TestCase):
         self.assertAlmostEqual(dc["p1"] + dc["px"] + dc["p2"], 1.0, places=6)
 
     def test_fit_rho_recovers_sign_and_size(self):
-        for true_rho in (-0.12, 0.05):
+        # Media su tre campionati simulati: una sola simulazione ha un errore di ±0,03 circa.
+        for true_rho in (-0.12, 0.04):
             with self.subTest(rho=true_rho):
-                games, teams = synthetic_league(true_rho)
-                fitted = model.fit_rho(games, [], teams, 1.5, 1.15, now=NOW)
-                self.assertAlmostEqual(fitted, true_rho, delta=0.05)
+                fits = []
+                for seed in (1, 2, 3):
+                    games, teams = synthetic_league(true_rho, n=6000, seed=seed)
+                    fits.append(model.fit_rho(games, [], teams, 1.5, 1.15, now=NOW))
+                self.assertAlmostEqual(sum(fits) / len(fits), true_rho, delta=0.03)
+
+    def test_estimate_stays_within_plausible_bounds(self):
+        games, teams = synthetic_league(0.05, n=3000, seed=3)
+        fitted = model.fit_rho(games, [], teams, 1.5, 1.15, now=NOW)
+        self.assertLessEqual(fitted, model.RHO_MAX)
+        self.assertGreaterEqual(fitted, model.RHO_MIN)
+
+    def test_small_sample_is_pulled_towards_default(self):
+        # Una coppa con ~100 partite e tanti 1-0/0-1: la stima grezza andrebbe al limite superiore.
+        games, teams = synthetic_league(0.05, n=100, seed=11)
+        fitted = model.fit_rho(games, [], teams, 1.5, 1.15, now=NOW)
+        big, _ = synthetic_league(0.05, n=3000, seed=11)
+        fitted_big = model.fit_rho(big, [], teams, 1.5, 1.15, now=NOW)
+        self.assertLess(abs(fitted - model.DEFAULT_RHO), abs(fitted_big - model.DEFAULT_RHO))
 
     def test_few_matches_use_default(self):
         games, teams = synthetic_league(-0.2, n=20)

@@ -79,6 +79,44 @@ def _report_source_coverage(payloads: dict) -> None:
             summary.write("\n".join(lines) + "\n")
 
 
+def summarize_verification(turno: dict) -> dict:
+    """Totali della verifica delle assenze AI per una lega: segnalate, confermate, motivi, pagine."""
+    out = {"claimed": 0, "confirmed": 0, "reasons": {}, "pages": {}}
+    for match in turno.get("matches", []):
+        info = (match.get("analysis") or {}).get("verification") or {}
+        out["claimed"] += info.get("claimed", 0)
+        out["confirmed"] += info.get("confirmed", 0)
+        for reason, count in (info.get("reasons") or {}).items():
+            out["reasons"][reason] = out["reasons"].get(reason, 0) + count
+        for page in info.get("pages") or []:
+            status = page.get("status", "?")
+            out["pages"][status] = out["pages"].get(status, 0) + 1
+    return out
+
+
+def _report_verification(payloads: dict) -> None:
+    """Riepilogo nel log e nel sommario di Actions: aiuta a capire le assenze non confermate."""
+    rows = []
+    for code, (turno, _, _) in payloads.items():
+        stats = summarize_verification(turno)
+        if not stats["claimed"]:
+            continue
+        label = turno.get("league_name", code)
+        reasons = ", ".join(f"{k} {v}" for k, v in sorted(stats["reasons"].items())) or "-"
+        pages = ", ".join(f"{k} {v}" for k, v in sorted(stats["pages"].items())) or "-"
+        print(f"Assenze AI ({label}): {stats['confirmed']}/{stats['claimed']} confermate; "
+              f"motivi: {reasons}; pagine: {pages}.")
+        rows.append(f"| {label} | {stats['claimed']} | {stats['confirmed']} | {reasons} | {pages} |")
+    summary_path = os.getenv("GITHUB_STEP_SUMMARY")
+    if summary_path and rows:
+        with Path(summary_path).open("a", encoding="utf-8") as summary:
+            summary.write("\n".join([
+                "", "## Verifica assenze AI", "",
+                "| Campionato | Segnalate | Confermate | Motivi mancata conferma | Pagine lette |",
+                "|---|---:|---:|---|---|", *rows, "",
+            ]) + "\n")
+
+
 def _report_update_failure(code: str, label: str, detail: str) -> None:
     """Registra un errore diagnostico nel log e nel riepilogo GitHub Actions."""
     safe_detail = " ".join(str(detail).replace("\r", " ").replace("\n", " ").split())
@@ -163,6 +201,7 @@ async def main() -> int:
         print("Nessuna lega aggiornata: i file pubblicati restano invariati.", file=sys.stderr)
         return EXIT_ALL_FAILED
     _report_source_coverage(payloads)
+    _report_verification(payloads)
     _publish(payloads)
     print(f"Sito aggiornato: {len(payloads)} campionati pubblicati.")
     if failed:

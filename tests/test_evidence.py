@@ -3,9 +3,12 @@ import asyncio
 import unittest
 from unittest.mock import AsyncMock, patch
 
+import httpx
+
 import app.analyst as analyst
 from app.analyst import _text_confirms_absence, _validate_absences
-from app.evidence import html_to_text
+from app.evidence import fetch_pages, html_to_text
+from generate import summarize_verification
 
 
 ARTICLE_IT = """
@@ -134,6 +137,85 @@ class FinalizeTests(unittest.TestCase):
                  "spiegazione": "x"}, self.fx, [], "groq"))
         self.assertEqual(out["factor_home"], 1.0)
         self.assertEqual(out["text"], analyst.NEUTRAL_TEXT)
+
+
+class DiagnosticsTests(unittest.TestCase):
+    fx = {"home": "Genoa", "away": "Fiorentina"}
+
+    def reasons(self, home, pages):
+        data = {"assenze_casa": list(home), "assenze_trasferta": [], "fattore_gol_casa": 0.9,
+                "spiegazione": "x"}
+        return _validate_absences(data, self.fx, [], pages)["reasons"]
+
+    def test_reason_for_each_kind_of_miss(self):
+        it = [page(ARTICLE_IT)]
+        self.assertEqual(self.reasons(["Frendrup"], it), {"incertezza": 1})
+        self.assertEqual(self.reasons(["Retegui"], it), {"giocatore_assente": 1})
+        self.assertEqual(self.reasons(["Malinovskyi"], []), {"nessuna_pagina_letta": 1})
+        self.assertEqual(self.reasons(["Obert (in dubbio)"], it), {"dichiarata_incerta": 1})
+        other_team = {"url": "u", "final_url": "u", "title": "", "text": "Torino: Zapata out per infortunio."}
+        self.assertEqual(self.reasons(["Zapata"], [other_team]), {"squadra_assente": 1})
+        no_confirm = {"url": "u", "final_url": "u", "title": "",
+                      "text": "Genoa, Malinovskyi ha segnato una doppietta nell'ultima partita."}
+        self.assertEqual(self.reasons(["Malinovskyi"], [no_confirm]), {"nessuna_conferma": 1})
+
+    def test_confirmed_absences_have_no_reason(self):
+        self.assertEqual(self.reasons(["Malinovskyi"], [page(ARTICLE_IT)]), {})
+
+    def test_finalize_publishes_diagnostics_without_article_text(self):
+        async def fake_fetch(sources, report=None, **kwargs):
+            report.extend([{"host": "news.example", "status": "ok", "chars": 500},
+                           {"host": "blocked.example", "status": "http_403", "chars": 0}])
+            return [page(ARTICLE_IT)]
+        with patch.object(analyst.evidence, "fetch_pages", side_effect=fake_fetch):
+            out = asyncio.run(analyst._finalize(
+                {"assenze_casa": ["Malinovskyi", "Retegui"], "assenze_trasferta": [],
+                 "fattore_gol_casa": 0.9, "spiegazione": "x"},
+                self.fx, [{"title": "a", "url": "https://news.example/a"}], "groq"))
+        info = out["verification"]
+        self.assertEqual((info["claimed"], info["confirmed"]), (2, 1))
+        self.assertEqual(info["reasons"], {"giocatore_assente": 1})
+        self.assertEqual([p["status"] for p in info["pages"]], ["ok", "http_403"])
+        self.assertNotIn("text", str(info))
+
+    def test_league_summary(self):
+        turno = {"matches": [
+            {"analysis": {"verification": {"claimed": 2, "confirmed": 1, "reasons": {"incertezza": 1},
+                                           "pages": [{"status": "ok"}, {"status": "http_403"}]}}},
+            {"analysis": {"verification": {"claimed": 1, "confirmed": 0, "reasons": {"incertezza": 1},
+                                           "pages": [{"status": "http_403"}]}}},
+            {"analysis": {}},
+        ]}
+        stats = summarize_verification(turno)
+        self.assertEqual((stats["claimed"], stats["confirmed"]), (3, 1))
+        self.assertEqual(stats["reasons"], {"incertezza": 2})
+        self.assertEqual(stats["pages"], {"ok": 1, "http_403": 2})
+
+
+class FetchPagesTests(unittest.TestCase):
+    def test_outcome_of_each_page_is_reported(self):
+        def handler(request):
+            path = request.url.path
+            if path == "/ok":
+                return httpx.Response(200, headers={"content-type": "text/html; charset=utf-8"}, text=ARTICLE_IT)
+            if path == "/blocked":
+                return httpx.Response(403, text="no")
+            if path == "/pdf":
+                return httpx.Response(200, headers={"content-type": "application/pdf"}, content=b"%PDF")
+            if path == "/js":
+                return httpx.Response(200, headers={"content-type": "text/html"},
+                                      text="<html><body><script>render()</script></body></html>")
+            if path == "/redirect":
+                return httpx.Response(302, headers={"location": "https://articoli.example/ok"})
+            return httpx.Response(404)
+
+        sources = [{"title": "t", "url": f"https://news.example/{p}"} for p in ("ok", "blocked", "pdf", "js", "redirect")]
+        report = []
+        pages = asyncio.run(fetch_pages(sources, report=report, transport=httpx.MockTransport(handler)))
+        self.assertEqual([r["status"] for r in report], ["ok", "http_403", "non_html", "vuota", "ok"])
+        self.assertEqual(report[4]["host"], "articoli.example", "l'host è quello finale, dopo il redirect")
+        self.assertEqual(len(pages), 2)
+        self.assertEqual(pages[1]["final_url"], "https://articoli.example/ok")
 
 
 if __name__ == "__main__":

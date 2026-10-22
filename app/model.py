@@ -129,8 +129,11 @@ def _expected_goals_demo(teams: dict, avg_h: float, avg_a: float, home: str, awa
 # prevede Poisson. Con rho negativo 0-0 e 1-1 diventano più probabili, 1-0 e 0-1 meno.
 # rho viene stimato dai risultati del campionato (fit_rho); questo è il valore di riserva.
 DEFAULT_RHO = -0.05
-RHO_MIN, RHO_MAX, RHO_STEP = -0.25, 0.10, 0.005
-MIN_RHO_WEIGHT = 60.0  # partite (pesate) minime per stimare rho invece di usare il default
+# Valori plausibili: in letteratura rho è quasi sempre tra -0,15 e 0. Il limite superiore è
+# stretto perché con pochi dati (coppe) la stima finiva su valori positivi poco credibili.
+RHO_MIN, RHO_MAX, RHO_STEP = -0.20, 0.05, 0.005
+MIN_RHO_WEIGHT = 60.0      # partite (pesate) minime per stimare rho invece di usare il default
+RHO_PRIOR_WEIGHT = 150.0   # "partite virtuali" a favore del default: con pochi dati la stima resta vicina a -0,05
 
 
 def tau(i: int, j: int, lh: float, la: float, rho: float) -> float:
@@ -150,7 +153,10 @@ def fit_rho(finished: list[dict], previous: list[dict] | None, teams: dict,
     """Stima rho per massima verosimiglianza sui risultati, con gli stessi pesi di build_teams.
 
     Solo il fattore tau dipende da rho, quindi basta massimizzare la somma pesata di log(tau)
-    su una griglia. Con pochi dati (inizio stagione, coppe) restituisce DEFAULT_RHO.
+    su una griglia. La stima viene poi avvicinata a DEFAULT_RHO in proporzione ai dati:
+    peso W delle partite contro RHO_PRIOR_WEIGHT. Un campionato intero (W ~ 400-600) si fida
+    soprattutto dei dati; una coppa con poche partite resta vicina al default.
+    Sotto MIN_RHO_WEIGHT restituisce direttamente DEFAULT_RHO.
     """
     from datetime import datetime, timezone
     now = now or datetime.now(timezone.utc)
@@ -179,7 +185,8 @@ def fit_rho(finished: list[dict], previous: list[dict] | None, teams: dict,
             ll += w * math.log(t)
         if ll > best_ll:
             best_rho, best_ll = rho, ll
-    return round(best_rho, 3)
+    share = total_w / (total_w + RHO_PRIOR_WEIGHT)
+    return round(DEFAULT_RHO + (best_rho - DEFAULT_RHO) * share, 3)
 
 
 def summarize(lh: float, la: float, rho: float = DEFAULT_RHO) -> dict:
