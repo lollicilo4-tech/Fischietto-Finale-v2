@@ -157,11 +157,12 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
     ctx = await data.get_context(league)
     teams, avg_h, avg_a = ctx["teams"], ctx["avg_h"], ctx["avg_a"]
     base_rates = market_base_rates(ctx.get("previous", []) + ctx.get("finished", []))
+    rho = ctx.get("rho", model.DEFAULT_RHO)
 
     bases = []
     for fx in ctx["fixtures"]:
         lh, la = model.expected_goals(teams, avg_h, avg_a, fx["home"], fx["away"])
-        base = model.summarize(lh, la)
+        base = model.summarize(lh, la, rho)
         base.update(lh=lh, la=la)
         old = None
         if ctx.get("teams_simple"):  # modello della prima versione, solo per il confronto
@@ -176,7 +177,7 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
         fx = item["fx"]
         # Il modello ricalcola le probabilità con i fattori proposti dall'AI (limitati a 0,85-1,15)
         lh, la = item["base"]["lh"] * an["factor_home"], item["base"]["la"] * an["factor_away"]
-        s = model.summarize(lh, la)
+        s = model.summarize(lh, la, rho)
         if not an["ai"]:  # il testo a regole deve citare le stesse cifre mostrate nella scheda
             an["text"] = analyst.fallback_analysis(fx, {**s, "lh": lh, "la": la}, teams)["text"]
         prob = {k: round(s[k], 4) for k in KEYS}
@@ -227,6 +228,7 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
             "ai_error": ai_error,
             "ai_status": ai_status,
             "matchday": ctx.get("matchday"),
+            "rho": round(rho, 3),
             "ai_adjusted": sum(1 for m in out if m["analysis"]["adjusted"]),
             "played": [] if ctx["demo"] else store.recent(ctx["finished"], league=league),
             "market_performance": history_data.get("market_performance", {}),
