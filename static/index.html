@@ -1982,6 +1982,8 @@ a{color:#65baff}
 .lc-stat-bar{display:flex;gap:3px;height:6px;margin-top:4px}
 .lc-stat-bar i{display:block;height:100%;border-radius:3px}
 .lc-stat-bar i.h{background:var(--home)}.lc-stat-bar i.a{background:var(--away);margin-left:auto}
+.lc-mh{fill:var(--home)}.lc-ma{fill:var(--away)}
+.lc-gap{fill:color-mix(in srgb,var(--line) 45%,transparent)}
 </style>
 
 </head>
@@ -2122,7 +2124,7 @@ a{color:#65baff}
     </div>
     <div class="panel info-section">
       <h2>6. Il Live Center</h2>
-      <p>Aprendo il dettaglio di una partita in corso trovi la linea del tempo con gol, cartellini e cambi, le statistiche se il servizio dati le fornisce, e la probabilità di 1, X e 2 minuto per minuto: parte dal pronostico pre-partita e si aggiorna con risultato, minuto ed espulsioni. Non c’è il “momentum d’attacco” di altre app: servono dati di pressione minuto per minuto che il servizio gratuito non dà, e non li inventiamo.</p>
+      <p>Aprendo il dettaglio di una partita in corso trovi la linea del tempo con gol, cartellini e cambi, le statistiche se il servizio dati le fornisce, e la probabilità di 1, X e 2 minuto per minuto: parte dal pronostico pre-partita e si aggiorna con risultato, minuto ed espulsioni. C’è anche un <b>momentum stimato</b>, simile a quello di altre app: il servizio gratuito dà solo i totali (attacchi pericolosi, tiri, angoli), quindi la pagina li rilegge ogni minuto e disegna di quanto crescono per ciascuna squadra. Funziona da quando apri la partita e finché tieni aperti i dettagli: i minuti precedenti restano vuoti, perché non li inventiamo.</p>
     </div>
     <div class="panel info-section">
       <h2>7. Come controllarci</h2>
@@ -2666,6 +2668,7 @@ function slipReason(x){
     liveLoaded = true;
     status.hidden = false;
     status.textContent = "Caricamento delle partite in diretta…";
+    var reopen = liveOpenSlugs(list);
     list.innerHTML = "";
     if (refresh) { refresh.disabled = true; refresh.textContent = "Caricamento…"; }
 
@@ -2938,86 +2941,13 @@ function slipReason(x){
           details.hidden = !open;
           toggle.lastElementChild.textContent = open ? "−" : "＋";
           if (!open || card.dataset.detailsLoaded === "true" || card.dataset.detailsLoading === "true") return;
-
-          var slug = card.getAttribute("data-live-slug");
-          if (!slug) {
-            card.dataset.detailsLoaded = "true";
-            if (!details.querySelector(".live-events")) {
-              var note = document.createElement("p");
-              note.className = "expl";
-              note.textContent = "Il feed non fornisce un identificativo partita utilizzabile per caricare la cronologia.";
-              details.appendChild(note);
-            }
-            return;
-          }
-          card.dataset.detailsLoading = "true";
-          var loading = document.createElement("p");
-          loading.className = "expl live-detail-loading";
-          loading.textContent = "Caricamento eventi e statistiche…";
-          details.appendChild(loading);
-          fetch("https://sportscore.com/api/widget/match/?sport=football&slug=" + encodeURIComponent(slug), {cache:"no-store"})
-            .then(function(response) { if (!response.ok) throw new Error("HTTP " + response.status); return response.json(); })
-            .then(function(payload) {
-              var match = payload && (payload.match || payload.data || payload.result || payload);
-              if (match && match.match && typeof match.match === "object") match = match.match;
-              var timeline = match && (match.timeline || match.events || match.incidents || match.match_events || match.fixture_events);
-              if (timeline && !Array.isArray(timeline)) timeline = timeline.events || timeline.items || timeline.data || [];
-              if (!Array.isArray(timeline)) timeline = [];
-              var chartsHtml = liveChartsHtml({ home: card.getAttribute("data-home"), away: card.getAttribute("data-away"),
-                homeId: match && match.home_team && match.home_team.id, awayId: match && match.away_team && match.away_team.id,
-                homeScore: card.getAttribute("data-hs"), awayScore: card.getAttribute("data-as"),
-                status: card.getAttribute("data-status") || (match && (match.minute || match.elapsed)), events: timeline,
-                stats: match && (match.statistics || match.stats || match.match_statistics) });
-              if (chartsHtml) {
-                var oldCharts = details.querySelector(".live-charts");
-                if (oldCharts) oldCharts.remove();
-                var holder = document.createElement("div");
-                holder.innerHTML = chartsHtml;
-                if (holder.firstElementChild) details.insertBefore(holder.firstElementChild, details.querySelector(".live-events") || null);
-              }
-              var existing = details.querySelector(".live-events");
-              if (existing) existing.remove();
-              var items = timeline.map(function(ev) {
-                if (!ev || typeof ev !== "object") return "";
-                function pick(keys) {
-                  for (var i=0;i<keys.length;i++) if (ev[keys[i]] != null && valueText(ev[keys[i]]).trim()) return valueText(ev[keys[i]]).trim();
-                  return "";
-                }
-                var minute = pick(["minute","time","elapsed","match_time"]);
-                if (minute && typeof minute === "object") minute = valueText(minute.elapsed || minute.minute || minute.value);
-                var kind = pick(["type","event_type","incident_type","name","detail","description","comments"]);
-                var player = pick(["player","player_name","participant","athlete"]);
-                var team = pick(["team","team_name","participant_name"]);
-                var label = [kind,player].filter(Boolean).join(" · ");
-                return label ? '<li class="live-event"><span class="live-event-minute">' + esc(minute ? String(minute).replace(/\'$/, "") + "'" : "•") + '</span><span><b>' + esc(label) + '</b>' + (team ? '<small>' + esc(team) + '</small>' : '') + '</span></li>' : "";
-              }).filter(Boolean);
-              if (items.length) {
-                var section = document.createElement("section");
-                section.className = "live-events";
-                section.innerHTML = '<h4>Eventi della partita</h4><ol>' + items.join("") + '</ol>';
-                details.appendChild(section);
-                var fallback = details.querySelector(".expl");
-                if (fallback && fallback.textContent.indexOf("non include eventi") >= 0) fallback.remove();
-              } else if (!details.querySelector(".live-events")) {
-                var empty = document.createElement("p");
-                empty.className = "expl";
-                empty.textContent = "Il dettaglio del servizio non contiene eventi verificabili per questa partita.";
-                details.appendChild(empty);
-              }
-              card.dataset.detailsLoaded = "true";
-            })
-            .catch(function() {
-              var err = document.createElement("p");
-              err.className = "expl";
-              err.textContent = "Non è stato possibile caricare gli eventi dal servizio. Puoi riprovare aggiornando le partite live.";
-              details.appendChild(err);
-            })
-            .finally(function() {
-              card.dataset.detailsLoading = "false";
-              var loader = details.querySelector(".live-detail-loading");
-              if (loader) loader.remove();
-            });
+          loadLiveDetails(card, false);
         };
+        /* Dopo l'aggiornamento automatico riapre le partite che erano aperte e ne ricarica i dettagli. */
+        Array.prototype.forEach.call(list.querySelectorAll(".live-match"), function(card) {
+          var slug = card.getAttribute("data-live-slug"), toggle = card.querySelector(".live-detail-toggle");
+          if (slug && toggle && reopen[slug]) toggle.click();
+        });
       })
       .catch(function() {
         liveLoaded = false;
@@ -3030,6 +2960,112 @@ function slipReason(x){
         if (refresh) { refresh.disabled = false; refresh.textContent = "↻ Aggiorna"; }
       });
   }
+  /* Partite live con i dettagli aperti, per riaprirle dopo l'aggiornamento automatico. */
+  function liveOpenSlugs(list) {
+    var out = {};
+    if (!list) return out;
+    Array.prototype.forEach.call(list.querySelectorAll(".live-match"), function(card) {
+      var toggle = card.querySelector(".live-detail-toggle"), slug = card.getAttribute("data-live-slug");
+      if (slug && toggle && toggle.getAttribute("aria-expanded") === "true") out[slug] = true;
+    });
+    return out;
+  }
+  /* Eventi, statistiche e grafici di una partita. quiet: aggiornamento periodico, senza messaggi di caricamento. */
+  function loadLiveDetails(card, quiet) {
+    var details = card.querySelector(".live-match-details");
+    if (!details || card.dataset.detailsLoading === "true") return;
+    var slug = card.getAttribute("data-live-slug");
+    if (!slug) {
+      card.dataset.detailsLoaded = "true";
+      if (!details.querySelector(".live-events")) {
+        var note = document.createElement("p");
+        note.className = "expl";
+        note.textContent = "Il feed non fornisce un identificativo partita utilizzabile per caricare la cronologia.";
+        details.appendChild(note);
+      }
+      return;
+    }
+    card.dataset.detailsLoading = "true";
+    if (!quiet) {
+      var loading = document.createElement("p");
+      loading.className = "expl live-detail-loading";
+      loading.textContent = "Caricamento eventi e statistiche…";
+      details.appendChild(loading);
+    }
+    fetch("https://sportscore.com/api/widget/match/?sport=football&slug=" + encodeURIComponent(slug), {cache:"no-store"})
+      .then(function(response) { if (!response.ok) throw new Error("HTTP " + response.status); return response.json(); })
+      .then(function(payload) {
+        var match = lcMatchFromPayload(payload);
+        var timeline = lcTimelineOf(match);
+        var status = lcMinuteOf(match, card.getAttribute("data-status"));
+        var hs = match && match.home_score != null ? match.home_score : card.getAttribute("data-hs");
+        var as = match && match.away_score != null ? match.away_score : card.getAttribute("data-as");
+        var stats = match && (match.statistics || match.stats || match.match_statistics);
+        var momentum = lcRecordSample(slug, lcNowMinute(status, lcEvents(timeline, card.getAttribute("data-home"), card.getAttribute("data-away"))), lcStats(stats));
+        var chartsHtml = liveChartsHtml({ home: card.getAttribute("data-home"), away: card.getAttribute("data-away"),
+          homeId: match && match.home_team && match.home_team.id, awayId: match && match.away_team && match.away_team.id,
+          homeScore: hs, awayScore: as, status: status, events: timeline, stats: stats, momentum: momentum });
+        var oldCharts = details.querySelector(".live-charts");
+        if (chartsHtml) {
+          var holder = document.createElement("div");
+          holder.innerHTML = chartsHtml;
+          if (holder.firstElementChild) {
+            if (oldCharts) details.replaceChild(holder.firstElementChild, oldCharts);
+            else details.insertBefore(holder.firstElementChild, details.querySelector(".live-events") || null);
+          }
+        }
+        var existing = details.querySelector(".live-events");
+        var items = timeline.map(function(ev) {
+          if (!ev || typeof ev !== "object") return "";
+          function pick(keys) {
+            for (var i=0;i<keys.length;i++) if (ev[keys[i]] != null && valueText(ev[keys[i]]).trim()) return valueText(ev[keys[i]]).trim();
+            return "";
+          }
+          var minute = pick(["minute","time","elapsed","match_time"]);
+          if (minute && typeof minute === "object") minute = valueText(minute.elapsed || minute.minute || minute.value);
+          var kind = pick(["type","event_type","incident_type","name","detail","description","comments"]);
+          var player = pick(["player","player_name","participant","athlete"]);
+          var team = pick(["team","team_name","participant_name"]);
+          if (!team && (ev.side === "home" || ev.side === "away")) team = card.getAttribute(ev.side === "home" ? "data-home" : "data-away") || "";
+          var label = [kind,player].filter(Boolean).join(" · ");
+          return label ? '<li class="live-event"><span class="live-event-minute">' + esc(minute ? String(minute).replace(/\'$/, "") + "'" : "•") + '</span><span><b>' + esc(label) + '</b>' + (team ? '<small>' + esc(team) + '</small>' : '') + '</span></li>' : "";
+        }).filter(Boolean);
+        if (items.length) {
+          var section = document.createElement("section");
+          section.className = "live-events";
+          section.innerHTML = '<h4>Eventi della partita</h4><ol>' + items.join("") + '</ol>';
+          if (existing) details.replaceChild(section, existing); else details.appendChild(section);
+          var fallback = details.querySelector(".expl");
+          if (fallback && fallback.textContent.indexOf("non include eventi") >= 0) fallback.remove();
+        } else if (!existing && !details.querySelector(".live-no-events")) {
+          var empty = document.createElement("p");
+          empty.className = "expl live-no-events";
+          empty.textContent = "Il dettaglio del servizio non contiene eventi verificabili per questa partita.";
+          details.appendChild(empty);
+        }
+        card.dataset.detailsLoaded = "true";
+      })
+      .catch(function() {
+        if (quiet) return; // un aggiornamento periodico fallito lascia i dati già mostrati
+        var err = document.createElement("p");
+        err.className = "expl";
+        err.textContent = "Non è stato possibile caricare gli eventi dal servizio. Puoi riprovare aggiornando le partite live.";
+        details.appendChild(err);
+      })
+      .finally(function() {
+        card.dataset.detailsLoading = "false";
+        var loader = details.querySelector(".live-detail-loading");
+        if (loader) loader.remove();
+      });
+  }
+  /* Ogni minuto aggiorna le partite aperte: eventi, statistiche e un nuovo punto del momentum. */
+  window.setInterval(function() {
+    if (!livePanelIsVisible()) return;
+    Array.prototype.forEach.call(document.querySelectorAll("#live-list .live-match"), function(card) {
+      var toggle = card.querySelector(".live-detail-toggle");
+      if (toggle && toggle.getAttribute("aria-expanded") === "true" && card.dataset.detailsLoaded === "true") loadLiveDetails(card, true);
+    });
+  }, 60000);
   function livePanelIsVisible() {
     var panel = $("p-live");
     return !!panel && !panel.hidden && !document.hidden;
@@ -3378,9 +3414,10 @@ function slipReason(x){
   /* ---------- Live Center: grafici di andamento (stile Sofascore, solo dati disponibili) ----------
      1) linea del tempo con gol, cartellini e cambi sopra (casa) e sotto (trasferta);
      2) probabilità 1-X-2 minuto per minuto, ricalcolate dal modello con risultato, minuto e rossi;
-     3) statistiche live (possesso, tiri...) se il feed le fornisce.
-     Il "momentum d'attacco" di Sofascore richiede dati di pressione minuto per minuto che il feed
-     gratuito non fornisce: non viene inventato. */
+     3) momentum stimato: il feed dà solo i totali (attacchi pericolosi, tiri, angoli), quindi la
+        pagina li registra a ogni aggiornamento e disegna di quanto crescono minuto per minuto.
+        Vale da quando la partita è stata aperta in questo browser: i minuti prima non si inventano;
+     4) statistiche live (possesso, tiri...) se il feed le fornisce. */
   function lcNorm(v) { return String(v || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim(); }
   function lcText(v) {
     if (v == null) return "";
@@ -3521,7 +3558,7 @@ function slipReason(x){
     "shots": "Tiri totali", "shots on target": "Tiri in porta", "shots on goal": "Tiri in porta", "corner kicks": "Calci d'angolo", "corners": "Calci d'angolo",
     "fouls": "Falli", "offsides": "Fuorigioco", "yellow cards": "Cartellini gialli", "red cards": "Cartellini rossi", "expected goals": "Gol attesi (xG)",
     "xg": "Gol attesi (xG)", "big chances": "Grandi occasioni", "goalkeeper saves": "Parate", "saves": "Parate", "passes": "Passaggi",
-    "dangerous attacks": "Attacchi pericolosi", "attacks": "Attacchi" };
+    "dangerous attacks": "Attacchi pericolosi", "attacks": "Attacchi", "shots off target": "Tiri fuori", "shots off goal": "Tiri fuori" };
   function lcStats(raw) {
     var out = [], seen = {};
     var push = function (name, h, a) {
@@ -3555,13 +3592,110 @@ function slipReason(x){
         '<div class="lc-stat-bar"><i class="h" style="width:' + Math.round(s.home / tot * 100) + '%"></i><i class="a" style="width:' + Math.round(s.away / tot * 100) + '%"></i></div></div>';
     }).join("") + "</div>";
   }
-  /* Blocco completo. o: {home, away, homeId, awayId, homeScore, awayScore, status, events (grezzi), stats (grezze)} */
+  /* Risposta di api/widget/match: {match: {...}} oppure varianti con data/result. */
+  function lcMatchFromPayload(payload) {
+    var match = payload && (payload.match || payload.data || payload.result || payload);
+    if (match && match.match && typeof match.match === "object") match = match.match;
+    return match && typeof match === "object" ? match : {};
+  }
+  function lcTimelineOf(match) {
+    var t = match && (match.timeline || match.events || match.incidents || match.match_events || match.fixture_events);
+    if (t && !Array.isArray(t)) t = t.events || t.items || t.data || [];
+    return Array.isArray(t) ? t : [];
+  }
+  /* Minuto dal dettaglio (più recente della lista); se manca, lo stato della scheda. */
+  function lcMinuteOf(match, fallback) {
+    var st = lcNorm(match && match.status);
+    if (/^(finished|ended|ft)$/.test(st)) return "FT";
+    var m = match && (match.live_minute != null && match.live_minute !== "" ? match.live_minute : match.minute != null ? match.minute : match.elapsed);
+    if (m != null && m !== "") return String(m);
+    if (/half ?time|^ht$/.test(lcNorm(match && match.status_text))) return "HT";
+    return fallback || "";
+  }
+  /* Indice di pressione cumulato di ogni squadra, dai totali del feed. */
+  var LC_PRESSURE = { "Attacchi pericolosi": 1, "Tiri in porta": 4, "Tiri fuori": 2, "Calci d'angolo": 2 };
+  function lcPressure(stats) {
+    var h = 0, a = 0, any = false;
+    (stats || []).forEach(function (s) { var w = LC_PRESSURE[s.label]; if (w) { h += s.home * w; a += s.away * w; any = true; } });
+    return any ? { h: h, a: a } : null;
+  }
+  var LC_MOMENTUM_KEY = "ff-momentum-v1", LC_SAMPLES = {};
+  /* Aggiunge un campione {m, h, a} per la partita e ritorna la serie. Salvata nel browser (6 ore)
+     così chi ricarica la pagina non perde quanto già registrato. */
+  function lcRecordSample(key, minute, stats) {
+    var p = lcPressure(stats);
+    if (!key) return [];
+    var all = {};
+    try { all = JSON.parse(localStorage.getItem(LC_MOMENTUM_KEY) || "{}") || {}; } catch (e) { all = {}; }
+    var now = Date.now();
+    Object.keys(all).forEach(function (k) { if (!all[k] || !Array.isArray(all[k].s) || now - all[k].t > 6 * 3600 * 1000) delete all[k]; });
+    var entry = LC_SAMPLES[key] || all[key] || { t: now, s: [] };
+    var list = entry.s;
+    if (minute == null || !p) return list;
+    var last = list[list.length - 1];
+    if (last && minute <= last.m) {  // stesso minuto, o recupero del 1° tempo seguito dal 46'
+      last.h = Math.max(last.h, p.h); last.a = Math.max(last.a, p.a);
+    } else {
+      list.push({ m: minute, h: p.h, a: p.a });
+    }
+    if (list.length > 150) list.splice(0, list.length - 150);
+    entry.t = now; LC_SAMPLES[key] = entry; all[key] = entry;
+    try { localStorage.setItem(LC_MOMENTUM_KEY, JSON.stringify(all)); } catch (e) { /* storage non disponibile: resta in memoria */ }
+    return list;
+  }
+  /* Barre minuto per minuto: crescita della pressione di casa meno quella ospite. Oltre 5 minuti
+     senza campioni (pagina chiusa) non si spalma nulla: quel tratto resta vuoto. */
+  function lcMomentumBars(samples) {
+    var bars = [];
+    for (var i = 1; i < (samples || []).length; i++) {
+      var p = samples[i - 1], q = samples[i], span = q.m - p.m;
+      if (span < 1 || span > 5) continue;
+      var dh = Math.max(0, q.h - p.h) / span, da = Math.max(0, q.a - p.a) / span;
+      for (var m = p.m + 1; m <= q.m; m++) bars.push({ m: m, v: dh - da });
+    }
+    return bars;
+  }
+  function lcMomentumSvg(bars, events, now, first) {
+    var W = 340, H = 104, L = 8, R = 8, mid = 52, end = Math.max(90, now || 0), amp = 34;
+    var step = (W - L - R) / end, x = function (m) { return L + Math.min(m, end) / end * (W - L - R); };
+    var top = Math.max(6, Math.max.apply(null, bars.map(function (b) { return Math.abs(b.v); }).concat([0])));
+    var g = first > 0 ? '<rect class="lc-gap" x="' + L + '" y="' + (mid - amp) + '" width="' + (x(first) - L).toFixed(1) + '" height="' + (2 * amp) + '" rx="3"/>' : "";
+    g += '<line class="lc-axis" x1="' + L + '" y1="' + mid + '" x2="' + (W - R) + '" y2="' + mid + '"/>';
+    g += '<line class="lc-ht" x1="' + x(45) + '" y1="' + (mid - amp) + '" x2="' + x(45) + '" y2="' + (mid + amp) + '"/>';
+    bars.forEach(function (b) {
+      if (!b.v) return;
+      var h = Math.max(1.5, Math.abs(b.v) / top * amp), w = Math.max(1.2, step * 0.72);
+      g += '<rect class="' + (b.v > 0 ? "lc-mh" : "lc-ma") + '" x="' + (x(b.m) - step + (step - w) / 2).toFixed(1) + '" y="' + (b.v > 0 ? mid - h : mid).toFixed(1) +
+        '" width="' + w.toFixed(1) + '" height="' + h.toFixed(1) + '" rx="1"/>';
+    });
+    events.forEach(function (e) {
+      if ((e.kind !== "goal" && e.kind !== "owngoal") || !e.side) return;
+      g += '<text class="lc-ev" x="' + x(e.minute) + '" y="' + (e.side === "home" ? mid - amp - 4 : mid + amp + 13) + '" text-anchor="middle">⚽</text>';
+    });
+    [0, 45, 90].forEach(function (m) { g += '<text class="lc-tick" x="' + x(m) + '" y="' + (H - 1) + '" text-anchor="middle">' + m + "'</text>"; });
+    return '<svg class="lc-momentum" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Momentum stimato: barre in alto per la squadra di casa, in basso per gli ospiti">' + g + "</svg>";
+  }
+  function lcMomentumHtml(samples, events, now, home, away) {
+    if (!samples || !samples.length) return "";
+    var bars = lcMomentumBars(samples), first = samples[0].m;
+    var how = "Stima nostra dai dati SportScore: attacchi pericolosi, tiri e angoli, minuto per minuto. Non è il momentum di Sofascore.";
+    if (!bars.length) {
+      return '<h5>Momentum (stima)</h5><p class="lc-note">Il grafico si costruisce da adesso (' + esc(first) + "'): il primo tratto compare dopo il prossimo aggiornamento, " +
+        "circa un minuto, tenendo aperta la partita. " + how + "</p>";
+    }
+    return '<h5>Momentum (stima)</h5>' + lcMomentumSvg(bars, events, now, first) +
+      '<div class="lc-legend"><span class="k1">▲ ' + esc(home) + '</span><span class="k2">▼ ' + esc(away) + "</span></div>" +
+      '<p class="lc-note">' + how + (first > 0 ? " Registrato da quando hai aperto la partita (" + esc(first) + "'); la zona grigia è il tempo prima." : "") +
+      " Si aggiorna ogni minuto finché i dettagli restano aperti.</p>";
+  }
+  /* Blocco completo. o: {home, away, homeId, awayId, homeScore, awayScore, status, events (grezzi), stats (grezze), momentum (campioni)} */
   function liveChartsHtml(o) {
     var events = lcEvents(o.events, o.home, o.away, o.homeId, o.awayId);
     var now = lcNowMinute(o.status, events);
     var gh = parseInt(o.homeScore, 10), ga = parseInt(o.awayScore, 10);
     var parts = [];
-    if (events.some(function (e) { return e.side; })) {
+    var hasTimeline = events.some(function (e) { return e.side; });
+    if (hasTimeline) {
       parts.push(lcTimelineSvg(events, now, o.home, o.away) + '<div class="lc-legend"><span>▲ ' + esc(o.home) + "</span><span>▼ " + esc(o.away) + "</span></div>");
     }
     if (isFinite(gh) && isFinite(ga) && now != null && now > 0) {
@@ -3580,11 +3714,15 @@ function slipReason(x){
           " Gli eventi del feed non spiegano tutto il risultato, quindi mostriamo solo la stima attuale.</p>");
       }
     }
+    var momentumHtml = lcMomentumHtml(o.momentum, events, now, o.home, o.away);
+    if (momentumHtml) parts.splice(hasTimeline ? 1 : 0, 0, momentumHtml);  // subito dopo la linea del tempo
     var statsHtml = lcStatsHtml(lcStats(o.stats));
     if (statsHtml) parts.push(statsHtml);
     return parts.length ? '<section class="live-charts"><h4>Andamento della partita</h4>' + parts.join("") + "</section>" : "";
   }
-  window.FFLive = { liveChartsHtml: liveChartsHtml, lcCurve: lcCurve, lcEvents: lcEvents, lcStats: lcStats, lcNowMinute: lcNowMinute };
+  window.FFLive = { liveChartsHtml: liveChartsHtml, lcCurve: lcCurve, lcEvents: lcEvents, lcStats: lcStats, lcNowMinute: lcNowMinute,
+    matchFromPayload: lcMatchFromPayload, timelineOf: lcTimelineOf, minuteOf: lcMinuteOf, recordSample: lcRecordSample,
+    momentumBars: lcMomentumBars };
 
   /* ---------- Perché il modello dice così, prossime giornate, statistiche squadra ---------- */
   var NEXT_ROUNDS = [];

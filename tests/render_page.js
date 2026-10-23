@@ -108,6 +108,26 @@ setTimeout(() => {
         empty: L.liveChartsHtml({ home: "X", away: "Y", homeScore: null, awayScore: null, status: "", events: [] }),
         curve: L.lcCurve({ lh: 1.5, la: 1.0 }, L.lcEvents([{ type: "Goal", minute: 10, side: "home" }], "A", "B"), 80, 1, 0),
       };
+      // Risposta vera di SportScore (api/widget/match), letta come fa la pagina
+      const real = JSON.parse(fs.readFileSync(path.join(__dirname, "fixtures/sportscore_match.json"), "utf8"));
+      const rm = L.matchFromPayload(real);
+      out.live.realEvents = L.lcEvents(L.timelineOf(rm), rm.home, rm.away);
+      out.live.realStats = L.lcStats(rm.stats);
+      out.live.real = L.liveChartsHtml({ home: rm.home, away: rm.away, homeScore: rm.home_score, awayScore: rm.away_score,
+        status: L.minuteOf(rm, ""), events: L.timelineOf(rm), stats: rm.stats });
+      // Momentum: totali che crescono di aggiornamento in aggiornamento (61'→64', poi un buco di 10 minuti)
+      const stat = (da, on) => [{ label: "Dangerous Attacks", home: da[0], away: da[1] }, { label: "Shots on Target", home: on[0], away: on[1] }];
+      L.recordSample("prova", 61, L.lcStats(stat([20, 35], [3, 7])));
+      L.recordSample("prova", 62, L.lcStats(stat([20, 39], [3, 7])));
+      L.recordSample("prova", 62, L.lcStats(stat([20, 40], [3, 8])));
+      L.recordSample("prova", 64, L.lcStats(stat([26, 40], [3, 8])));
+      const samples = L.recordSample("prova", 74, L.lcStats(stat([30, 41], [4, 8])));
+      out.live.momentumSamples = samples;
+      out.live.momentumBars = L.momentumBars(samples);
+      out.live.momentumHtml = L.liveChartsHtml({ home: rm.home, away: rm.away, homeScore: 2, awayScore: 2, status: "74",
+        events: L.timelineOf(rm), stats: rm.stats, momentum: samples });
+      out.live.momentumFirst = L.liveChartsHtml({ home: "A", away: "B", homeScore: 0, awayScore: 0, status: "10",
+        events: [], stats: stat([2, 1], [0, 0]), momentum: L.recordSample("nuova", 10, L.lcStats(stat([2, 1], [0, 0]))) });
     } catch (e) { errors.push("FFLive: " + e.message); }
   }
   out.errors = errors;
