@@ -69,6 +69,7 @@ setTimeout(() => {
   out.infoClosed = byId["p-info"].hidden && !byId["p-home"].hidden;
   // pagina squadra, preferiti e condivisione (se la pagina li espone)
   out.season = byId.season ? byId.season.innerHTML : "";
+  out.nextRounds = byId["next-rounds"] ? byId["next-rounds"].innerHTML : "";
   out.recap = byId.recap ? byId.recap.innerHTML : "";
   if (ctx.FF) {
     try {

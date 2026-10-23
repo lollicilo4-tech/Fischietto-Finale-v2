@@ -4,7 +4,7 @@ Usato sia dal server locale (app/main.py) sia dal generatore del sito statico (g
 """
 from datetime import datetime, timezone
 
-from . import analyst, data, model, season, store
+from . import analyst, data, explain, model, season, store
 
 KEYS = ["p1", "px", "p2", "o15", "o25", "u25", "u35", "gg", "ng"]
 
@@ -195,6 +195,9 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
             "form": {"home": teams.get(fx["home"], {}).get("form", ""), "away": teams.get(fx["away"], {}).get("form", "")},
             "last": {"home": _last(ctx["finished"], fx["home"]), "away": _last(ctx["finished"], fx["away"])},
             "h2h": _h2h(ctx.get("previous", []) + ctx["finished"], fx["home"], fx["away"]),
+            "explain": explain.explain_match(
+                teams, avg_h, avg_a, fx["home"], fx["away"], lh, la, an["factor_home"], an["factor_away"],
+                len(an.get("absences_home") or []) + len(an.get("absences_away") or [])),
             "analysis": {**{k: an.get(k) for k in ("ai", "text", "factor_home", "factor_away",
                                                     "absences_home", "absences_away", "sources")},
                          "provider": an.get("provider"),
@@ -239,6 +242,9 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
             "ai_error": ai_error,
             "ai_status": ai_status,
             "matchday": ctx.get("matchday"),
+            # Giornate successive: solo modello statistico, niente AI (si aggiorna a ogni esecuzione)
+            "next_rounds": [] if ctx["demo"] else explain.upcoming_rounds(
+                ctx.get("remaining", []), {str(fx["id"]) for fx in ctx["fixtures"]}, teams, avg_h, avg_a, rho),
             "rho": round(rho, 3),
             # Coppe: quante squadre partono dalla forza nel proprio campionato (app/strength.py)
             "cup_prior": ctx.get("cup_prior"),
@@ -300,7 +306,8 @@ async def build_classifica(competition: str | None = None) -> dict:
     league = competition or data.COMPETITION
     ctx = await data.get_context(league)
     table = ctx.get("standings", [])
-    out = {"demo": False, "table": table, "ratings": team_ratings(ctx)}
+    out = {"demo": False, "table": table, "ratings": team_ratings(ctx),
+           "stats": explain.team_stats(ctx.get("finished", []))}
     try:
         out["season"] = season.simulate(table, ctx.get("remaining", []), ctx["teams"], ctx["avg_h"],
                                         ctx["avg_a"], ctx.get("rho", model.DEFAULT_RHO), league)

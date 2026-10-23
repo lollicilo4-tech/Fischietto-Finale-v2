@@ -140,4 +140,6 @@ class RemainingFixturesTests(unittest.TestCase):
 
         with patch.object(data, "_get", fake_get), patch.dict(os.environ, {"FOOTBALL_DATA_KEY": "test"}):
             ctx = asyncio.run(data.real_context("SA"))
-        self.assertEqual(ctx["remaining"], [{"home": "Alfa", "away": "Gamma"}, {"home": "Beta", "away": "Delta"}])
+        self.assertEqual([(r["home"], r["away"]) for r in ctx["remaining"]], [("Alfa", "Gamma"), ("Beta", "Delta")])
+        self.assertEqual([r["id"] for r in ctx["remaining"]], ["3", "4"])
+        self.assertTrue(all(r["kickoff"] and r["matchday"] == 9 for r in ctx["remaining"]))

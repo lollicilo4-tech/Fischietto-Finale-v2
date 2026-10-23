@@ -22,6 +22,8 @@ In Classifica la stagione viene simulata 5.000 volte con le partite che restano 
 probabilità di primo posto, prime 4 e ultime posizioni (nelle coppe: prime 8, spareggi, eliminata).
 Ogni squadra ha una scheda con forza in attacco e difesa, forma, prossima partita e pronostici passati;
 le squadre seguite restano salvate solo nel browser. Lo Storico riassume l'ultima giornata.
+Ogni partita spiega "perché il modello dice così" (fattori calcolati dai numeri, `app/explain.py`),
+la sezione Partite mostra le due giornate successive e la pagina squadra le statistiche casa/fuori.
 
 Il pronostico consigliato non è semplicemente il più probabile (sarebbe quasi sempre "Over 1,5"):
 è il mercato con il distacco maggiore dalla media del campionato, con almeno il 50% di probabilità.
