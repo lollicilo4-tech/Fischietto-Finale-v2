@@ -8,7 +8,7 @@ import {
   LIVE_ENDPOINTS, matchDetailUrl, combineSources, liveOnly, leagueOptions, liveCardHtml, detailEventsHtml
 } from "../lib/livefeed.js";
 import {
-  liveChartsHtml, lcMatchFromPayload, lcTimelineOf, lcMinuteOf, lcStats, lcNowMinute, lcEvents, lcRecordSample
+  liveChartsHtml, lcMatchFromPayload, lcTimelineOf, lcMinuteOf, lcStats, lcNowMinute, lcEvents, lcRecordSample, pickMomentum
 } from "../lib/livecharts.js";
 
 const $ = (id) => document.getElementById(id);
@@ -41,6 +41,17 @@ function recordSample(key, minute, stats) {
   const list = lcRecordSample(momentumStore, key, minute, stats);
   try { localStorage.setItem(MOMENTUM_KEY, JSON.stringify(momentumStore.all)); } catch (e) { /* resta in memoria */ }
   return list;
+}
+
+/* Momentum registrato dal Worker (D1) tramite /api/momentum, sullo stesso dominio. Se il servizio non
+   risponde o non conosce la partita (campionati non nostri) resta la serie registrata dal browser. */
+async function serverMomentum(slug) {
+  try {
+    const r = await fetch("/api/momentum?slug=" + encodeURIComponent(slug), { cache: "no-store" });
+    if (!r.ok) return [];
+    const data = await r.json();
+    return (data && data.samples && data.samples[slug]) || [];
+  } catch (e) { return []; }
 }
 
 let liveLoaded = false, liveLoading = false;
@@ -146,6 +157,7 @@ async function loadLiveDetails(card, quiet) {
     loading.textContent = "Caricamento eventi e statistiche…";
     details.appendChild(loading);
   }
+  const fromServer = serverMomentum(slug);  // in parallelo al dettaglio SportScore
   try {
     const match = lcMatchFromPayload(await fetchJson(matchDetailUrl(slug)));
     const timeline = lcTimelineOf(match);
@@ -154,10 +166,12 @@ async function loadLiveDetails(card, quiet) {
     const hs = match && match.home_score != null ? match.home_score : card.getAttribute("data-hs");
     const as = match && match.away_score != null ? match.away_score : card.getAttribute("data-as");
     const stats = match && (match.statistics || match.stats || match.match_statistics);
-    const momentum = recordSample(slug, lcNowMinute(minute, lcEvents(timeline, home, away)), lcStats(stats));
+    const local = recordSample(slug, lcNowMinute(minute, lcEvents(timeline, home, away)), lcStats(stats));
+    const momentum = pickMomentum(await fromServer, local);
     const chartsHtml = liveChartsHtml({
       home, away, homeId: match.home_team && match.home_team.id, awayId: match.away_team && match.away_team.id,
-      homeScore: hs, awayScore: as, status: minute, events: timeline, stats, momentum, priors: PRIORS
+      homeScore: hs, awayScore: as, status: minute, events: timeline, stats,
+      momentum: momentum.samples, momentumSource: momentum.source, priors: PRIORS
     });
     const oldCharts = details.querySelector(".live-charts");
     if (chartsHtml) {

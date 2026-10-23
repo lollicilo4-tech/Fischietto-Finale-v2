@@ -1,0 +1,52 @@
+name: Worker momentum (workers/momentum)
+
+# Verifica il Worker che registra il momentum delle partite live: test con SQLite al posto di D1
+# e impacchettamento con Wrangler (--dry-run, nessuna chiave). La pubblicazione la fa Workers Builds
+# collegato al repository.
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "workers/momentum/**"
+      - "web/src/lib/**"
+      - "tests/fixtures/**"
+      - ".github/workflows/momentum.yml"
+  push:
+    branches: [main]
+    paths:
+      - "workers/momentum/**"
+      - "web/src/lib/**"
+      - ".github/workflows/momentum.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: worker-momentum-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verifica:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: workers/momentum
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: workers/momentum/.node-version
+          cache: npm
+          cache-dependency-path: workers/momentum/package-lock.json
+      - name: Installa le dipendenze
+        run: npm ci --ignore-scripts
+      - name: Test (raccolta, unione dei minuti, pulizia, /health)
+        run: npm test
+      - name: Impacchetta il Worker senza pubblicarlo
+        env:
+          WRANGLER_SEND_METRICS: "false"
+        run: npm run check

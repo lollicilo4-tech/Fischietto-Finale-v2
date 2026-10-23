@@ -262,20 +262,34 @@ function lcMomentumSvg(bars, events, now, first) {
   [0, 45, 90].forEach((m) => { g += '<text class="lc-tick" x="' + x(m) + '" y="' + (H - 1) + '" text-anchor="middle">' + m + "'</text>"; });
   return '<svg class="lc-momentum" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Momentum stimato: barre in alto per la squadra di casa, in basso per gli ospiti">' + g + "</svg>";
 }
-function lcMomentumHtml(samples, events, now, home, away) {
+/* source: "server" se i campioni vengono dal Worker che registra ogni minuto le partite dei nostri
+   campionati, "local" (predefinito) se li ha registrati questo browser da quando la partita è aperta. */
+function lcMomentumHtml(samples, events, now, home, away, source) {
   if (!samples || !samples.length) return "";
-  const bars = lcMomentumBars(samples), first = samples[0].m;
+  const bars = lcMomentumBars(samples), first = samples[0].m, server = source === "server";
   const how = "Stima nostra dai dati SportScore: attacchi pericolosi, tiri e angoli, minuto per minuto. Non è il momentum di Sofascore.";
   if (!bars.length) {
-    return '<h5>Momentum (stima)</h5><p class="lc-note">Il grafico si costruisce da adesso (' + esc(first) + "'): il primo tratto compare dopo il prossimo aggiornamento, " +
-      "circa un minuto, tenendo aperta la partita. " + how + "</p>";
+    return '<h5>Momentum (stima)</h5><p class="lc-note">' + (server
+      ? "Il nostro server registra la partita dal minuto " + esc(first) + "': il primo tratto compare al prossimo aggiornamento, circa un minuto. "
+      : "Il grafico si costruisce da adesso (" + esc(first) + "'): il primo tratto compare dopo il prossimo aggiornamento, circa un minuto, tenendo aperta la partita. ") +
+      how + "</p>";
   }
+  const since = server
+    ? " Registrato dal nostro server ogni minuto" + (first > 0 ? " dal minuto " + esc(first) + "'; la zona grigia è il tempo prima." : ".")
+    : (first > 0 ? " Registrato da quando hai aperto la partita (" + esc(first) + "'); la zona grigia è il tempo prima." : "");
   return "<h5>Momentum (stima)</h5>" + lcMomentumSvg(bars, events, now, first) +
     '<div class="lc-legend"><span class="k1">▲ ' + esc(home) + '</span><span class="k2">▼ ' + esc(away) + "</span></div>" +
-    '<p class="lc-note">' + how + (first > 0 ? " Registrato da quando hai aperto la partita (" + esc(first) + "'); la zona grigia è il tempo prima." : "") +
-    " Si aggiorna ogni minuto finché i dettagli restano aperti.</p>";
+    '<p class="lc-note">' + how + since + " Si aggiorna ogni minuto finché i dettagli restano aperti.</p>";
 }
-/* Blocco completo. o: {home, away, homeId, awayId, homeScore, awayScore, status, events (grezzi), stats (grezze), momentum (campioni), priors} */
+
+/* Serie da mostrare: quella del server se ha almeno due campioni (copre anche i minuti prima
+   dell'apertura della pagina), altrimenti quella registrata dal browser. */
+export function pickMomentum(serverSamples, localSamples) {
+  const valid = (Array.isArray(serverSamples) ? serverSamples : []).filter((s) => s && Number.isFinite(s.m) && Number.isFinite(s.h) && Number.isFinite(s.a));
+  return valid.length >= 2 ? { samples: valid, source: "server" } : { samples: localSamples || [], source: "local" };
+}
+/* Blocco completo. o: {home, away, homeId, awayId, homeScore, awayScore, status, events (grezzi), stats (grezze),
+   momentum (campioni), momentumSource ("server" | "local"), priors} */
 export function liveChartsHtml(o) {
   const events = lcEvents(o.events, o.home, o.away, o.homeId, o.awayId);
   const now = lcNowMinute(o.status, events);
@@ -299,7 +313,7 @@ export function liveChartsHtml(o) {
         " Gli eventi del feed non spiegano tutto il risultato, quindi mostriamo solo la stima attuale.</p>");
     }
   }
-  const momentumHtml = lcMomentumHtml(o.momentum, events, now, o.home, o.away);
+  const momentumHtml = lcMomentumHtml(o.momentum, events, now, o.home, o.away, o.momentumSource);
   if (momentumHtml) parts.splice(hasTimeline ? 1 : 0, 0, momentumHtml);  // subito dopo la linea del tempo
   const statsHtml = lcStatsHtml(lcStats(o.stats));
   if (statsHtml) parts.push(statsHtml);

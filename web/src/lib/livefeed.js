@@ -165,6 +165,14 @@ export function detailEventsHtml(timeline, homeName, awayName) {
   return items.length ? '<h4>Eventi della partita</h4><ol>' + items.join("") + "</ol>" : "";
 }
 
+/* Identificativo SportScore della partita (usato per il dettaglio e per il momentum).
+   Alcune risposte espongono solo l'URL pubblico: se ne estrae lo slug, mai inventato dai nomi. */
+export function matchSlugOf(m) {
+  let slug = (m && (m.slug || m.match_slug || m.url_slug)) || "";
+  if (!slug && m && typeof m.url === "string") { const sm = m.url.match(/\/football\/match\/([^/?#]+)\//i); if (sm && sm[1]) slug = sm[1]; }
+  return String(slug);
+}
+
 /* Scheda di una partita live. priors: pronostici dei nostri campionati per il grafico delle probabilità. */
 export function liveCardHtml(m, priors) {
   const homeObj = m.home || m.home_team || m.homeTeam || m.localteam || m.home_participant;
@@ -189,9 +197,7 @@ export function liveCardHtml(m, priors) {
     homeId: homeObj && typeof homeObj === "object" ? homeObj.id : m.home_id, awayId: awayObj && typeof awayObj === "object" ? awayObj.id : m.away_id,
     homeScore, awayScore, status: matchStatus(m) || m.minute || m.elapsed, events: rawEvents, stats: m.statistics || m.stats || m.match_statistics, priors
   });
-  let matchSlug = m.slug || m.match_slug || m.url_slug || "";
-  /* Alcune risposte espongono solo l'URL pubblico: se ne estrae lo slug, mai inventato dai nomi. */
-  if (!matchSlug && typeof m.url === "string") { const sm = m.url.match(/\/football\/match\/([^/?#]+)\//i); if (sm && sm[1]) matchSlug = sm[1]; }
+  const matchSlug = matchSlugOf(m);
   const logo = (u) => (safeUrl(u) ? '<img loading="lazy" referrerpolicy="no-referrer" src="' + esc(safeUrl(u)) + '" alt="" data-hide-on-error>' : "");
   const hs = homeScore == null ? "–" : esc(String(homeScore)), as = awayScore == null ? "–" : esc(String(awayScore));
   return '<article class="live-match" data-live-slug="' + esc(matchSlug) + '" data-home="' + esc(homeName) + '" data-away="' + esc(awayName) +

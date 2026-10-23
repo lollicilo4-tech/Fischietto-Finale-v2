@@ -1,0 +1,22 @@
+// Worker del momentum. Pubblicazione: Workers Builds collegato al repository (cartella workers/momentum),
+// oppure "npx wrangler deploy" da questa cartella. Nessuna chiave: SportScore non ne richiede.
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "fischietto-momentum",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-23",
+  "workers_dev": true,
+  "preview_urls": false,
+  // Ogni minuto. Il piano gratuito permette 5 cron per account: questo ne usa uno.
+  "triggers": { "crons": ["* * * * *"] },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "fischietto-momentum",
+      "database_id": "a1dc5603-905b-4a16-bccb-60a0cfc00bb7"
+    }
+  ],
+  // Limite esplicito, uguale a quello del piano gratuito: un errore nel codice non può fare di più.
+  "limits": { "subrequests": 50 },
+  "observability": { "enabled": true }
+}
