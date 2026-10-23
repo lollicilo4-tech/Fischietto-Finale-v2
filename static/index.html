@@ -1939,6 +1939,31 @@ a{color:#65baff}
 .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:50;padding:10px 16px;border-radius:999px;background:var(--surface2,#172433);color:var(--fg);border:1px solid var(--line);font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
 </style>
 
+<style id="mine-css">
+/* Le mie schedine: diario personale, senza importi né quote. */
+#p-mie .mine-form{display:grid;grid-template-columns:1fr;gap:8px}
+#p-mie select,#p-mie .mine-btn{font:600 14px var(--font-body);padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--fg);min-height:44px;width:100%}
+#p-mie .mine-btn{cursor:pointer;font-weight:800}
+#p-mie .mine-btn.main{background:var(--gold);border-color:var(--gold);color:var(--gold-ink)}
+#p-mie .mine-btn[disabled]{opacity:.5;cursor:default}
+#p-mie .mine-row{display:flex;gap:8px;flex-wrap:wrap}#p-mie .mine-row .mine-btn{flex:1;min-width:120px;width:auto}
+#p-mie .mine-sel{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-size:14px}
+#p-mie .mine-sel:first-child{border-top:0}
+#p-mie .mine-sel span{min-width:0;overflow-wrap:anywhere}#p-mie .mine-sel small{display:block;color:var(--muted);font-size:12px}
+#p-mie .mine-x{background:none;border:1px solid var(--line);color:var(--muted);border-radius:10px;min-width:36px;min-height:36px;cursor:pointer;font-size:15px}
+#p-mie .mine-badge{flex:0 0 auto;font:800 11px var(--font-num);text-transform:uppercase;padding:4px 8px;border-radius:8px;background:var(--surface2);color:var(--muted)}
+#p-mie .mine-badge.w{background:var(--good);color:var(--on-good,#06101a)}#p-mie .mine-badge.l{background:var(--bad);color:var(--on-bad,#06101a)}
+#p-mie .mine-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+#p-mie .mine-head h3{margin:0;font-size:15px}#p-mie .mine-head small{color:var(--muted)}
+#p-mie .mine-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+#p-mie .mine-stats div{background:var(--surface2);border-radius:12px;padding:10px 4px}
+#p-mie .mine-stats b{display:block;font:800 26px var(--font-display)}#p-mie .mine-stats small{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+#p-mie .mine-chart svg{width:100%;height:auto;display:block}#p-mie .mine-chart text{fill:var(--muted);font:10px var(--font-body)}
+#p-mie .mine-legend{display:flex;gap:14px;font-size:12px;color:var(--muted)}#p-mie .mine-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+#p-mie .mine-kind{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;font-size:14px}
+#p-mie .mine-kind .bar{grid-column:1/-1;height:6px;border-radius:4px;background:var(--surface2);overflow:hidden;margin-bottom:6px}#p-mie .mine-kind .bar i{display:block;height:100%;min-width:0;max-width:100%;padding:0;margin:0;background:var(--good)}
+#p-mie .mine-note{font-size:12px;color:var(--muted);margin:0}#p-mie .mine-note a{color:var(--link)}
+</style>
 </head>
 <body>
 <header class="top">
@@ -1991,6 +2016,9 @@ a{color:#65baff}
       <button type="button" class="tile" data-go="storico" style="grid-column: 1 / -1; min-height: 100px">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
         <span><b>Storico</b><small id="tile-storico">Pronostici e risultati veri</small></span></button>
+      <button type="button" class="tile" data-open-mine style="grid-column: 1 / -1">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18H6z"/><path d="M9 15l2 2 4-5"/></svg>
+        <span><b>Le mie schedine</b><small>Il tuo conto di vinte e perse</small></span></button>
       <button type="button" class="tile" data-open-info style="grid-column: 1 / -1">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>
         <span><b>Come funziona</b><small>Modello, AI e verifica delle fonti</small></span></button>
@@ -2030,6 +2058,7 @@ a{color:#65baff}
     <p class="lead">Combinazione costruita automaticamente usando le probabilità già calcolate dal modello. Non viene effettuata una nuova chiamata AI per creare la combinazione, così si evita consumo inutile della quota.</p>
     <div class="slip-toggle" id="slip-toggle" role="group" aria-label="Tipo di schedina"></div><div class="slip-toggle" id="slip-count" role="group" aria-label="Numero di selezioni"></div>
     <div id="slip"></div>
+    <button type="button" class="foot-link" data-open-mine>Hai fatto una schedina? Segnala in Le mie schedine →</button>
   </section>
   <section id="p-storico" role="tabpanel" aria-labelledby="t-storico" hidden>
     <p class="lead" id="hist-lead">Ogni pronostico viene salvato prima della partita e confrontato con il risultato.</p>
@@ -2047,6 +2076,12 @@ a{color:#65baff}
   </section>
   <section id="p-team" aria-labelledby="team-title" hidden>
     <div id="team-page"></div>
+  </section>
+  <section id="p-mie" aria-labelledby="mie-title" hidden>
+    <h2 class="sub2" id="mie-title">Le mie schedine</h2>
+    <p class="lead">Segna le schedine che hai fatto e guarda come sono andate. Niente importi e niente quote: conta solo se una schedina è andata o no. Tutto resta salvato solo su questo telefono.</p>
+    <div id="mie-page"></div>
+    <p class="mine-note">Questa pagina serve a tenere il conto, non a giocare di più. Se ti viene voglia di rifarti delle schedine perse, fermati: il Telefono Verde Nazionale <a href="tel:800558822">800 55 88 22</a> è gratuito e anonimo.</p>
   </section>
   <section id="p-info" aria-labelledby="info-title" hidden>
     <h2 class="sub2" id="info-title">Come funziona</h2>
@@ -2600,6 +2635,7 @@ function slipReason(x){
       tabs.forEach(function (u) { $("t-" + u).setAttribute("aria-selected", String(u === t)); $("p-" + u).hidden = u !== t; });
       $("p-info").hidden = true;
       $("p-team").hidden = true;
+      $("p-mie").hidden = true;
       document.body.classList.toggle("inner", t !== "home");
       $("back").hidden = t === "home";
       window.scrollTo(0, 0);
@@ -2987,6 +3023,7 @@ function slipReason(x){
   function openInfo() {
     tabs.forEach(function (u) { $("t-" + u).setAttribute("aria-selected", "false"); $("p-" + u).hidden = true; });
     $("p-team").hidden = true;
+    $("p-mie").hidden = true;
     $("p-info").hidden = false;
     document.body.classList.add("inner");
     $("back").hidden = false;
@@ -3127,6 +3164,7 @@ function slipReason(x){
       hero(d.matches);
       homeDashboard(d.matches);
       MATCHES = d.matches;
+      if (!$("p-mie").hidden) renderMine();
       MARKET_PERFORMANCE = d.market_performance || {}; BACKTEST_MARKETS = (d.backtest && d.backtest.markets) || {};
       $("matches").innerHTML = grouped(d.matches);
       renderFavStrip();
@@ -3348,6 +3386,7 @@ function slipReason(x){
     $("team-page").innerHTML = html;
     tabs.forEach(function (u) { $("t-" + u).setAttribute("aria-selected", "false"); $("p-" + u).hidden = true; });
     $("p-info").hidden = true;
+    $("p-mie").hidden = true;
     $("p-team").hidden = false;
     document.body.classList.add("inner");
     $("back").hidden = false;
@@ -3370,7 +3409,290 @@ function slipReason(x){
     else if (el.hasAttribute("data-share")) { e.preventDefault(); shareMatch(el.getAttribute("data-share")); }
     else if (el.hasAttribute("data-goto-match")) { gotoMatch(el.getAttribute("data-goto-match")); }
   });
-  window.FF = { openTeam: openTeam, toggleFav: toggleFav, shareMatch: shareMatch };
+  /* ---------- Le mie schedine: diario personale, salvato solo sul telefono ----------
+     Niente importi né quote: si segna cosa si è giocato e il sito controlla vinte e perse
+     con i risultati già pubblicati (turno e storico di ogni campionato). */
+  var MINE_KEY = "ff-mie-schedine-v1", MINE_DRAFT_KEY = "ff-mie-bozza-v1", MINE_MAX = 500, MINE_MAX_SEL = 20;
+  var MINE_MARKETS = [
+    ["1", "1 · vince la squadra di casa", "1X2"], ["X", "X · pareggio", "1X2"], ["2", "2 · vince la squadra ospite", "1X2"],
+    ["1X", "1X · casa non perde", "Doppia chance"], ["X2", "X2 · ospite non perde", "Doppia chance"], ["12", "12 · non finisce pari", "Doppia chance"],
+    ["O15", "Over 1,5 · almeno 2 gol", "Over/Under"], ["O25", "Over 2,5 · almeno 3 gol", "Over/Under"],
+    ["U25", "Under 2,5 · al massimo 2 gol", "Over/Under"], ["U35", "Under 3,5 · al massimo 3 gol", "Over/Under"],
+    ["GG", "Gol · segnano entrambe", "Gol/No gol"], ["NG", "No gol · almeno una non segna", "Gol/No gol"]
+  ];
+  var MINE_KINDS = ["1X2", "Doppia chance", "Over/Under", "Gol/No gol"];
+  var MINE_BY = {};
+  MINE_MARKETS.forEach(function (x) { MINE_BY[x[0]] = x; });
+  var LEAGUE_CODES = ["SA", "PL", "CL", "BL1", "PD", "FL1", "EL", "UECL"];
+
+  function mineOutcome(code, hg, ag) {
+    var t = hg + ag, r = hg > ag ? "1" : hg < ag ? "2" : "X";
+    switch (code) {
+      case "1": case "X": case "2": return r === code;
+      case "1X": return r !== "2";
+      case "X2": return r !== "1";
+      case "12": return r !== "X";
+      case "O15": return t >= 2;
+      case "O25": return t >= 3;
+      case "U25": return t <= 2;
+      case "U35": return t <= 3;
+      case "GG": return hg > 0 && ag > 0;
+      case "NG": return hg === 0 || ag === 0;
+    }
+    return null;
+  }
+  function goals(v) { var n = Number(v); return Number.isInteger(n) && n >= 0 && n < 100 ? n : null; }
+  /* Ripulisce una selezione letta dal telefono o da un file importato: solo campi noti. */
+  function cleanSel(s) {
+    if (!s || typeof s !== "object" || !MINE_BY[s.code] || LEAGUE_CODES.indexOf(s.league) < 0) return null;
+    var out = { league: s.league, id: String(s.id || "").slice(0, 40), home: String(s.home || "").slice(0, 80),
+      away: String(s.away || "").slice(0, 80), kickoff: String(s.kickoff || "").slice(0, 30), code: s.code };
+    if (!out.home || !out.away) return null;
+    var hg = goals(s.hg), ag = goals(s.ag);
+    if (hg != null && ag != null) { out.hg = hg; out.ag = ag; out.ok = mineOutcome(out.code, hg, ag); }
+    return out;
+  }
+  function cleanSlip(s) {
+    if (!s || typeof s !== "object" || !Array.isArray(s.sel)) return null;
+    var sel = s.sel.slice(0, MINE_MAX_SEL).map(cleanSel).filter(Boolean);
+    if (!sel.length) return null;
+    var created = isNaN(new Date(s.created)) ? new Date().toISOString() : new Date(s.created).toISOString();
+    var out = { id: String(s.id || created).slice(0, 40), created: created, sel: sel };
+    if (s.manual === "W" || s.manual === "L") out.manual = s.manual;
+    return out;
+  }
+  function mineRead(key) {
+    try { var v = JSON.parse(localStorage.getItem(key) || "[]"); return Array.isArray(v) ? v : []; } catch (e) { return []; }
+  }
+  function getSlips() { return mineRead(MINE_KEY).map(cleanSlip).filter(Boolean).slice(-MINE_MAX); }
+  function getDraft() { return mineRead(MINE_DRAFT_KEY).map(cleanSel).filter(Boolean).slice(0, MINE_MAX_SEL); }
+  function mineWrite(key, v) {
+    try { localStorage.setItem(key, JSON.stringify(v)); return true; } catch (e) { toast("Non riesco a salvare su questo telefono"); return false; }
+  }
+  /* W = vinta, L = persa, P = in attesa. Una selezione sbagliata basta a perdere la schedina. */
+  function slipStatus(s) {
+    if (s.manual) return s.manual;
+    if (s.sel.some(function (x) { return x.ok === false; })) return "L";
+    return s.sel.every(function (x) { return x.ok === true; }) ? "W" : "P";
+  }
+  function lastKickoff(s) {
+    return s.sel.reduce(function (a, x) { var t = Date.parse(x.kickoff); return isNaN(t) ? a : Math.max(a, t); }, 0) || Date.parse(s.created);
+  }
+  function shortDay(t) { var d = new Date(t); return isNaN(d) ? "" : d.getDate() + " " + MONTHS[d.getMonth()].slice(0, 3); }
+  function selLine(x) {
+    return esc(x.home) + " – " + esc(x.away) + "<small>" + esc(MINE_BY[x.code][1]) + " · " + esc(LEAGUE_NAMES[x.league]) +
+      (x.hg != null ? " · finale " + x.hg + "-" + x.ag : x.kickoff ? " · " + shortDay(x.kickoff) : "") + "</small>";
+  }
+
+  function addSelection(id, code) {
+    var m = MATCHES.filter(function (x) { return String(x.id) === String(id); })[0];
+    if (!m || !MINE_BY[code]) return false;
+    var draft = getDraft().filter(function (x) { return !(x.league === LEAGUE && x.id === String(m.id)); });
+    if (draft.length >= MINE_MAX_SEL) { toast("Al massimo " + MINE_MAX_SEL + " partite"); return false; }
+    draft.push(cleanSel({ league: LEAGUE, id: m.id, home: m.home, away: m.away, kickoff: m.kickoff, code: code }));
+    return mineWrite(MINE_DRAFT_KEY, draft);
+  }
+  function saveDraft() {
+    var draft = getDraft();
+    if (!draft.length) return false;
+    var slips = getSlips(), now = new Date().toISOString();
+    slips.push({ id: now + "-" + Math.floor(Math.random() * 1e6), created: now, sel: draft });
+    if (!mineWrite(MINE_KEY, slips.slice(-MINE_MAX))) return false;
+    mineWrite(MINE_DRAFT_KEY, []);
+    return true;
+  }
+  function updateSlips(fn) { var s = getSlips(); fn(s); mineWrite(MINE_KEY, s); }
+
+  /* Cerca i risultati delle partite ancora in attesa nei JSON pubblicati di ogni campionato. */
+  function mineDataUrl(code, kind) {
+    if (code === "SA") return kind === "turno" ? "/api/turno" : "/api/storico";
+    return "league-" + code + "-" + kind + ".json";
+  }
+  function getJson(url) {
+    return fetch(url, { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+  }
+  function settleMine() {
+    var slips = getSlips(), now = Date.now(), leagues = {};
+    slips.forEach(function (s) {
+      s.sel.forEach(function (x) { if (typeof x.ok !== "boolean" && Date.parse(x.kickoff) < now) leagues[x.league] = true; });
+    });
+    var codes = Object.keys(leagues);
+    if (!codes.length) return Promise.resolve(0);
+    return Promise.all(codes.map(function (code) {
+      return Promise.all([getJson(mineDataUrl(code, "turno")), getJson(mineDataUrl(code, "storico"))]).then(function (r) {
+        var byId = {}, byName = {};
+        ((r[0] && r[0].played) || []).forEach(function (p) { if (p && p.id != null) byId[String(p.id)] = [goals(p.hg), goals(p.ag)]; });
+        ((r[1] && r[1].items) || []).forEach(function (p) {
+          var sc = /^(\d+)-(\d+)$/.exec(String(p && p.score || ""));
+          if (sc) byName[String(p.match)] = [+sc[1], +sc[2]];
+        });
+        return { code: code, byId: byId, byName: byName };
+      });
+    })).then(function (found) {
+      var fresh = getSlips(), changed = 0;
+      fresh.forEach(function (s) {
+        s.sel.forEach(function (x) {
+          if (typeof x.ok === "boolean") return;
+          var f = found.filter(function (y) { return y.code === x.league; })[0];
+          var sc = f && (f.byId[x.id] || f.byName[x.home + " – " + x.away]);
+          if (sc && sc[0] != null && sc[1] != null) { x.hg = sc[0]; x.ag = sc[1]; x.ok = mineOutcome(x.code, sc[0], sc[1]); changed++; }
+        });
+      });
+      if (changed) mineWrite(MINE_KEY, fresh);
+      return changed;
+    });
+  }
+
+  /* Grafico: vinte e perse nelle ultime 8 settimane (settimana della partita più tardi). */
+  function weekStart(t) { var d = new Date(t); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return d.getTime(); }
+  function mineChart(slips) {
+    var WEEKS = 8, cur = weekStart(Date.now()), weeks = [];
+    for (var i = WEEKS - 1; i >= 0; i--) { var d = new Date(cur); d.setDate(d.getDate() - 7 * i); weeks.push({ t: d.getTime(), w: 0, l: 0 }); }
+    slips.forEach(function (s) {
+      var st = slipStatus(s); if (st === "P") return;
+      var wk = weekStart(lastKickoff(s));
+      weeks.forEach(function (x) { if (x.t === wk) { if (st === "W") x.w++; else x.l++; } });
+    });
+    var max = Math.max(1, Math.max.apply(null, weeks.map(function (x) { return x.w + x.l; })));
+    var W = 320, H = 150, L = 22, B = 22, T = 8, bw = (W - L) / WEEKS, g = "";
+    function y(v) { return H - B - v / max * (H - B - T); }
+    [0, max].forEach(function (v) { g += '<text x="' + (L - 6) + '" y="' + (y(v) + 3) + '" text-anchor="end">' + v + "</text>"; });
+    g += '<line x1="' + L + '" x2="' + W + '" y1="' + y(0) + '" y2="' + y(0) + '" stroke="var(--line)"/>';
+    weeks.forEach(function (x, k) {
+      var x0 = L + k * bw + bw * 0.18, w = bw * 0.64;
+      if (x.w) g += '<rect x="' + x0 + '" y="' + y(x.w) + '" width="' + w + '" height="' + (y(0) - y(x.w)) + '" rx="3" fill="var(--good)"><title>' + x.w + " vinte</title></rect>";
+      if (x.l) g += '<rect x="' + x0 + '" y="' + y(x.w + x.l) + '" width="' + w + '" height="' + (y(x.w) - y(x.w + x.l)) + '" rx="3" fill="var(--bad)"><title>' + x.l + " perse</title></rect>";
+      g += '<text x="' + (x0 + w / 2) + '" y="' + (H - 6) + '" text-anchor="middle">' + shortDay(x.t) + "</text>";
+    });
+    var tw = weeks.reduce(function (a, x) { return a + x.w; }, 0), tl = weeks.reduce(function (a, x) { return a + x.l; }, 0);
+    return '<div class="mine-chart"><svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Ultime 8 settimane: ' + tw + " vinte e " + tl + ' perse">' + g + "</svg></div>" +
+      '<div class="mine-legend"><span><i style="background:var(--good)"></i>Vinte</span><span><i style="background:var(--bad)"></i>Perse</span><span>per settimana</span></div>';
+  }
+  function mineKinds(slips) {
+    var k = {};
+    slips.forEach(function (s) { s.sel.forEach(function (x) {
+      if (typeof x.ok !== "boolean") return;
+      var g = MINE_BY[x.code][2]; k[g] = k[g] || { ok: 0, n: 0 }; k[g].n++; if (x.ok) k[g].ok++;
+    }); });
+    var rows = MINE_KINDS.filter(function (g) { return k[g]; });
+    if (!rows.length) return "";
+    return '<div class="panel"><h2>Per tipo di giocata</h2><p class="mine-note">Quante singole partite hai indovinato, schedina per schedina.</p><div class="mine-kind">' + rows.map(function (g) {
+      var r = k[g], p = r.ok / r.n;
+      return "<span>" + esc(g) + "</span><b>" + r.ok + " su " + r.n + " · " + pc(p) + '</b><div class="bar"><i style="width:' + Math.round(p * 100) + '%"></i></div>';
+    }).join("") + "</div></div>";
+  }
+
+  function renderMine() {
+    var slips = getSlips(), draft = getDraft(), now = Date.now();
+    var upcoming = MATCHES.filter(function (m) { var t = Date.parse(m.kickoff); return isNaN(t) || t > now; });
+    var html = '<div class="panel"><h2>Nuova schedina</h2>';
+    if (upcoming.length) {
+      html += '<div class="mine-form"><select id="mine-match" aria-label="Partita">' + upcoming.map(function (m) {
+        return '<option value="' + esc(m.id) + '">' + esc(m.home) + " – " + esc(m.away) + " · " + esc(shortDay(m.kickoff)) + "</option>";
+      }).join("") + '</select><select id="mine-code" aria-label="Cosa hai giocato">' + MINE_MARKETS.map(function (x) {
+        return '<option value="' + x[0] + '">' + esc(x[1]) + "</option>";
+      }).join("") + '</select><button type="button" class="mine-btn" data-mine="add">+ Aggiungi partita</button></div>' +
+        '<p class="mine-note">Partite di ' + esc(LEAGUE_NAMES[LEAGUE]) + ". Per aggiungerne di altri campionati cambialo dalla Home: la schedina in corso resta salvata.</p>";
+    } else html += '<div class="msg">Nessuna partita da giocare in ' + esc(LEAGUE_NAMES[LEAGUE]) + ". Puoi cambiare campionato dalla Home: la schedina in corso resta salvata.</div>";
+    if (draft.length) {
+      html += "<div>" + draft.map(function (x, i) {
+        return '<div class="mine-sel"><span>' + selLine(x) + '</span><button type="button" class="mine-x" data-mine="drop" data-i="' + i + '" aria-label="Togli ' + esc(x.home) + " – " + esc(x.away) + '">✕</button></div>';
+      }).join("") + '</div><button type="button" class="mine-btn main" data-mine="save">Salva schedina (' + draft.length + (draft.length === 1 ? " partita" : " partite") + ")</button>";
+    }
+    html += "</div>";
+
+    var w = 0, l = 0, p = 0;
+    slips.forEach(function (s) { var st = slipStatus(s); if (st === "W") w++; else if (st === "L") l++; else p++; });
+    html += '<div class="panel"><h2>Il tuo andamento</h2>';
+    if (!slips.length) html += '<div class="msg">Non hai ancora segnato schedine. Quando le partite finiscono, il sito controlla da solo se sono vinte o perse.</div>';
+    else {
+      html += '<div class="mine-stats"><div><b style="color:var(--good)">' + w + "</b><small>Vinte</small></div><div><b style=\"color:var(--bad)\">" + l +
+        "</b><small>Perse</small></div><div><b>" + p + "</b><small>In attesa</small></div></div>" +
+        (w + l ? '<p class="mine-note">Ne hai vinte ' + w + " su " + (w + l) + " (" + pc(w / (w + l)) + ").</p>" : "") + mineChart(slips);
+    }
+    html += "</div>" + mineKinds(slips);
+
+    if (slips.length) {
+      html += '<div class="panel"><h2>Le tue schedine</h2>' + slips.slice().reverse().map(function (s) {
+        var st = slipStatus(s), late = st === "P" && lastKickoff(s) + 3 * 3600 * 1000 < now;
+        return '<div class="mine-slip"><div class="mine-head"><h3>' + esc(shortDay(s.created)) + " · " + s.sel.length + (s.sel.length === 1 ? " partita" : " partite") +
+          (s.manual ? " <small>(segnata a mano)</small>" : "") + '</h3><span class="mine-badge ' + (st === "W" ? "w" : st === "L" ? "l" : "") + '">' +
+          (st === "W" ? "Vinta" : st === "L" ? "Persa" : "In attesa") + "</span></div><div>" + s.sel.map(function (x) {
+            return '<div class="mine-sel"><span>' + selLine(x) + "</span><b>" + (x.ok === true ? "✓" : x.ok === false ? "✕" : "…") + "</b></div>";
+          }).join("") + "</div>" +
+          (late ? '<p class="mine-note">Non trovo ancora tutti i risultati. Se la sai già, segnala tu:</p>' +
+            '<div class="mine-row"><button type="button" class="mine-btn" data-mine="win" data-id="' + esc(s.id) + '">Vinta</button><button type="button" class="mine-btn" data-mine="lose" data-id="' + esc(s.id) + '">Persa</button></div>' : "") +
+          '<div class="mine-row" style="margin:6px 0 14px"><button type="button" class="mine-btn" data-mine="del" data-id="' + esc(s.id) + '">Elimina</button></div></div>';
+      }).join("") + "</div>";
+    }
+    html += '<div class="panel"><h2>Cambi telefono?</h2><p class="mine-note">Le schedine sono salvate solo qui. Puoi scaricarle in un file e caricarle su un altro telefono.</p>' +
+      '<div class="mine-row"><button type="button" class="mine-btn" data-mine="export"' + (slips.length ? "" : " disabled") + '>Scarica file</button><button type="button" class="mine-btn" data-mine="import">Carica file</button></div>' +
+      '<input type="file" id="mine-file" accept="application/json,.json" hidden></div>';
+    $("mie-page").innerHTML = html;
+    return html;
+  }
+  function importMine(text) {
+    var data;
+    try { data = JSON.parse(text); } catch (e) { return -1; }
+    var list = (Array.isArray(data) ? data : data && data.schedine) || [];
+    if (!Array.isArray(list)) return -1;
+    var incoming = list.slice(-MINE_MAX).map(cleanSlip).filter(Boolean), slips = getSlips();
+    var seen = {}; slips.forEach(function (s) { seen[s.id] = true; });
+    var added = incoming.filter(function (s) { return !seen[s.id]; });
+    if (!mineWrite(MINE_KEY, slips.concat(added).slice(-MINE_MAX))) return -1;
+    return added.length;
+  }
+  function exportMine() {
+    var body = JSON.stringify({ app: "Fischietto finale", versione: 1, schedine: getSlips() }, null, 1);
+    try {
+      var url = URL.createObjectURL(new Blob([body], { type: "application/json" })), a = document.createElement("a");
+      a.href = url; a.download = "fischietto-mie-schedine.json"; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    } catch (e) { toast("Non riesco a creare il file"); }
+  }
+  function openMine() {
+    tabs.forEach(function (u) { $("t-" + u).setAttribute("aria-selected", "false"); $("p-" + u).hidden = true; });
+    $("p-info").hidden = true;
+    $("p-team").hidden = true;
+    $("p-mie").hidden = false;
+    document.body.classList.add("inner");
+    $("back").hidden = false;
+    window.scrollTo(0, 0);
+    renderMine();
+    settleMine().then(function (n) { if (n && !$("p-mie").hidden) renderMine(); });
+    var title = $("mie-title");
+    if (title && title.focus) { title.setAttribute("tabindex", "-1"); title.focus({ preventScroll: true }); }
+  }
+  Array.prototype.forEach.call(document.querySelectorAll("[data-open-mine]"), function (b) {
+    b.addEventListener("click", openMine);
+  });
+  $("p-mie").addEventListener("click", function (e) {
+    var el = e.target && e.target.closest ? e.target.closest("[data-mine]") : null;
+    if (!el) return;
+    var act = el.getAttribute("data-mine"), id = el.getAttribute("data-id");
+    if (act === "add") { if (addSelection($("mine-match").value, $("mine-code").value)) toast("Partita aggiunta"); }
+    else if (act === "drop") { var d = getDraft(); d.splice(+el.getAttribute("data-i"), 1); mineWrite(MINE_DRAFT_KEY, d); }
+    else if (act === "save") { if (saveDraft()) toast("Schedina salvata"); }
+    else if (act === "win" || act === "lose") updateSlips(function (s) { s.forEach(function (x) { if (x.id === id) x.manual = act === "win" ? "W" : "L"; }); });
+    else if (act === "del") { if (window.confirm && !window.confirm("Eliminare questa schedina?")) return; updateSlips(function (s) { for (var i = s.length - 1; i >= 0; i--) if (s[i].id === id) s.splice(i, 1); }); }
+    else if (act === "export") { exportMine(); return; }
+    else if (act === "import") { $("mine-file").click(); return; }
+    renderMine();
+  });
+  $("p-mie").addEventListener("change", function (e) {
+    var f = e.target && e.target.id === "mine-file" && e.target.files && e.target.files[0];
+    if (!f) return;
+    if (f.size > 2000000) { toast("File troppo grande"); return; }
+    f.text().then(function (t) {
+      var n = importMine(t);
+      toast(n < 0 ? "File non valido" : n ? "Caricate " + n + " schedine" : "Nessuna schedina nuova");
+      renderMine();
+      settleMine().then(function (k) { if (k) renderMine(); });
+    });
+  });
+  if (new URLSearchParams(location.search).get("tab") === "mie") setTimeout(openMine, 0);
+  window.FF = { openTeam: openTeam, toggleFav: toggleFav, shareMatch: shareMatch,
+    mine: { open: openMine, render: renderMine, add: addSelection, save: saveDraft, settle: settleMine, importData: importMine, outcome: mineOutcome } };
 })();
 </script>
 

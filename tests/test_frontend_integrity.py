@@ -109,7 +109,7 @@ class FrontendIntegrityTests(unittest.TestCase):
 
     def test_live_data_requests_bypass_browser_http_cache(self):
         source = self.read(STATIC_HTML)
-        self.assertEqual(source.count('{ cache: "no-store" }'), 3, "Partite, storico e classifica devono bypassare la cache HTTP")
+        self.assertEqual(source.count('{ cache: "no-store" }'), 4, "Partite, storico, classifica e controllo delle mie schedine devono bypassare la cache HTTP")
 
     def test_service_worker_serves_fresh_json_with_offline_fallback(self):
         for path in (ROOT / "static" / "sw.js", ROOT / "docs" / "sw.js"):

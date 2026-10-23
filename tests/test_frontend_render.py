@@ -44,6 +44,36 @@ class FrontendRenderTests(unittest.TestCase):
             self.assertIn("In breve", result["verdict"])
             self.assertIn(f"Su {storico['n']} partite", result["verdict"])
 
+    def test_my_slips_page(self):
+        result = self.render("SA")
+        self.assertEqual(result["errors"], [])
+        self.assertIn("Il tuo andamento", result["mineEmpty"])
+        self.assertIn("Non hai ancora segnato schedine", result["mineEmpty"])
+        self.assertFalse(result["mineAddBad"], "una partita sconosciuta non entra nella schedina")
+        if result.get("mineAdd"):
+            self.assertIn("Salva schedina (1 partita)", result["mineDraft"])
+        page = result["mineDraft"] + result.get("mineAfter", "")
+        for word in ("quota", "importo", "€"):
+            self.assertNotIn(word, page.replace("Niente importi", ""), "niente importi né quote nelle mie schedine")
+        played = result.get("minePlayed")
+        if played:
+            self.assertEqual(result["mineImported"], 1, "le schedine non valide nel file vanno scartate")
+            self.assertEqual(result["mineSettled"], 1)
+            won = played["hg"] > played["ag"]
+            self.assertIn(f"finale {played['hg']}-{played['ag']}", result["mineAfter"])
+            self.assertIn("Vinta" if won else "Persa", result["mineAfter"])
+            self.assertIn("<svg", result["mineAfter"])
+            self.assertIn("Per tipo di giocata", result["mineAfter"])
+
+
+class MySlipsHtmlTests(unittest.TestCase):
+    def test_entry_points_and_no_betting_amounts(self):
+        html = (ROOT / "static" / "index.html").read_text(encoding="utf-8")
+        self.assertIn('id="p-mie"', html)
+        self.assertGreaterEqual(html.count("data-open-mine"), 2, "Le mie schedine raggiungibile da Home e Schedina")
+        section = html.split('id="p-mie"', 1)[1].split("</section>", 1)[0]
+        self.assertIn("800 55 88 22", section)
+
 
 @unittest.skipUnless(shutil.which("node"), "Node.js non disponibile")
 class NewFeaturesRenderTests(unittest.TestCase):

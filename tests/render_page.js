@@ -87,8 +87,32 @@ setTimeout(() => {
       if (firstId) out.share = ctx.FF.shareMatch(firstId);
     } catch (e) { errors.push("FF: " + e.message); }
   }
+  // Le mie schedine: una schedina su una partita già giocata viene controllata con i risultati pubblicati
+  let mineDone = Promise.resolve();
+  if (ctx.FF && ctx.FF.mine) {
+    const mine = ctx.FF.mine;
+    try {
+      out.mineEmpty = mine.render();
+      const upcoming = (out.matches.match(/data-share="([^"]+)"/) || [])[1];
+      out.mineAdd = upcoming ? mine.add(upcoming, "GG") : null;
+      out.mineAddBad = mine.add("non-esiste", "1");
+      out.mineDraft = mine.render();
+      const turnoFile = path.join(root, "docs", league === "SA" ? "turno.json" : `league-${league}-turno.json`);
+      const played = (JSON.parse(fs.readFileSync(turnoFile, "utf8")).played || [])[0];
+      if (played) {
+        out.minePlayed = played;
+        out.mineImported = mine.importData(JSON.stringify({ schedine: [
+          { id: "t1", created: played.kickoff, sel: [{ league, id: played.id, home: played.home, away: played.away, kickoff: played.kickoff, code: "1" }] },
+          { id: "t2", created: played.kickoff, sel: [{ league: "XX", id: "1", home: "a", away: "b", code: "1" }] },
+        ] }));
+        mineDone = mine.settle().then(n => { out.mineSettled = n; out.mineAfter = mine.render(); });
+      }
+    } catch (e) { errors.push("mine: " + e.message); }
+  }
+  mineDone.catch(e => errors.push("mine: " + e.message)).then(() => {
   out.errors = errors;
   fs.writeFileSync(path.join(process.argv[4], `render-${league}.json`), JSON.stringify(out));
   console.log(league, "errors:", errors.length ? errors : "none", "| matches html:", out.matches.length,
     "| verdict:", out.verdict.length, "| quality:", out.quality.length, "| info open/close:", out.infoOpen, out.infoClosed);
+  });
 }, 600);
