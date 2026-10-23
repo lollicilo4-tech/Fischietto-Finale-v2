@@ -62,3 +62,18 @@ test("feed live: unione delle fonti, filtro sul live, schede sicure", () => {
   assert.throws(() => F.combineSources([{ failed: true }, { failed: true }]));
   assert.ok(F.leagueOptions(onlyLive).startsWith('<option value="all">'));
 });
+
+test("campionati riconosciuti per nome intero, non per parole contenute", () => {
+  const ours = {
+    "Serie A": "serie-a", "Italy Serie A": "serie-a", "Serie A Enilive": "serie-a",
+    "Premier League": "premier-league", "English Premier League": "premier-league",
+    "UEFA Champions League": "champions-league", "Champions League": "champions-league",
+    "UEFA Europa League": "europa-league", "UEFA Conference League": "conference-league", "UEFA Europa Conference League": "conference-league",
+    "Bundesliga": "bundesliga", "LaLiga": "laliga", "La Liga": "laliga", "LaLiga EA Sports": "laliga", "Spain Primera División": "laliga",
+    "Ligue 1": "ligue-1", "Ligue 1 McDonald's": "ligue-1", "Serie B": "serie-b", "Eredivisie": "eredivisie", "Liga Portugal Betclic": "liga-portugal"
+  };
+  for (const [name, key] of Object.entries(ours)) assert.equal(F.liveLeagueKey(name), key, name);
+  const others = ["LigaPro Serie A", "Azerbaijan Premier League", "AFC Champions League", "CAF Champions League", "UEFA Women's Champions League",
+    "2. Bundesliga", "LaLiga Hypermotion", "Primera División", "Ligue 2", "Russian Premier League", "Brasileirão Serie A", "Serie A Women"];
+  for (const name of others) assert.match(F.liveLeagueKey(name), /^other:/, name);
+});

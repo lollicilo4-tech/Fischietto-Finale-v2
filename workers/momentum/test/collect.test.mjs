@@ -141,3 +141,15 @@ test("il cron passa al runtime la raccolta da attendere", async () => {
   } finally { globalThis.fetch = realFetch; }
   assert.ok(db.raw.prepare("SELECT value FROM meta").get());
 });
+
+test("non registra campionati con nomi simili ai nostri e annota i nomi visti", async () => {
+  const db = fakeD1();
+  const routes = [
+    ["/api/v1/fixtures/", { fixtures: [liveRow("idv-vs-catolica", "LigaPro Serie A"), liveRow("zira-vs-sumgayit", "Azerbaijan Premier League"), liveRow("inter-vs-milan", "Serie A")] }],
+    ["slug=inter-vs-milan", detail(30, [20, 10], [3, 1])]
+  ];
+  const report = await collect({ fetch: fakeFetch(routes), db, now: T0 });
+  assert.equal(report.ours, 1);
+  assert.deepEqual(report.ourLeagues, ["Serie A"]);
+  assert.deepEqual(report.leagues, ["LigaPro Serie A", "Azerbaijan Premier League", "Serie A"]);
+});
