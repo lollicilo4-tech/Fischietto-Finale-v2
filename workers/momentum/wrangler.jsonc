@@ -16,7 +16,7 @@
       "database_id": "a1dc5603-905b-4a16-bccb-60a0cfc00bb7"
     }
   ],
-  // Limite esplicito, uguale a quello del piano gratuito: un errore nel codice non può fare di più.
-  "limits": { "subrequests": 50 },
+  // Niente blocco "limits": il piano gratuito lo rifiuta (errore 100328) e applica già da sé
+  // 50 richieste esterne e 10 ms di CPU. src/collect.js resta sotto: al massimo 40 dettagli + 3 liste.
   "observability": { "enabled": true }
 }
