@@ -190,6 +190,18 @@ class FrontendIntegrityTests(unittest.TestCase):
         )
         self.assertIn("sourceIdentity(candidate)", source, "Le partite duplicate tra fonti vanno deduplicate")
 
+    def test_long_names_shrink_instead_of_breaking_mid_word(self):
+        """Su telefoni stretti "FIORENTINA" o "FISCHIETTO" venivano spezzati a metà parola."""
+        for path in (STATIC_HTML, PUBLISHED_HTML):
+            with self.subTest(path=path):
+                html = self.read(path)
+                self.assertIn("function fitNames(root)", html)
+                for selector in (".top h1", ".feature-team b", ".mc-team b", ".match-team .team-name", ".vs .side .nm"):
+                    self.assertIn(selector, html.split("var FIT_SELECTOR", 1)[1].split(";", 1)[0])
+                self.assertIn(".top .toprow h1,.top h1{overflow-wrap:normal!important", html,
+                              "la colonna del titolo deve essere larga almeno quanto la parola più lunga")
+
+
 
 if __name__ == "__main__":
     unittest.main()
