@@ -1,0 +1,19 @@
+---
+import Base from "../../layouts/Base.astro";
+import { leagueByCode } from "../../lib/core.js";
+import { leaguePaths } from "../../lib/paths.js";
+import { leagueData } from "../../lib/data.js";
+import { tableHtml, seasonPanel } from "../../lib/render.js";
+export const getStaticPaths = leaguePaths;
+const { league } = Astro.props;
+const L = leagueByCode(league);
+const { classifica } = leagueData(league);
+const ctx = { league, favs: [] };
+---
+<Base title={"Classifica " + L.name} description={"Classifica di " + L.name + " e come può finire la stagione: probabilità di titolo, piazzamenti e retrocessione da migliaia di simulazioni del modello."} league={league} section="classifica" path={"/" + L.slug + "/classifica/"}>
+  <section id="p-classifica" aria-label={"Classifica " + L.name}>
+    <div class="panel"><div id="table" set:html={tableHtml(ctx, classifica)}></div></div>
+    <p class="legend">Barra blu: prime quattro. Barra rossa: ultime tre. Tocca una squadra per aprire la sua scheda.</p>
+    <div id="season" set:html={classifica ? seasonPanel(ctx, classifica.season) : ""}></div>
+  </section>
+</Base>

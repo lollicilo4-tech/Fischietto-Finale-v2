@@ -1,0 +1,54 @@
+---
+/* Come funziona: testo identico alla sezione del sito attuale. */
+import Base from "../layouts/Base.astro";
+---
+<Base title="Come funziona" description="Da dove vengono i numeri di Fischietto finale: modello statistico, ruolo dell'AI con fonti verificate, storico pubblico dei pronostici e limiti delle stime." section={undefined} path="/come-funziona/">
+  <section id="p-info" aria-labelledby="info-title">
+    <h2 class="sub2" id="info-title">Come funziona</h2>
+    <p class="lead">Fischietto finale stima come potrebbe andare una partita. Ecco da dove vengono i numeri e cosa fa l’intelligenza artificiale.</p>
+    <div class="panel info-section">
+      <h2>1. I numeri vengono da un modello statistico</h2>
+      <p>Partiamo dai risultati veri di tutte le partite. Ogni squadra riceve una forza in attacco e una in difesa: segnare alla squadra più forte vale di più, e le partite recenti contano più di quelle vecchie. A inizio stagione si parte anche dalla stagione scorsa.</p>
+      <p>Da queste forze nascono i gol attesi di ogni squadra e, da lì, la probabilità di ogni risultato possibile (0-0, 1-0, 2-1…). Una piccola correzione, stimata per ogni campionato, tiene conto che i pareggi a basso punteggio sono un po’ più frequenti di quanto direbbe il calcolo puro.</p>
+      <p>Nella scheda di ogni partita, “Perché il modello dice così” mostra i fattori che pesano di più: attacco e difesa delle due squadre rispetto alla media, fattore campo, forma e, se ci sono, le assenze confermate. In Partite trovi anche le probabilità delle giornate successive, calcolate con il solo modello statistico.</p>
+    </div>
+    <div class="panel info-section">
+      <h2>2. Le coppe europee</h2>
+      <p>In Champions, Europa e Conference League ogni squadra gioca poche partite. Per questo il modello parte dal livello del suo campionato (Premier League, LaLiga, Serie A, Bundesliga e Ligue 1 più in alto, gli altri campionati un po’ più in basso) e dalla sua forza in campionato. Le partite europee poi correggono la stima.</p>
+    </div>
+    <div class="panel info-section">
+      <h2>3. Il pronostico consigliato</h2>
+      <p>Non è semplicemente il più probabile. Un “Over 1,5” all’85% sembra forte, ma succede quasi sempre: non dice nulla sulla partita. Il consiglio è il mercato che più si stacca dalla media del campionato, purché abbia almeno il 50% di probabilità. Nella scheda trovi la media accanto al consiglio.</p>
+    </div>
+    <div class="panel info-section">
+      <h2>4. Il ruolo dell’AI</h2>
+      <p>Nelle 48 ore prima della partita l’AI cerca notizie su infortuni e squalifiche. Un’assenza conta solo se un articolo trovato la conferma: nome del giocatore, squadra giusta e una frase che lo dà indisponibile, senza parole come “in dubbio” o “recuperato”.</p>
+      <p>Con assenze confermate l’AI può correggere i gol attesi di una squadra al massimo del 15%, e la partita mostra l’etichetta <b>Corretto per assenze</b> con i link agli articoli. L’AI non inventa probabilità né quote: se non trova fonti verificabili, restano i numeri del modello.</p>
+    </div>
+    <div class="panel info-section">
+      <h2>5. Come può finire la stagione</h2>
+      <p>In Classifica il modello gioca migliaia di volte tutte le partite che restano, partendo dai punti di oggi, e conta quante volte ogni squadra arriva prima, tra le prime 4 o nelle ultime posizioni (nelle coppe: prime 8, spareggi, eliminata). A parità di punti contano differenza reti e gol fatti, non gli scontri diretti. Toccando una squadra apri la sua scheda: forza in attacco e in difesa, forma, prossima partita e pronostici passati. Con “Segui” la squadra resta in evidenza: la scelta è salvata solo sul tuo telefono.</p>
+    </div>
+    <div class="panel info-section">
+      <h2>6. Il Live Center</h2>
+      <p>Aprendo il dettaglio di una partita in corso trovi la linea del tempo con gol, cartellini e cambi, le statistiche se il servizio dati le fornisce, e la probabilità di 1, X e 2 minuto per minuto: parte dal pronostico pre-partita e si aggiorna con risultato, minuto ed espulsioni. C’è anche un <b>momentum stimato</b>, simile a quello di altre app: il servizio gratuito dà solo i totali (attacchi pericolosi, tiri, angoli), quindi la pagina li rilegge ogni minuto e disegna di quanto crescono per ciascuna squadra. Funziona da quando apri la partita e finché tieni aperti i dettagli: i minuti precedenti restano vuoti, perché non li inventiamo.</p>
+    </div>
+    <div class="panel info-section">
+      <h2>7. Come controllarci</h2>
+      <p>Ogni pronostico viene salvato prima del calcio d’inizio e non viene mai modificato. Nello <b>Storico</b> lo confrontiamo con il risultato vero: quante volte abbiamo indovinato e quanto le percentuali sono affidabili (se diciamo 60%, deve succedere circa 6 volte su 10).</p>
+    </div>
+    <div class="panel info-section">
+      <h2>8. I limiti</h2>
+      <ul>
+        <li>Sono stime, non certezze: una squadra data al 60% non vince 4 volte su 10.</li>
+        <li>Le “quote eque” sono solo 1 diviso la probabilità: non sono quote di bookmaker.</li>
+        <li>Nelle multiple le partite sono trattate come indipendenti.</li>
+        <li>A inizio stagione e nelle coppe ci sono pochi dati, quindi le stime sono più incerte.</li>
+      </ul>
+    </div>
+    <div class="panel info-section">
+      <h2>9. Gratis e senza scommesse</h2>
+      <p>Il sito è gratuito, non accetta giocate e non mostra quote dei bookmaker. È un servizio solo informativo e non è un invito a scommettere.</p>
+    </div>
+  </section>
+</Base>

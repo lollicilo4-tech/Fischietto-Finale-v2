@@ -1,0 +1,29 @@
+# Intestazioni HTTP di Cloudflare Pages (https://developers.cloudflare.com/pages/configuration/headers/).
+# Su GitHub Pages la Content Security Policy poteva stare solo in un <meta>; qui è una vera intestazione
+# e non serve più 'unsafe-inline' per gli script: la pagina esegue solo file serviti dal sito stesso.
+# Nuove fonti esterne (es. AdSense, Worker del momentum) vanno aggiunte qui, nella riga giusta.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https://sportscore.com https://*.sportscore.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Cross-Origin-Opener-Policy: same-origin
+
+# CSS e JavaScript hanno il contenuto nel nome del file: si possono tenere in cache per sempre.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Il service worker deve essere sempre ricontrollato, altrimenti gli aggiornamenti arrivano tardi.
+/sw.js
+  Cache-Control: no-cache
+
+# I JSON pubblicati cambiano ogni 4 ore.
+/*.json
+  Cache-Control: public, max-age=300
+
+# Le anteprime dei branch (*.pages.dev) non devono finire su Google al posto del sito vero.
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex
+https://:version.:project.pages.dev/*
+  X-Robots-Tag: noindex

@@ -71,6 +71,8 @@ partire chiamate a football-data.org o all'AI, quindi il costo dell'AI non dipen
 5. **Pubblica `docs/`** con uno di questi:
    - GitHub Pages: Settings, Pages, Source "Deploy from a branch", branch `main`, cartella `/docs`.
    - Cloudflare Pages: collega il repository, build command vuoto, output directory `docs`.
+   - In arrivo: il sito Astro in `web/` (una pagina per sezione, partita e squadra) pubblicato su
+     Cloudflare Pages dagli stessi JSON di `docs/`. Istruzioni in [`web/README.md`](web/README.md).
 6. Per mantenere il progetto a costo zero, usa il piano gratuito Groq e non configurare un piano a consumo. Se in futuro abiliti un piano a pagamento, imposta un limite di spesa.
 
 ## App su iPhone

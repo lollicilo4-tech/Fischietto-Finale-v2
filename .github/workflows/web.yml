@@ -1,0 +1,61 @@
+name: Sito Astro (web/)
+
+# Verifica il sito Astro che sostituirà la pagina su GitHub Pages: test, build e controlli
+# sul risultato. Non pubblica nulla: la pubblicazione la fa Cloudflare Pages collegato al repository.
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "web/**"
+      - "docs/*.json"
+      - "static/index.html"
+      - "tests/render_page.js"
+      - "tests/fixtures/**"
+      - ".github/workflows/web.yml"
+  push:
+    branches: [main]
+    paths:
+      - "web/**"
+      - "static/index.html"
+      - "tests/render_page.js"
+      - ".github/workflows/web.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sito-astro-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verifica:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: web/.node-version
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Installa le dipendenze
+        run: npm ci --ignore-scripts
+      - name: Test (equivalenza con il sito attuale, rendering, Live Center, CSS)
+        run: npm test
+      - name: Il CSS è allineato a static/index.html
+        run: |
+          npm run import:css
+          git diff --exit-code -- src/styles/legacy.css || {
+            echo "::error title=CSS non allineato::static/index.html è cambiato: esegui 'npm run import:css' in web/ e salva src/styles/legacy.css."
+            exit 1
+          }
+      - name: Build
+        run: npm run build
+      - name: Controlli sul sito generato
+        run: npm run check:dist

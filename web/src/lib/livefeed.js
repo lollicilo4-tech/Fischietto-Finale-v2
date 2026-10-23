@@ -1,0 +1,203 @@
+/* Live Center: lettura del feed SportScore e schede delle partite. Ricavato da static/index.html.
+   Funzioni pure (niente DOM, niente fetch) così si possono provare in Node. */
+import { esc, safeUrl } from "./core.js";
+import { liveChartsHtml } from "./livecharts.js";
+
+/* Fixtures esplicitamente live più due fonti di riserva (che contengono anche partite finite). */
+export const LIVE_ENDPOINTS = [
+  { url: "https://sportscore.com/api/v1/fixtures/?sport=football&status=live&limit=200", verifiedLive: true },
+  { url: "https://sportscore.com/api/v1/matches/?sport=football&limit=50", verifiedLive: false },
+  { url: "https://sportscore.com/api/widget/matches/?sport=football&limit=50", verifiedLive: false }
+];
+export const matchDetailUrl = (slug) => "https://sportscore.com/api/widget/match/?sport=football&slug=" + encodeURIComponent(slug);
+
+export const MAJOR_LEAGUES = [
+  { key: "serie-a", label: "🇮🇹 Serie A" }, { key: "premier-league", label: "🏴 Premier League" },
+  { key: "laliga", label: "🇪🇸 LaLiga" }, { key: "bundesliga", label: "🇩🇪 Bundesliga" },
+  { key: "ligue-1", label: "🇫🇷 Ligue 1" }, { key: "champions-league", label: "🏆 Champions League" },
+  { key: "europa-league", label: "🏆 Europa League" }, { key: "conference-league", label: "🏆 Conference League" },
+  { key: "serie-b", label: "🇮🇹 Serie B" }, { key: "eredivisie", label: "🇳🇱 Eredivisie" }, { key: "liga-portugal", label: "🇵🇹 Liga Portugal" }
+];
+
+export function rowsFrom(data) {
+  if (Array.isArray(data)) return data;
+  if (!data || typeof data !== "object") return [];
+  for (const k of ["fixtures", "matches", "results", "items", "events"]) if (Array.isArray(data[k])) return data[k];
+  if (data.data != null) { const nested = rowsFrom(data.data); if (nested.length) return nested; }
+  if (data.result != null) { const resultRows = rowsFrom(data.result); if (resultRows.length) return resultRows; }
+  return [];
+}
+function sourceText(value) {
+  if (value == null) return "";
+  if (typeof value === "object") return String(value.name || value.short_name || value.short || value.slug || value.label || "");
+  return String(value);
+}
+function sourceIdentity(match) {
+  const id = match.id || match.match_id || match.fixture_id || match.event_id || match.slug || match.match_slug;
+  if (id != null && id !== "") return "id:" + String(id).toLowerCase();
+  const home = sourceText(match.home || match.home_team || match.homeTeam || match.localteam || match.home_participant).toLowerCase();
+  const away = sourceText(match.away || match.away_team || match.awayTeam || match.visitorteam || match.away_participant).toLowerCase();
+  const time = sourceText(match.time || match.start_at || match.start_time || match.kickoff || match.date || match.fixture_date);
+  return home && away ? "teams:" + home + "|" + away + "|" + time : "";
+}
+/* results: [{data, verifiedLive, failed}] nello stesso ordine di LIVE_ENDPOINTS. Unisce le fonti senza doppioni. */
+export function combineSources(results) {
+  if (results.every((r) => r.failed)) throw new Error("All SportScore live endpoints failed");
+  const combined = [], positions = {};
+  results.forEach((result) => {
+    if (result.failed) return;
+    rowsFrom(result.data).forEach((match) => {
+      if (!match || typeof match !== "object") return;
+      const candidate = Object.assign({}, match, { _ffLiveVerified: result.verifiedLive });
+      const identity = sourceIdentity(candidate);
+      if (identity && Object.prototype.hasOwnProperty.call(positions, identity)) {
+        const position = positions[identity], previous = combined[position];
+        combined[position] = Object.assign({}, candidate, previous);
+        combined[position]._ffLiveVerified = !!(previous._ffLiveVerified || candidate._ffLiveVerified);
+      } else {
+        if (identity) positions[identity] = combined.length;
+        combined.push(candidate);
+      }
+    });
+  });
+  return combined;
+}
+export function valueText(v) {
+  if (v == null) return "";
+  if (typeof v === "object") return String(v.name || v.short_name || v.short || v.label || v.code || v.long || v.description || "");
+  return String(v);
+}
+export function matchStatus(m) {
+  const s = m.status || m.fixture_status || m.phase || m.time_status || "";
+  return valueText(m.status_text || m.status_more || s).trim();
+}
+export function isLiveStatus(m) {
+  const s = m.status || m.fixture_status || m.phase || m.time_status || m.state || "";
+  const raw = [valueText(s), valueText(s.short), valueText(s.long), valueText(s.name), m.status_text, m.status_more, m.time_status]
+    .map(valueText).join(" ").toLowerCase().replace(/[_-]+/g, " ");
+  return /\b(live|in progress|in play|playing|first half|second half|1st half|2nd half|half time|halftime|extra time|penalties|penalty shootout|1h|2h|ht|et|pens|inplay|started)\b/i.test(raw);
+}
+/* La fonte fixtures è già filtrata sul live; le fonti di riserva vanno filtrate per stato. */
+export const liveOnly = (matches) => matches.filter((m) => m._ffLiveVerified === true || isLiveStatus(m));
+
+export function liveLeagueKey(name) {
+  const n = String(name || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
+  if (/serie a|italian serie a/.test(n)) return "serie-a";
+  if (/premier league/.test(n)) return "premier-league";
+  if (/champions league/.test(n)) return "champions-league";
+  if (/europa league/.test(n)) return "europa-league";
+  if (/conference league|uefa europa conference/.test(n)) return "conference-league";
+  if (/bundesliga/.test(n)) return "bundesliga";
+  if (/laliga|la liga|primera division/.test(n)) return "laliga";
+  if (/ligue 1/.test(n)) return "ligue-1";
+  if (/serie b/.test(n)) return "serie-b";
+  if (/eredivisie/.test(n)) return "eredivisie";
+  if (/liga portugal|primeira liga/.test(n)) return "liga-portugal";
+  return "other:" + n;
+}
+export const leagueNameOf = (m) => valueText(m.league || m.competition || m.tournament || m.league_name || m.competition_name) || "Competizione non disponibile";
+
+/* Opzioni del filtro campionato: i principali sempre, poi gli altri presenti nel feed. */
+export function leagueOptions(live) {
+  const feedLeagues = {};
+  live.forEach((m) => { const name = leagueNameOf(m), key = liveLeagueKey(name); if (!feedLeagues[key]) feedLeagues[key] = name; });
+  const extra = Object.keys(feedLeagues).filter((key) => !MAJOR_LEAGUES.some((item) => item.key === key))
+    .sort((a, b) => feedLeagues[a].localeCompare(feedLeagues[b]));
+  return '<option value="all">Tutti i campionati</option>' +
+    MAJOR_LEAGUES.map((item) => '<option value="' + item.key + '">' + esc(item.label) + "</option>").join("") +
+    extra.map((key) => '<option value="' + esc(key) + '">' + esc(feedLeagues[key]) + "</option>").join("");
+}
+
+function translateKind(kind) {
+  const k = kind.toLocaleLowerCase();
+  if (/penalty goal|penalty scored/.test(k)) return "Gol su rigore";
+  if (/own goal/.test(k)) return "Autogol";
+  if (/goal|scoring/.test(k)) return "Gol";
+  if (/yellow card/.test(k)) return "Cartellino giallo";
+  if (/red card/.test(k)) return "Cartellino rosso";
+  if (/second yellow/.test(k)) return "Secondo cartellino giallo";
+  if (/substitution/.test(k)) return "Sostituzione";
+  if (/var/.test(k)) return "Revisione VAR";
+  if (/kick.?off/.test(k)) return "Calcio d'inizio";
+  return kind;
+}
+const firstArray = (values) => values.find(Array.isArray) || [];
+function pickText(ev, keys) {
+  for (const k of keys) { const val = ev && ev[k]; if (val != null && valueText(val).trim()) return valueText(val).trim(); }
+  return "";
+}
+function eventMinute(ev) {
+  let time = ev && (ev.time || ev.minute || ev.elapsed || ev.match_time);
+  if (time && typeof time === "object") time = time.elapsed || time.minute || time.value || "";
+  return time == null || time === "" ? "" : String(time).replace(/'$/, "") + "'";
+}
+export function eventsListHtml(rawEvents) {
+  const items = rawEvents.map((ev) => {
+    if (!ev || typeof ev !== "object") return null;
+    const kind = pickText(ev, ["type", "event_type", "incident_type", "name", "detail", "description", "comments"]);
+    const player = pickText(ev, ["player", "player_name", "participant", "athlete"]);
+    const assist = pickText(ev, ["assist", "assist_player", "related_player"]);
+    const team = pickText(ev, ["team", "team_name", "participant_name"]);
+    const minute = eventMinute(ev), norm = kind.toLocaleLowerCase();
+    const label = [translateKind(kind), player, assist && "Assist: " + assist].filter(Boolean).join(" · ");
+    if (!label) return null;
+    const cls = /goal|gol|scoring|autogol/.test(norm) ? "goal" : /yellow|giallo/.test(norm) ? "yellow" : /red card|cartellino rosso/.test(norm) ? "red" : /substitution|sostituzion/.test(norm) ? "substitution" : "other";
+    const icon = cls === "goal" ? "⚽" : cls === "yellow" ? "🟨" : cls === "red" ? "🟥" : cls === "substitution" ? "🔄" : "•";
+    return '<li class="live-event live-event-' + cls + '"><span class="live-event-minute">' + esc(minute || "•") + '</span><span class="live-event-body"><span class="live-event-icon" aria-hidden="true">' + icon +
+      '</span><span class="live-event-copy"><b>' + esc(label) + "</b>" + (team ? "<small>" + esc(team) + "</small>" : "") + "</span></span></li>";
+  }).filter(Boolean);
+  return items.length ? '<section class="live-events"><h4>Eventi della partita</h4><ol>' + items.join("") + "</ol></section>"
+    : '<p class="expl">Il feed non include eventi verificabili per questa partita. Il risultato e lo stato live restano disponibili.</p>';
+}
+/* Eventi dal dettaglio della partita (api/widget/match), usati quando si aprono i dettagli. */
+export function detailEventsHtml(timeline, homeName, awayName) {
+  const items = timeline.map((ev) => {
+    if (!ev || typeof ev !== "object") return "";
+    let minute = pickText(ev, ["minute", "time", "elapsed", "match_time"]);
+    const kind = pickText(ev, ["type", "event_type", "incident_type", "name", "detail", "description", "comments"]);
+    const player = pickText(ev, ["player", "player_name", "participant", "athlete"]);
+    let team = pickText(ev, ["team", "team_name", "participant_name"]);
+    if (!team && (ev.side === "home" || ev.side === "away")) team = (ev.side === "home" ? homeName : awayName) || "";
+    const label = [kind, player].filter(Boolean).join(" · ");
+    return label ? '<li class="live-event"><span class="live-event-minute">' + esc(minute ? String(minute).replace(/'$/, "") + "'" : "•") + "</span><span><b>" + esc(label) + "</b>" +
+      (team ? "<small>" + esc(team) + "</small>" : "") + "</span></li>" : "";
+  }).filter(Boolean);
+  return items.length ? '<h4>Eventi della partita</h4><ol>' + items.join("") + "</ol>" : "";
+}
+
+/* Scheda di una partita live. priors: pronostici dei nostri campionati per il grafico delle probabilità. */
+export function liveCardHtml(m, priors) {
+  const homeObj = m.home || m.home_team || m.homeTeam || m.localteam || m.home_participant;
+  const awayObj = m.away || m.away_team || m.awayTeam || m.visitorteam || m.away_participant;
+  const homeName = valueText(homeObj), awayName = valueText(awayObj);
+  const score = m.score || m.scores || {};
+  const homeScore = m.home_score != null ? m.home_score : (score.home != null ? score.home : (score.home_score != null ? score.home_score : (m.homeScore != null ? m.homeScore : null)));
+  const awayScore = m.away_score != null ? m.away_score : (score.away != null ? score.away : (score.away_score != null ? score.away_score : (m.awayScore != null ? m.awayScore : null)));
+  const league = leagueNameOf(m), leagueKey = liveLeagueKey(league);
+  const searchText = (league + " " + homeName + " " + awayName).toLocaleLowerCase();
+  const homeLogo = m.home_logo || (homeObj && typeof homeObj === "object" ? homeObj.logo || homeObj.image : "") || "";
+  const awayLogo = m.away_logo || (awayObj && typeof awayObj === "object" ? awayObj.logo || awayObj.image : "") || "";
+  const details = [];
+  const kickoff = m.start_at || m.start_time || m.kickoff || m.date || m.fixture_date, venue = m.venue || m.stadium || m.location, round = m.round || m.stage || m.matchday;
+  if (kickoff) details.push("<div><small>Orario</small><b>" + esc(valueText(kickoff)) + "</b></div>");
+  if (venue) details.push("<div><small>Stadio</small><b>" + esc(valueText(venue)) + "</b></div>");
+  if (round) details.push("<div><small>Turno</small><b>" + esc(valueText(round)) + "</b></div>");
+  /* Alcuni feed includono gli eventi: si mostrano se presenti, senza inventarli. */
+  const rawEvents = firstArray([m.events, m.incidents, m.timeline, m.fixture_events, m.match_events, m.event_list]);
+  const chartsMarkup = liveChartsHtml({
+    home: homeName || "Casa", away: awayName || "Ospiti",
+    homeId: homeObj && typeof homeObj === "object" ? homeObj.id : m.home_id, awayId: awayObj && typeof awayObj === "object" ? awayObj.id : m.away_id,
+    homeScore, awayScore, status: matchStatus(m) || m.minute || m.elapsed, events: rawEvents, stats: m.statistics || m.stats || m.match_statistics, priors
+  });
+  let matchSlug = m.slug || m.match_slug || m.url_slug || "";
+  /* Alcune risposte espongono solo l'URL pubblico: se ne estrae lo slug, mai inventato dai nomi. */
+  if (!matchSlug && typeof m.url === "string") { const sm = m.url.match(/\/football\/match\/([^/?#]+)\//i); if (sm && sm[1]) matchSlug = sm[1]; }
+  const logo = (u) => (safeUrl(u) ? '<img loading="lazy" referrerpolicy="no-referrer" src="' + esc(safeUrl(u)) + '" alt="" data-hide-on-error>' : "");
+  const hs = homeScore == null ? "–" : esc(String(homeScore)), as = awayScore == null ? "–" : esc(String(awayScore));
+  return '<article class="live-match" data-live-slug="' + esc(matchSlug) + '" data-home="' + esc(homeName) + '" data-away="' + esc(awayName) +
+    '" data-hs="' + esc(homeScore == null ? "" : homeScore) + '" data-as="' + esc(awayScore == null ? "" : awayScore) + '" data-status="' + esc(matchStatus(m)) + '" data-live-league="' + esc(leagueKey) +
+    '" data-live-search="' + esc(searchText) + '"><div class="live-league-name">' + esc(league) + '</div><div class="live-phase"><span class="live-pulse"></span>' + esc(matchStatus(m) || "LIVE") +
+    '</div><div class="live-teams"><div class="live-team">' + logo(homeLogo) + "<b>" + esc(homeName || "Squadra casa") + '</b></div><div class="live-score">' + hs + "<span>:</span>" + as +
+    '</div><div class="live-team away">' + logo(awayLogo) + "<b>" + esc(awayName || "Squadra ospite") + '</b></div></div><button type="button" class="live-detail-toggle" aria-expanded="false">Dettagli partita <span aria-hidden="true">＋</span></button><div class="live-match-details" hidden>' +
+    (details.length ? '<div class="live-detail-grid">' + details.join("") + "</div>" : "") + chartsMarkup + eventsListHtml(rawEvents) + "</div></article>";
+}

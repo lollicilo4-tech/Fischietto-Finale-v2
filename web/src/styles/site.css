@@ -1,0 +1,39 @@
+/* Regole nuove del sito Astro. Gli stili del sito attuale stanno in legacy.css (generato).
+
+   I link che prima erano pulsanti (barra in basso, riquadri della Home, "Vedi analisi"...)
+   hanno la classe ff-btn. Qui ricevono l'aspetto di partenza di un <button> del browser,
+   dentro un @layer: qualsiasi regola di legacy.css (fuori dal layer) vince sempre, quindi
+   l'aspetto finale è quello che il CSS esistente dava ai pulsanti. */
+@layer ff-base {
+  a.ff-btn {
+    display: inline-block;
+    box-sizing: border-box;
+    font: -webkit-small-control;
+    font-size: 13.3333px;
+    color: buttontext;
+    background-color: buttonface;
+    border: 2px outset buttonborder;
+    padding: 1px 6px;
+    letter-spacing: normal;
+    word-spacing: normal;
+    line-height: normal;
+    text-transform: none;
+    text-indent: 0;
+    text-shadow: none;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  /* Un <button> centra il testo in verticale quando è più alto del testo (min-height):
+     per i link-pulsante fatti di solo testo si ottiene con inline-flex. Quelli con più
+     elementi dentro (riquadri, griglia dei campionati) restano inline-block. */
+  a.ff-btn:not(:has(> *)) { display: inline-flex; align-items: center; justify-content: center; }
+  a.ff-btn.team-link { justify-content: flex-start; }
+}
+
+/* Link "salta al contenuto" per tastiera e lettori di schermo. */
+.skip-link { position: absolute; left: -999px; top: 8px; z-index: 100; background: var(--gold); color: var(--gold-ink); padding: 8px 12px; border-radius: 8px; font-weight: 700; }
+.skip-link:focus { left: 8px; }
+
+/* "Condividi" e "Pagina della partita" affiancati nella scheda. */
+.match-actions > * + * { margin-left: 8px; }
