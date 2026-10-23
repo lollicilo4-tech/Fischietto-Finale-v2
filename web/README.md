@@ -32,6 +32,8 @@ Il modello, i workflow e i JSON non cambiano: questo sito legge gli stessi file 
 | `src/styles/legacy.css` | CSS del sito attuale, **generato** da `scripts/import-legacy-css.mjs` |
 | `src/styles/site.css` | le poche regole nuove |
 | `public/` | `_headers` (CSP e cache), service worker, manifest, icone |
+| `functions/api/momentum.js` | unica funzione del sito: legge da D1 il momentum registrato dal Worker (`workers/momentum`) |
+| `wrangler.jsonc` | configurazione del progetto Pages: cartella `dist` e binding D1 per `/api/momentum` |
 
 ## Comandi
 
@@ -58,7 +60,7 @@ Il collegamento si fa una volta sola dalla dashboard Cloudflare, perché richied
    - *Framework preset*: Astro
    - *Root directory*: `web`
    - *Build command*: `npm ci --ignore-scripts && npm run build && npm run check:dist`
-   - *Build output directory*: `dist`
+   - *Build output directory*: `dist` (lo legge anche da `wrangler.jsonc`)
 3. **Production branch**: per ora lascia `main` ma **disattiva le pubblicazioni automatiche di produzione**
    (Settings → Builds → Branch control) finché non si decide di spostare il dominio: così il sito su
    GitHub Pages resta l'unico pubblico.

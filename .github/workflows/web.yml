@@ -11,6 +11,7 @@ on:
       - "static/index.html"
       - "tests/render_page.js"
       - "tests/fixtures/**"
+      - "workers/momentum/**"
       - ".github/workflows/web.yml"
   push:
     branches: [main]
