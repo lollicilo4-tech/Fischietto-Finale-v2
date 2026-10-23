@@ -52,7 +52,7 @@ class NewFeaturesRenderTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        from app import season, store
+        from app import explain, season, store
         cls.tmp = tempfile.TemporaryDirectory()
         root = Path(cls.tmp.name)
         (root / "static").mkdir()
@@ -69,7 +69,19 @@ class NewFeaturesRenderTests(unittest.TestCase):
             remaining = [{"home": names[i], "away": names[(i + 1) % len(names)]} for i in range(len(names))]
             payload["ratings"] = teams
             payload["season"] = season.simulate(table, remaining, teams, 1.4, 1.1, -0.05, code, n=200)
+            payload["stats"] = explain.team_stats(
+                [{"home": names[i], "away": names[(i + 1) % len(names)], "hg": i % 3, "ag": 1} for i in range(len(names))])
             path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+            tpath = root / "docs" / f"{prefix}turno.json"
+            turno = json.loads(tpath.read_text(encoding="utf-8"))
+            for m in turno["matches"]:
+                if m["home"] in teams and m["away"] in teams:
+                    m["explain"] = explain.explain_match(teams, 1.4, 1.1, m["home"], m["away"], m["xg"][0], m["xg"][1])
+            upcoming = [{"id": f"n{i}", "home": names[i], "away": names[(i + 2) % len(names)],
+                         "kickoff": "2099-11-0%dT15:00:00Z" % (1 + i // 10), "matchday": 50 + i // 10}
+                        for i in range(len(names))]
+            turno["next_rounds"] = explain.upcoming_rounds(upcoming, set(), teams, 1.4, 1.1, -0.05)
+            tpath.write_text(json.dumps(turno, ensure_ascii=False), encoding="utf-8")
             hpath = root / "docs" / f"{prefix}storico.json"
             hist = json.loads(hpath.read_text(encoding="utf-8"))
             rows = [(k, v, {"id": k, "hg": v["result"]["hg"], "ag": v["result"]["ag"]})
@@ -96,6 +108,18 @@ class NewFeaturesRenderTests(unittest.TestCase):
     def test_round_recap(self):
         if self.results["SA"]["recap"]:
             self.assertIn("ultima giornata", self.results["SA"]["recap"])
+
+    def test_why_panel_and_next_rounds(self):
+        result = self.results["SA"]
+        self.assertIn("Perché il modello dice così", result["matches"])
+        self.assertIn("Prossime giornate", result["nextRounds"])
+        self.assertIn('class="nr-row"', result["nextRounds"])
+
+    def test_team_stats_and_upcoming(self):
+        team = self.results["SA"]["team"]
+        self.assertIn("Statistiche stagione", team)
+        self.assertIn("Senza subire gol", team)
+        self.assertNotIn("Segna il Nella media", team)
 
     def test_team_page_favourites_and_share(self):
         result = self.results["SA"]

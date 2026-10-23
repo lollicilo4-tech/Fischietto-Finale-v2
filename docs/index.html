@@ -1937,6 +1937,28 @@ a{color:#65baff}
 .team-list div{display:flex;justify-content:space-between;gap:10px;font-size:13px;border-top:1px solid var(--line);padding-top:6px}
 .team-list div:first-child{border-top:0;padding-top:0}
 .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:50;padding:10px 16px;border-radius:999px;background:var(--surface2,#172433);color:var(--fg);border:1px solid var(--line);font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+
+/* Perché il modello dice così, prossime giornate, statistiche squadra. */
+.why-panel{margin:12px 0;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03)}
+.why-panel h4{margin:0 0 8px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.why-panel ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px}
+.why-panel li{font-size:13px;line-height:1.45;display:flex;gap:8px;align-items:baseline}
+.why-side{flex:0 0 auto;max-width:38%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.why-side.home{color:var(--home);border-color:color-mix(in srgb,var(--home) 45%,transparent)}
+.why-side.away{color:var(--away);border-color:color-mix(in srgb,var(--away) 45%,transparent)}
+.why-sum{margin:10px 0 0;font-size:12px;color:var(--muted)}
+.nr-panel h3{margin:0 0 6px;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
+.nr-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.nr-row:first-of-type{border-top:0}
+.nr-teams{min-width:0;font-size:13px;overflow-wrap:anywhere}
+.nr-teams small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+.nr-p{display:flex;gap:4px;flex:0 0 auto}
+.nr-p i{font-style:normal;font-variant-numeric:tabular-nums;font-size:11px;padding:3px 6px;border-radius:6px;background:rgba(255,255,255,.05);white-space:nowrap}
+.team-stats{width:100%;border-collapse:collapse;font-size:13px}
+.team-stats th,.team-stats td{padding:7px 6px;border-top:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+.team-stats thead th{border-top:0;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+.team-stats tbody th{text-align:left;font-weight:500;color:var(--muted)}
+@media(max-width:420px){.nr-p i{padding:3px 4px;font-size:10px}}
 </style>
 
 </head>
@@ -2001,6 +2023,7 @@ a{color:#65baff}
     <p class="lead">Tocca una partita per aprire il dettaglio. Le quote eque (1 diviso la probabilità) non sono quote di bookmaker.</p>
     <div id="fav-strip"></div>
     <div class="list" id="matches"><div class="msg">Carico il turno…</div></div>
+    <div id="next-rounds"></div>
     <div id="played"></div>
   </section>
   <section id="p-live" role="tabpanel" aria-labelledby="t-live" hidden>
@@ -2055,6 +2078,7 @@ a{color:#65baff}
       <h2>1. I numeri vengono da un modello statistico</h2>
       <p>Partiamo dai risultati veri di tutte le partite. Ogni squadra riceve una forza in attacco e una in difesa: segnare alla squadra più forte vale di più, e le partite recenti contano più di quelle vecchie. A inizio stagione si parte anche dalla stagione scorsa.</p>
       <p>Da queste forze nascono i gol attesi di ogni squadra e, da lì, la probabilità di ogni risultato possibile (0-0, 1-0, 2-1…). Una piccola correzione, stimata per ogni campionato, tiene conto che i pareggi a basso punteggio sono un po’ più frequenti di quanto direbbe il calcolo puro.</p>
+      <p>Nella scheda di ogni partita, “Perché il modello dice così” mostra i fattori che pesano di più: attacco e difesa delle due squadre rispetto alla media, fattore campo, forma e, se ci sono, le assenze confermate. In Partite trovi anche le probabilità delle giornate successive, calcolate con il solo modello statistico.</p>
     </div>
     <div class="panel info-section">
       <h2>2. Le coppe europee</h2>
@@ -2325,6 +2349,7 @@ a{color:#65baff}
       '<div class="match-pick"><span class="pick-pill">Modello</span><span class="value">' + esc(finalOutcome[0] + ' · ' + finalOutcome[1]) + ' <b>' + pc(finalOutcome[2]) + '</b></span></div>' + (kickoffPassed ? '<div class="match-stale-note">Orario trascorso · risultati live non disponibili</div>' : '') + '</summary>' +
       '<div class="detail">' + matchCenter(m, p, a, s, finalOutcome, prudent, rec) +
       '<div class="match-actions"><button type="button" class="share-btn" data-share="' + esc(m.id) + '">↗ Condividi</button></div>' +
+      whyPanel(m) +
       "<div><div class=\"who\">" + who + '</div><p class="expl">' + esc(a.text) + "</p></div>" +
       abs + adj + (a.ai && !a.sources.length ? '<div class="src-status">Analisi AI eseguita, ma nessuna fonte pertinente è stata verificata per questa partita. I fattori restano neutrali.</div>' : "") + src +
       '<div class="final-prediction" aria-label="Pronostico finale del modello">' +
@@ -3129,6 +3154,8 @@ function slipReason(x){
       MATCHES = d.matches;
       MARKET_PERFORMANCE = d.market_performance || {}; BACKTEST_MARKETS = (d.backtest && d.backtest.markets) || {};
       $("matches").innerHTML = grouped(d.matches);
+      NEXT_ROUNDS = d.next_rounds || [];
+      $("next-rounds").innerHTML = nextRoundsPanel(NEXT_ROUNDS);
       renderFavStrip();
       openLinkedMatch();
       if (d.played && d.played.length) {
@@ -3304,10 +3331,66 @@ function slipReason(x){
       "</div>";
   }
 
+  /* ---------- Perché il modello dice così, prossime giornate, statistiche squadra ---------- */
+  var NEXT_ROUNDS = [];
+  function whyPanel(m) {
+    var e = m.explain;
+    if (!e || !e.items || !e.items.length) return "";
+    var label = { home: m.home, away: m.away, both: "Partita" };
+    var shown = e.items.filter(function (x) { return x.effect !== 0; }).slice(0, 5);
+    return '<div class="why-panel"><h4>Perché il modello dice così</h4><ul>' + shown.map(function (x) {
+      return '<li><span class="why-side ' + esc(x.side) + '">' + esc(label[x.side] || "") + "</span>" + esc(x.text) + "</li>";
+    }).join("") + '</ul><p class="why-sum">' + esc(e.summary) + "</p></div>";
+  }
+  function roundRows(list, team) {
+    return list.map(function (m) {
+      var p = m.prob, d = new Date(m.kickoff);
+      var day = isNaN(d) ? "" : DAYN[d.getDay()].slice(0, 3) + " " + d.getDate() + " " + MONTHS[d.getMonth()].slice(0, 3) + " " +
+        String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
+      var mark = function (n) { return (team && n === team) || (!team && isFav(n)) ? "<b>" + esc(n) + "</b>" : esc(n); };
+      return '<div class="nr-row"><span class="nr-teams">' + mark(m.home) + " – " + mark(m.away) + "<small>" + esc(day) +
+        " · probabile " + esc(m.top[0] + "-" + m.top[1]) + '</small></span><span class="nr-p"><i>1 ' + pc(p.p1) + "</i><i>X " + pc(p.px) + "</i><i>2 " + pc(p.p2) + "</i></span></div>";
+    }).join("");
+  }
+  function nextRoundsPanel(rounds) {
+    if (!rounds || !rounds.length) return "";
+    return '<h2 class="sub2">Prossime giornate</h2><p class="lead">Solo modello statistico: le notizie su infortuni e squalifiche arrivano nelle 48 ore prima di ogni partita. Le probabilità cambiano dopo ogni turno.</p>' +
+      rounds.map(function (r) {
+        return '<div class="panel nr-panel"><h3>Giornata ' + esc(r.matchday) + "</h3>" + roundRows(r.matches) + "</div>";
+      }).join("");
+  }
+  function teamUpcomingPanel(name, next) {
+    var list = [];
+    NEXT_ROUNDS.forEach(function (r) { r.matches.forEach(function (m) { if (m.home === name || m.away === name) list.push(m); }); });
+    if (!list.length) return "";
+    return '<div class="panel"><h2>' + (next ? "Le partite dopo" : "Prossime partite") + '</h2><div class="nr-panel">' + roundRows(list, name) + "</div></div>";
+  }
+  function teamStatsPanel(name) {
+    var st = CLASSIFICA && CLASSIFICA.stats ? CLASSIFICA.stats[name] : null;
+    if (!st) return "";
+    var sides = [["Casa", st.home], ["Trasferta", st.away]];
+    var tot = { pg: st.home.pg + st.away.pg };
+    if (!tot.pg) return "";
+    var avg = function (a, b) { return b ? (a / b).toFixed(1).replace(".", ",") : "–"; };
+    var share = function (a, b) { return b ? Math.round(a / b * 100) + "%" : "–"; };
+    var row = function (label, f) { return "<tr><th>" + label + "</th>" + sides.map(function (x) { return "<td>" + f(x[1]) + "</td>"; }).join("") + "</tr>"; };
+    return '<div class="panel"><h2>Statistiche stagione</h2><table class="team-stats"><thead><tr><th></th><th>Casa</th><th>Trasferta</th></tr></thead><tbody>' +
+      row("Partite", function (s) { return s.pg; }) +
+      row("V · N · P", function (s) { return s.w + " · " + s.d + " · " + s.l; }) +
+      row("Gol fatti a partita", function (s) { return avg(s.gf, s.pg); }) +
+      row("Gol subiti a partita", function (s) { return avg(s.ga, s.pg); }) +
+      row("Senza subire gol", function (s) { return share(s.clean, s.pg); }) +
+      row("Senza segnare", function (s) { return share(s.blank, s.pg); }) +
+      row("Almeno 3 gol in partita", function (s) { return share(s.o25, s.pg); }) +
+      row("Segnano entrambe", function (s) { return share(s.btts, s.pg); }) +
+      "</tbody></table></div>";
+  }
+
   /* ---------- Pagina squadra ---------- */
-  function vsAverage(v, more, less) {
+  function pctArt(n) { n = Math.abs(n); return (n === 1 || n === 11 || String(n).charAt(0) === "8") ? "l’" : "il "; }
+  function vsAverage(v, verb) {
     var d = Math.round((v - 1) * 100);
-    return d === 0 ? "nella media del campionato" : Math.abs(d) + "% " + (d > 0 ? more : less) + " della media";
+    return d === 0 ? "Nella media del campionato" : verb + " " + pctArt(d) + Math.abs(d) + "% " + (d > 0 ? "in più" : "in meno") + " della media";
   }
   function barWidth(v, better) { var x = better === "high" ? (v - 0.5) : (1.5 - v); return Math.round(Math.max(0.04, Math.min(1, x)) * 100); }
   function openTeam(name) {
@@ -3322,8 +3405,8 @@ function slipReason(x){
       '</div><button type="button" class="fav-btn" data-fav="' + esc(name) + '" aria-pressed="' + on + '">' + (on ? "★ Seguita" : "☆ Segui") + "</button></div>";
     if (rating) {
       html += '<div class="team-grid">' +
-        '<div class="panel"><div class="k">Attacco</div><p class="expl" style="margin:4px 0 0">Segna il ' + vsAverage(rating.att, "in più", "in meno") + '</p><div class="team-bar"><i style="width:' + barWidth(rating.att, "high") + '%"></i></div></div>' +
-        '<div class="panel"><div class="k">Difesa</div><p class="expl" style="margin:4px 0 0">Subisce il ' + vsAverage(rating["def"], "in più", "in meno") + '</p><div class="team-bar"><i style="width:' + barWidth(rating["def"], "low") + '%"></i></div></div>' +
+        '<div class="panel"><div class="k">Attacco</div><p class="expl" style="margin:4px 0 0">' + vsAverage(rating.att, "Segna") + '</p><div class="team-bar"><i style="width:' + barWidth(rating.att, "high") + '%"></i></div></div>' +
+        '<div class="panel"><div class="k">Difesa</div><p class="expl" style="margin:4px 0 0">' + vsAverage(rating["def"], "Subisce") + '</p><div class="team-bar"><i style="width:' + barWidth(rating["def"], "low") + '%"></i></div></div>' +
         '<div class="panel"><div class="k">Forma (ultime 5)</div><div style="margin-top:6px">' + chips(rating.form) + "</div></div></div>" +
         '<p class="lead" style="margin:-4px 0 12px">Forza stimata dal modello tenendo conto degli avversari affrontati: barra più lunga = meglio.</p>';
     }
@@ -3333,6 +3416,7 @@ function slipReason(x){
         '<p class="expl">Vittoria ' + pc(home ? p.p1 : p.p2) + " · pareggio " + pc(p.px) + " · sconfitta " + pc(home ? p.p2 : p.p1) + "</p>" +
         '<div class="match-actions"><button type="button" class="share-btn" data-goto-match="' + esc(next.id) + '">Apri la partita →</button></div></div>';
     }
+    html += teamStatsPanel(name) + teamUpcomingPanel(name, next);
     if (srow && se.zones && se.zones.length && se.remaining) {
       html += '<div class="panel"><h2>Come può finire la stagione</h2><div class="team-list">' +
         "<div><span>Posizione media</span><b>" + srow.pos_avg.toFixed(1).replace(".", ",") + "ª (tra " + srow.best + "ª e " + srow.worst + "ª)</b></div>" +

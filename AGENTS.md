@@ -72,6 +72,7 @@ Per non fare due volte lo stesso lavoro:
   `app/model.py` modello Poisson + Dixon-Coles, `app/analyst.py` + `app/evidence.py` analisi AI
   con verifica delle assenze sul testo degli articoli, `app/news.py` ricerca notizie gratuita
   (SearXNG/Tavily) quando Groq è fuori quota, `app/season.py` simulazione di fine stagione,
+  `app/explain.py` spiegazioni, statistiche squadra e prossime giornate,
   `app/pipeline.py` turno, classifica e consiglio,
   `app/store.py` storico, `generate.py` sito statico in `docs/`.
 - I numeri vengono dal modello statistico; l'AI può solo correggere i gol attesi (0,85-1,15)

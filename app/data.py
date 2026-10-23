@@ -451,7 +451,8 @@ async def _open_matchday_context(competition: str) -> dict:
     teams, avg_h, avg_a, cup_prior = _cup_model(finished, [], fixtures)
     standings = _open_matchday_standings(finished)
     # Solo le giornate della fase a girone unico (le eventuali righe successive sono eliminazione diretta).
-    remaining = [{"home": _name(m["homeTeam"]), "away": _name(m["awayTeam"])} for m in upcoming
+    remaining = [{"id": m["id"], "home": _name(m["homeTeam"]), "away": _name(m["awayTeam"]),
+                  "kickoff": m["utcDate"], "matchday": m["matchday"]} for m in upcoming
                  if m["matchday"] <= LEAGUE_PHASE_MATCHDAYS.get(competition, 8)]
     return {"demo": False, "teams_simple": model.build_teams_simple(finished), "remaining": remaining,
             "teams": teams, "avg_h": avg_h, "avg_a": avg_a, "cup_prior": cup_prior,
@@ -552,7 +553,8 @@ async def real_context(competition: str | None = None) -> dict:
     # eliminazione con squadre non ancora note non hanno nome e vengono escluse.
     # Solo stagione regolare / fase a girone unico: spareggi e eliminazione diretta non danno punti.
     remaining = [
-        {"home": _name(m["homeTeam"]), "away": _name(m["awayTeam"])}
+        {"id": str(m.get("id", "")), "home": _name(m["homeTeam"]), "away": _name(m["awayTeam"]),
+         "kickoff": m.get("utcDate"), "matchday": m.get("matchday")}
         for m in sch.get("matches", [])
         if str(m.get("id", "")) not in finished_ids_for_selection
         and m.get("stage", "REGULAR_SEASON") in POINTS_STAGES
