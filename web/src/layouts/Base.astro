@@ -1,0 +1,105 @@
+---
+/* Struttura comune a tutte le pagine: intestazione, contenuto, piè di pagina e barra in basso.
+   Riproduce il markup di static/index.html (stesse classi e id, così vale lo stesso CSS),
+   ma ogni voce porta a una pagina vera invece di mostrare/nascondere pannelli. */
+import "../styles/legacy.css";
+import "../styles/site.css";
+import { LEAGUES, SELECT_ORDER, leagueByCode, leagueUrl, liveUrl, INFO_URL, SECTIONS } from "../lib/core.js";
+import { statusTags } from "../lib/render.js";
+import { leagueData, leagueMeta } from "../lib/data.js";
+
+interface Props {
+  title: string;
+  description: string;
+  league?: string;          // campionato corrente (codice), per menu e barra in basso
+  section?: string;         // voce attiva della barra: home | partite | live | sicure | schedina | classifica | storico
+  path: string;             // URL canonico della pagina, es. "/serie-a/partite/"
+  sub?: string;             // sottotitolo sotto il nome del sito
+  inner?: boolean;          // pagine interne: pulsante "‹ Home" e intestazione compatta
+  noindex?: boolean;
+}
+const { title, description, league = "SA", section, path, inner = true, noindex = false } = Astro.props;
+const L = leagueByCode(league);
+const meta = leagueMeta(league);
+const { turno } = leagueData(league);
+const sub = Astro.props.sub ?? (L.name + (meta.matchday ? " · giornata " + meta.matchday : " · come potrebbe andare ogni partita"));
+const site = Astro.site ? Astro.site.href.replace(/\/$/, "") : "";
+const canonical = site + path;
+const fullTitle = title === "Fischietto finale" ? title : title + " · Fischietto finale";
+/* Nel menu dei campionati si resta sulla stessa sezione (Partite di Serie A → Partite di Premier). */
+const selectSection = section && SECTIONS[section] ? section : "home";
+const navItems = [
+  { key: "home", label: "Home", href: leagueUrl(league, "home"), icon: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>' },
+  { key: "partite", label: "Partite", href: leagueUrl(league, "partite"), icon: '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M12 5v14M3 12h4M17 12h4"/>' },
+  { key: "live", label: "Live", href: liveUrl(league), icon: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', live: true },
+  { key: "sicure", label: "Più sicure", href: leagueUrl(league, "sicure"), icon: '<path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/>' },
+  { key: "schedina", label: "Schedina", href: leagueUrl(league, "schedina"), icon: '<path d="M6 3h12v18H6z"/><path d="M9 7h6M9 11h6M9 15h4"/>' },
+  { key: "classifica", label: "Classifica", href: leagueUrl(league, "classifica"), icon: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>' },
+  { key: "storico", label: "Storico", href: leagueUrl(league, "storico"), icon: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>' }
+];
+const tags = statusTags(turno, meta.updated);
+---
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{fullTitle}</title>
+<meta name="description" content={description}>
+<link rel="canonical" href={canonical}>
+{noindex && <meta name="robots" content="noindex">}
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Fischietto finale">
+<meta property="og:locale" content="it_IT">
+<meta property="og:title" content={fullTitle}>
+<meta property="og:description" content={description}>
+<meta property="og:url" content={canonical}>
+<meta property="og:image" content={site + "/icon-512.png"}>
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Fischietto">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#edf1f6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0a1018" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<slot name="head" />
+</head>
+<body class={inner ? "inner" : undefined} data-league={league} data-league-slug={L.slug}>
+<a class="skip-link" href="#contenuto">Vai al contenuto</a>
+<header class="top">
+  <div class="toprow"><a class="back ff-btn" id="back" href={leagueUrl(league, "home")} hidden={!inner}>‹ Home</a><h1>Fischietto <span>finale</span></h1></div>
+  <p class="sub" id="sub">{sub}</p>
+  <label for="league-select" class="league-label">CAMPIONATO</label><select id="league-select" aria-label="Seleziona campionato" class="league-select">
+    {SELECT_ORDER.map((code) => <option value={code} data-href={leagueUrl(code, selectSection)} selected={code === league}>{leagueByCode(code).name}</option>)}
+  </select>
+  <div class="tags" id="tags" set:html={tags}></div>
+  <div id="aierr">{turno && turno.ai_error && <div class="msg err"><b>Notizie non caricate.</b>{turno.ai_error}</div>}</div>
+</header>
+
+<main id="contenuto">
+  <slot />
+  <footer class="site-foot">
+    <p class="note">Sono stime statistiche, non certezze: una squadra data al 60% non vince 4 volte su 10, e succede spesso. I numeri vengono da un modello statistico; l'AI aggiunge le assenze solo quando le conferma un articolo. <a class="foot-link ff-btn" href={INFO_URL}>Come funziona →</a></p>
+    <p class="note responsible"><b>Solo informazione, nessuna scommessa.</b> Fischietto finale non accetta giocate, non mostra quote dei bookmaker e non è un invito a scommettere. Il gioco d'azzardo è vietato ai minori di 18 anni e può causare dipendenza. Se il gioco ti crea problemi, puoi chiamare il Telefono Verde Nazionale dell'Istituto Superiore di Sanità: <a href="tel:800558822">800 55 88 22</a> (<a href="https://www.iss.it/dipendenze/-/asset_publisher/zwfXwoiZC6zu/content/telefono-verde-nazionale-per-le-problematiche-legate-al-gioco-d-azzardo-tvnga-800-55-88-22" target="_blank" rel="noopener">informazioni</a>).</p>
+    <p class="note">Football data provided by the Football-Data.org API.</p>
+  </footer>
+</main>
+
+<nav class="nav" aria-label="Sezioni">
+  {navItems.map((item) => (
+    <a class="ff-btn" id={"t-" + item.key} href={item.href} aria-current={item.key === section ? "page" : undefined}>
+      <svg viewBox="0 0 24 24" aria-hidden="true" set:html={item.icon}></svg>{item.label}{item.live && <span class="live-dot" aria-hidden="true"></span>}
+    </a>
+  ))}
+</nav>
+<script>
+  import "../scripts/app.js";
+</script>
+</body>
+</html>

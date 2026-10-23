@@ -30,6 +30,9 @@ Su questo repository lavorano più agenti AI (Claude e ChatGPT Codex) per conto 
 - Non chiamare API a pagamento o con quote (football-data.org, Groq, Gemini) nei test: usa mock.
 - `tests/test_frontend_render.py` esegue gli script della pagina con un DOM finto
   (`tests/render_page.js`, serve Node.js) sui JSON di `docs/`: se tocchi l'interfaccia deve restare verde.
+- Sito Astro in `web/` (vedi `web/README.md`): se tocchi `web/` esegui `npm test`, `npm run build` e
+  `npm run check:dist` in `web/`. Se cambi la grafica in `static/index.html`, riallinea il sito nuovo con
+  `npm run import:css` (il workflow "Sito Astro" fallisce se `web/src/styles/legacy.css` non è aggiornato).
 
 ## Sicurezza (vedi SECURITY.md)
 
@@ -68,6 +71,8 @@ Per non fare due volte lo stesso lavoro:
 
 ## Come è fatto il progetto
 
+- `web/` è il sito Astro (pagine statiche + isole interattive) per Cloudflare Pages: legge i JSON di `docs/`
+  durante il build e non chiama API. Finché il dominio resta su GitHub Pages, il sito pubblico è `docs/`.
 - `app/data.py` dati (football-data.org; Europa e Conference League da CSV pubblico),
   `app/model.py` modello Poisson + Dixon-Coles, `app/analyst.py` + `app/evidence.py` analisi AI
   con verifica delle assenze sul testo degli articoli, `app/news.py` ricerca notizie gratuita

@@ -1,0 +1,35 @@
+---
+/* Più sicure: per ogni partita l'esito più probabile, combinati per vedere come scende la probabilità.
+   La pagina arriva già con 3 selezioni "nette"; i pulsanti ricalcolano nel browser (scripts/sicure.js). */
+import Base from "../../layouts/Base.astro";
+import { leagueByCode } from "../../lib/core.js";
+import { leaguePaths } from "../../lib/paths.js";
+import { leagueData, slimMatches, inlineJson } from "../../lib/data.js";
+import { comboHtml } from "../../lib/render.js";
+import { computePicks } from "../../lib/model.js";
+export const getStaticPaths = leaguePaths;
+const { league } = Astro.props;
+const L = leagueByCode(league);
+const { turno } = leagueData(league);
+const matches = turno ? turno.matches : [];
+const N = 3, NODC = true;
+const first = comboHtml(computePicks(matches, NODC), N);
+---
+<Base title={"Più sicure " + L.name} description={"Le selezioni più probabili secondo il modello per " + L.name + " e come scende la probabilità combinandole. Stime statistiche, non un invito a scommettere."} league={league} section="sicure" path={"/" + L.slug + "/piu-sicure/"}>
+  <section id="p-sicure" aria-label="Più sicure">
+    <p class="lead">Per ogni partita il modello sceglie l'esito più probabile. Qui li metti insieme e vedi quanto scende la probabilità complessiva.</p>
+    <div class="seg" id="seg" role="group" aria-label="Numero di selezioni"><span>Selezioni</span>{[2, 3, 4, 5].map((k) => <button type="button" data-n={k} aria-pressed={String(k === N)}>{k}</button>)}</div>
+    <div class="seg" id="seg2" role="group" aria-label="Tipo di selezioni"><span>Tipo</span><button type="button" data-dc="true" aria-pressed={String(NODC)}>Selezioni nette</button><button type="button" data-dc="false" aria-pressed={String(!NODC)}>Tutte</button></div>
+    <p class="lead" style="margin-top:-6px">Doppia chance (1X, X2), Over 1,5 e Under 3,5 sono quasi sempre le più probabili ma pagano pochissimo. "Selezioni nette" le esclude.</p>
+    <div class="panel" id="combo" set:html={first.combo}></div>
+    <div class="panel">
+      <h2>Come scende la probabilità</h2>
+      <div class="decay" id="decay" set:html={first.decay}></div>
+      <p class="lead" style="margin:0">Le partite sono trattate come indipendenti. Più selezioni aggiungi, più è facile che una sbagli.</p>
+    </div>
+  </section>
+  <script is:inline type="application/json" id="ff-matches" set:html={inlineJson(slimMatches(matches))}></script>
+  <script>
+    import "../../scripts/sicure.js";
+  </script>
+</Base>

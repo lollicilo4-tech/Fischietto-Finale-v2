@@ -1,0 +1,21 @@
+{
+  "name": "fischietto-finale-web",
+  "private": true,
+  "type": "module",
+  "description": "Sito di Fischietto finale in Astro: pagine statiche generate dai JSON in docs/ e isole interattive in JavaScript puro.",
+  "engines": {
+    "node": ">=22.23.4"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check:dist": "node scripts/check-dist.mjs",
+    "test": "node --test \"tests/*.test.mjs\"",
+    "verify": "npm test && npm run build && npm run check:dist",
+    "import:css": "node scripts/import-legacy-css.mjs"
+  },
+  "dependencies": {
+    "astro": "7.4.2"
+  }
+}

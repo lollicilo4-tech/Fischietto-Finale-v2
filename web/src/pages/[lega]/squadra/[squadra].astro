@@ -1,0 +1,22 @@
+---
+/* Scheda di una squadra: una pagina per ogni squadra in classifica o in calendario. */
+import Base from "../../../layouts/Base.astro";
+import { LEAGUES, slugify } from "../../../lib/core.js";
+import { leagueData, allTeams } from "../../../lib/data.js";
+import { teamPage } from "../../../lib/render.js";
+export function getStaticPaths() {
+  return LEAGUES.flatMap((l) => {
+    const seen = new Set();
+    return allTeams(l.code).filter((name) => { const s = slugify(name); if (seen.has(s)) return false; seen.add(s); return true; })
+      .map((name) => ({ params: { lega: l.slug, squadra: slugify(name) }, props: { league: l.code, team: name } }));
+  });
+}
+const { league, team } = Astro.props;
+const L = LEAGUES.find((l) => l.code === league);
+const html = teamPage({ league, favs: [] }, team, leagueData(league));
+---
+<Base title={team + " · " + L.name} description={team + " in " + L.name + ": forza in attacco e difesa, forma, prossima partita con le probabilità del modello e pronostici passati."} league={league} section={undefined} path={"/" + L.slug + "/squadra/" + slugify(team) + "/"}>
+  <section id="p-team" aria-labelledby="team-title">
+    <div id="team-page" set:html={html}></div>
+  </section>
+</Base>
