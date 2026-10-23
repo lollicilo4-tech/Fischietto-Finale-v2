@@ -1984,6 +1984,8 @@ a{color:#65baff}
 .lc-stat-bar i.h{background:var(--home)}.lc-stat-bar i.a{background:var(--away);margin-left:auto}
 .lc-mh{fill:var(--home)}.lc-ma{fill:var(--away)}
 .lc-gap{fill:color-mix(in srgb,var(--line) 45%,transparent)}
+/* Il titolo non si spezza a metà parola: la sua colonna è larga almeno quanto "Fischietto". */
+.top .toprow h1,.top h1{overflow-wrap:normal!important;word-break:normal!important}
 </style>
 
 </head>
@@ -3723,6 +3725,78 @@ function slipReason(x){
   window.FFLive = { liveChartsHtml: liveChartsHtml, lcCurve: lcCurve, lcEvents: lcEvents, lcStats: lcStats, lcNowMinute: lcNowMinute,
     matchFromPayload: lcMatchFromPayload, timelineOf: lcTimelineOf, minuteOf: lcMinuteOf, recordSample: lcRecordSample,
     momentumBars: lcMomentumBars };
+
+  /* ---------- Nomi lunghi: rimpiccioliti invece di spezzati a metà ----------
+     Su telefoni stretti "FIORENTINA" o "FISCHIETTO" non entrano nella colonna e il CSS
+     (overflow-wrap:anywhere, che evita lo scorrimento orizzontale) li spezzava a metà parola.
+     Qui si misura la parola più lunga e si riduce il carattere quanto basta (minimo 12px);
+     se non basta ancora, resta la vecchia regola di sicurezza. Funziona con qualsiasi font. */
+  var FIT_SELECTOR = ".top h1, .feature-team b, .mc-team b, .match-team .team-name, .compare-team .name, " +
+    ".vs .side .nm, .played .final .nm, .final-hero .outcome, .tile b";
+  function fitPad(node, stop) {  // padding e bordi orizzontali tra il testo e il blocco che lo contiene
+    var extra = 0;
+    for (var n = node.parentElement; n && n !== stop; n = n.parentElement) {
+      var c = getComputedStyle(n);
+      extra += (parseFloat(c.paddingLeft) || 0) + (parseFloat(c.paddingRight) || 0) +
+        (parseFloat(c.borderLeftWidth) || 0) + (parseFloat(c.borderRightWidth) || 0);
+    }
+    return extra;
+  }
+  function fitNames(root) {
+    var list = (root && root.querySelectorAll ? root : document).querySelectorAll(FIT_SELECTOR);
+    Array.prototype.forEach.call(list, function (el) {
+      if (!el.style || !el.style.setProperty || !document.createRange || !document.createTreeWalker) return;
+      el.style.removeProperty("font-size");
+      var box = el;
+      while (box && getComputedStyle(box).display === "inline") box = box.parentElement;
+      if (!box || !box.clientWidth) return;  // nascosto (scheda chiusa): ci pensa la prossima misura
+      var bc = getComputedStyle(box);
+      var avail = box.getBoundingClientRect().width - (parseFloat(bc.paddingLeft) || 0) - (parseFloat(bc.paddingRight) || 0) -
+        (parseFloat(bc.borderLeftWidth) || 0) - (parseFloat(bc.borderRightWidth) || 0);
+      var inner = el.querySelectorAll("*");
+      var setWrap = function (on) {
+        [el].concat(Array.prototype.slice.call(inner)).forEach(function (n) {
+          if (on) { n.style.setProperty("overflow-wrap", "normal", "important"); n.style.setProperty("word-break", "keep-all", "important"); }
+          else { n.style.removeProperty("overflow-wrap"); n.style.removeProperty("word-break"); }
+        });
+      };
+      setWrap(true);
+      var widest = 0, walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), node;
+      while ((node = walker.nextNode())) {
+        var re = /\S+/g, m, pad = null;
+        while ((m = re.exec(node.data))) {
+          var r = document.createRange();
+          r.setStart(node, m.index); r.setEnd(node, m.index + m[0].length);
+          if (pad === null) pad = fitPad(node, box);
+          widest = Math.max(widest, r.getBoundingClientRect().width + pad);
+        }
+      }
+      setWrap(false);
+      if (widest > avail) {
+        var size = parseFloat(getComputedStyle(el).fontSize) || 16;
+        el.style.setProperty("font-size", Math.max(12, Math.floor(size * (avail - 1) / widest * 10) / 10) + "px", "important");
+      }
+    });
+  }
+  (function () {
+    var queued = false;
+    var schedule = function () {
+      if (queued) return;
+      queued = true;
+      (window.requestAnimationFrame || setTimeout)(function () { queued = false; fitNames(document); });
+    };
+    if (typeof MutationObserver === "function" && document.body) {
+      new MutationObserver(function (records) {
+        // ignora le modifiche fatte da fitNames stessa (attributo style)
+        if (records.some(function (r) { return r.type === "childList" || r.attributeName !== "style"; })) schedule();
+      }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["hidden", "open", "class"] });
+    }
+    window.addEventListener("resize", schedule);
+    document.addEventListener("toggle", schedule, true);  // <details> aperti
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(schedule);
+    schedule();
+  })();
+  window.FFFit = fitNames;
 
   /* ---------- Perché il modello dice così, prossime giornate, statistiche squadra ---------- */
   var NEXT_ROUNDS = [];
