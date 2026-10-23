@@ -114,6 +114,10 @@ export async function collect({ fetch: fetchFn, db, now = Date.now() }) {
     const live = await fetchLive(fetchFn);
     const matches = ourMatches(live);
     report.live = live.length; report.ours = matches.length;
+    // Nomi dei campionati visti e quali sono stati riconosciuti come nostri: servono a controllare
+    // il riconoscimento sui dati veri (si leggono da /health).
+    report.leagues = [...new Set(live.map(leagueNameOf))].slice(0, 40);
+    report.ourLeagues = [...new Set(matches.map((m) => m.league))];
     const { samples, failed } = await fetchSamples(fetchFn, matches);
     report.failed = failed;
     report.saved = await storeSamples(db, samples, now);

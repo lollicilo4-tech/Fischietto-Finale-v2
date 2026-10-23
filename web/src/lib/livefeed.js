@@ -80,19 +80,25 @@ export function isLiveStatus(m) {
 /* La fonte fixtures è già filtrata sul live; le fonti di riserva vanno filtrate per stato. */
 export const liveOnly = (matches) => matches.filter((m) => m._ffLiveVerified === true || isLiveStatus(m));
 
+/* Campionato del feed → chiave del filtro. I nomi si confrontano per intero (con prefissi di paese
+   o di federazione ammessi), non per parole contenute: "LigaPro Serie A" (Ecuador), "Azerbaijan
+   Premier League" o "AFC Champions League" non sono i nostri campionati e finiscono in "other:". */
+const LEAGUE_PATTERNS = [
+  ["serie-a", /^(italy |italia |italian )?serie a( tim| enilive)?$/],
+  ["premier-league", /^(england |english )?premier league$/],
+  ["champions-league", /^(uefa )?champions league$/],
+  ["europa-league", /^(uefa )?europa league$/],
+  ["conference-league", /^(uefa )?(europa )?conference league$/],
+  ["bundesliga", /^(germany |german )?bundesliga$/],
+  ["laliga", /^((spain |spanish )?(laliga|la liga)( ea sports)?|(spain|spanish) primera division)$/],
+  ["ligue-1", /^(france |french )?ligue 1( mcdonald s| uber eats)?$/],
+  ["serie-b", /^(italy |italia |italian )?serie b( bkt)?$/],
+  ["eredivisie", /^(netherlands |dutch )?eredivisie$/],
+  ["liga-portugal", /^(portugal )?(liga portugal( betclic)?|primeira liga)$/]
+];
 export function liveLeagueKey(name) {
-  const n = String(name || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
-  if (/serie a|italian serie a/.test(n)) return "serie-a";
-  if (/premier league/.test(n)) return "premier-league";
-  if (/champions league/.test(n)) return "champions-league";
-  if (/europa league/.test(n)) return "europa-league";
-  if (/conference league|uefa europa conference/.test(n)) return "conference-league";
-  if (/bundesliga/.test(n)) return "bundesliga";
-  if (/laliga|la liga|primera division/.test(n)) return "laliga";
-  if (/ligue 1/.test(n)) return "ligue-1";
-  if (/serie b/.test(n)) return "serie-b";
-  if (/eredivisie/.test(n)) return "eredivisie";
-  if (/liga portugal|primeira liga/.test(n)) return "liga-portugal";
+  const n = String(name || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
+  for (const [key, re] of LEAGUE_PATTERNS) if (re.test(n)) return key;
   return "other:" + n;
 }
 export const leagueNameOf = (m) => valueText(m.league || m.competition || m.tournament || m.league_name || m.competition_name) || "Competizione non disponibile";
