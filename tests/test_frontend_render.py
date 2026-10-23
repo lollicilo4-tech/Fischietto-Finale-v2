@@ -32,6 +32,61 @@ class FrontendRenderTests(unittest.TestCase):
                 self.assertEqual(result["errors"], [])
                 self.assertIn('class="match"', result["matches"])
 
+    def test_live_charts(self):
+        live = self.render("SA")["live"]
+        named = live["named"]
+        self.assertIn("Andamento della partita", named)
+        self.assertIn('class="lc-timeline"', named)
+        self.assertIn("Probabilità minuto per minuto", named)
+        self.assertIn("Possesso palla", named)
+        self.assertIn("Tiri in porta", named)
+        self.assertIn("invito a scommettere", named)
+        self.assertIn("Tiri totali", live["sided"])
+        self.assertIn('class="lc-prob"', live["sided"])
+        self.assertIn("Chi vince adesso?", live["partial"])
+        self.assertNotIn('class="lc-prob"', live["partial"])
+        self.assertEqual(live["empty"], "")
+        curve = live["curve"]
+        self.assertEqual(len(curve), 81)
+        self.assertGreater(curve[-1]["p1"], curve[0]["p1"], "in vantaggio all'80' la probabilità di vittoria cresce")
+        self.assertAlmostEqual(curve[40]["p1"] + curve[40]["px"] + curve[40]["p2"], 1.0, places=6)
+
+    def test_live_charts_with_real_sportscore_payload(self):
+        """tests/fixtures/sportscore_match.json è una risposta vera di api/widget/match (Zira-Sumgayit, 61')."""
+        live = self.render("SA")["live"]
+        events = live["realEvents"]
+        self.assertEqual([(e["minute"], e["kind"], e["side"]) for e in events],
+                         [(8, "goal", "home"), (10, "yellow", "home"), (21, "goal", "home"),
+                          (39, "goal", "away"), (56, "goal", "away")], "il VAR non è un evento del grafico")
+        labels = {s["label"]: (s["home"], s["away"]) for s in live["realStats"]}
+        self.assertEqual(labels["Attacchi pericolosi"], (20, 35))
+        self.assertEqual(labels["Tiri fuori"], (4, 2))
+        self.assertEqual(labels["Possesso palla"], (45, 55))
+        real = live["real"]
+        self.assertIn('class="lc-timeline"', real)
+        self.assertIn('class="lc-prob"', real, "i gol del feed spiegano il 2-2: c'è la curva completa")
+        self.assertNotIn("Momentum", real, "senza campioni registrati niente momentum")
+
+    def test_momentum_estimate(self):
+        live = self.render("SA")["live"]
+        samples = live["momentumSamples"]
+        self.assertEqual([s["m"] for s in samples], [61, 62, 64, 74], "stesso minuto: il campione viene aggiornato")
+        bars = {b["m"]: b["v"] for b in live["momentumBars"]}
+        self.assertEqual(sorted(bars), [62, 63, 64], "oltre 5 minuti senza dati il tratto resta vuoto")
+        self.assertLess(bars[62], 0, "al 62' attaccano gli ospiti (+5 attacchi pericolosi, +1 tiro in porta)")
+        self.assertGreater(bars[63], 0)
+        self.assertAlmostEqual(bars[63], bars[64])
+        html = live["momentumHtml"]
+        self.assertIn("Momentum (stima)", html)
+        self.assertIn('class="lc-momentum"', html)
+        self.assertIn('class="lc-gap"', html)
+        self.assertIn("Non è il momentum di Sofascore", html)
+        self.assertLess(html.index("lc-momentum"), html.index("lc-prob"), "il momentum va sotto la linea del tempo")
+        first = live["momentumFirst"]
+        self.assertIn("il primo tratto compare dopo il prossimo aggiornamento", first)
+        self.assertNotIn('class="lc-momentum"', first)
+        self.assertLess(first.index("Momentum"), first.index("Chi vince"), "senza linea del tempo il momentum va in cima")
+
     def test_how_it_works_page_opens_and_closes(self):
         result = self.render("SA")
         self.assertTrue(result["infoOpen"], "Come funziona deve aprirsi dal piè di pagina")

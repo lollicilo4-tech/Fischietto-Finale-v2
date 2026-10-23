@@ -1,0 +1,125 @@
+{
+ "sport": "football",
+ "match": {
+  "home": "Zira FK",
+  "away": "Sumgayit FK",
+  "home_logo": "https://img.thesports.com/football/team/78d040926970a0ccc54c3b1f13a6d568.png",
+  "away_logo": "https://img.thesports.com/football/team/46e02b8dea22b2951976d1262dd0279f.png",
+  "home_score": "2",
+  "away_score": "2",
+  "status": "live",
+  "status_text": "2nd half",
+  "time": "2026-10-23T15:00:00+00:00",
+  "competition": "Azerbaijan Premier League",
+  "competition_logo": "https://img.thesports.com/football/competition/fef1f81febbe012e11f987726f8fef15.png",
+  "url": "/football/match/sumgayit-fk-vs-zira-fk/zp5rzghgkw5dq82/",
+  "live_minute": "61",
+  "incidents": [
+   {
+    "time": 8,
+    "type": "Penalty goal",
+    "type_id": 8,
+    "side": "home",
+    "player": "Ruan Renato",
+    "is_goal": true,
+    "home_score": 1,
+    "away_score": 0
+   },
+   {
+    "time": 10,
+    "type": "Yellow card",
+    "type_id": 3,
+    "side": "home",
+    "player": "elchin alicanov",
+    "is_card": true
+   },
+   {
+    "time": 21,
+    "type": "Goal",
+    "type_id": 1,
+    "side": "home",
+    "player": "Ricardo Martins Guimarães",
+    "is_goal": true,
+    "home_score": 2,
+    "away_score": 0
+   },
+   {
+    "time": 39,
+    "type": "Goal",
+    "type_id": 1,
+    "side": "away",
+    "player": "nihat ahmadzada",
+    "is_goal": true,
+    "home_score": 2,
+    "away_score": 1
+   },
+   {
+    "time": 47,
+    "type": "VAR",
+    "type_id": 28,
+    "side": "away",
+    "player": "ronaldo vasquez"
+   },
+   {
+    "time": 56,
+    "type": "Goal",
+    "type_id": 1,
+    "side": "away",
+    "player": "",
+    "is_goal": true,
+    "home_score": 2,
+    "away_score": 2
+   }
+  ],
+  "stats": [
+   {
+    "label": "Ball Possession",
+    "home": 45,
+    "away": 55,
+    "home_pct": 45,
+    "away_pct": 55,
+    "suffix": "%"
+   },
+   {
+    "label": "Shots on Target",
+    "home": 3,
+    "away": 7,
+    "home_pct": 30,
+    "away_pct": 70,
+    "suffix": ""
+   },
+   {
+    "label": "Shots off Target",
+    "home": 4,
+    "away": 2,
+    "home_pct": 67,
+    "away_pct": 33,
+    "suffix": ""
+   },
+   {
+    "label": "Attacks",
+    "home": 45,
+    "away": 59,
+    "home_pct": 43,
+    "away_pct": 57,
+    "suffix": ""
+   },
+   {
+    "label": "Dangerous Attacks",
+    "home": 20,
+    "away": 35,
+    "home_pct": 36,
+    "away_pct": 64,
+    "suffix": ""
+   }
+  ],
+  "home_ht_score": 2,
+  "away_ht_score": 1,
+  "tracker": {
+   "id": "zp5rzghgkw5dq82",
+   "profile": "9emo4h1e9hluyqd",
+   "sport": "football"
+  }
+ },
+ "updated": "2026-10-23T16:16:57.681674+00:00"
+}
