@@ -32,6 +32,25 @@ class FrontendRenderTests(unittest.TestCase):
                 self.assertEqual(result["errors"], [])
                 self.assertIn('class="match"', result["matches"])
 
+    def test_live_charts(self):
+        live = self.render("SA")["live"]
+        named = live["named"]
+        self.assertIn("Andamento della partita", named)
+        self.assertIn('class="lc-timeline"', named)
+        self.assertIn("Probabilità minuto per minuto", named)
+        self.assertIn("Possesso palla", named)
+        self.assertIn("Tiri in porta", named)
+        self.assertIn("invito a scommettere", named)
+        self.assertIn("Tiri totali", live["sided"])
+        self.assertIn('class="lc-prob"', live["sided"])
+        self.assertIn("Chi vince adesso?", live["partial"])
+        self.assertNotIn('class="lc-prob"', live["partial"])
+        self.assertEqual(live["empty"], "")
+        curve = live["curve"]
+        self.assertEqual(len(curve), 81)
+        self.assertGreater(curve[-1]["p1"], curve[0]["p1"], "in vantaggio all'80' la probabilità di vittoria cresce")
+        self.assertAlmostEqual(curve[40]["p1"] + curve[40]["px"] + curve[40]["p2"], 1.0, places=6)
+
     def test_how_it_works_page_opens_and_closes(self):
         result = self.render("SA")
         self.assertTrue(result["infoOpen"], "Come funziona deve aprirsi dal piè di pagina")

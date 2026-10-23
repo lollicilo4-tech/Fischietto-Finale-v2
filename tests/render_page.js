@@ -88,6 +88,28 @@ setTimeout(() => {
       if (firstId) out.share = ctx.FF.shareMatch(firstId);
     } catch (e) { errors.push("FF: " + e.message); }
   }
+  // Live Center: grafici di andamento con tre forme di feed diverse (nessuna rete)
+  if (ctx.FFLive) {
+    try {
+      const L = ctx.FFLive;
+      out.live = {
+        // eventi con nome della squadra, risultato coerente, un rosso
+        named: L.liveChartsHtml({ home: "Inter", away: "Genoa", homeScore: 2, awayScore: 1, status: "67'",
+          events: [{ type: "Goal", minute: 12, team: "Inter", player: "Lautaro" }, { type: "Yellow card", minute: 30, team: "Genoa" },
+                   { type: "Goal", minute: 41, team: { name: "Genoa" } }, { type: "Red card", minute: 55, team: "Genoa" },
+                   { type: "Goal", minute: "60+1", team: "Inter" }, { type: "Substitution", minute: 63, team: "Inter" }],
+          stats: [{ name: "Ball possession", home: "58%", away: "42%" }, { name: "Shots on target", home: 6, away: 2 }] }),
+        // lato indicato con side/is_home e statistiche a gruppi (stile Sofascore)
+        sided: L.liveChartsHtml({ home: "A", away: "B", homeScore: 0, awayScore: 1, status: "HT",
+          events: [{ incident_type: "goal", time: 33, is_home: false }],
+          stats: { groups: [{ groupName: "Shots", statisticsItems: [{ name: "Total shots", home: "9", away: "4" }] }] } }),
+        // eventi che non spiegano il risultato: niente curva, solo stima attuale
+        partial: L.liveChartsHtml({ home: "X", away: "Y", homeScore: 2, awayScore: 0, status: "70'", events: [] }),
+        empty: L.liveChartsHtml({ home: "X", away: "Y", homeScore: null, awayScore: null, status: "", events: [] }),
+        curve: L.lcCurve({ lh: 1.5, la: 1.0 }, L.lcEvents([{ type: "Goal", minute: 10, side: "home" }], "A", "B"), 80, 1, 0),
+      };
+    } catch (e) { errors.push("FFLive: " + e.message); }
+  }
   out.errors = errors;
   fs.writeFileSync(path.join(process.argv[4], `render-${league}.json`), JSON.stringify(out));
   console.log(league, "errors:", errors.length ? errors : "none", "| matches html:", out.matches.length,

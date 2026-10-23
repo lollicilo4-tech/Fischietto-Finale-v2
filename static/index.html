@@ -1959,6 +1959,29 @@ a{color:#65baff}
 .team-stats thead th{border-top:0;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.05em}
 .team-stats tbody th{text-align:left;font-weight:500;color:var(--muted)}
 @media(max-width:420px){.nr-p i{padding:3px 4px;font-size:10px}}
+
+/* Live Center: andamento della partita. */
+.live-charts{margin:12px 0;padding:12px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03)}
+.live-charts h4{margin:0 0 8px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.live-charts h5{margin:12px 0 4px;font-size:12px;color:var(--fg)}
+.live-charts svg{display:block;width:100%;height:auto}
+.lc-axis{stroke:var(--line);stroke-width:1.5}
+.lc-ht{stroke:var(--muted);stroke-width:1}
+.lc-played{fill:color-mix(in srgb,var(--gold) 55%,transparent)}
+.lc-tick{fill:var(--muted);font-size:9px}
+.lc-ev{font-size:12px}
+.lc-a1{fill:color-mix(in srgb,var(--home) 70%,transparent)}
+.lc-ax{fill:color-mix(in srgb,var(--draw) 75%,transparent)}
+.lc-a2{fill:color-mix(in srgb,var(--away) 70%,transparent)}
+.lc-legend{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:11px;color:var(--muted);margin:4px 0}
+.lc-legend .k1{color:var(--home)}.lc-legend .kx{color:var(--draw)}.lc-legend .k2{color:var(--away)}
+.lc-note{margin:4px 0 0;font-size:11px;color:var(--muted)}
+.lc-stats{display:flex;flex-direction:column;gap:9px;margin-top:6px}
+.lc-stat-head{display:flex;justify-content:space-between;font-size:12px;font-variant-numeric:tabular-nums}
+.lc-stat-head span{color:var(--muted)}
+.lc-stat-bar{display:flex;gap:3px;height:6px;margin-top:4px}
+.lc-stat-bar i{display:block;height:100%;border-radius:3px}
+.lc-stat-bar i.h{background:var(--home)}.lc-stat-bar i.a{background:var(--away);margin-left:auto}
 </style>
 
 </head>
@@ -2098,11 +2121,15 @@ a{color:#65baff}
       <p>In Classifica il modello gioca migliaia di volte tutte le partite che restano, partendo dai punti di oggi, e conta quante volte ogni squadra arriva prima, tra le prime 4 o nelle ultime posizioni (nelle coppe: prime 8, spareggi, eliminata). A parità di punti contano differenza reti e gol fatti, non gli scontri diretti. Toccando una squadra apri la sua scheda: forza in attacco e in difesa, forma, prossima partita e pronostici passati. Con “Segui” la squadra resta in evidenza: la scelta è salvata solo sul tuo telefono.</p>
     </div>
     <div class="panel info-section">
-      <h2>6. Come controllarci</h2>
+      <h2>6. Il Live Center</h2>
+      <p>Aprendo il dettaglio di una partita in corso trovi la linea del tempo con gol, cartellini e cambi, le statistiche se il servizio dati le fornisce, e la probabilità di 1, X e 2 minuto per minuto: parte dal pronostico pre-partita e si aggiorna con risultato, minuto ed espulsioni. Non c’è il “momentum d’attacco” di altre app: servono dati di pressione minuto per minuto che il servizio gratuito non dà, e non li inventiamo.</p>
+    </div>
+    <div class="panel info-section">
+      <h2>7. Come controllarci</h2>
       <p>Ogni pronostico viene salvato prima del calcio d’inizio e non viene mai modificato. Nello <b>Storico</b> lo confrontiamo con il risultato vero: quante volte abbiamo indovinato e quanto le percentuali sono affidabili (se diciamo 60%, deve succedere circa 6 volte su 10).</p>
     </div>
     <div class="panel info-section">
-      <h2>7. I limiti</h2>
+      <h2>8. I limiti</h2>
       <ul>
         <li>Sono stime, non certezze: una squadra data al 60% non vince 4 volte su 10.</li>
         <li>Le “quote eque” sono solo 1 diviso la probabilità: non sono quote di bookmaker.</li>
@@ -2111,7 +2138,7 @@ a{color:#65baff}
       </ul>
     </div>
     <div class="panel info-section">
-      <h2>8. Gratis e senza scommesse</h2>
+      <h2>9. Gratis e senza scommesse</h2>
       <p>Il sito è gratuito, non accetta giocate e non mostra quote dei bookmaker. È un servizio solo informativo e non è un invito a scommettere.</p>
     </div>
   </section>
@@ -2866,6 +2893,10 @@ function slipReason(x){
           var eventMarkup = eventItems.length
             ? '<section class="live-events"><h4>Eventi della partita</h4><ol>' + eventItems.join("") + '</ol></section>'
             : '<p class="expl">Il feed non include eventi verificabili per questa partita. Il risultato e lo stato live restano disponibili.</p>';
+          var chartsMarkup = liveChartsHtml({ home: valueText(homeObj) || "Casa", away: valueText(awayObj) || "Ospiti",
+            homeId: homeObj && typeof homeObj === "object" ? homeObj.id : m.home_id, awayId: awayObj && typeof awayObj === "object" ? awayObj.id : m.away_id,
+            homeScore: homeScore, awayScore: awayScore, status: matchStatus(m) || m.minute || m.elapsed, events: rawEvents,
+            stats: m.statistics || m.stats || m.match_statistics });
           var matchSlug = m.slug || m.match_slug || m.url_slug || "";
           /* Some SportScore fixture responses expose only the public match URL.
              Extract its documented match slug when available; never synthesize one from team names. */
@@ -2874,7 +2905,8 @@ function slipReason(x){
             var slugMatch = matchUrl.match(/\/football\/match\/([^/?#]+)\//i);
             if (slugMatch && slugMatch[1]) matchSlug = slugMatch[1];
           }
-          return '<article class="live-match" data-live-slug="' + esc(matchSlug) + '" data-live-league="' + esc(leagueKey) + '" data-live-search="' + esc(searchText) + '"><div class="live-league-name">' + esc(league) + '</div><div class="live-phase"><span class="live-pulse"></span>' + phase + '</div><div class="live-teams"><div class="live-team">' + (safeUrl(homeLogo) ? '<img loading="lazy" referrerpolicy="no-referrer" src="' + esc(safeUrl(homeLogo)) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + home + '</b></div><div class="live-score">' + hs + '<span>:</span>' + as + '</div><div class="live-team away">' + (safeUrl(awayLogo) ? '<img loading="lazy" referrerpolicy="no-referrer" src="' + esc(safeUrl(awayLogo)) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + away + '</b></div></div><button type="button" class="live-detail-toggle" aria-expanded="false">Dettagli partita <span aria-hidden="true">＋</span></button><div class="live-match-details" hidden>' + (details.length ? '<div class="live-detail-grid">' + details.join("") + '</div>' : '') + eventMarkup + '</div></article>';
+          return '<article class="live-match" data-live-slug="' + esc(matchSlug) + '" data-home="' + esc(valueText(homeObj)) + '" data-away="' + esc(valueText(awayObj)) +
+            '" data-hs="' + esc(homeScore == null ? "" : homeScore) + '" data-as="' + esc(awayScore == null ? "" : awayScore) + '" data-status="' + esc(matchStatus(m)) + '" data-live-league="' + esc(leagueKey) + '" data-live-search="' + esc(searchText) + '"><div class="live-league-name">' + esc(league) + '</div><div class="live-phase"><span class="live-pulse"></span>' + phase + '</div><div class="live-teams"><div class="live-team">' + (safeUrl(homeLogo) ? '<img loading="lazy" referrerpolicy="no-referrer" src="' + esc(safeUrl(homeLogo)) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + home + '</b></div><div class="live-score">' + hs + '<span>:</span>' + as + '</div><div class="live-team away">' + (safeUrl(awayLogo) ? '<img loading="lazy" referrerpolicy="no-referrer" src="' + esc(safeUrl(awayLogo)) + '" alt="" onerror="this.hidden=true">' : '') + '<b>' + away + '</b></div></div><button type="button" class="live-detail-toggle" aria-expanded="false">Dettagli partita <span aria-hidden="true">＋</span></button><div class="live-match-details" hidden>' + (details.length ? '<div class="live-detail-grid">' + details.join("") + '</div>' : '') + chartsMarkup + eventMarkup + '</div></article>';
         }).join("");
         function applyLiveFilters() {
           var chosen = leagueSelect ? leagueSelect.value : "all";
@@ -2931,6 +2963,18 @@ function slipReason(x){
               var timeline = match && (match.timeline || match.events || match.incidents || match.match_events || match.fixture_events);
               if (timeline && !Array.isArray(timeline)) timeline = timeline.events || timeline.items || timeline.data || [];
               if (!Array.isArray(timeline)) timeline = [];
+              var chartsHtml = liveChartsHtml({ home: card.getAttribute("data-home"), away: card.getAttribute("data-away"),
+                homeId: match && match.home_team && match.home_team.id, awayId: match && match.away_team && match.away_team.id,
+                homeScore: card.getAttribute("data-hs"), awayScore: card.getAttribute("data-as"),
+                status: card.getAttribute("data-status") || (match && (match.minute || match.elapsed)), events: timeline,
+                stats: match && (match.statistics || match.stats || match.match_statistics) });
+              if (chartsHtml) {
+                var oldCharts = details.querySelector(".live-charts");
+                if (oldCharts) oldCharts.remove();
+                var holder = document.createElement("div");
+                holder.innerHTML = chartsHtml;
+                if (holder.firstElementChild) details.insertBefore(holder.firstElementChild, details.querySelector(".live-events") || null);
+              }
               var existing = details.querySelector(".live-events");
               if (existing) existing.remove();
               var items = timeline.map(function(ev) {
@@ -3330,6 +3374,217 @@ function slipReason(x){
       (r.best && r.best.length ? '<h3 class="sub2" style="font-size:16px;margin:12px 0 6px">Le previsioni migliori</h3>' + rows(r.best, function (x) { return esc(x.pick) + " al " + pc(x.pick_p) + " ✓"; }) : "") +
       "</div>";
   }
+
+  /* ---------- Live Center: grafici di andamento (stile Sofascore, solo dati disponibili) ----------
+     1) linea del tempo con gol, cartellini e cambi sopra (casa) e sotto (trasferta);
+     2) probabilità 1-X-2 minuto per minuto, ricalcolate dal modello con risultato, minuto e rossi;
+     3) statistiche live (possesso, tiri...) se il feed le fornisce.
+     Il "momentum d'attacco" di Sofascore richiede dati di pressione minuto per minuto che il feed
+     gratuito non fornisce: non viene inventato. */
+  function lcNorm(v) { return String(v || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim(); }
+  function lcText(v) {
+    if (v == null) return "";
+    if (typeof v === "object") return String(v.name || v.short_name || v.shortName || v.title || v.value || v.label || "");
+    return String(v);
+  }
+  function lcMinute(v) {
+    if (v && typeof v === "object") v = v.elapsed != null ? v.elapsed : v.minute != null ? v.minute : v.value;
+    var m = String(v == null ? "" : v).match(/(\d+)\s*(?:\+\s*(\d+))?/);
+    if (!m) return null;
+    return Math.min(130, parseInt(m[1], 10) + (m[2] ? parseInt(m[2], 10) : 0));
+  }
+  function lcNowMinute(status, events) {
+    var s = lcText(status).toLowerCase();
+    if (/\b(ht|half ?time|intervallo)\b/.test(s)) return 45;
+    if (/\b(ft|full ?time|finished|ended|terminat)/.test(s)) return 90;
+    var m = lcMinute(s);
+    if (m != null) return m;
+    var last = 0;
+    (events || []).forEach(function (e) { if (e.minute != null && e.minute > last) last = e.minute; });
+    return last || null;
+  }
+  function lcKind(raw) {
+    var k = lcNorm(raw);
+    if (/own goal|autogol/.test(k)) return "owngoal";
+    if (/missed penalty|penalty missed|rigore sbagliato/.test(k)) return "other";
+    if (/goal|gol|scoring/.test(k)) return "goal";
+    if (/second yellow|red card|cartellino rosso|^red( |$)/.test(k)) return "red";
+    if (/yellow|giallo/.test(k)) return "yellow";
+    if (/substitution|sostituzion|subst/.test(k)) return "sub";
+    return "other";
+  }
+  function lcSide(ev, home, away, homeId, awayId) {
+    var raw = ev.side != null ? ev.side : ev.team_side != null ? ev.team_side : ev.home_away != null ? ev.home_away : ev.is_home;
+    if (raw === true || /^(home|h|1|casa)$/i.test(String(raw))) return "home";
+    if (raw === false || /^(away|a|2|trasferta)$/i.test(String(raw))) return "away";
+    var team = ev.team || ev.team_name || ev.participant_name || ev.participant;
+    var id = team && typeof team === "object" ? team.id : ev.team_id;
+    if (id != null && homeId != null && String(id) === String(homeId)) return "home";
+    if (id != null && awayId != null && String(id) === String(awayId)) return "away";
+    var t = lcNorm(lcText(team)), h = lcNorm(home), a = lcNorm(away);
+    if (!t) return null;
+    if (t === h || (t.length >= 4 && (h.indexOf(t) >= 0 || t.indexOf(h) >= 0))) return "home";
+    if (t === a || (t.length >= 4 && (a.indexOf(t) >= 0 || t.indexOf(a) >= 0))) return "away";
+    return null;
+  }
+  function lcEvents(list, home, away, homeId, awayId) {
+    return (Array.isArray(list) ? list : []).map(function (ev) {
+      if (!ev || typeof ev !== "object") return null;
+      var kindRaw = ev.type || ev.event_type || ev.incident_type || ev.name || ev.detail || ev.description || "";
+      var kind = lcKind(lcText(kindRaw) + " " + lcText(ev.detail || ev.incident_class || ""));
+      var minute = lcMinute(ev.minute != null ? ev.minute : ev.time != null ? ev.time : ev.elapsed != null ? ev.elapsed : ev.match_time);
+      if (minute == null || kind === "other") return null;
+      return { minute: minute, kind: kind, side: lcSide(ev, home, away, homeId, awayId),
+               player: lcText(ev.player || ev.player_name || ev.athlete || "") };
+    }).filter(Boolean).sort(function (a, b) { return a.minute - b.minute; });
+  }
+  /* Pronostico pre-partita: dal nostro turno se la partita c'è, altrimenti medie generali. */
+  function lcPrior(home, away) {
+    var h = lcNorm(home), a = lcNorm(away);
+    var same = function (x, y) { x = lcNorm(x); return x === y || (x.length >= 4 && y.length >= 4 && (x.indexOf(y) >= 0 || y.indexOf(x) >= 0)); };
+    var found = MATCHES.filter(function (m) { return same(m.home, h) && same(m.away, a); })[0];
+    return found ? { lh: found.xg[0], la: found.xg[1], model: true } : { lh: 1.45, la: 1.15, model: false };
+  }
+  function lcPois(l, k) { var p = Math.exp(-l); for (var i = 1; i <= k; i++) p *= l / i; return p; }
+  function lcProb(lh, la, gh, ga) {
+    var r = { p1: 0, px: 0, p2: 0 };
+    for (var i = 0; i <= 10; i++) for (var j = 0; j <= 10; j++) {
+      var q = lcPois(lh, i) * lcPois(la, j), dh = gh + i, da = ga + j;
+      if (dh > da) r.p1 += q; else if (dh === da) r.px += q; else r.p2 += q;
+    }
+    var t = r.p1 + r.px + r.p2;
+    return { p1: r.p1 / t, px: r.px / t, p2: r.p2 / t };
+  }
+  /* Curva delle probabilità minuto per minuto. Ritorna null se gli eventi non spiegano il risultato. */
+  function lcCurve(prior, events, now, gh, ga) {
+    var goals = function (flip) {
+      return events.filter(function (e) { return (e.kind === "goal" || e.kind === "owngoal") && e.side; }).map(function (e) {
+        var side = e.kind === "owngoal" && flip ? (e.side === "home" ? "away" : "home") : e.side;
+        return { minute: e.minute, side: side };
+      });
+    };
+    var count = function (list, side) { return list.filter(function (g) { return g.side === side; }).length; };
+    var list = goals(false);
+    if (count(list, "home") !== gh || count(list, "away") !== ga) {
+      list = goals(true);
+      if (count(list, "home") !== gh || count(list, "away") !== ga) return null;
+    }
+    var reds = events.filter(function (e) { return e.kind === "red" && e.side; });
+    var end = Math.max(1, Math.min(now || 0, 120)), pts = [];
+    for (var m = 0; m <= end; m++) {
+      var sh = 0, sa = 0, rh = 0, ra = 0;
+      list.forEach(function (g) { if (g.minute <= m) { if (g.side === "home") sh++; else sa++; } });
+      reds.forEach(function (r) { if (r.minute <= m) { if (r.side === "home") rh++; else ra++; } });
+      var rest = Math.max(0, (Math.max(90, end) - m) / 90);
+      var lh = prior.lh * rest * Math.pow(0.75, rh) * Math.pow(1.2, ra);
+      var la = prior.la * rest * Math.pow(0.75, ra) * Math.pow(1.2, rh);
+      var p = lcProb(lh, la, sh, sa);
+      pts.push({ m: m, p1: p.p1, px: p.px, p2: p.p2 });
+    }
+    return pts;
+  }
+  function lcTimelineSvg(events, now, home, away) {
+    var W = 340, H = 92, L = 8, R = 8, mid = 46, end = Math.max(90, now || 0);
+    var x = function (m) { return L + Math.min(m, end) / end * (W - L - R); };
+    var icon = { goal: "⚽", owngoal: "⚽", red: "🟥", yellow: "🟨", sub: "🔄" };
+    var g = '<line class="lc-axis" x1="' + L + '" y1="' + mid + '" x2="' + (W - R) + '" y2="' + mid + '"/>';
+    g += '<line class="lc-ht" x1="' + x(45) + '" y1="' + (mid - 6) + '" x2="' + x(45) + '" y2="' + (mid + 6) + '"/>';
+    if (now) g += '<rect class="lc-played" x="' + L + '" y="' + (mid - 2) + '" width="' + (x(now) - L) + '" height="4" rx="2"/>';
+    [0, 45, 90].forEach(function (m) { g += '<text class="lc-tick" x="' + x(m) + '" y="' + (mid + 4) + '" dy="14" text-anchor="middle">' + m + "'</text>"; });
+    var stack = {};
+    events.forEach(function (e) {
+      if (!e.side) return;
+      var key = e.side + Math.round(e.minute / 4), n = stack[key] = (stack[key] || 0) + 1;
+      var y = e.side === "home" ? mid - 6 - n * 14 : mid + 20 + n * 14;
+      g += '<text class="lc-ev ' + e.kind + '" x="' + x(e.minute) + '" y="' + y + '" text-anchor="middle"><title>' +
+        esc(e.minute + "' " + (e.player || "") + " (" + (e.side === "home" ? home : away) + ")") + "</title>" + icon[e.kind] + "</text>";
+    });
+    return '<svg class="lc-timeline" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Linea del tempo: in alto ' + esc(home) + ", in basso " + esc(away) + '">' + g + "</svg>";
+  }
+  function lcProbSvg(pts, end) {
+    var W = 340, H = 150, L = 30, R = 8, T = 8, B = 22, span = Math.max(90, end);
+    var x = function (m) { return L + m / span * (W - L - R); }, y = function (v) { return T + (1 - v) * (H - T - B); };
+    var area = function (lo, hi) {
+      var top = pts.map(function (p) { return x(p.m).toFixed(1) + "," + y(hi(p)).toFixed(1); });
+      var bot = pts.slice().reverse().map(function (p) { return x(p.m).toFixed(1) + "," + y(lo(p)).toFixed(1); });
+      return top.concat(bot).join(" ");
+    };
+    var g = '<polygon class="lc-a1" points="' + area(function () { return 0; }, function (p) { return p.p1; }) + '"/>' +
+      '<polygon class="lc-ax" points="' + area(function (p) { return p.p1; }, function (p) { return p.p1 + p.px; }) + '"/>' +
+      '<polygon class="lc-a2" points="' + area(function (p) { return p.p1 + p.px; }, function () { return 1; }) + '"/>';
+    [0, 0.5, 1].forEach(function (v) { g += '<text class="lc-tick" x="' + (L - 4) + '" y="' + (y(v) + 3) + '" text-anchor="end">' + Math.round(v * 100) + "%</text>"; });
+    [0, 45, 90].forEach(function (m) { g += '<text class="lc-tick" x="' + x(m) + '" y="' + (H - 6) + '" text-anchor="middle">' + m + "'</text>"; });
+    g += '<line class="lc-axis" x1="' + x(45) + '" y1="' + T + '" x2="' + x(45) + '" y2="' + (H - B) + '" stroke-dasharray="3 3"/>';
+    return '<svg class="lc-prob" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Probabilità di 1, X e 2 minuto per minuto">' + g + "</svg>";
+  }
+  var LC_STAT_NAMES = { "ball possession": "Possesso palla", "possession": "Possesso palla", "total shots": "Tiri totali", "shots total": "Tiri totali",
+    "shots": "Tiri totali", "shots on target": "Tiri in porta", "shots on goal": "Tiri in porta", "corner kicks": "Calci d'angolo", "corners": "Calci d'angolo",
+    "fouls": "Falli", "offsides": "Fuorigioco", "yellow cards": "Cartellini gialli", "red cards": "Cartellini rossi", "expected goals": "Gol attesi (xG)",
+    "xg": "Gol attesi (xG)", "big chances": "Grandi occasioni", "goalkeeper saves": "Parate", "saves": "Parate", "passes": "Passaggi",
+    "dangerous attacks": "Attacchi pericolosi", "attacks": "Attacchi" };
+  function lcStats(raw) {
+    var out = [], seen = {};
+    var push = function (name, h, a) {
+      var key = lcNorm(name), label = LC_STAT_NAMES[key];
+      if (!label || seen[label]) return;
+      var hv = parseFloat(String(h).replace(",", ".")), av = parseFloat(String(a).replace(",", "."));
+      if (!isFinite(hv) || !isFinite(av)) return;
+      seen[label] = true;
+      out.push({ label: label, home: hv, away: av, pct: /%/.test(String(h)) || key.indexOf("possession") >= 0 });
+    };
+    var walk = function (v, depth) {
+      if (depth > 4 || !v || typeof v !== "object") return;
+      if (Array.isArray(v)) { v.forEach(function (x) { walk(x, depth + 1); }); return; }
+      var name = v.name || v.type || v.label || v.title;
+      var h = v.home != null ? v.home : v.home_value != null ? v.home_value : v.homeValue;
+      var a = v.away != null ? v.away : v.away_value != null ? v.away_value : v.awayValue;
+      if (name && h != null && a != null && typeof h !== "object") push(lcText(name), h, a);
+      ["statisticsItems", "items", "stats", "groups", "statistics"].forEach(function (k) { if (v[k]) walk(v[k], depth + 1); });
+    };
+    walk(raw, 0);
+    if (!out.length && raw && raw.home && raw.away && typeof raw.home === "object" && !Array.isArray(raw.home)) {
+      Object.keys(raw.home).forEach(function (k) { if (raw.away[k] != null) push(k.replace(/_/g, " "), raw.home[k], raw.away[k]); });
+    }
+    return out;
+  }
+  function lcStatsHtml(stats) {
+    if (!stats.length) return "";
+    return '<h5>Statistiche</h5><div class="lc-stats">' + stats.map(function (s) {
+      var tot = (s.home + s.away) || 1, fmt = function (v) { return s.pct ? Math.round(v) + "%" : String(Math.round(v * 100) / 100).replace(".", ","); };
+      return '<div class="lc-stat"><div class="lc-stat-head"><b>' + fmt(s.home) + "</b><span>" + esc(s.label) + "</span><b>" + fmt(s.away) + "</b></div>" +
+        '<div class="lc-stat-bar"><i class="h" style="width:' + Math.round(s.home / tot * 100) + '%"></i><i class="a" style="width:' + Math.round(s.away / tot * 100) + '%"></i></div></div>';
+    }).join("") + "</div>";
+  }
+  /* Blocco completo. o: {home, away, homeId, awayId, homeScore, awayScore, status, events (grezzi), stats (grezze)} */
+  function liveChartsHtml(o) {
+    var events = lcEvents(o.events, o.home, o.away, o.homeId, o.awayId);
+    var now = lcNowMinute(o.status, events);
+    var gh = parseInt(o.homeScore, 10), ga = parseInt(o.awayScore, 10);
+    var parts = [];
+    if (events.some(function (e) { return e.side; })) {
+      parts.push(lcTimelineSvg(events, now, o.home, o.away) + '<div class="lc-legend"><span>▲ ' + esc(o.home) + "</span><span>▼ " + esc(o.away) + "</span></div>");
+    }
+    if (isFinite(gh) && isFinite(ga) && now != null && now > 0) {
+      var prior = lcPrior(o.home, o.away), pts = lcCurve(prior, events, now, gh, ga);
+      var note = (prior.model ? "Parte dal pronostico pre-partita del modello" : "Partita fuori dai nostri campionati: parte da medie generali") +
+        " e si aggiorna con risultato, minuto ed espulsioni. Non è una quota né un invito a scommettere.";
+      if (pts && pts.length > 1) {
+        var last = pts[pts.length - 1];
+        parts.push('<h5>Chi vince? Probabilità minuto per minuto</h5>' + lcProbSvg(pts, now) +
+          '<div class="lc-legend"><span class="k1">■ 1 ' + esc(o.home) + " " + pc(last.p1) + '</span><span class="kx">■ X ' + pc(last.px) +
+          '</span><span class="k2">■ 2 ' + esc(o.away) + " " + pc(last.p2) + '</span></div><p class="lc-note">' + note + "</p>");
+      } else {
+        var rest = Math.max(0, (90 - Math.min(now, 90)) / 90), p = lcProb(prior.lh * rest, prior.la * rest, gh, ga);
+        parts.push('<h5>Chi vince adesso?</h5><div class="lc-legend"><span class="k1">1 ' + pc(p.p1) + '</span><span class="kx">X ' + pc(p.px) +
+          '</span><span class="k2">2 ' + pc(p.p2) + '</span></div><p class="lc-note">' + note +
+          " Gli eventi del feed non spiegano tutto il risultato, quindi mostriamo solo la stima attuale.</p>");
+      }
+    }
+    var statsHtml = lcStatsHtml(lcStats(o.stats));
+    if (statsHtml) parts.push(statsHtml);
+    return parts.length ? '<section class="live-charts"><h4>Andamento della partita</h4>' + parts.join("") + "</section>" : "";
+  }
+  window.FFLive = { liveChartsHtml: liveChartsHtml, lcCurve: lcCurve, lcEvents: lcEvents, lcStats: lcStats, lcNowMinute: lcNowMinute };
 
   /* ---------- Perché il modello dice così, prossime giornate, statistiche squadra ---------- */
   var NEXT_ROUNDS = [];
