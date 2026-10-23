@@ -41,10 +41,11 @@ const fetchMap = (url) => {
 const ctx = {
   document, console, URLSearchParams, Promise, setTimeout, clearTimeout, Date, Math, JSON, Number, String, Array, Object, Intl,
   setInterval: () => 0, clearInterval() {}, requestAnimationFrame: f => setTimeout(f, 0),
-  location: { search: league === "SA" ? "" : "?league=" + league, href: "", pathname: "/" },
-  navigator: {}, localStorage: { getItem: () => null, setItem() {} }, sessionStorage: { getItem: () => null, setItem() {} },
+  location: { search: league === "SA" ? "" : "?league=" + league, href: "", pathname: "/", origin: "https://fischiettofinale.com", hash: "" },
+  navigator: {}, localStorage: (() => { const st = {}; return { getItem: k => (k in st ? st[k] : null), setItem: (k, v) => { st[k] = String(v); } }; })(),
+  sessionStorage: { getItem: () => null, setItem() {} },
   matchMedia: () => ({ matches: false, addEventListener() {}, addListener() {} }),
-  scrollTo() {}, addEventListener() {}, fetch: fetchMap,
+  scrollTo() {}, addEventListener() {}, fetch: fetchMap, open: () => null,
   Headers: class {}, Response: class {}, AbortController: class { constructor() { this.signal = {}; } abort() {} },
 };
 ctx.window = ctx; ctx.self = ctx;
@@ -66,6 +67,27 @@ setTimeout(() => {
   out.infoOpen = !byId["p-info"].hidden && byId["p-home"].hidden && !byId.back.hidden;
   byId["t-home"].click();
   out.infoClosed = byId["p-info"].hidden && !byId["p-home"].hidden;
+  // pagina squadra, preferiti e condivisione (se la pagina li espone)
+  out.season = byId.season ? byId.season.innerHTML : "";
+  out.recap = byId.recap ? byId.recap.innerHTML : "";
+  if (ctx.FF) {
+    try {
+      const firstTeam = (out.matches.match(/data-team="([^"]+)"/) || [])[1];
+      if (firstTeam) {
+        out.teamName = firstTeam;
+        out.team = ctx.FF.openTeam(firstTeam.replace(/&amp;/g, "&").replace(/&#39;/g, "'"));
+        out.teamOpen = !byId["p-team"].hidden && byId["p-home"].hidden;
+        out.favOn = ctx.FF.toggleFav(firstTeam);
+        out.matchesAfterFav = byId.matches.innerHTML;
+        out.favStrip = byId["fav-strip"].innerHTML;
+        byId["t-home"].click();
+        out.teamClosed = byId["p-team"].hidden;
+      }
+      const firstId = (out.matches.match(/data-share="([^"]+)"/) || [])[1];
+      if (firstId) out.share = ctx.FF.shareMatch(firstId);
+    } catch (e) { errors.push("FF: " + e.message); }
+  }
+  out.errors = errors;
   fs.writeFileSync(path.join(process.argv[4], `render-${league}.json`), JSON.stringify(out));
   console.log(league, "errors:", errors.length ? errors : "none", "| matches html:", out.matches.length,
     "| verdict:", out.verdict.length, "| quality:", out.quality.length, "| info open/close:", out.infoOpen, out.infoClosed);

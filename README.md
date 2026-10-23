@@ -18,6 +18,11 @@ Ogni partita pubblica in `analysis.verification` quante assenze sono state segna
 il motivo delle mancate conferme e l'esito della lettura di ogni pagina (senza il testo); il
 riepilogo per campionato compare anche nel log di "Aggiorna pronostici".
 
+In Classifica la stagione viene simulata 5.000 volte con le partite che restano (`app/season.py`):
+probabilità di primo posto, prime 4 e ultime posizioni (nelle coppe: prime 8, spareggi, eliminata).
+Ogni squadra ha una scheda con forza in attacco e difesa, forma, prossima partita e pronostici passati;
+le squadre seguite restano salvate solo nel browser. Lo Storico riassume l'ultima giornata.
+
 Il pronostico consigliato non è semplicemente il più probabile (sarebbe quasi sempre "Over 1,5"):
 è il mercato con il distacco maggiore dalla media del campionato, con almeno il 50% di probabilità.
 La scheda mostra la media accanto al consiglio.
