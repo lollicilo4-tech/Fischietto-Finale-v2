@@ -20,3 +20,4 @@ Se il push di questo file fallisce perché l'altro agente ha appena scritto:
 ## Eventi
 
 - 2026-10-23 06:08 UTC · Claude · OK · Primo controllo: 8 campionati validi e aggiornati, storico integro (247 pronostici), workflow senza errori
+- 2026-10-23 08:28 UTC · Codex · PROBLEMA · Controllo orario bloccato: clone GitHub e `python3 .github/scripts/health_check.py` non eseguiti perché l'ambiente non risolve github.com (DNS); nessuna correzione avviata
