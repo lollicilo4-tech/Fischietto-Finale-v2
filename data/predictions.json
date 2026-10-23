@@ -24261,6 +24261,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8109
   },
+  "result": {
+   "ag": 4,
+   "date": "2026-10-22T16:45:00Z",
+   "hg": 0
+  },
   "top": [
    1,
    1
@@ -24401,6 +24406,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.897
+  },
+  "result": {
+   "ag": 2,
+   "date": "2026-10-22T19:00:00Z",
+   "hg": 2
   },
   "top": [
    1,
@@ -24543,6 +24553,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8085
   },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-22T19:00:00Z",
+   "hg": 3
+  },
   "top": [
    1,
    1
@@ -24683,6 +24698,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.752
+  },
+  "result": {
+   "ag": 2,
+   "date": "2026-10-22T19:00:00Z",
+   "hg": 2
   },
   "top": [
    1,
@@ -24825,6 +24845,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7907
   },
+  "result": {
+   "ag": 2,
+   "date": "2026-10-22T19:00:00Z",
+   "hg": 1
+  },
   "top": [
    1,
    1
@@ -24965,6 +24990,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8222
+  },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-22T16:45:00Z",
+   "hg": 4
   },
   "top": [
    1,
@@ -25107,6 +25137,11 @@
    "label": "1X · GNK Dinamo non perde",
    "p": 0.7787
   },
+  "result": {
+   "ag": 4,
+   "date": "2026-10-22T16:45:00Z",
+   "hg": 2
+  },
   "top": [
    1,
    1
@@ -25247,6 +25282,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8486
+  },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-22T19:00:00Z",
+   "hg": 3
   },
   "top": [
    1,
@@ -25389,6 +25429,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7751
   },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-22T19:00:00Z",
+   "hg": 0
+  },
   "top": [
    1,
    1
@@ -25529,6 +25574,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.792
+  },
+  "result": {
+   "ag": 2,
+   "date": "2026-10-22T16:45:00Z",
+   "hg": 2
   },
   "top": [
    1,
@@ -25671,6 +25721,11 @@
    "label": "X2 · Sunderland non perde",
    "p": 0.8358
   },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-22T16:45:00Z",
+   "hg": 1
+  },
   "top": [
    1,
    1
@@ -25811,6 +25866,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7434
+  },
+  "result": {
+   "ag": 6,
+   "date": "2026-10-22T19:00:00Z",
+   "hg": 0
   },
   "top": [
    1,
@@ -25953,6 +26013,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7839
   },
+  "result": {
+   "ag": 2,
+   "date": "2026-10-22T16:45:00Z",
+   "hg": 0
+  },
   "top": [
    1,
    1
@@ -26093,6 +26158,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.77
+  },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-22T19:00:00Z",
+   "hg": 1
   },
   "top": [
    1,
@@ -26235,6 +26305,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7796
   },
+  "result": {
+   "ag": 4,
+   "date": "2026-10-22T19:00:00Z",
+   "hg": 1
+  },
   "top": [
    1,
    1
@@ -26375,6 +26450,11 @@
    "kind": "gol",
    "label": "Under 3,5 · massimo 3 gol",
    "p": 0.7689
+  },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-22T16:45:00Z",
+   "hg": 1
   },
   "top": [
    1,
@@ -26517,6 +26597,11 @@
    "label": "Under 3,5 · massimo 3 gol",
    "p": 0.7401
   },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-22T16:45:00Z",
+   "hg": 4
+  },
   "top": [
    1,
    1
@@ -26657,6 +26742,11 @@
    "kind": "gol",
    "label": "Under 3,5 · massimo 3 gol",
    "p": 0.7617
+  },
+  "result": {
+   "ag": 2,
+   "date": "2026-10-22T19:00:00Z",
+   "hg": 1
   },
   "top": [
    1,
@@ -29337,6 +29427,11 @@
    "label": "1X · Aarhus non perde",
    "p": 0.8211
   },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-22T19:00:00Z",
+   "hg": 1
+  },
   "top": [
    1,
    0
@@ -29477,6 +29572,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8086
+  },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-22T19:00:00Z",
+   "hg": 2
   },
   "top": [
    1,
@@ -29619,6 +29719,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8581
   },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-22T19:00:00Z",
+   "hg": 2
+  },
   "top": [
    2,
    0
@@ -29759,6 +29864,11 @@
    "kind": "gol",
    "label": "Under 3,5 · massimo 3 gol",
    "p": 0.7437
+  },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-22T19:00:00Z",
+   "hg": 2
   },
   "top": [
    1,
@@ -29901,6 +30011,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8184
   },
+  "result": {
+   "ag": 2,
+   "date": "2026-10-22T16:45:00Z",
+   "hg": 2
+  },
   "top": [
    1,
    1
@@ -30041,6 +30156,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8267
+  },
+  "result": {
+   "ag": 5,
+   "date": "2026-10-22T16:45:00Z",
+   "hg": 2
   },
   "top": [
    1,
@@ -30183,6 +30303,11 @@
    "label": "Under 3,5 · massimo 3 gol",
    "p": 0.7417
   },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-22T16:45:00Z",
+   "hg": 1
+  },
   "top": [
    1,
    1
@@ -30323,6 +30448,11 @@
    "kind": "doppia",
    "label": "1X · Inter Escaldes non perde",
    "p": 0.8031
+  },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-22T16:45:00Z",
+   "hg": 1
   },
   "top": [
    1,
@@ -30465,6 +30595,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8303
   },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-22T16:45:00Z",
+   "hg": 0
+  },
   "top": [
    1,
    1
@@ -30605,6 +30740,11 @@
    "kind": "doppia",
    "label": "1X · Kairat Almaty non perde",
    "p": 0.8222
+  },
+  "result": {
+   "ag": 5,
+   "date": "2026-10-22T14:30:00Z",
+   "hg": 1
   },
   "top": [
    1,
@@ -30747,6 +30887,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7931
   },
+  "result": {
+   "ag": 4,
+   "date": "2026-10-22T16:45:00Z",
+   "hg": 1
+  },
   "top": [
    1,
    1
@@ -30887,6 +31032,11 @@
    "kind": "doppia",
    "label": "1X · L. Red Imps non perde",
    "p": 0.7943
+  },
+  "result": {
+   "ag": 4,
+   "date": "2026-10-22T19:00:00Z",
+   "hg": 1
   },
   "top": [
    1,
@@ -31029,6 +31179,11 @@
    "label": "1X · Midtjylland non perde",
    "p": 0.7989
   },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-22T19:00:00Z",
+   "hg": 0
+  },
   "top": [
    1,
    1
@@ -31169,6 +31324,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8622
+  },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-22T19:00:00Z",
+   "hg": 3
   },
   "top": [
    2,
@@ -31311,6 +31471,11 @@
    "label": "1X · Nordsjælland non perde",
    "p": 0.868
   },
+  "result": {
+   "ag": 2,
+   "date": "2026-10-22T16:45:00Z",
+   "hg": 2
+  },
   "top": [
    2,
    0
@@ -31451,6 +31616,11 @@
    "kind": "doppia",
    "label": "1X · Pafos non perde",
    "p": 0.8095
+  },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-22T16:45:00Z",
+   "hg": 1
   },
   "top": [
    1,
@@ -31593,6 +31763,11 @@
    "label": "1X · Thun non perde",
    "p": 0.7943
   },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-22T19:00:00Z",
+   "hg": 0
+  },
   "top": [
    1,
    1
@@ -31733,6 +31908,11 @@
    "kind": "doppia",
    "label": "1X · Trabzonspor non perde",
    "p": 0.89
+  },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-22T16:45:00Z",
+   "hg": 2
   },
   "top": [
    2,
