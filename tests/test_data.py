@@ -4,7 +4,25 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from app.data import _missing_upcoming_matchdays, _recovered_upcoming_round, _select_upcoming_round, _reconcile_standings
+from app.data import _missing_upcoming_matchdays, _recovered_upcoming_round, _select_upcoming_round, _reconcile_standings, _standings
+
+
+class StandingsPositionTests(unittest.TestCase):
+    def test_duplicate_provider_ranks_are_normalized_without_reordering_teams(self):
+        row = {
+            "playedGames": 3, "won": 1, "draw": 0, "lost": 2,
+            "goalsFor": 5, "goalsAgainst": 6, "points": 3,
+        }
+        payload = {"standings": [{"type": "TOTAL", "table": [
+            {"position": 20, "team": {"id": 1, "shortName": "Inter"}, **row},
+            {"position": 20, "team": {"id": 2, "shortName": "Man United"}, **row},
+            {"position": 22, "team": {"id": 3, "shortName": "Napoli"}, **row},
+        ]}]}
+
+        standings = _standings(payload)
+
+        self.assertEqual([item["pos"] for item in standings], [1, 2, 3])
+        self.assertEqual([item["team"] for item in standings], ["Inter", "Man United", "Napoli"])
 
 
 class UpcomingRoundSelectionTests(unittest.TestCase):
