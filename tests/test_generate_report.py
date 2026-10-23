@@ -47,7 +47,7 @@ class UpdateFailureReportTests(unittest.TestCase):
             summary_path = Path(directory) / "summary.md"
             output = StringIO()
             with patch.dict(os.environ, {
-                "GITHUB_ACTIONS": "true",
+                "GITHUB_ACTIONS": "",
                 "GITHUB_STEP_SUMMARY": str(summary_path),
             }):
                 with redirect_stderr(output):
