@@ -51,7 +51,18 @@ npm run check     # impacchetta senza pubblicare
 3. Premi **Deploy**. Il cron parte da solo; dopo un paio di minuti
    `https://fischietto-momentum.<tuo-sottodominio>.workers.dev/health` deve rispondere `"ok": true`
    (durante le partite `saved` indica quante partite sono state registrate).
-4. In **Settings → Build → Build watch paths** includi `workers/momentum/*` e `web/src/lib/*`.
+4. In **Settings → Build → Build watch paths** includi `workers/momentum/*` e `web/src/lib/*`
+   (il Worker usa le funzioni del Live Center in `web/src/lib`: una modifica lì deve ripubblicarlo).
+5. In **Settings → Build → Branch control**: branch di produzione `main` con le pubblicazioni automatiche
+   **attive**; spente solo le build degli altri branch (falliscono perché `preview_urls` è disattivato).
+
+### Controllo dopo ogni modifica
+
+Dopo l'unione di una PR che tocca `workers/momentum/` o `web/src/lib/`, sul commit di `main` deve comparire
+il controllo **Workers Builds: fischietto-momentum**. Se manca, il Worker gira ancora la versione precedente:
+verificare le impostazioni dei punti 4 e 5. Il riepilogo dell'ultima esecuzione si legge da `/health` o in D1
+(`SELECT value FROM meta WHERE key = 'last_run'`); i campi `leagues` e `ourLeagues` mostrano i campionati
+visti nel feed e quelli riconosciuti come nostri.
 
 Il sito legge i dati da `/api/momentum` grazie al binding D1 dichiarato in `web/wrangler.jsonc`: non serve
 altro. Finché il Worker non gira, il Live usa la serie registrata dal browser come prima.
