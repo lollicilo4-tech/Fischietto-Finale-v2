@@ -88,10 +88,13 @@ def _standings(st: dict) -> list[dict]:
     tables = [t for t in st.get("standings", []) if t.get("type") == "TOTAL"] or st.get("standings", [])
     if not tables:
         return []
-    return [{"pos": r["position"], "team": _name(r["team"]), "team_id": r["team"].get("id"),
+    # Mantieni l'ordine della classifica restituita dal provider, ma assegna posizioni
+    # sequenziali: nelle competizioni UEFA il rank condiviso può produrre posizioni duplicate
+    # e lasciare buchi (es. 20, 20, 22), mentre la tabella pubblicata richiede 36 posizioni.
+    return [{"pos": index, "team": _name(r["team"]), "team_id": r["team"].get("id"),
              "pg": r["playedGames"], "w": r["won"], "d": r["draw"], "l": r["lost"],
              "gf": r["goalsFor"], "ga": r["goalsAgainst"], "pts": r["points"]}
-            for r in tables[0]["table"]]
+            for index, r in enumerate(tables[0]["table"], start=1)]
 
 
 def _reconcile_standings(standings: list[dict], finished: list[dict]) -> list[dict]:
