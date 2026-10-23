@@ -46,6 +46,27 @@ class SearchNewsTests(unittest.TestCase):
         self.assertEqual([r["url"] for r in results], ["https://a.example/1", "https://b.example/2"])
         self.assertEqual(calls, ["localhost"], "con SearXNG funzionante Tavily non viene usato")
 
+    def test_searxng_falls_back_to_general_when_news_query_is_rejected(self):
+        calls = []
+
+        def handler(request):
+            calls.append(dict(request.url.params))
+            if request.url.params.get("categories") == "news":
+                return httpx.Response(400)
+            return httpx.Response(200, json={"results": [
+                {"title": "Genoa news", "url": "https://a.example/1"},
+                {"title": "Fiorentina news", "url": "https://b.example/2"},
+            ]})
+
+        results, provider = run_search(
+            handler, {"SEARXNG_URL": "http://localhost:8080", "TAVILY_API_KEY": "unused"}
+        )
+        self.assertEqual(provider, "searxng")
+        self.assertEqual(len(results), 2)
+        self.assertEqual(len(calls), 2)
+        self.assertNotIn("categories", calls[1])
+        self.assertNotIn("time_range", calls[1])
+
     def test_tavily_when_searxng_is_down(self):
         def handler(request):
             if request.url.host == "localhost":

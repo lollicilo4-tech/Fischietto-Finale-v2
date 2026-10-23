@@ -48,10 +48,21 @@ def _clean(results: list, url_key: str = "url") -> list[dict]:
 async def _searxng(client: httpx.AsyncClient, query: str, base_url: str) -> list[dict]:
     params = {"q": query, "format": "json", "categories": "news", "time_range": "week"}
     response = await client.get(base_url.rstrip("/") + "/search", params=params, timeout=TIMEOUT)
-    response.raise_for_status()
+    try:
+        response.raise_for_status()
+    except httpx.HTTPStatusError as exc:
+        # Alcune configurazioni/istanze rifiutano la categoria news o time_range.
+        # In quel caso prova una sola volta la ricerca generale, senza i due filtri.
+        if exc.response.status_code not in (400, 403, 404, 422):
+            raise
+        params = {"q": query, "format": "json"}
+        response = await client.get(base_url.rstrip("/") + "/search", params=params, timeout=TIMEOUT)
+        response.raise_for_status()
+        return _clean(response.json().get("results"))
+
     results = _clean(response.json().get("results"))
     if len(results) < 2:  # la categoria notizie a volte è vuota: riprova sul web generale
-        params.pop("categories")
+        params = {"q": query, "format": "json"}
         response = await client.get(base_url.rstrip("/") + "/search", params=params, timeout=TIMEOUT)
         response.raise_for_status()
         results = _clean(response.json().get("results"))
@@ -72,6 +83,12 @@ async def _tavily(client: httpx.AsyncClient, query: str, key: str) -> list[dict]
     return []
 
 
+def _error_label(exc: Exception) -> str:
+    if isinstance(exc, httpx.HTTPStatusError):
+        return f"{type(exc).__name__} status={exc.response.status_code}"
+    return type(exc).__name__
+
+
 async def search_news(fx: dict, league: str | None = None,
                       transport: httpx.AsyncBaseTransport | None = None) -> tuple[list[dict], str | None]:
     """Cerca notizie sulla partita. Ritorna (fonti [{title, url}], nome del fornitore usato).
@@ -87,12 +104,12 @@ async def search_news(fx: dict, league: str | None = None,
                 if len(results) >= 2:
                     return results, "searxng"
             except (httpx.HTTPError, ValueError) as exc:
-                print(f"[news] SearXNG {fx['home']}-{fx['away']}: {type(exc).__name__}")
+                print(f"[news] SearXNG {fx['home']}-{fx['away']}: {_error_label(exc)}")
         if tavily_key:
             try:
                 results = await _tavily(client, query, tavily_key)
                 if results:
                     return results, "tavily"
             except (httpx.HTTPError, ValueError) as exc:
-                print(f"[news] Tavily {fx['home']}-{fx['away']}: {type(exc).__name__}")
+                print(f"[news] Tavily {fx['home']}-{fx['away']}: {_error_label(exc)}")
     return [], None
