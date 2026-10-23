@@ -38,6 +38,27 @@ Su questo repository lavorano più agenti AI (Claude e ChatGPT Codex) per conto 
   ogni dato inserito nell'HTML, blocco degli indirizzi privati in `app/evidence.py`.
 - Nuove fonti esterne nella pagina vanno aggiunte alla CSP in `static/index.html` (e `docs/`).
 
+## Monitoraggio orario (Claude e Codex)
+
+Il proprietario ha chiesto a entrambi gli agenti di controllare ogni ora che vada tutto bene.
+Per non fare due volte lo stesso lavoro:
+
+- **Orari sfalsati:** Claude controlla ai **:30** di ogni ora; Codex ai **:00**. Così c'è un
+  controllo ogni mezz'ora e nessuno dei due lavora in contemporanea all'altro.
+- **Stesso controllo:** `python3 .github/scripts/health_check.py` su un clone con almeno due giorni
+  di storia (`git fetch --shallow-since="2 days ago" origin main`). Controlla dati pubblicati,
+  freschezza, turno scaduto, storico dei pronostici, workflow su `main` e PR aperte. Nessuna chiave.
+- **Registro condiviso:** branch `monitoraggio`, file `registro.md` (solo quel file, mai su `main`).
+  Prima di agire leggi le ultime righe; scrivi solo in fondo, una riga per evento
+  (`OK` al massimo una volta al giorno, `PROBLEMA`, `IN CARICO`, `RISOLTO`).
+- **Niente doppioni:** se l'altro agente ha scritto `IN CARICO` sullo stesso problema da meno di
+  3 ore, non correggere: verifica soltanto e, se serve, aggiungi informazioni nel registro.
+- **Correzioni:** scrivi prima `IN CARICO` nel registro, poi lavora su un branch
+  `fix/monitor-<agente>-<descrizione>-AAAAMMGG` e prepara la PR. Mai push su `main`, mai unire PR,
+  mai modificare branch o PR dell'altro agente: le PR le unisce solo il proprietario.
+- **Avvisare il proprietario** solo per un problema nuovo, un problema risolto o un problema ancora
+  aperto dopo 6 ore. Niente messaggi quando va tutto bene.
+
 ## File da non toccare a mano
 
 - `data/predictions.json`: pronostici salvati prima delle partite, mai riscritti. Li aggiorna solo
