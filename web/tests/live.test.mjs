@@ -77,3 +77,25 @@ test("campionati riconosciuti per nome intero, non per parole contenute", () => 
     "2. Bundesliga", "LaLiga Hypermotion", "Primera División", "Ligue 2", "Russian Premier League", "Brasileirão Serie A", "Serie A Women"];
   for (const name of others) assert.match(F.liveLeagueKey(name), /^other:/, name);
 });
+
+test("minuto in corso come su SportScore", () => {
+  const now = Date.parse("2026-10-24T14:10:00Z");
+  const base = { time: "2026-10-24T13:00:00+00:00" };
+  // Minuto esatto dal dettaglio (le partite dei nostri campionati arrivano da /api/live con live_minute).
+  assert.deepEqual(F.liveMinute({ ...base, status_text: "2nd half", live_minute: "67" }, now), { phase: "2H", minute: 67, exact: true });
+  assert.equal(F.minuteLabel(48, "1H"), "45+3'");
+  assert.equal(F.minuteLabel(94, "2H"), "90+4'");
+  assert.equal(F.minuteLabel(67, "2H"), "67'");
+  assert.deepEqual(F.liveMinute({ ...base, status_text: "1st half", live_minute: "45+2" }, now).minute, 47);
+  // Senza minuto: stima dall'orario (70 minuti dopo l'inizio, 2° tempo → 56').
+  assert.deepEqual(F.liveMinute({ ...base, status_text: "2nd half" }, now), { phase: "2H", minute: 56, exact: false });
+  assert.deepEqual(F.liveMinute({ ...base, status_text: "1st half" }, Date.parse("2026-10-24T13:20:30Z")).minute, 21);
+  // Intervallo e fasi senza minuto.
+  assert.deepEqual(F.liveMinute({ ...base, status_text: "Half time", live_minute: "45" }, now), { phase: "HT", minute: null, exact: false });
+  const html = F.livePhaseHtml({ ...base, status_text: "2nd half", live_minute: "67" }, now);
+  assert.match(html, /<b class="live-minute" data-minute="67" data-minute-at="\d+" data-phase="2H">67'<\/b>/);
+  assert.match(html, /2° tempo/);
+  assert.match(F.livePhaseHtml({ ...base, status_text: "Half time" }, now), /Intervallo/);
+  assert.doesNotMatch(F.livePhaseHtml({ ...base, status_text: "Half time" }, now), /live-minute/);
+  assert.match(F.livePhaseHtml({ ...base, status_text: "2nd half" }, now), /title="Minuto stimato/);
+});

@@ -5,7 +5,7 @@
    - ogni minuto aggiorna le partite aperte e aggiunge un punto al momentum stimato;
    - ogni 2 minuti aggiorna la lista, solo se la pagina è visibile. */
 import {
-  LIVE_ENDPOINTS, matchDetailUrl, combineSources, liveOnly, leagueOptions, liveCardHtml, detailEventsHtml
+  LIVE_ENDPOINTS, matchDetailUrl, combineSources, liveOnly, leagueOptions, liveCardHtml, detailEventsHtml, livePhaseHtml, minuteLabel
 } from "../lib/livefeed.js";
 import {
   liveChartsHtml, lcMatchFromPayload, lcTimelineOf, lcMinuteOf, lcStats, lcNowMinute, lcEvents, lcRecordSample, pickMomentum
@@ -163,6 +163,9 @@ async function loadLiveDetails(card, quiet) {
   const fromServer = serverMomentum(slug);  // in parallelo al dettaglio SportScore
   try {
     const match = lcMatchFromPayload(await fetchJson(matchDetailUrl(slug)));
+    /* Il dettaglio ha il minuto esatto: si aggiorna l'etichetta della scheda. */
+    const phase = card.querySelector(".live-phase");
+    if (phase && match && match.live_minute != null) phase.innerHTML = livePhaseHtml(match);
     const timeline = lcTimelineOf(match);
     const minute = lcMinuteOf(match, card.getAttribute("data-status"));
     const home = card.getAttribute("data-home"), away = card.getAttribute("data-away");
@@ -239,6 +242,18 @@ setInterval(() => {
     if (toggle && toggle.getAttribute("aria-expanded") === "true" && card.dataset.detailsLoaded === "true") loadLiveDetails(card, true);
   });
 }, 60000);
+/* Il minuto avanza da solo tra un aggiornamento e l'altro (nell'intervallo resta fermo). */
+function tickMinutes() {
+  const now = Date.now();
+  list.querySelectorAll(".live-minute[data-minute]").forEach((el) => {
+    const phase = el.getAttribute("data-phase");
+    if (phase !== "1H" && phase !== "2H" && phase !== "ET") return;
+    const minute = +el.getAttribute("data-minute") + Math.floor((now - +el.getAttribute("data-minute-at")) / 60000);
+    const text = minuteLabel(minute, phase);
+    if (el.textContent !== text) el.textContent = text;
+  });
+}
+setInterval(() => { if (!document.hidden) tickMinutes(); }, 15000);
 /* Risultati freschi senza interrogare il servizio quando la scheda del browser è in secondo piano. */
 setInterval(() => { if (!document.hidden) loadLiveMatches(true); }, 120000);
 document.addEventListener("visibilitychange", () => { if (!document.hidden && liveLoaded) loadLiveMatches(true); });
