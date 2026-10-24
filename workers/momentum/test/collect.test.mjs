@@ -41,7 +41,7 @@ test("registra un campione al minuto per le partite dei nostri campionati", asyn
   ];
   const report = await collect({ fetch: fakeFetch(routes, calls), db, now: T0 });
   assert.deepEqual({ live: report.live, ours: report.ours, saved: report.saved, error: report.error }, { live: 3, ours: 2, saved: 2, error: null });
-  assert.equal(calls.length, 3, "una lista e due dettagli: la coppa azera non si scarica");
+  assert.equal(calls.filter((c) => c.url.includes("sportscore.com")).length, 3, "una lista e due dettagli: la coppa azera non si scarica");
   assert.ok(calls.every((c) => /FischiettoFinale/.test(c.ua)), "il servizio sa chi lo interroga");
   const rows = db.raw.prepare("SELECT slug, minute, h, a FROM samples ORDER BY slug").all();
   assert.deepEqual(rows.map((r) => ({ ...r })), [

@@ -100,8 +100,11 @@ async function loadLiveMatches(force) {
   list.innerHTML = "";
   if (refresh) { refresh.disabled = true; refresh.textContent = "Caricamento…"; }
   try {
-    /* Si interrogano tutte le fonti: la lista "fixtures" a volte ne restituisce solo una parte. */
-    const results = await Promise.all(LIVE_ENDPOINTS.map((ep) => fetchJson(ep.url)
+    /* Si interrogano tutte le fonti: la lista "fixtures" a volte ne restituisce solo una parte e spesso
+       non elenca i campionati principali. Per prime le partite dei nostri campionati registrate dal
+       Worker (/api/live, stesso dominio): a parità di partita i loro dati (minuto compreso) prevalgono. */
+    const sources = [{ url: "/api/live", verifiedLive: true }].concat(LIVE_ENDPOINTS);
+    const results = await Promise.all(sources.map((ep) => fetchJson(ep.url)
       .then((data) => ({ data, verifiedLive: ep.verifiedLive, failed: false }))
       .catch(() => ({ data: null, verifiedLive: ep.verifiedLive, failed: true }))));
     const live = liveOnly(combineSources(results));

@@ -37,7 +37,8 @@ Il modello, i workflow e i JSON non cambiano: questo sito legge gli stessi file 
 | `src/styles/legacy.css` | CSS del sito attuale, **generato** da `scripts/import-legacy-css.mjs` |
 | `src/styles/site.css` | le poche regole nuove |
 | `public/` | `_headers` (CSP e cache), `_redirects` (vecchi indirizzi), `ads.txt` (AdSense), service worker, manifest, icone |
-| `functions/api/momentum.js` | unica funzione del sito: legge da D1 il momentum registrato dal Worker (`workers/momentum`) |
+| `functions/api/momentum.js`, `functions/api/live.js` | le funzioni del sito: leggono da D1 il momentum e le partite in corso registrati dal Worker (`workers/momentum`) |
+| `src/pages/live-calendar.json.js` | calendario delle partite dei nostri campionati per il Worker |
 | `wrangler.jsonc` | configurazione del progetto Pages: cartella `dist` e binding D1 per `/api/momentum` |
 
 ## Comandi
