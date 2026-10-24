@@ -16,8 +16,16 @@ sito ── /api/momentum?slug=… (web/functions/api/momentum.js, stesso domini
   cumulata; il grafico disegna di quanto cresce ogni minuto. Nessun minuto viene inventato: se il servizio
   non dà minuto o statistiche, quel minuto resta vuoto.
 - **Solo i nostri campionati**: le altre partite del Live continuano a essere registrate dal browser.
-- **Piano gratuito**: 1–3 richieste alla lista + al massimo 40 dettagli per minuto (limite: 50 richieste
-  esterne e 10 ms di CPU per esecuzione); in D1 circa 2 righe scritte per partita al minuto (limite: 100.000
+- **Anche le partite che SportScore non elenca**: la lista `fixtures?status=live` spesso non contiene Serie A,
+  LaLiga, Premier League… (il 24 ottobre 2026 mancava Cagliari–Bologna in corso). Il Worker legge allora il
+  calendario del sito (`/live-calendar.json`), cerca su SportScore lo slug delle due squadre
+  (`/api/v1/search/`, una volta sola) e chiede il dettaglio `squadra-a-vs-squadra-b`, accettandolo solo se
+  campionato e orario coincidono. Slug di squadre e partite restano in D1 (`team_slugs`, `match_slugs`).
+  Il riassunto di ogni partita (squadre, punteggio, minuto) va in `live_rows` e il sito lo aggiunge alla lista
+  del Live con `/api/live`. Le partite non trovate compaiono in `unresolved` nel riepilogo di `/health`:
+  se un nome breve di football-data.org non si trova, si aggiunge a `SEARCH_ALIASES` in `src/calendar.js`.
+- **Piano gratuito**: al massimo 48 richieste esterne per minuto tra lista, calendario, ricerche (6) e dettagli
+  (limite: 50 richieste esterne e 10 ms di CPU per esecuzione); in D1 circa 2 righe scritte per partita al minuto (limite: 100.000
   al giorno). I dati più vecchi di 12 ore vengono cancellati ogni ora.
 - **Nessuna chiave**: SportScore non ne richiede. Le richieste si presentano con un `User-Agent` che
   indica il sito.
@@ -27,6 +35,7 @@ sito ── /api/momentum?slug=… (web/functions/api/momentum.js, stesso domini
 | File | Contenuto |
 | --- | --- |
 | `src/collect.js` | raccolta e salvataggio dei campioni (testabile: fetch e database arrivano da fuori) |
+| `src/calendar.js` | partite del calendario cercate per nome, con i tetti di richieste per esecuzione |
 | `src/index.js` | gestore del cron e `GET /health` |
 | `schema.sql` | tabelle D1 (già create nel database `fischietto-momentum`) |
 | `wrangler.jsonc` | nome, cron, binding D1 |

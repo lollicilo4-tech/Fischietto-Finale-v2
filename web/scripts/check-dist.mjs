@@ -32,7 +32,7 @@ const pageFor = (urlPath) => {
 if (!existsSync(dist)) { console.error("Manca dist/: esegui prima npm run build"); process.exit(1); }
 
 /* Pagine e file che devono esserci. */
-const expected = ["/", "/live/", "/come-funziona/", "/privacy/", "/404.html", "/sitemap.xml", "/robots.txt", "/sw.js", "/manifest.webmanifest", "/_headers", "/_redirects", "/ads.txt", "/turno.json"];
+const expected = ["/", "/live/", "/come-funziona/", "/privacy/", "/404.html", "/sitemap.xml", "/robots.txt", "/sw.js", "/manifest.webmanifest", "/_headers", "/_redirects", "/ads.txt", "/live-calendar.json", "/turno.json"];
 LEAGUES.forEach((l) => Object.values(SECTIONS).forEach((s) => expected.push("/" + l.slug + "/" + s.path)));
 expected.forEach((u) => { if (!pageFor(u)) fail("manca " + u); });
 
@@ -92,6 +92,14 @@ redirects.forEach((line) => {
 /* ads.txt: solo righe "dominio, pub-…, DIRECT|RESELLER[, id]" o commenti. */
 readFileSync(path.join(dist, "ads.txt"), "utf-8").split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#")).forEach((l) => {
   if (!/^[a-z0-9.-]+\.[a-z]{2,}, pub-\d{16}, (DIRECT|RESELLER)(, [0-9a-f]+)?$/.test(l)) fail("ads.txt: riga non valida: " + l);
+});
+
+/* Calendario per il Worker del momentum: partite con campionato, nomi e orario validi. */
+const calendar = JSON.parse(readFileSync(path.join(dist, "live-calendar.json"), "utf-8"));
+const liveKeys = new Set(LEAGUES.map((l) => l.liveKey));
+if (!Array.isArray(calendar.matches)) fail("live-calendar.json: manca l'elenco delle partite");
+else calendar.matches.forEach((m) => {
+  if (!liveKeys.has(m.liveKey) || !m.home || !m.away || !m.id || !Number.isFinite(Date.parse(m.kickoff))) fail("live-calendar.json: partita non valida " + JSON.stringify(m));
 });
 
 /* JSON ripubblicati. */

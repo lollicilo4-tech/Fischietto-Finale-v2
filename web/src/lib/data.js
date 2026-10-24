@@ -57,6 +57,20 @@ export function livePriors() {
   return out;
 }
 
+/* Calendario per il Worker del momentum (/live-calendar.json): le partite in programma degli 8
+   campionati con nomi e orario. Il Worker lo usa per chiedere a SportScore il dettaglio delle partite
+   in corso anche quando la lista "live" del servizio non le elenca. */
+export function liveCalendar() {
+  const out = [];
+  LEAGUES.forEach((l) => {
+    const t = leagueData(l.code).turno;
+    (t ? t.matches : []).forEach((m) => {
+      if (m.kickoff && m.home && m.away) out.push({ league: l.code, liveKey: l.liveKey, id: String(m.id), home: m.home, away: m.away, kickoff: m.kickoff });
+    });
+  });
+  return out.sort((a, b) => a.kickoff.localeCompare(b.kickoff));
+}
+
 /* Solo i campi che servono a "Più probabili" e "Le scelte del modello" nel browser, incorporati nella pagina. */
 export function slimMatches(matches) {
   return (matches || []).map((m) => ({
