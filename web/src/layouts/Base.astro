@@ -2,6 +2,17 @@
 /* Struttura comune a tutte le pagine: intestazione, contenuto, piè di pagina e barra in basso.
    Riproduce il markup di static/index.html (stesse classi e id, così vale lo stesso CSS),
    ma ogni voce porta a una pagina vera invece di mostrare/nascondere pannelli. */
+/* Caratteri serviti dal sito stesso (pacchetti Fontsource, licenza OFL): nessuna richiesta a Google Fonts,
+   quindi nessun indirizzo IP dei visitatori inviato a terzi solo per i caratteri. Il browser scarica solo
+   i blocchi di caratteri che servono (unicode-range). */
+import "@fontsource/barlow-condensed/600.css";
+import "@fontsource/barlow-condensed/700.css";
+import "@fontsource/barlow-condensed/800.css";
+import "@fontsource/ibm-plex-sans/400.css";
+import "@fontsource/ibm-plex-sans/500.css";
+import "@fontsource/ibm-plex-sans/600.css";
+import "@fontsource/ibm-plex-mono/500.css";
+import "@fontsource/ibm-plex-mono/600.css";
 import "../styles/legacy.css";
 import "../styles/site.css";
 import { LEAGUES, SELECT_ORDER, leagueByCode, leagueUrl, liveUrl, INFO_URL, KOFI_URL, SECTIONS } from "../lib/core.js";
@@ -65,9 +76,6 @@ const tags = statusTags(turno, meta.updated);
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#edf1f6" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0a1018" media="(prefers-color-scheme: dark)">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
 <slot name="head" />
 </head>
 <body class={inner ? "inner" : undefined} data-league={league} data-league-slug={L.slug}>
