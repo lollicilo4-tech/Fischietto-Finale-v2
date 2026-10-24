@@ -18,7 +18,8 @@ export const AFTER_MS = 150 * 60 * 1000;         // e si smette 2 ore e mezza do
 export const TIME_TOLERANCE_MS = 3 * 3600 * 1000; // orario SportScore e nostro devono essere vicini
 export const MAX_SEARCHES = 6;                   // ricerche di squadre per esecuzione
 export const MAX_GUESSES = 8;                    // dettagli "di prova" per esecuzione
-export const MAX_TRIES = 12;                     // poi la partita si lascia perdere (e si segnala)
+export const MAX_TRIES = 24;                     // poi la partita si lascia perdere (e si segnala)…
+export const RETRY_AFTER_MS = 15 * 60 * 1000;    // …per 15 minuti, poi si riprova da capo
 const MAX_CANDIDATES = 3;                        // slug candidati per squadra
 
 /* Nomi brevi di football-data.org che la ricerca di SportScore non trova: si cerca il nome completo. */
@@ -30,12 +31,15 @@ export const SEARCH_ALIASES = {
   "Dortmund": "Borussia Dortmund", "Frankfurt": "Eintracht Frankfurt", "1. FC Köln": "FC Koln",
   "PSG": "Paris Saint-Germain", "Olympique Lyon": "Lyon", "Stade Rennais": "Rennes", "RC Lens": "Lens",
   "Inter": "Inter Milan", "Shaktar": "Shakhtar Donetsk", "PAE AEK": "AEK Athens", "Sl. Bratislava": "Slovan Bratislava",
-  "L. Red Imps": "Lincoln Red Imps", "Bodø/Glimt": "Bodo Glimt"
+  "L. Red Imps": "Lincoln Red Imps", "Bodø/Glimt": "Bodo Glimt",
+  "Napoli": "SSC Napoli", "Roma": "AS Roma", "Lazio": "SS Lazio", "Milan": "AC Milan", "Valencia": "Valencia CF",
+  "Villarreal": "Villarreal CF", "Getafe": "Getafe CF", "Osasuna": "CA Osasuna", "Levante": "Levante UD"
 };
 /* Squadre giovanili, femminili, riserve: mai la prima squadra. */
-const NOT_FIRST_TEAM = /\b(u ?1\d|u ?2[0-3]|youth|women|woman|ladies|femen|feminin|reserves?|beach|futsal|indoor|esports?|ii|iii|b|r|am|w)\b|\(w\)/i;
+const NOT_FIRST_TEAM = /\b(o?u ?1\d|o?u ?2[0-3]|sub ?\d\d|youth|juniors?|women|woman|ladies|femen\w*|feminin\w*|reserves?|beach|futsal|indoor|esports?|legends?|ii|iii|b|c|r|am|w)\b|\(w\)|ou1\d/i;
 /* Parole che SportScore spesso omette nei nomi ("Como 1907" è "Como"). */
-const NAME_NOISE = new Set(["fc", "sc", "ac", "cf", "afc", "rc", "sco", "ssc", "us", "as", "cd", "ud", "sd", "club", "calcio"]);
+const NAME_NOISE = new Set(["fc", "sc", "ac", "cf", "afc", "rc", "sco", "ssc", "ss", "acf", "us", "as", "cd", "ud", "sd", "ca", "sv", "fsv",
+  "tsg", "vfb", "vfl", "ssv", "bsc", "rcd", "club", "calcio"]);
 
 const norm = (s) => String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
 export const matchKey = (m) => m.league + ":" + m.id;
@@ -82,13 +86,32 @@ export function isSameMatch(cal, payload) {
   return Number.isFinite(t) && Math.abs(t - Date.parse(cal.kickoff)) <= TIME_TOLERANCE_MS;
 }
 
-/* Slug in più da provare se i candidati della ricerca non bastano: il nome senza anni e sigle. */
-export function withVariants(name, slugs) {
-  const out = [...(slugs || [])];
-  const simple = norm(searchQuery(name)).split(" ").filter((t) => t && !/^\d+$/.test(t) && !NAME_NOISE.has(t)).join(" ");
-  [slugify(simple), slugify(name)].forEach((v) => { if (v && !out.includes(v)) out.push(v); });
-  return out.slice(0, MAX_CANDIDATES + 2);
+/* Parole significative di un nome (senza anni e sigle): "SSC Napoli" → ["napoli"]. */
+const coreTokens = (name) => norm(name).split(" ").filter((t) => t && !/^\d+$/.test(t) && !NAME_NOISE.has(t));
+/* Quante parole "in più" ha uno slug rispetto al nome; null se non contiene tutte le parole del nome
+   o se è una squadra giovanile, femminile, riserve… ("aa-anapolina" non è Napoli). */
+function slugDistance(slug, tokens) {
+  const parts = String(slug).split("-");
+  if (!tokens.length || !tokens.every((t) => parts.includes(t)) || NOT_FIRST_TEAM.test(parts.join(" "))) return null;
+  return parts.filter((p) => !tokens.includes(p) && !NAME_NOISE.has(p) && !/^\d+$/.test(p)).length;
 }
+/* Slug da provare per una squadra, i più probabili prima: i risultati della ricerca uguali al nome
+   (a parte sigle e anni), il nome semplice ("napoli"), i risultati con una parola in più
+   ("tottenham-hotspur"), le forme con sigla ("valencia-cf", "fc-koln"), poi gli altri. Massimo 5. */
+export function withVariants(name, slugs) {
+  const tokens = coreTokens(searchQuery(name));
+  const simple = tokens.join("-");
+  const out = [], add = (v) => { if (v && !out.includes(v)) out.push(v); };
+  const found = (slugs || []).map((s, i) => ({ s, d: slugDistance(s, tokens), i })).filter((x) => x.d != null).sort((a, b) => a.d - b.d || a.i - b.i);
+  found.filter((x) => x.d === 0).forEach((x) => add(x.s));
+  add(simple);
+  found.filter((x) => x.d === 1).forEach((x) => add(x.s));
+  if (simple) { add(simple + "-cf"); add("fc-" + simple); add(simple + "-fc"); }
+  found.filter((x) => x.d > 1).forEach((x) => add(x.s));
+  return out.slice(0, 5);
+}
+/* La cache di una squadra serve ancora? Se nessuno slug salvato contiene il suo nome si ricerca. */
+export const usefulSlugs = (name, slugs) => (slugs || []).some((s) => slugDistance(s, coreTokens(searchQuery(name))) != null);
 
 /* Coppie di slug da provare, in ordine: prima i candidati migliori di entrambe le squadre. */
 export function slugPairs(homeSlugs, awaySlugs) {
@@ -101,10 +124,10 @@ export function slugPairs(homeSlugs, awaySlugs) {
    appena trovato, anche il dettaglio già scaricato. Aggiorna le cache passate (Map) e conta le richieste.
    - teamCache: nome nostro → array di slug candidati ([] = cercato senza risultati)
    - matchCache: chiave partita → { slug, tries } */
-export async function resolveDue({ due, teamCache, matchCache, getJson, matchDetailUrl }) {
+export async function resolveDue({ due, teamCache, matchCache, getJson, matchDetailUrl, now = Date.now() }) {
   const out = [], budget = { searches: 0, guesses: 0 }, changedTeams = new Set(), changedMatches = new Set();
   const teamSlugs = async (name) => {
-    if (teamCache.has(name)) return teamCache.get(name);
+    if (teamCache.has(name) && (usefulSlugs(name, teamCache.get(name)) || budget.searches >= MAX_SEARCHES)) return teamCache.get(name);
     if (budget.searches >= MAX_SEARCHES) return null;  // si riprova al prossimo minuto
     budget.searches++;
     let slugs = [];
@@ -117,9 +140,10 @@ export async function resolveDue({ due, teamCache, matchCache, getJson, matchDet
   for (const cal of due) {
     const key = matchKey(cal), cached = matchCache.get(key);
     if (cached && cached.slug) { out.push({ cal, slug: cached.slug }); continue; }
-    if (cached && cached.tries >= MAX_TRIES) { out.push({ cal, slug: null, gaveUp: true }); continue; }
+    const retry = cached && cached.tries >= MAX_TRIES && now - (cached.updatedAt || 0) > RETRY_AFTER_MS;
+    if (cached && cached.tries >= MAX_TRIES && !retry) { out.push({ cal, slug: null, gaveUp: true }); continue; }
     const hs = await teamSlugs(cal.home), as = await teamSlugs(cal.away);
-    let found = null, tries = cached ? cached.tries : 0;
+    let found = null, tries = cached && !retry ? cached.tries : 0;
     if (hs && as) {
       for (const slug of slugPairs(withVariants(cal.home, hs), withVariants(cal.away, as))) {
         if (budget.guesses >= MAX_GUESSES || tries >= MAX_TRIES) break;
@@ -130,7 +154,7 @@ export async function resolveDue({ due, teamCache, matchCache, getJson, matchDet
         } catch (e) { /* 404: coppia sbagliata, si prova la successiva */ }
       }
     }
-    matchCache.set(key, { slug: found ? found.slug : null, tries }); changedMatches.add(key);
+    if (found || tries !== (cached ? cached.tries : 0) || retry) { matchCache.set(key, { slug: found ? found.slug : null, tries, updatedAt: now }); changedMatches.add(key); }
     out.push(found ? { cal, slug: found.slug, payload: found.payload } : { cal, slug: null });
   }
   return { resolved: out, budget, changedTeams, changedMatches };
