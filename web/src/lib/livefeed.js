@@ -179,8 +179,53 @@ export function matchSlugOf(m) {
   return String(slug);
 }
 
+/* ---------- Minuto in corso, come su SportScore ("67'", "45+2'", "Intervallo") ----------
+   Fonte esatta: live_minute del dettaglio SportScore (le partite dei nostri campionati arrivano da
+   /api/live con il minuto). Per le altre la lista dà solo la fase ("2nd half"): il minuto si stima
+   dall'orario d'inizio (1° tempo: minuti trascorsi; 2° tempo: meno 15 di intervallo) e la pagina lo fa
+   avanzare da sola ogni minuto. */
+export const PHASE_LABEL = { "1H": "1° tempo", "2H": "2° tempo", HT: "Intervallo", ET: "Supplementari", PEN: "Rigori", FT: "Finita", LIVE: "In corso" };
+export function livePhase(m) {
+  const s = [valueText(m && m.status_text), valueText(m && m.status_more), valueText(m && m.status)].join(" ").toLowerCase();
+  if (/penalt|shoot ?out|rigori/.test(s)) return "PEN";
+  if (/extra time|overtime|supplementari|\bet\b/.test(s)) return "ET";
+  if (/half ?time|\bht\b|intervallo|break/.test(s)) return "HT";
+  if (/2nd half|second half|\b2h\b|secondo tempo/.test(s)) return "2H";
+  if (/1st half|first half|\b1h\b|primo tempo/.test(s)) return "1H";
+  if (/finished|full ?time|\bft\b|ended|terminat/.test(s)) return "FT";
+  return "LIVE";
+}
+/* Minuto (numero) e se è esatto o stimato; null se non si può sapere. */
+export function liveMinute(m, now = Date.now()) {
+  const phase = livePhase(m), raw = m && m.live_minute != null ? String(m.live_minute).trim() : "";
+  if (phase === "HT" || phase === "FT" || phase === "PEN") return { phase, minute: null, exact: false };
+  const plus = raw.match(/^(\d{1,3})\s*\+\s*(\d{1,2})$/);
+  if (plus) return { phase, minute: +plus[1] + +plus[2], exact: true };
+  if (/^\d{1,3}$/.test(raw) && +raw > 0) return { phase, minute: +raw, exact: true };
+  const kickoff = Date.parse(m && (m.time || m.start_at || m.start_time || m.kickoff));
+  if (!Number.isFinite(kickoff) || now < kickoff || (phase !== "1H" && phase !== "2H")) return { phase, minute: null, exact: false };
+  const elapsed = Math.floor((now - kickoff) / 60000) + 1;
+  return { phase, minute: phase === "1H" ? Math.max(1, elapsed) : Math.max(46, elapsed - 15), exact: false };
+}
+/* "67'", "45+2'", "90+4'", "105'" — oltre la fine del tempo si mostra il recupero. */
+export function minuteLabel(minute, phase) {
+  if (minute == null) return "";
+  const end = phase === "1H" ? 45 : phase === "2H" ? 90 : phase === "ET" ? 120 : null;
+  return end && minute > end ? end + "+" + Math.min(minute - end, 15) + "'" : minute + "'";
+}
+/* Testo dell'etichetta: minuto (se c'è) e fase in italiano. */
+export function livePhaseHtml(m, now = Date.now()) {
+  const info = liveMinute(m, now);
+  const label = PHASE_LABEL[info.phase] || PHASE_LABEL.LIVE;
+  const min = info.minute != null
+    ? '<b class="live-minute" data-minute="' + info.minute + '" data-minute-at="' + now + '" data-phase="' + info.phase + '"' +
+      (info.exact ? "" : ' title="Minuto stimato dall\'orario d\'inizio"') + ">" + minuteLabel(info.minute, info.phase) + "</b>"
+    : "";
+  return '<span class="live-pulse"></span>' + min + '<span class="live-phase-label">' + esc(label) + "</span>";
+}
+
 /* Scheda di una partita live. priors: pronostici dei nostri campionati per il grafico delle probabilità. */
-export function liveCardHtml(m, priors) {
+export function liveCardHtml(m, priors, now = Date.now()) {
   const homeObj = m.home || m.home_team || m.homeTeam || m.localteam || m.home_participant;
   const awayObj = m.away || m.away_team || m.awayTeam || m.visitorteam || m.away_participant;
   const homeName = valueText(homeObj), awayName = valueText(awayObj);
@@ -208,7 +253,7 @@ export function liveCardHtml(m, priors) {
   const hs = homeScore == null ? "–" : esc(String(homeScore)), as = awayScore == null ? "–" : esc(String(awayScore));
   return '<article class="live-match" data-live-slug="' + esc(matchSlug) + '" data-home="' + esc(homeName) + '" data-away="' + esc(awayName) +
     '" data-hs="' + esc(homeScore == null ? "" : homeScore) + '" data-as="' + esc(awayScore == null ? "" : awayScore) + '" data-status="' + esc(matchStatus(m)) + '" data-live-league="' + esc(leagueKey) +
-    '" data-live-search="' + esc(searchText) + '"><div class="live-league-name">' + esc(league) + '</div><div class="live-phase"><span class="live-pulse"></span>' + esc(matchStatus(m) || "LIVE") +
+    '" data-live-search="' + esc(searchText) + '"><div class="live-league-name">' + esc(league) + '</div><div class="live-phase">' + livePhaseHtml(m, now) +
     '</div><div class="live-teams"><div class="live-team">' + logo(homeLogo) + "<b>" + esc(homeName || "Squadra casa") + '</b></div><div class="live-score">' + hs + "<span>:</span>" + as +
     '</div><div class="live-team away">' + logo(awayLogo) + "<b>" + esc(awayName || "Squadra ospite") + '</b></div></div><button type="button" class="live-detail-toggle" aria-expanded="false">Dettagli partita <span aria-hidden="true">＋</span></button><div class="live-match-details" hidden>' +
     (details.length ? '<div class="live-detail-grid">' + details.join("") + "</div>" : "") + chartsMarkup + eventsListHtml(rawEvents) + "</div></article>";

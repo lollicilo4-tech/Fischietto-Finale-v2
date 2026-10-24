@@ -40,3 +40,7 @@
 
 /* Link nel testo del piè di pagina (Come funziona, Ko-fi): in riga con il testo, senza l'altezza minima dei pulsanti. */
 .site-foot a.foot-link.ff-btn { display: inline; min-height: 0; padding: 0; vertical-align: baseline; }
+
+/* Minuto in corso nelle schede del Live, come su SportScore: "67'", "45+2'". */
+.live-phase .live-minute { color: #ff6b6b; font-family: var(--font-num); font-size: 13px; font-weight: 700; letter-spacing: 0; text-transform: none; }
+.live-phase .live-phase-label { opacity: .85; }
