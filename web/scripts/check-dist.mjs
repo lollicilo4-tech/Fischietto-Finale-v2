@@ -66,6 +66,7 @@ const csp = (headers.match(/Content-Security-Policy: (.*)/) || [])[1] || "";
 const scriptSrc = (csp.match(/script-src ([^;]*)/) || [])[1] || "";
 if (scriptSrc.trim() !== "'self'") fail("_headers: script-src deve essere solo 'self' (ora: " + scriptSrc + ")");
 ["object-src 'none'", "base-uri 'self'", "frame-ancestors 'none'", "form-action 'none'"].forEach((d) => { if (!csp.includes(d)) fail("_headers: manca " + d); });
+if (!/^\s+Strict-Transport-Security: max-age=\d{7,}/m.test(headers)) fail("_headers: manca Strict-Transport-Security (almeno 4 mesi)");
 headers.split("\n").forEach((line, i) => { if (line.length > 2000) fail("_headers: riga " + (i + 1) + " oltre i 2000 caratteri di Cloudflare"); });
 
 /* Sitemap. */

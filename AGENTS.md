@@ -72,7 +72,8 @@ Per non fare due volte lo stesso lavoro:
 ## Come è fatto il progetto
 
 - `web/` è il sito Astro (pagine statiche + isole interattive) per Cloudflare Pages: legge i JSON di `docs/`
-  durante il build e non chiama API. Finché il dominio resta su GitHub Pages, il sito pubblico è `docs/`.
+  durante il build e non chiama API. Finché il dominio resta su GitHub Pages, il sito pubblico è `docs/`;
+  i passaggi per spostarlo su Cloudflare sono in `web/README.md`.
 - `workers/momentum/` è il Worker Cloudflare che ogni minuto registra in D1 il momentum delle partite live
   (riusa `web/src/lib/livecharts.js` e `livefeed.js`: se le cambi, esegui anche `npm test` lì).
 - `app/data.py` dati (football-data.org; Europa e Conference League da CSV pubblico),
