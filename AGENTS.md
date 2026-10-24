@@ -45,6 +45,8 @@ Su questo repository lavorano più agenti AI (Claude e ChatGPT Codex) per conto 
   ogni dato inserito nell'HTML, blocco degli indirizzi privati in `app/evidence.py`.
 - Nuove fonti esterne nella pagina vanno aggiunte alla CSP in `web/public/_headers` (riga giusta:
   `script-src`, `connect-src`, `img-src`…). `check:dist` rifiuta script inline o esterni non dichiarati.
+- Ogni nuovo servizio esterno o nuovo dato salvato nel browser va descritto anche nella pagina
+  Privacy e cookie (`web/src/pages/privacy.astro`), aggiornando la data in cima.
 
 ## Monitoraggio orario (Claude e Codex)
 

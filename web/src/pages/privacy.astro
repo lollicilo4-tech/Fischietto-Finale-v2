@@ -1,0 +1,73 @@
+---
+/* Informativa privacy e cookie. Va aggiornata insieme al sito: ogni nuovo servizio esterno (CSP in
+   public/_headers) o nuovo dato salvato nel browser deve comparire qui. */
+import Base from "../layouts/Base.astro";
+import { CONTACT_EMAIL, KOFI_URL } from "../lib/core.js";
+const UPDATED = "24 ottobre 2026";
+const ext = { target: "_blank", rel: "noopener noreferrer" };
+---
+<Base title="Privacy e cookie" description="Quali dati tratta Fischietto finale: niente account né moduli, cosa resta nel browser, servizi esterni (Cloudflare, SportScore, Google AdSense) e come esercitare i tuoi diritti." section={undefined} path="/privacy/">
+  <section id="p-privacy" aria-labelledby="privacy-title">
+    <h2 class="sub2" id="privacy-title">Privacy e cookie</h2>
+    <p class="lead">In breve: Fischietto finale non ha account, moduli o newsletter e non ti chiede dati personali. Qui trovi cosa succede ai pochi dati tecnici che servono per mostrarti il sito. Ultimo aggiornamento: {UPDATED}.</p>
+
+    <div class="panel info-section">
+      <h2>1. Chi gestisce il sito</h2>
+      <p>Fischietto finale è un progetto personale e gratuito, raggiungibile su fischiettofinale.com. Per qualsiasi domanda su questa informativa o sui tuoi dati scrivi a <a href={"mailto:" + CONTACT_EMAIL}>{CONTACT_EMAIL}</a>.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>2. Cosa non raccogliamo</h2>
+      <p>Non ci sono registrazioni, accessi, moduli di contatto o newsletter. Il sito non usa strumenti di statistica sui visitatori e, finché la pubblicità non è attiva (punto 7), non imposta cookie.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>3. Cosa resta sul tuo dispositivo</h2>
+      <p>Alcune comodità funzionano salvando dati solo nel tuo browser. Non vengono mai inviati a noi:</p>
+      <ul>
+        <li><b>Squadre seguite</b> (<code>ff-squadre-seguite</code>): le squadre che metti in evidenza con “Segui”.</li>
+        <li><b>Momentum del Live</b> (<code>ff-momentum-v1</code>): i valori registrati mentre guardi una partita in corso, cancellati da soli dopo 6 ore.</li>
+        <li><b>Copia offline</b>: le pagine già aperte, salvate dal service worker per mostrarle anche senza connessione.</li>
+      </ul>
+      <p>Puoi cancellare tutto dalle impostazioni del browser (dati dei siti / archiviazione) per fischiettofinale.com.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>4. Hosting: Cloudflare</h2>
+      <p>Il sito è ospitato da Cloudflare. Per consegnare le pagine e proteggerle da abusi e attacchi, Cloudflare tratta dati tecnici come indirizzo IP, browser e pagina richiesta, per il tempo strettamente necessario. Noi non usiamo questi dati per identificare o profilare i visitatori. Caratteri, script e immagini del sito sono serviti dal sito stesso. Informativa di Cloudflare: <a href="https://www.cloudflare.com/privacypolicy/" {...ext}>cloudflare.com/privacypolicy</a>.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>5. Live Center: SportScore</h2>
+      <p>Solo quando apri il Live, il tuo browser chiede risultati e statistiche delle partite in corso direttamente a SportScore (sportscore.com) e scarica da lì i loghi delle squadre. SportScore riceve quindi il tuo indirizzo IP e i dati tecnici della richiesta, secondo la sua informativa. Le altre pagine non contattano SportScore.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>6. Email e link esterni</h2>
+      <p>Se scrivi a {CONTACT_EMAIL}, il messaggio viene inoltrato dal servizio di posta di Cloudflare alla casella del gestore e usato solo per risponderti.</p>
+      <p>I link a siti esterni (articoli citati come fonti, <a href={KOFI_URL} {...ext}>Ko-fi</a> per le donazioni, Telefono Verde dell'ISS) si aprono solo se li tocchi: da quel momento valgono le informative di quei siti. Non passiamo loro l'indirizzo della pagina da cui arrivi.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>7. Pubblicità: Google AdSense</h2>
+      <p>Per coprire il tempo dedicato al progetto, il sito può mostrare annunci di Google AdSense. Quando gli annunci sono attivi:</p>
+      <ul>
+        <li>fornitori di terze parti, tra cui Google, usano cookie e tecnologie simili per mostrare annunci, anche in base alle tue visite precedenti a questo e ad altri siti;</li>
+        <li>i cookie pubblicitari permettono a Google e ai suoi partner di scegliere gli annunci in base alle visite a questo sito e ad altri siti su Internet;</li>
+        <li>nell'Unione Europea e nel Regno Unito ti viene chiesto prima il consenso, con un messaggio certificato da Google: puoi rifiutare gli annunci personalizzati e cambiare idea in qualsiasi momento;</li>
+        <li>puoi disattivare gli annunci personalizzati anche dalle <a href="https://myadcenter.google.com/" {...ext}>impostazioni annunci di Google</a>.</li>
+      </ul>
+      <p>Come Google usa i dati dei siti che mostrano i suoi annunci: <a href="https://policies.google.com/technologies/partner-sites" {...ext}>policies.google.com/technologies/partner-sites</a>. Gli annunci di scommesse e gioco d'azzardo sono bloccati: il sito non accetta giocate e non è un invito a scommettere.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>8. I tuoi diritti</h2>
+      <p>Secondo il Regolamento europeo sulla protezione dei dati (GDPR) puoi chiedere di accedere ai dati che ti riguardano, correggerli, cancellarli, limitarne l'uso o opporti al trattamento, scrivendo a <a href={"mailto:" + CONTACT_EMAIL}>{CONTACT_EMAIL}</a>. Puoi anche presentare reclamo al <a href="https://www.garanteprivacy.it/" {...ext}>Garante per la protezione dei dati personali</a>.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>9. Modifiche</h2>
+      <p>Se il sito aggiunge servizi o cambia il modo in cui tratta i dati, questa pagina viene aggiornata e la data in alto cambia.</p>
+    </div>
+  </section>
+</Base>
