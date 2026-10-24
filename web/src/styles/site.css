@@ -37,3 +37,6 @@
 
 /* "Condividi" e "Pagina della partita" affiancati nella scheda. */
 .match-actions > * + * { margin-left: 8px; }
+
+/* Link nel testo del piè di pagina (Come funziona, Ko-fi): in riga con il testo, senza l'altezza minima dei pulsanti. */
+.site-foot a.foot-link.ff-btn { display: inline; min-height: 0; padding: 0; vertical-align: baseline; }

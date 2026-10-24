@@ -42,6 +42,8 @@ export const matchSlug = (m) => String(m.id).replace(/[^0-9A-Za-z_-]/g, "") + "-
 export const matchUrl = (league, m) => "/" + leagueByCode(league).slug + "/partita/" + matchSlug(m) + "/";
 export const liveUrl = (league) => "/live/" + (league ? "?lega=" + leagueByCode(league).slug : "");
 export const INFO_URL = "/come-funziona/";
+/* Donazioni libere: un link normale (nessuno script di Ko-fi), così la CSP non cambia. */
+export const KOFI_URL = "https://ko-fi.com/fischiettofinale";
 
 /* ---------- Formattazione (identica al sito attuale) ---------- */
 export const pc = (p) => Math.round(p * 100) + "%";

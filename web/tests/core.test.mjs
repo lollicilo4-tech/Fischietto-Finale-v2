@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { slugify, romeParts, when, dayOf, shortDay, updatedAt, thousandsIt, esc, safeUrl, leagueUrl, teamUrl, matchUrl, matchSlug, LEAGUES, leagueBySlug } from "../src/lib/core.js";
+import { slugify, romeParts, when, dayOf, shortDay, updatedAt, thousandsIt, esc, safeUrl, leagueUrl, teamUrl, matchUrl, matchSlug, LEAGUES, leagueBySlug, KOFI_URL } from "../src/lib/core.js";
 
 test("orari sempre nel fuso italiano, con ora legale e solare", () => {
   // 18:45 UTC del 23 ottobre = 20:45 in Italia (ora legale); 19:45 UTC del 1° novembre = 20:45 (ora solare)
@@ -36,6 +36,7 @@ test("indirizzi delle pagine", () => {
   assert.equal(leagueUrl("PL", "home"), "/premier-league/");
   assert.equal(leagueUrl("UECL", "sicure"), "/conference-league/piu-probabili/");
   assert.equal(leagueUrl("SA", "schedina"), "/serie-a/scelte-del-modello/");
+  assert.equal(KOFI_URL, "https://ko-fi.com/fischiettofinale");
   assert.equal(teamUrl("SA", "Hellas Verona"), "/serie-a/squadra/hellas-verona/");
   assert.equal(slugify("Atlético Madrid"), "atletico-madrid");
   assert.equal(slugify("Bodø/Glimt"), "bodo-glimt");
