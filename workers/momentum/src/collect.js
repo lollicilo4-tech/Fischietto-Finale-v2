@@ -39,10 +39,10 @@ async function getJson(fetchFn, url) {
 
 /* Partite in corso. La fonte "fixtures?status=live" basta quasi sempre: le altre si chiedono solo
    se fallisce o è vuota, per restare nel limite di richieste e di CPU. */
-export async function fetchLive(fetchFn) {
+export async function fetchLive(fetchFn, sources = []) {
   const load = (ep) => getJson(fetchFn, ep.url)
-    .then((data) => ({ data, verifiedLive: ep.verifiedLive, failed: false }))
-    .catch(() => ({ data: null, verifiedLive: ep.verifiedLive, failed: true }));
+    .then((data) => { sources.push({ url: ep.url.split("?")[0].replace("https://sportscore.com", ""), rows: rowsFrom(data).length }); return { data, verifiedLive: ep.verifiedLive, failed: false }; })
+    .catch((e) => { sources.push({ url: ep.url.split("?")[0].replace("https://sportscore.com", ""), error: String((e && e.message) || e).split(" http")[0].slice(0, 60) }); return { data: null, verifiedLive: ep.verifiedLive, failed: true }; });
   const first = await load(LIVE_ENDPOINTS[0]);
   let results = [first];
   if (first.failed || !rowsFrom(first.data).length) results = results.concat(await Promise.all(LIVE_ENDPOINTS.slice(1).map(load)));
@@ -99,10 +99,10 @@ async function loadCaches(db, due) {
   const keys = due.map(matchKey), names = [...new Set(due.flatMap((m) => [m.home, m.away]))];
   const marks = (list) => list.map(() => "?").join(",");
   const [ms, ts] = await Promise.all([
-    db.prepare("SELECT match_key, slug, tries FROM match_slugs WHERE match_key IN (" + marks(keys) + ")").bind(...keys).all(),
+    db.prepare("SELECT match_key, slug, tries, updated_at FROM match_slugs WHERE match_key IN (" + marks(keys) + ")").bind(...keys).all(),
     db.prepare("SELECT name, slugs FROM team_slugs WHERE name IN (" + marks(names) + ")").bind(...names).all()
   ]);
-  (ms.results || []).forEach((r) => matchCache.set(r.match_key, { slug: r.slug, tries: r.tries || 0 }));
+  (ms.results || []).forEach((r) => matchCache.set(r.match_key, { slug: r.slug, tries: r.tries || 0, updatedAt: r.updated_at || 0 }));
   (ts.results || []).forEach((r) => { try { const v = JSON.parse(r.slugs); if (Array.isArray(v)) teamCache.set(r.name, v); } catch (e) { /* riga rovinata: si ricerca */ } });
   return { teamCache, matchCache };
 }
@@ -152,7 +152,8 @@ export async function collect({ fetch: fetchFn, db, now = Date.now(), calendarUr
     // 1. Lista live di SportScore. Se non risponde si va avanti con il calendario, ma l'errore resta
     //    nel riepilogo (e /health lo segnala).
     let live = [];
-    try { live = await fetchLive(counted); } catch (e) { report.error = String((e && e.message) || e).slice(0, 300); }
+    report.sources = [];
+    try { live = await fetchLive(counted, report.sources); } catch (e) { report.error = String((e && e.message) || e).slice(0, 300); }
     const listed = ourMatches(live);
     report.live = live.length; report.ours = listed.length;
     // Nomi dei campionati visti e quali sono stati riconosciuti come nostri: servono a controllare
@@ -165,7 +166,7 @@ export async function collect({ fetch: fetchFn, db, now = Date.now(), calendarUr
     try { const cal = await get(calendarUrl); due = dueMatches(cal && cal.matches, now); }
     catch (e) { report.calendarError = String((e && e.message) || e).slice(0, 120); }
     const { teamCache, matchCache } = await loadCaches(db, due);
-    const { resolved, budget, changedTeams, changedMatches } = await resolveDue({ due, teamCache, matchCache, getJson: get, matchDetailUrl });
+    const { resolved, budget, changedTeams, changedMatches } = await resolveDue({ due, teamCache, matchCache, getJson: get, matchDetailUrl, now });
     report.calendar = due.length;
     report.searches = budget.searches; report.guesses = budget.guesses;
     report.unresolved = resolved.filter((r) => !r.slug).map((r) => r.cal.home + " - " + r.cal.away);
