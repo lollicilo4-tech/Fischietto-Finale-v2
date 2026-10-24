@@ -1,6 +1,7 @@
 # Sito Astro di Fischietto finale
 
-Nuova versione del sito, pensata per sostituire la pagina unica pubblicata oggi da `docs/` su GitHub Pages.
+Il sito pubblico di `fischiettofinale.com` dal 24 ottobre 2026, su Cloudflare Pages. Ha sostituito la pagina
+unica che GitHub Pages pubblicava da `docs/` (GitHub Pages ora è spento).
 Il modello, i workflow e i JSON non cambiano: questo sito legge gli stessi file `docs/*.json` durante il build.
 
 ## Cosa cambia per chi visita il sito
@@ -65,9 +66,8 @@ Il collegamento si fa una volta sola dalla dashboard Cloudflare, perché richied
    - *Root directory*: `web`
    - *Build command*: `npm ci --ignore-scripts && npm run build && npm run check:dist`
    - *Build output directory*: `dist` (lo legge anche da `wrangler.jsonc`)
-3. **Production branch**: per ora lascia `main` ma **disattiva le pubblicazioni automatiche di produzione**
-   (Settings → Builds → Branch control) finché non si decide di spostare il dominio: così il sito su
-   GitHub Pages resta l'unico pubblico.
+3. **Production branch**: `main`, con le pubblicazioni automatiche di produzione attive (ogni PR unita e ogni
+   aggiornamento dei dati arriva su `fischiettofinale.com`).
 4. **Preview branches**: *Custom branches*, includi solo `feat/astro-*` (Codex e Dependabot aprono molti
    branch e ogni build conta nelle 500 mensili del piano gratuito).
 5. **Build watch paths**: includi `web/*` e `docs/*`. Il workflow "Aggiorna pronostici" aggiorna `docs/`
@@ -77,6 +77,8 @@ L'anteprima del branch arriva su `https://feat-astro-cloudflare-20261023.<proget
 le anteprime hanno `X-Robots-Tag: noindex` e non finiscono su Google.
 
 ## Passaggio del dominio `fischiettofinale.com` da GitHub Pages a Cloudflare
+
+**Fatto il 24 ottobre 2026.** I passaggi restano qui come riferimento, e per tornare indietro se servisse.
 
 Lo decide e lo fa il proprietario dalle dashboard, perché servono gli accessi al registrar e a Cloudflare.
 L'ordine evita interruzioni: finché non si arriva al punto 5 il sito pubblico resta quello di GitHub Pages.

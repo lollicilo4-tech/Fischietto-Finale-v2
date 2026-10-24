@@ -38,8 +38,10 @@ l'impatto e il commit interessato.
 - `pip-audit` controlla le dipendenze ogni settimana ("Security audit").
 
 **Pagina web**
-- Content Security Policy: script solo dal sito (niente script esterni né `eval`), connessioni solo al
-  sito e al feed SportScore, nessun modulo, nessun plugin.
+- Content Security Policy come intestazione HTTP (`web/public/_headers`): script solo dal sito (niente
+  script inline o esterni, niente `eval`), connessioni solo al sito e al feed SportScore, nessun modulo,
+  nessun plugin. `check:dist` la controlla a ogni build.
+- HTTPS obbligatorio: Strict-Transport-Security di un anno e "Always Use HTTPS" su Cloudflare.
 - Tutti i dati inseriti nella pagina passano da `esc()`; link e immagini esterni solo se `http(s)`.
 - I link esterni si aprono con `rel="noopener noreferrer"`.
 
@@ -51,10 +53,18 @@ l'impatto e il commit interessato.
   "Fork pull request workflows" con approvazione richiesta.
 - **Settings → Rules → Rulesets** sul branch `main`: blocco dei force push e della cancellazione.
   (Non richiedere PR obbligatorie per tutti: i workflow automatici salvano i dati direttamente su `main`.)
-- **Settings → Pages**: "Enforce HTTPS" attivo per il dominio personalizzato.
+- **Settings → Pages**: GitHub Pages spento (il sito è su Cloudflare Pages).
+
+## Impostazioni da tenere su Cloudflare (solo il proprietario)
+
+- Account Cloudflare con verifica in due passaggi.
+- **SSL/TLS → Edge Certificates**: "Always Use HTTPS" attivo.
+- **Workers & Pages**: il progetto Pages e il Worker del momentum leggono il database D1 con i binding
+  dichiarati in `wrangler.jsonc`; nessuna chiave nel repository.
 - Account GitHub con verifica in due passaggi.
 
 ## Ambito
 
-Il sito pubblico su GitHub Pages è statico. Le chiavi dei fornitori restano nei Secrets di GitHub
-Actions o sul server e non arrivano mai al browser.
+Il sito pubblico (`web/` su Cloudflare Pages) è statico, con una sola funzione, `/api/momentum`, che legge
+D1 senza chiavi. Le chiavi dei fornitori restano nei Secrets di GitHub Actions o sul server e non arrivano
+mai al browser.

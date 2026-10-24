@@ -53,26 +53,25 @@ Apri http://localhost:8000.
 ## Pubblicazione gratuita
 
 Il sito online è statico: un'automazione di GitHub (`.github/workflows/update.yml`) esegue `generate.py`
-ogni 4 ore, scrive i dati nella cartella `docs/` e la pubblica. Il selettore consente di passare tra gli otto campionati; dati e classifica sono separati per campionato.
+ogni 4 ore e scrive i dati nella cartella `docs/`; Cloudflare Pages ricostruisce il sito Astro di `web/` con i
+JSON nuovi e lo pubblica su `fischiettofinale.com`. Il selettore consente di passare tra gli otto campionati; dati e classifica sono separati per campionato.
 Ogni campionato è indipendente: se uno non si aggiorna (API o CSV non raggiungibili), gli altri vengono
 pubblicati lo stesso, il suo ultimo JSON resta online e l'esecuzione viene segnata come fallita su GitHub.
 I pronostici (`data/predictions.json`) e la cache delle analisi AI (`data/ai_cache.json`) vengono salvati nel repository. I visitatori non fanno mai
 partire chiamate a football-data.org o all'AI, quindi il costo dell'AI non dipende dal traffico. Il server può restare spento, il sito è sempre acceso e lo Storico non si perde.
 
-1. **GitHub**: crea un account su github.com e un repository nuovo **pubblico**. GitHub Pages è gratuito solo
-   per i repository pubblici; con uno privato serve un piano a pagamento, oppure Cloudflare Pages (punto 5).
+1. **GitHub**: crea un account su github.com e un repository nuovo **pubblico** (con un repository pubblico
+   le GitHub Actions sono gratuite senza limiti di minuti).
    Le chiavi non finiscono nel repository, restano nei Secrets.
 2. **Carica il progetto con GitHub Desktop**, non trascinando i file nel browser: GitHub Desktop rispetta
    `.gitignore` e non carica il file `.env` con le chiavi. Verifica comunque che `.env.example` abbia le righe
    delle chiavi vuote.
 3. **Secrets**: nel repository apri Settings, Secrets and variables, Actions, e crea `FOOTBALL_DATA_KEY`, `GROQ_API_KEY` e `GEMINI_API_KEY` con le rispettive chiavi; facoltativo `TAVILY_API_KEY`.
 4. **Prima generazione**: scheda Actions, "Aggiorna pronostici", Run workflow. In un paio di minuti compare
-   la cartella `docs/` con il sito.
-5. **Pubblica `docs/`** con uno di questi:
-   - GitHub Pages: Settings, Pages, Source "Deploy from a branch", branch `main`, cartella `/docs`.
-   - Cloudflare Pages: collega il repository, build command vuoto, output directory `docs`.
-   - In arrivo: il sito Astro in `web/` (una pagina per sezione, partita e squadra) pubblicato su
-     Cloudflare Pages dagli stessi JSON di `docs/`. Istruzioni in [`web/README.md`](web/README.md).
+   la cartella `docs/` con i dati.
+5. **Pubblica il sito**: il sito Astro di `web/` (una pagina per sezione, partita e squadra) su Cloudflare
+   Pages, gratuito. Istruzioni, dominio compreso, in [`web/README.md`](web/README.md). La vecchia pagina unica
+   in `docs/` non è più pubblicata e non riceve le novità.
 6. Per mantenere il progetto a costo zero, usa il piano gratuito Groq e non configurare un piano a consumo. Se in futuro abiliti un piano a pagamento, imposta un limite di spesa.
 
 ## App su iPhone
@@ -81,7 +80,7 @@ Il sito è una web app installabile (PWA), senza App Store e senza costi. Dopo l
 apri l'indirizzo del sito in **Safari**, tocca il pulsante Condividi, poi "Aggiungi alla schermata Home".
 Compare l'icona del fischietto, si apre a schermo intero e, senza rete, mostra gli ultimi dati scaricati
 con l'avviso "Offline · ultimi dati salvati".
-Funziona solo con un indirizzo `https://`, come quello di GitHub Pages o Cloudflare Pages.
+Funziona solo con un indirizzo `https://`, come `https://fischiettofinale.com`.
 
 Un'app nativa per l'App Store richiede l'iscrizione al programma sviluppatori Apple (a pagamento) e un Mac,
 e Apple tende a rifiutare le app che sono solo un sito impacchettato o che toccano il tema delle scommesse.

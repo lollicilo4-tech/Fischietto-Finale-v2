@@ -57,7 +57,7 @@ for (const file of html) {
     if (!pageFor(m[1])) fail(rel + ": link rotto " + m[1]);
   }
   if (!/<link rel="canonical" href="https:\/\/fischiettofinale\.com\//.test(src)) fail(rel + ": manca il link canonico");
-  if (!src.includes('href="' + KOFI_URL + '" target="_blank" rel="noopener"')) fail(rel + ": manca il link Ko-fi");
+  if (!src.includes('href="' + KOFI_URL + '" target="_blank" rel="noopener noreferrer"')) fail(rel + ": manca il link Ko-fi");
 }
 
 /* Content Security Policy. */
