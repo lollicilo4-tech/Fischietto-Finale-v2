@@ -1259,6 +1259,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8682
   },
+  "result": {
+   "ag": 2,
+   "date": "2026-10-23T18:45:00Z",
+   "hg": 3
+  },
   "top": [
    1,
    1
@@ -4216,6 +4221,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7595
+  },
+  "result": {
+   "ag": 2,
+   "date": "2026-10-23T18:45:00Z",
+   "hg": 1
   },
   "top": [
    1,
@@ -9564,6 +9574,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7951
   },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-23T19:00:00Z",
+   "hg": 1
+  },
   "top": [
    1,
    1
@@ -12322,6 +12337,11 @@
    "kind": "doppia",
    "label": "1X · Alavés non perde",
    "p": 0.8431
+  },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-23T19:00:00Z",
+   "hg": 1
   },
   "top": [
    2,
@@ -15620,6 +15640,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8812
+  },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-23T18:30:00Z",
+   "hg": 2
   },
   "top": [
    2,
