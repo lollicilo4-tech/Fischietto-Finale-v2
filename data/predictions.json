@@ -272,6 +272,11 @@
    "label": "Under 3,5 · massimo 3 gol",
    "p": 0.8288
   },
+  "result": {
+   "ag": 2,
+   "date": "2026-10-24T13:00:00Z",
+   "hg": 0
+  },
   "top": [
    1,
    1
@@ -9292,6 +9297,11 @@
    "label": "Under 3,5 · massimo 3 gol",
    "p": 0.7775
   },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-24T14:00:00Z",
+   "hg": 0
+  },
   "top": [
    1,
    1
@@ -16209,6 +16219,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8776
+  },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-24T16:30:00Z",
+   "hg": 1
   },
   "top": [
    2,
