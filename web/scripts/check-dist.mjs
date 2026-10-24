@@ -2,7 +2,7 @@
 /* Controlli sul sito generato (dist/), da eseguire dopo "npm run build":
    - ci sono le pagine principali di ogni campionato e i JSON agli indirizzi di oggi;
    - nessuno script inline e nessun attributo on...= (la CSP li bloccherebbe);
-   - ogni link interno porta a una pagina che esiste;
+   - ogni link interno porta a una pagina che esiste; ogni pagina ha il link per le donazioni (Ko-fi);
    - la CSP in _headers non permette script inline o esterni;
    - ogni indirizzo della sitemap esiste;
    - ogni redirect di _redirects porta a una pagina che esiste, per ogni campionato;
@@ -10,7 +10,7 @@
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { LEAGUES, SECTIONS } from "../src/lib/core.js";
+import { LEAGUES, SECTIONS, KOFI_URL } from "../src/lib/core.js";
 
 const dist = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../dist");
 const problems = [];
@@ -57,6 +57,7 @@ for (const file of html) {
     if (!pageFor(m[1])) fail(rel + ": link rotto " + m[1]);
   }
   if (!/<link rel="canonical" href="https:\/\/fischiettofinale\.com\//.test(src)) fail(rel + ": manca il link canonico");
+  if (!src.includes('href="' + KOFI_URL + '" target="_blank" rel="noopener"')) fail(rel + ": manca il link Ko-fi");
 }
 
 /* Content Security Policy. */

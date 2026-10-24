@@ -1,5 +1,6 @@
 ---
 /* Come funziona: testo identico alla sezione del sito attuale. */
+import { KOFI_URL } from "../lib/core.js";
 import Base from "../layouts/Base.astro";
 ---
 <Base title="Come funziona" description="Da dove vengono i numeri di Fischietto finale: modello statistico, ruolo dell'AI con fonti verificate, storico pubblico dei pronostici e limiti delle stime." section={undefined} path="/come-funziona/">
@@ -48,6 +49,7 @@ import Base from "../layouts/Base.astro";
     <div class="panel info-section">
       <h2>9. Gratis e senza scommesse</h2>
       <p>Il sito è gratuito, non accetta giocate e non mostra quote dei bookmaker. È un servizio solo informativo e non è un invito a scommettere.</p>
+      <p>Se ti è utile puoi sostenerlo con una donazione libera su <a href={KOFI_URL} target="_blank" rel="noopener">Ko-fi</a>. Le donazioni non sbloccano contenuti e non cambiano i pronostici: il sito resta uguale per tutti.</p>
     </div>
   </section>
 </Base>
