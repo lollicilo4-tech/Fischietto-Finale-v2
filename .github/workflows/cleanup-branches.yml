@@ -1,0 +1,39 @@
+name: Pulizia branch
+
+# Avvio solo a mano (Actions → Pulizia branch → Run workflow).
+# Senza la spunta "esegui" mostra soltanto cosa farebbe, nel riepilogo dell'esecuzione.
+# Tiene main, monitoraggio, i branch con PR aperta e quelli toccati negli ultimi 2 giorni;
+# elimina i branch di PR già unite e quelli vuoti; il lavoro mai unito resta nei tag archivio/*.
+on:
+  workflow_dispatch:
+    inputs:
+      esegui:
+        description: "Elimina davvero (senza spunta: solo anteprima)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: read
+
+concurrency:
+  group: pulizia-branch
+  cancel-in-progress: false
+
+jobs:
+  pulizia:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.12"
+      - name: Pulizia
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          ESEGUI: ${{ inputs.esegui }}
+        run: python .github/scripts/cleanup_branches.py
