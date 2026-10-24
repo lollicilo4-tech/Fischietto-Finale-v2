@@ -76,10 +76,62 @@ Il collegamento si fa una volta sola dalla dashboard Cloudflare, perché richied
 L'anteprima del branch arriva su `https://feat-astro-cloudflare-20261023.<progetto>.pages.dev`;
 le anteprime hanno `X-Robots-Tag: noindex` e non finiscono su Google.
 
-**Passaggio del dominio** (decisione del proprietario, non fatta in questa PR): quando l'anteprima va bene,
-riattivare le pubblicazioni di produzione su `main`, aggiungere `fischiettofinale.com` in *Custom domains*
-del progetto Pages e solo dopo togliere il dominio da GitHub Pages. Il service worker nuovo (`/sw.js`, stesso
-indirizzo) sostituisce quello vecchio e ne cancella le cache.
+## Passaggio del dominio `fischiettofinale.com` da GitHub Pages a Cloudflare
+
+Lo decide e lo fa il proprietario dalle dashboard, perché servono gli accessi al registrar e a Cloudflare.
+L'ordine evita interruzioni: finché non si arriva al punto 5 il sito pubblico resta quello di GitHub Pages.
+Il dominio principale (senza `www`) può puntare a Pages solo se i DNS sono su Cloudflare: per questo si
+spostano i nameserver. Il piano Free di Cloudflare basta.
+
+### Prima di iniziare
+1. **Pages → fischietto-finale-v2 → Settings → Builds → Branch control**: branch di produzione `main` con le
+   pubblicazioni automatiche **attive**; l'ultima pubblicazione di produzione deve essere verde.
+2. **Al registrar** (dove è stato comprato il dominio): annota i record DNS attuali, compresi eventuali MX/TXT
+   della posta, e **disattiva DNSSEC** se è attivo. Con DNSSEC attivo il cambio di nameserver mette il dominio
+   offline; si può riattivare dopo, da Cloudflare.
+
+### Fase 1 · DNS su Cloudflare (il sito resta su GitHub Pages)
+3. **Cloudflare → Add a domain** → `fischiettofinale.com` → piano **Free**, con importazione automatica dei
+   record. Controlla che ci siano tutti, e se mancano aggiungili:
+   - i 4 record `A` di GitHub Pages per `fischiettofinale.com`: `185.199.108.153`, `185.199.109.153`,
+     `185.199.110.153`, `185.199.111.153`;
+   - `CNAME www → lollicilo4-tech.github.io`;
+   - eventuali MX/TXT della posta, uguali a quelli annotati.
+
+   Per ora metti questi record su **DNS only** (nuvola grigia): GitHub Pages continua a gestire il suo
+   certificato.
+4. Cloudflare mostra due nameserver (`nome.ns.cloudflare.com`): **al registrar sostituisci i nameserver** con
+   quelli. Quando Cloudflare manda l'email "is now active" (di solito entro qualche ora, al massimo 24) si
+   passa alla fase 2. Nel frattempo il sito funziona come prima.
+
+### Fase 2 · Il dominio passa al sito Astro
+5. **Workers & Pages → fischietto-finale-v2 → Custom domains → Set up a custom domain** →
+   `fischiettofinale.com`. Accetta la proposta di Cloudflare di sostituire i record `A` con un `CNAME` verso
+   `fischietto-finale-v2.pages.dev`. Ripeti con `www.fischiettofinale.com`.
+6. Quando entrambi sono **Active** (certificato pronto, di solito pochi minuti), apri
+   `https://fischiettofinale.com/serie-a/piu-probabili/`: se la pagina esiste, il dominio è sul sito nuovo.
+7. **Rules → Redirect Rules → Create rule → modello "Redirect from WWW to root"** (301, conserva la query
+   string). Così esiste un solo indirizzo, quello del link canonico.
+8. **SSL/TLS → Edge Certificates**: attiva **Always Use HTTPS**.
+
+### Fase 3 · Si spegne il sito vecchio
+9. **GitHub → Settings → Pages**: togli il dominio personalizzato. GitHub può fare un commit che cancella
+   `docs/CNAME`: è normale. Poi in *Build and deployment* scegli **None** come branch e salva. I JSON di `docs/`
+   restano nel repository e continuano ad aggiornarsi ogni 4 ore: il sito Astro li legge durante il build.
+10. Gli utenti con l'app installata non devono fare niente: stesso indirizzo, e il service worker nuovo (`/sw.js`)
+    sostituisce quello vecchio e ne cancella le cache. I vecchi link (`/?league=PL&tab=partite`, `/turno.json`…)
+    continuano a funzionare.
+
+### Dopo il passaggio
+- **Google Search Console**: aggiungi la proprietà di dominio (il record TXT si crea con un clic su Cloudflare)
+  e invia `https://fischiettofinale.com/sitemap.xml`. Serve anche per AdSense.
+- In `_headers` c'è già `Strict-Transport-Security` (un anno, senza sottodomini): da qui in poi il browser apre
+  il sito solo in HTTPS.
+
+### Se qualcosa va storto
+In **Custom domains** del progetto Pages togli i due domini; nel DNS di Cloudflare rimetti i 4 record `A` e il
+`CNAME www` di GitHub Pages; su **GitHub → Settings → Pages** riattiva il branch e il dominio. Il sito vecchio
+torna online in pochi minuti.
 
 ## Limiti noti
 
