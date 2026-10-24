@@ -34,7 +34,8 @@ test("indirizzi delle pagine", () => {
   assert.equal(leagueUrl("SA"), "/");
   assert.equal(leagueUrl("SA", "partite"), "/serie-a/partite/");
   assert.equal(leagueUrl("PL", "home"), "/premier-league/");
-  assert.equal(leagueUrl("UECL", "sicure"), "/conference-league/piu-sicure/");
+  assert.equal(leagueUrl("UECL", "sicure"), "/conference-league/piu-probabili/");
+  assert.equal(leagueUrl("SA", "schedina"), "/serie-a/scelte-del-modello/");
   assert.equal(teamUrl("SA", "Hellas Verona"), "/serie-a/squadra/hellas-verona/");
   assert.equal(slugify("Atlético Madrid"), "atletico-madrid");
   assert.equal(slugify("Bodø/Glimt"), "bodo-glimt");

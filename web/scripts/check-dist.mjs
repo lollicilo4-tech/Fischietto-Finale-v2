@@ -5,6 +5,7 @@
    - ogni link interno porta a una pagina che esiste;
    - la CSP in _headers non permette script inline o esterni;
    - ogni indirizzo della sitemap esiste;
+   - ogni redirect di _redirects porta a una pagina che esiste, per ogni campionato;
    - nessun "undefined", "NaN" o "[object Object]" nel testo delle pagine. */
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
@@ -31,7 +32,7 @@ const pageFor = (urlPath) => {
 if (!existsSync(dist)) { console.error("Manca dist/: esegui prima npm run build"); process.exit(1); }
 
 /* Pagine e file che devono esserci. */
-const expected = ["/", "/live/", "/come-funziona/", "/404.html", "/sitemap.xml", "/robots.txt", "/sw.js", "/manifest.webmanifest", "/_headers", "/turno.json"];
+const expected = ["/", "/live/", "/come-funziona/", "/404.html", "/sitemap.xml", "/robots.txt", "/sw.js", "/manifest.webmanifest", "/_headers", "/_redirects", "/turno.json"];
 LEAGUES.forEach((l) => Object.values(SECTIONS).forEach((s) => expected.push("/" + l.slug + "/" + s.path)));
 expected.forEach((u) => { if (!pageFor(u)) fail("manca " + u); });
 
@@ -70,6 +71,18 @@ headers.split("\n").forEach((line, i) => { if (line.length > 2000) fail("_header
 const sitemap = readFileSync(path.join(dist, "sitemap.xml"), "utf-8");
 const locs = [...sitemap.matchAll(/<loc>https:\/\/fischiettofinale\.com(\/[^<]*)<\/loc>/g)].map((m) => m[1]);
 locs.forEach((u) => { if (!pageFor(u)) fail("sitemap: " + u + " non esiste"); });
+
+/* Redirect: la destinazione esiste per ogni campionato, la vecchia pagina non c'è più. */
+const redirects = readFileSync(path.join(dist, "_redirects"), "utf-8").split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#"));
+redirects.forEach((line) => {
+  const [from, to, code] = line.split(/\s+/);
+  if (code !== "301") fail("_redirects: " + from + " deve essere un 301");
+  LEAGUES.forEach((l) => {
+    const src = from.replace(":lega", l.slug), dst = to.replace(":lega", l.slug);
+    if (!pageFor(dst)) fail("_redirects: " + src + " porta a " + dst + ", che non esiste");
+    if (src.endsWith("/") && pageFor(src)) fail("_redirects: " + src + " esiste ancora come pagina");
+  });
+});
 
 /* JSON ripubblicati. */
 files.filter((f) => f.endsWith(".json")).forEach((f) => { try { JSON.parse(readFileSync(f, "utf-8")); } catch (e) { fail(path.relative(dist, f) + ": JSON non valido"); } });

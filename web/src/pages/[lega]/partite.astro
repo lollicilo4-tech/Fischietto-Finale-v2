@@ -19,7 +19,7 @@ const day = turno && turno.matchday ? " · giornata " + turno.matchday : "";
 <Base title={"Partite " + L.name + day} description={"Pronostici di tutte le partite di " + L.name + day + ": probabilità 1X2, risultato più probabile, gol attesi e assenze confermate."} league={league} section="partite" path={"/" + L.slug + "/partite/"}>
   <section id="p-partite" aria-label={"Partite " + L.name}>
     <div id="hero" set:html={matches.length ? hero(byStrength(matches)[0]) : ""}></div>
-    <p class="lead">Tocca una partita per aprire il dettaglio. Le quote eque (1 diviso la probabilità) non sono quote di bookmaker.</p>
+    <p class="lead">Tocca una partita per aprire il dettaglio.</p>
     <div id="fav-strip"></div>
     <div class="list" id="matches" set:html={matches.length ? grouped(ctx, matches) : '<div class="msg err">Partite non disponibili per questo campionato in questo momento.</div>'}></div>
     <div id="next-rounds" set:html={turno ? nextRoundsPanel(ctx, turno.next_rounds) : ""}></div>

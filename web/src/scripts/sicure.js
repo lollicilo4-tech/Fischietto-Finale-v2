@@ -1,4 +1,4 @@
-/* Isola "Più sicure": numero di selezioni e tipo (nette o tutte), ricalcolati nel browser. */
+/* Isola "Più probabili": numero di selezioni e tipo (nette o tutte), ricalcolati nel browser. */
 import { computePicks } from "../lib/model.js";
 import { comboHtml } from "../lib/render.js";
 

@@ -76,7 +76,7 @@ export function shareText(m) {
 
 /* Scheda di una partita. opts.open: aperta (pagina della partita); opts.standalone: senza link a sé stessa. */
 export function card(ctx, m, i, opts = {}) {
-  const p = m.prob, f = m.fair_odds, a = m.analysis, s = m.top_scores[0], rec = deriveRecommendation(m);
+  const p = m.prob, a = m.analysis, s = m.top_scores[0], rec = deriveRecommendation(m);
   const fo = finalOutcome(m), prudent = prudentChoice(m);
   const alt = m.top_scores.slice(1).map((x) => x[0] + "-" + x[1]).join(", ");
   const absHome = a.absences_home || [], absAway = a.absences_away || [], nAbs = absHome.length + absAway.length;
@@ -135,11 +135,10 @@ export function card(ctx, m, i, opts = {}) {
     '<p class="note">Stima statistica del modello: non è una certezza e non costituisce un invito a scommettere.</p>' +
     "</div>" +
     '<div class="grid">' +
-    '<div class="stat wide"><div class="k">Quote eque 1 · X · 2</div><div class="v num">' + d2(f.p1) + " · " + d2(f.px) + " · " + d2(f.p2) + "</div></div>" +
     '<div class="stat"><div class="k">Risultato probabile</div><div class="v">' + s[0] + "-" + s[1] + '</div><div class="s">' + pc(s[2]) + " · poi " + alt + "</div></div>" +
     '<div class="stat"><div class="k">Gol attesi</div><div class="v">' + d1(m.xg[0]) + " - " + d1(m.xg[1]) + '</div><div class="s">totale ' + d1(m.xg[0] + m.xg[1]) + "</div></div>" +
-    '<div class="stat"><div class="k">Over 2,5</div><div class="v">' + pc(p.o25) + '</div><div class="s">quota equa ' + d2(f.o25) + " · Under " + pc(p.u25) + "</div></div>" +
-    '<div class="stat"><div class="k">Segnano entrambe</div><div class="v">' + pc(p.gg) + '</div><div class="s">quota equa ' + d2(f.gg) + " · No " + pc(p.ng) + "</div></div>" +
+    '<div class="stat"><div class="k">Over 2,5</div><div class="v">' + pc(p.o25) + '</div><div class="s">Under ' + pc(p.u25) + "</div></div>" +
+    '<div class="stat"><div class="k">Segnano entrambe</div><div class="v">' + pc(p.gg) + '</div><div class="s">No ' + pc(p.ng) + "</div></div>" +
     "</div>" +
     results(m) +
     "</div></details>";
@@ -238,13 +237,13 @@ export function nextRoundsPanel(ctx, rounds) {
     rounds.map((r) => '<div class="panel nr-panel"><h3>Giornata ' + esc(r.matchday) + "</h3>" + roundRows(ctx, r.matches) + "</div>").join("");
 }
 
-/* ---------- Più sicure ---------- */
+/* ---------- Più probabili ---------- */
 export function comboHtml(picks, n) {
   const sel = picks.slice(0, n), prod = sel.reduce((s, x) => s * x.p, 1), strongest = sel[0];
   if (!strongest) return { combo: '<div class="msg">Nessuna selezione disponibile.</div>', decay: "" };
-  const combo = '<div class="pick-hero"><div class="ph-top"><span class="ph-label">TOP PICK</span><span class="ph-prob">' + pc(strongest.p) + '</span></div><div class="ph-match">' + esc(strongest.m) +
+  const combo = '<div class="pick-hero"><div class="ph-top"><span class="ph-label">LA PIÙ PROBABILE</span><span class="ph-prob">' + pc(strongest.p) + '</span></div><div class="ph-match">' + esc(strongest.m) +
     '</div><div class="ph-bet">Esito più probabile: <b>' + esc(strongest.label) + '</b> · modello statistico</div><div class="ph-bar"><div class="ph-fill" style="--p:' + Math.round(strongest.p * 100) + '%"></div></div></div>' +
-    '<div class="sure-head"><h2>Top picks</h2><small>ordinate per probabilità</small></div><div class="pick-list">' +
+    '<div class="sure-head"><h2>Le più probabili</h2><small>ordinate per probabilità</small></div><div class="pick-list">' +
     sel.map((x, i) => '<div class="pick-item"><div class="pick-rank">#' + (i + 1) + "<b>" + (i === 0 ? "TOP" : "") + '</b></div><div class="pick-main"><div class="pm-match">' + esc(x.m) +
       '</div><div class="pm-type">' + esc(x.label) + " · " + esc(x.code) + '</div></div><div class="pick-pct">' + pc(x.p) + "<small>probabilità</small></div></div>").join("") +
     '</div><div class="pick-meta"><span class="risk">✓ selezioni ordinate dal modello</span><span>' + n + " selezioni</span><span>probabilità combinata " + pc(prod) + "</span></div>" +
@@ -257,12 +256,12 @@ export function comboHtml(picks, n) {
   return { combo, decay };
 }
 
-/* ---------- Schedina del modello ---------- */
-const SLIP_NAME = { sicura: "SICURA", media: "MEDIA", bomba: "BOMBA" };
+/* ---------- Le scelte del modello ---------- */
+const SLIP_NAME = { facile: "FACILE", media: "MEDIA", difficile: "DIFFICILE" };
 const SLIP_DESC = {
-  sicura: "Parte dal miglior pronostico multi-mercato del modello e privilegia le selezioni più solide.",
+  facile: "Parte dal miglior pronostico multi-mercato del modello e privilegia le selezioni più solide.",
   media: "Combina le migliori raccomandazioni del modello tra esiti, gol e combo, cercando un equilibrio.",
-  bomba: "Cerca selezioni più spinte tra combo, mercati gol e, quando disponibile, il risultato esatto più probabile."
+  difficile: "Cerca selezioni meno probabili tra combo, mercati gol e, quando disponibile, il risultato esatto più probabile."
 };
 const KIND_NAME = { base: "Esito", esito: "Esito", doppia: "Doppia chance", gol: "Gol", combo: "Combo", score: "Risultato esatto" };
 export function slipHtml(picks, mode, matches, marketPerformance = {}, backtestMarkets = {}) {
@@ -272,7 +271,7 @@ export function slipHtml(picks, mode, matches, marketPerformance = {}, backtestM
     const r = marketReliability(x, marketPerformance, backtestMarkets);
     return r.score == null ? "Affidabilità: dati insufficienti" : "Affidabilità: " + r.score + "/100 · " + r.n + " osservazioni" + (r.source === "mercato" ? " · mercato" : " · categoria");
   };
-  return '<div class="slip-hero"><div class="slip-kicker">Schedina automatica · ' + name + '</div><div class="slip-title">' + name + '</div><div class="slip-sub">' + SLIP_DESC[mode] +
+  return '<div class="slip-hero"><div class="slip-kicker">Le scelte del modello · ' + name + '</div><div class="slip-title">' + name + '</div><div class="slip-sub">' + SLIP_DESC[mode] +
     '</div><div class="slip-meta"><span>' + picks.length + " selezioni</span><span>Prob. comb. teorica " + pc(prod) + "</span><span>" + (aiOn ? "AI + statistica" : "Solo statistica") + "</span></div></div>" +
     '<div class="slip-list">' + picks.map((x, i) => '<div class="slip-item"><div class="slip-num">0' + (i + 1) + '</div><div><div class="slip-match">' + esc(x.m) + '</div><div class="slip-market">' +
       esc(KIND_NAME[x.kind] + " · " + x.label) + (x.recommended ? " <b>· TOP MODELLO</b>" : "") + '</div><div class="slip-reason">' + esc(slipReason(x)) + '</div><div class="slip-reliability">' + reliability(x) +
@@ -411,7 +410,7 @@ function backtestPanel(h) {
 function marketPerformancePanel(h) {
   const mp = h.market_performance || {}, order = ["1X2", "Gol", "Over/Under", "Combo", "Risultato esatto"];
   const entries = order.filter((k) => mp[k]);
-  if (!entries.length) return '<div class="panel" style="margin-top:14px"><h2>Affidabilità per mercato</h2><p class="expl">Stiamo ancora raccogliendo risultati reali: nessun correttivo viene applicato alla Schedina.</p></div>';
+  if (!entries.length) return '<div class="panel" style="margin-top:14px"><h2>Affidabilità per mercato</h2><p class="expl">Stiamo ancora raccogliendo risultati reali: nessun correttivo viene applicato alle scelte del modello.</p></div>';
   const reliability = (v) => { if (!v.ready || (v.matches || 0) < 30) return null; const cal = 1 - Math.min(1, Math.abs(v.calibration_gap || 0)); const bri = 1 - Math.min(1, Math.max(0, v.brier || 0)); return Math.round((cal * 0.7 + bri * 0.3) * 100); };
   const cards = entries.map((k) => {
     const v = mp[k], score = reliability(v), pct = score == null ? 0 : score;
@@ -433,7 +432,7 @@ function marketPerformancePanel(h) {
   const diag = '<line x1="' + L + '" y1="' + (T + innerH) + '" x2="' + (L + innerW) + '" y2="' + T + '" stroke="rgba(255,255,255,.22)" stroke-dasharray="4 4"/>';
   const chart = ready ? '<div class="market-cal-chart"><h3>Curva predetto · reale</h3><p>Ogni punto confronta la probabilità media dichiarata con la frequenza reale. La diagonale tratteggiata indica una calibrazione perfetta.</p><svg viewBox="0 0 ' + W + " " + H +
     '" role="img" aria-label="Curva di calibrazione del modello">' + grid + diag + curve + dots + "</svg></div>" : "";
-  return '<div class="panel" style="margin-top:14px"><h2>Affidabilità per mercato</h2><p class="expl">Indicatore 0–100 costruito da calibrazione e Brier score. È un indicatore descrittivo, non una garanzia di rendimento. La Schedina usa lo storico solo quando ci sono almeno 10 osservazioni per categoria.</p><div class="market-perf-grid">' +
+  return '<div class="panel" style="margin-top:14px"><h2>Affidabilità per mercato</h2><p class="expl">Indicatore 0–100 costruito da calibrazione e Brier score. È un indicatore descrittivo, non una garanzia di rendimento. Le scelte del modello usano lo storico solo quando ci sono almeno 10 osservazioni per categoria.</p><div class="market-perf-grid">' +
     cards + "</div>" + chart + '<div class="panel" style="margin-top:12px;padding:12px"><p class="lead" style="margin:0">' +
     (ready ? "Calibrazione storica attiva per " + ready + " categorie." : "Campione ancora insufficiente: il sistema continua a raccogliere dati senza modificare le probabilità del modello.") + "</p></div></div>";
 }

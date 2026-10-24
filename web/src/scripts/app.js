@@ -13,7 +13,8 @@ function redirectLegacyUrl() {
   const hash = location.hash || "";
   if (!code && !tab && hash.indexOf("#m-") !== 0) return false;
   const league = leagueByCode(code) ? code : DEFAULT_LEAGUE;
-  let target = tab === "info" ? INFO_URL : (tab === "partite" || hash.indexOf("#m-") === 0) ? leagueUrl(league, "partite") : leagueUrl(league, "home");
+  const SECTION_OF_TAB = { partite: "partite", sicure: "sicure", schedina: "schedina", classifica: "classifica", storico: "storico" };
+  let target = tab === "info" ? INFO_URL : hash.indexOf("#m-") === 0 ? leagueUrl(league, "partite") : leagueUrl(league, SECTION_OF_TAB[tab] || "home");
   if (hash.indexOf("#m-") === 0) target += hash;
   location.replace(target);
   return true;

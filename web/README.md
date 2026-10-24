@@ -10,11 +10,15 @@ Il modello, i workflow e i JSON non cambiano: questo sito legge gli stessi file 
 - **Una pagina per ogni partita e per ogni squadra** (`/serie-a/partita/558567-torino-monza/`,
   `/serie-a/squadra/torino/`): link da condividere e indicizzabili dai motori di ricerca, con titolo e descrizione propri.
 - **Contenuti già nell'HTML**: le partite si leggono anche prima che parta JavaScript (o senza).
-  JavaScript serve solo dove la pagina deve reagire: Live Center, Più sicure, Schedina, squadre seguite, Condividi.
+  JavaScript serve solo dove la pagina deve reagire: Live Center, Più probabili, Le scelte del modello, squadre seguite, Condividi.
 - **Stessa grafica**: il CSS è quello del sito attuale (`npm run import:css`), e un test confronta l'HTML
   prodotto con quello del sito attuale campionato per campionato.
 - **Sicurezza più stretta**: la Content Security Policy è un'intestazione HTTP vera (`public/_headers`) e non
   permette più script inline (`script-src 'self'`).
+- **Niente linguaggio da scommesse** (serve anche per AdSense): "Più sicure" è diventata **Più probabili**
+  (`/serie-a/piu-probabili/`), la "Schedina" **Le scelte del modello** (`/serie-a/scelte-del-modello/`) con i livelli
+  Facile · Media · Difficile, e le "quote eque" non si mostrano più (restano solo le percentuali). I vecchi indirizzi
+  portano ai nuovi con un redirect permanente (`public/_redirects`); un test controlla che queste parole non tornino.
 - I vecchi link (`/?league=PL&tab=partite#m-123`, `/?tab=info`) portano alla pagina nuova; i JSON restano agli
   stessi indirizzi (`/turno.json`, `/league-PL-turno.json`…) per l'app già installata sui telefoni.
 
@@ -23,7 +27,7 @@ Il modello, i workflow e i JSON non cambiano: questo sito legge gli stessi file 
 | Percorso | Contenuto |
 | --- | --- |
 | `src/lib/core.js` | campionati, indirizzi delle pagine, formattazione, date nel fuso italiano |
-| `src/lib/model.js` | consiglio multi-mercato, Più sicure, Schedina (stessa logica del sito attuale) |
+| `src/lib/model.js` | consiglio multi-mercato, Più probabili, Le scelte del modello (stessa logica del sito attuale) |
 | `src/lib/render.js` | HTML di partite, classifica, storico, squadra… usato dal build e dal browser |
 | `src/lib/livecharts.js`, `livefeed.js` | grafici e lettura del feed SportScore del Live Center |
 | `src/lib/data.js` | lettura dei JSON di `docs/` durante il build |
@@ -31,7 +35,7 @@ Il modello, i workflow e i JSON non cambiano: questo sito legge gli stessi file 
 | `src/scripts/` | le isole interattive: `app.js` (tutte le pagine), `live.js`, `sicure.js`, `schedina.js` |
 | `src/styles/legacy.css` | CSS del sito attuale, **generato** da `scripts/import-legacy-css.mjs` |
 | `src/styles/site.css` | le poche regole nuove |
-| `public/` | `_headers` (CSP e cache), service worker, manifest, icone |
+| `public/` | `_headers` (CSP e cache), `_redirects` (vecchi indirizzi), service worker, manifest, icone |
 | `functions/api/momentum.js` | unica funzione del sito: legge da D1 il momentum registrato dal Worker (`workers/momentum`) |
 | `wrangler.jsonc` | configurazione del progetto Pages: cartella `dist` e binding D1 per `/api/momentum` |
 

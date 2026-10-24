@@ -1,4 +1,4 @@
-/* Isola "Schedina": tipo (Sicura · Media · Bomba) e numero di selezioni, ricalcolati nel browser. */
+/* Isola "Le scelte del modello": livello (Facile · Media · Difficile) e numero di selezioni, ricalcolati nel browser. */
 import { modelSlipPicks } from "../lib/model.js";
 import { slipHtml } from "../lib/render.js";
 
@@ -6,7 +6,7 @@ const read = (id, fallback) => { const el = document.getElementById(id); try { r
 const matches = read("ff-matches", []);
 const extra = read("ff-slip-extra", {});
 const mp = extra.market_performance || {}, bm = extra.backtest_markets || {};
-let mode = "sicura", n = 3;
+let mode = "facile", n = 3;
 
 function render() {
   document.getElementById("slip").innerHTML = matches.length
