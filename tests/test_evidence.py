@@ -274,6 +274,29 @@ class PublishedTextTests(unittest.TestCase):
         self.assertNotIn("www.", text)
         self.assertNotIn("\x00", text)
 
+    def test_betting_sentences_are_removed(self):
+        text = ("Il Cagliari perde due difensori. Le quote e le probabilità di vittoria pendono verso il Bologna. "
+                "I coefficienti restano neutri a quota 1.0; conviene scommettere sull'Over. Il resto della rosa è disponibile.")
+        out = analyst._without_betting(text)
+        self.assertEqual(out, "Il Cagliari perde due difensori. Il resto della rosa è disponibile.")
+
+    def test_football_uses_of_quota_stay(self):
+        text = "Il Lecce è a quota 40 punti. Manca poco alla quota salvezza."
+        self.assertEqual(analyst._without_betting(text), text)
+
+    def test_semicolon_before_removed_sentence_becomes_full_stop(self):
+        self.assertEqual(analyst._without_betting("Manca Lukaku; i bookmaker non ci credono."), "Manca Lukaku.")
+
+    def test_text_only_about_betting_is_replaced(self):
+        self.assertEqual(analyst._without_betting("Secondo i bookmaker vince la Roma."), analyst.BETTING_FREE_TEXT)
+
+    def test_publishable_touches_only_ai_text(self):
+        ai = {"ai": True, "text": "Assenza confermata. Le quote dicono 1."}
+        self.assertEqual(analyst.publishable(ai)["text"], "Assenza confermata.")
+        self.assertEqual(ai["text"], "Assenza confermata. Le quote dicono 1.", "la cache non viene modificata")
+        stats = {"ai": False, "text": "Testo statistico."}
+        self.assertIs(analyst.publishable(stats), stats)
+
     def test_long_text_is_cut(self):
         self.assertLessEqual(len(analyst._clean_text("parola " * 500)), analyst.MAX_EXPLANATION_CHARS + 1)
 
