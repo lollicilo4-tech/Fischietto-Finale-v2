@@ -24,22 +24,27 @@ Su questo repository lavorano più agenti AI (Claude e ChatGPT Codex) per conto 
 ## Verifiche obbligatorie
 
 - `python -m unittest discover -s tests` deve passare prima di aprire la PR.
-- Se modifichi `static/index.html` o `static/sw.js`, aggiorna anche le copie in `docs/`:
-  `docs/index.html` è `static/index.html` con `/api/turno`, `/api/storico`, `/api/classifica`
-  sostituiti da `turno.json`, `storico.json`, `classifica.json` (lo controlla un test).
+- **Il sito pubblico è `web/`** (Astro su Cloudflare Pages, `fischiettofinale.com`, dal 24 ottobre 2026).
+  Le modifiche all'interfaccia si fanno lì: se tocchi `web/` esegui `npm test`, `npm run build` e
+  `npm run check:dist` in `web/` (vedi `web/README.md`).
+- `static/index.html`, `static/sw.js` e le copie in `docs/` sono il **sito vecchio, non più pubblicato**:
+  non aggiungere funzioni lì. Restano perché i test di confronto del sito nuovo li usano. Se proprio li
+  modifichi, aggiorna anche le copie in `docs/` (`docs/index.html` è `static/index.html` con `/api/turno`,
+  `/api/storico`, `/api/classifica` sostituiti da `turno.json`, `storico.json`, `classifica.json`: lo
+  controlla un test) e rigenera il CSS del sito nuovo con `npm run import:css` in `web/` (il workflow
+  "Sito Astro" fallisce se `web/src/styles/legacy.css` non è aggiornato).
 - Non chiamare API a pagamento o con quote (football-data.org, Groq, Gemini) nei test: usa mock.
-- `tests/test_frontend_render.py` esegue gli script della pagina con un DOM finto
-  (`tests/render_page.js`, serve Node.js) sui JSON di `docs/`: se tocchi l'interfaccia deve restare verde.
-- Sito Astro in `web/` (vedi `web/README.md`): se tocchi `web/` esegui `npm test`, `npm run build` e
-  `npm run check:dist` in `web/`. Se cambi la grafica in `static/index.html`, riallinea il sito nuovo con
-  `npm run import:css` (il workflow "Sito Astro" fallisce se `web/src/styles/legacy.css` non è aggiornato).
+- `tests/test_frontend_render.py` esegue gli script della pagina vecchia con un DOM finto
+  (`tests/render_page.js`, serve Node.js) sui JSON di `docs/`: deve restare verde, anche perché controlla
+  che i JSON generati siano leggibili.
 
 ## Sicurezza (vedi SECURITY.md)
 
 - Non indebolire le misure attive: job "genera" in sola lettura e "pubblica" senza chiavi,
   azioni GitHub fissate per SHA, Content Security Policy della pagina, `esc()`/`safeUrl()` per
   ogni dato inserito nell'HTML, blocco degli indirizzi privati in `app/evidence.py`.
-- Nuove fonti esterne nella pagina vanno aggiunte alla CSP in `static/index.html` (e `docs/`).
+- Nuove fonti esterne nella pagina vanno aggiunte alla CSP in `web/public/_headers` (riga giusta:
+  `script-src`, `connect-src`, `img-src`…). `check:dist` rifiuta script inline o esterni non dichiarati.
 
 ## Monitoraggio orario (Claude e Codex)
 
@@ -72,8 +77,8 @@ Per non fare due volte lo stesso lavoro:
 ## Come è fatto il progetto
 
 - `web/` è il sito Astro (pagine statiche + isole interattive) per Cloudflare Pages: legge i JSON di `docs/`
-  durante il build e non chiama API. Finché il dominio resta su GitHub Pages, il sito pubblico è `docs/`;
-  i passaggi per spostarlo su Cloudflare sono in `web/README.md`.
+  durante il build e non chiama API. È il sito pubblico di `fischiettofinale.com`; GitHub Pages è spento
+  e `docs/` contiene solo i dati (più la vecchia pagina unica, non pubblicata).
 - `workers/momentum/` è il Worker Cloudflare che ogni minuto registra in D1 il momentum delle partite live
   (riusa `web/src/lib/livecharts.js` e `livefeed.js`: se le cambi, esegui anche `npm test` lì).
 - `app/data.py` dati (football-data.org; Europa e Conference League da CSV pubblico),
@@ -82,7 +87,7 @@ Per non fare due volte lo stesso lavoro:
   (SearXNG/Tavily) quando Groq è fuori quota, `app/season.py` simulazione di fine stagione,
   `app/explain.py` spiegazioni, statistiche squadra e prossime giornate,
   `app/pipeline.py` turno, classifica e consiglio,
-  `app/store.py` storico, `generate.py` sito statico in `docs/`.
+  `app/store.py` storico, `generate.py` JSON in `docs/` (letti dal sito Astro durante il build).
 - I numeri vengono dal modello statistico; l'AI può solo correggere i gol attesi (0,85-1,15)
   per assenze confermate da una fonte. Non far inventare all'AI probabilità o quote.
 - Ogni campionato si genera in modo indipendente: un errore in una lega non blocca le altre.
