@@ -32,7 +32,7 @@ const pageFor = (urlPath) => {
 if (!existsSync(dist)) { console.error("Manca dist/: esegui prima npm run build"); process.exit(1); }
 
 /* Pagine e file che devono esserci. */
-const expected = ["/", "/live/", "/come-funziona/", "/404.html", "/sitemap.xml", "/robots.txt", "/sw.js", "/manifest.webmanifest", "/_headers", "/_redirects", "/turno.json"];
+const expected = ["/", "/live/", "/come-funziona/", "/privacy/", "/404.html", "/sitemap.xml", "/robots.txt", "/sw.js", "/manifest.webmanifest", "/_headers", "/_redirects", "/turno.json"];
 LEAGUES.forEach((l) => Object.values(SECTIONS).forEach((s) => expected.push("/" + l.slug + "/" + s.path)));
 expected.forEach((u) => { if (!pageFor(u)) fail("manca " + u); });
 
@@ -57,6 +57,7 @@ for (const file of html) {
     if (!pageFor(m[1])) fail(rel + ": link rotto " + m[1]);
   }
   if (!/<link rel="canonical" href="https:\/\/fischiettofinale\.com\//.test(src)) fail(rel + ": manca il link canonico");
+  if (!src.includes('href="/privacy/"')) fail(rel + ": manca il link a Privacy e cookie");
   if (!src.includes('href="' + KOFI_URL + '" target="_blank" rel="noopener noreferrer"')) fail(rel + ": manca il link Ko-fi");
 }
 

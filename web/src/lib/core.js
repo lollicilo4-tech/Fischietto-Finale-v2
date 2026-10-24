@@ -44,6 +44,8 @@ export const liveUrl = (league) => "/live/" + (league ? "?lega=" + leagueByCode(
 export const INFO_URL = "/come-funziona/";
 /* Donazioni libere: un link normale (nessuno script di Ko-fi), così la CSP non cambia. */
 export const KOFI_URL = "https://ko-fi.com/fischiettofinale";
+export const PRIVACY_URL = "/privacy/";
+export const CONTACT_EMAIL = "info@fischiettofinale.com";
 
 /* ---------- Formattazione (identica al sito attuale) ---------- */
 export const pc = (p) => Math.round(p * 100) + "%";
