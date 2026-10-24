@@ -50,6 +50,7 @@ for (const file of html) {
   }
   if (/<[^>]+\son[a-z]+\s*=/i.test(src)) fail(rel + ": attributo on...= (vietato dalla CSP)");
   if (/javascript:/i.test(src)) fail(rel + ": link javascript:");
+  if (/fonts\.(googleapis|gstatic)\.com/.test(src)) fail(rel + ": carica caratteri da Google Fonts");
   const text = src.replace(/<script[\s\S]*?<\/script>/g, "");
   for (const bad of ["undefined", "NaN", "[object Object]"]) if (text.includes(bad)) fail(rel + ": contiene " + bad);
   for (const m of src.matchAll(/\shref="(\/[^"]*)"/g)) {
@@ -66,6 +67,7 @@ const csp = (headers.match(/Content-Security-Policy: (.*)/) || [])[1] || "";
 const scriptSrc = (csp.match(/script-src ([^;]*)/) || [])[1] || "";
 if (scriptSrc.trim() !== "'self'") fail("_headers: script-src deve essere solo 'self' (ora: " + scriptSrc + ")");
 ["object-src 'none'", "base-uri 'self'", "frame-ancestors 'none'", "form-action 'none'"].forEach((d) => { if (!csp.includes(d)) fail("_headers: manca " + d); });
+if (/fonts\.(googleapis|gstatic)\.com/.test(headers)) fail("_headers: Google Fonts non serve più (i caratteri sono serviti dal sito)");
 if (!/^\s+Strict-Transport-Security: max-age=\d{7,}/m.test(headers)) fail("_headers: manca Strict-Transport-Security (almeno 4 mesi)");
 headers.split("\n").forEach((line, i) => { if (line.length > 2000) fail("_headers: riga " + (i + 1) + " oltre i 2000 caratteri di Cloudflare"); });
 
