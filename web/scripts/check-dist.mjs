@@ -32,7 +32,7 @@ const pageFor = (urlPath) => {
 if (!existsSync(dist)) { console.error("Manca dist/: esegui prima npm run build"); process.exit(1); }
 
 /* Pagine e file che devono esserci. */
-const expected = ["/", "/live/", "/come-funziona/", "/privacy/", "/404.html", "/sitemap.xml", "/robots.txt", "/sw.js", "/manifest.webmanifest", "/_headers", "/_redirects", "/turno.json"];
+const expected = ["/", "/live/", "/come-funziona/", "/privacy/", "/404.html", "/sitemap.xml", "/robots.txt", "/sw.js", "/manifest.webmanifest", "/_headers", "/_redirects", "/ads.txt", "/turno.json"];
 LEAGUES.forEach((l) => Object.values(SECTIONS).forEach((s) => expected.push("/" + l.slug + "/" + s.path)));
 expected.forEach((u) => { if (!pageFor(u)) fail("manca " + u); });
 
@@ -87,6 +87,11 @@ redirects.forEach((line) => {
     if (!pageFor(dst)) fail("_redirects: " + src + " porta a " + dst + ", che non esiste");
     if (src.endsWith("/") && pageFor(src)) fail("_redirects: " + src + " esiste ancora come pagina");
   });
+});
+
+/* ads.txt: solo righe "dominio, pub-…, DIRECT|RESELLER[, id]" o commenti. */
+readFileSync(path.join(dist, "ads.txt"), "utf-8").split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#")).forEach((l) => {
+  if (!/^[a-z0-9.-]+\.[a-z]{2,}, pub-\d{16}, (DIRECT|RESELLER)(, [0-9a-f]+)?$/.test(l)) fail("ads.txt: riga non valida: " + l);
 });
 
 /* JSON ripubblicati. */

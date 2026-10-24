@@ -1,0 +1,2 @@
+# Venditori autorizzati della pubblicità di fischiettofinale.com (https://iabtechlab.com/ads-txt/).
+google.com, pub-5473832934006954, DIRECT, f08c47fec0942fa0
