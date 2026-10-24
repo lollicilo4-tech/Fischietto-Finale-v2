@@ -33,7 +33,9 @@ export const SEARCH_ALIASES = {
   "L. Red Imps": "Lincoln Red Imps", "Bodø/Glimt": "Bodo Glimt"
 };
 /* Squadre giovanili, femminili, riserve: mai la prima squadra. */
-const NOT_FIRST_TEAM = /\b(u ?1\d|u ?2[0-3]|youth|women|woman|ladies|femen|feminin|reserves?|beach|futsal|ii|b|am|w)\b|\(w\)/i;
+const NOT_FIRST_TEAM = /\b(u ?1\d|u ?2[0-3]|youth|women|woman|ladies|femen|feminin|reserves?|beach|futsal|indoor|esports?|ii|iii|b|r|am|w)\b|\(w\)/i;
+/* Parole che SportScore spesso omette nei nomi ("Como 1907" è "Como"). */
+const NAME_NOISE = new Set(["fc", "sc", "ac", "cf", "afc", "rc", "sco", "ssc", "us", "as", "cd", "ud", "sd", "club", "calcio"]);
 
 const norm = (s) => String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
 export const matchKey = (m) => m.league + ":" + m.id;
@@ -80,6 +82,14 @@ export function isSameMatch(cal, payload) {
   return Number.isFinite(t) && Math.abs(t - Date.parse(cal.kickoff)) <= TIME_TOLERANCE_MS;
 }
 
+/* Slug in più da provare se i candidati della ricerca non bastano: il nome senza anni e sigle. */
+export function withVariants(name, slugs) {
+  const out = [...(slugs || [])];
+  const simple = norm(searchQuery(name)).split(" ").filter((t) => t && !/^\d+$/.test(t) && !NAME_NOISE.has(t)).join(" ");
+  [slugify(simple), slugify(name)].forEach((v) => { if (v && !out.includes(v)) out.push(v); });
+  return out.slice(0, MAX_CANDIDATES + 2);
+}
+
 /* Coppie di slug da provare, in ordine: prima i candidati migliori di entrambe le squadre. */
 export function slugPairs(homeSlugs, awaySlugs) {
   const out = [];
@@ -111,7 +121,7 @@ export async function resolveDue({ due, teamCache, matchCache, getJson, matchDet
     const hs = await teamSlugs(cal.home), as = await teamSlugs(cal.away);
     let found = null, tries = cached ? cached.tries : 0;
     if (hs && as) {
-      for (const slug of slugPairs(hs, as)) {
+      for (const slug of slugPairs(withVariants(cal.home, hs), withVariants(cal.away, as))) {
         if (budget.guesses >= MAX_GUESSES || tries >= MAX_TRIES) break;
         budget.guesses++; tries++;
         try {

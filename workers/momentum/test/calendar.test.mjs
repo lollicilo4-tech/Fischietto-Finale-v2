@@ -5,7 +5,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { collect, REQUEST_LIMIT } from "../src/collect.js";
-import { teamCandidates, teamsInSearch, dueMatches, slugPairs, isSameMatch, MAX_SEARCHES } from "../src/calendar.js";
+import { teamCandidates, teamsInSearch, dueMatches, slugPairs, isSameMatch, withVariants, MAX_SEARCHES } from "../src/calendar.js";
 import { onRequestGet as liveApi } from "../../../web/functions/api/live.js";
 import { fakeD1 } from "./fake-d1.mjs";
 
@@ -82,7 +82,7 @@ test("un dettaglio di un altro campionato o di un altro giorno non viene accetta
   assert.deepEqual(report.unresolved, ["Inter - Milan"]);
   assert.equal(report.saved, 0);
   assert.ok(calls.some((u) => u.includes("q=Inter%20Milan")), "i nomi brevi si cercano per esteso");
-  assert.equal(db.raw.prepare("SELECT tries FROM match_slugs").get().tries, 2);
+  assert.equal(db.raw.prepare("SELECT tries FROM match_slugs").get().tries, 6, "3 candidati per Inter (con il nome semplice) × 2 per Milan");
 });
 
 test("con tante partite in corso non supera mai il limite di richieste", async () => {
@@ -127,4 +127,25 @@ test("/api/live senza database o con righe vecchie: lista vuota", async () => {
   db.raw.prepare("INSERT INTO live_rows (slug, league, row, live, updated_at) VALUES ('c-vs-d', 'serie-a', '{\"home\":\"C\"}', 0, ?)").run(T0);
   const res = await liveApi({ request: new Request("https://x.test/api/live"), env: { DB: db }, waitUntil() {}, now: T0 });
   assert.deepEqual((await res.json()).matches, [], "righe di più di 3 minuti fa o partite finite non si mostrano");
+});
+
+test("nomi con anni o sigle: si prova anche il nome semplice, e niente squadre indoor", () => {
+  assert.deepEqual(withVariants("Como 1907", ["como-1907"]), ["como-1907", "como"]);
+  assert.deepEqual(withVariants("Cagliari", ["cagliari"]), ["cagliari"]);
+  assert.deepEqual(teamCandidates("Schalke", [team("FC Schalke 04 Indoor", "fc-schalke-04-indoor"), team("Schalke 04", "schalke-04")]), ["schalke-04"]);
+  assert.deepEqual(teamCandidates("Aston Villa", [team("Aston Villa", "aston-villa"), team("Aston Villa R", "aston-villa-r")]), ["aston-villa"]);
+});
+
+test("se lo slug della ricerca non funziona, la partita si trova con il nome semplice", async () => {
+  const db = fakeD1(), calls = [];
+  const routes = [
+    ["live-calendar.json", { matches: [cal("Como 1907", "Sassuolo")] }],
+    ["q=Como", { teams: [team("Como 1907", "como-1907")] }],
+    ["q=Sassuolo", { teams: [team("Sassuolo", "sassuolo")] }],
+    ["slug=como-vs-sassuolo", detail("Como", "Sassuolo", "Italian Serie A")],
+    ...emptyList
+  ];
+  const report = await collect({ fetch: fakeFetch(routes, calls), db, now: T0, calendarUrl: CAL });
+  assert.deepEqual(report.unresolved, []);
+  assert.equal(report.saved, 1);
 });
