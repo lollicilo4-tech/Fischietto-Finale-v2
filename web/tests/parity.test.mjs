@@ -3,7 +3,8 @@
    dalla libreria del sito Astro, per ogni campionato.
    Le sole differenze ammesse sono quelle volute dalla migrazione, rimosse da normalize():
    link veri al posto dei pulsanti che cambiavano pannello, attributi data-* usati dagli script
-   del browser, il link "Pagina della partita" e la nota "orario trascorso" (ora aggiunta nel browser). */
+   del browser, il link "Pagina della partita", la nota "orario trascorso" (ora aggiunta nel browser) e le
+   "quote eque" (1 diviso la probabilità), tolte dal sito nuovo perché sembrano quote da scommessa. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
@@ -25,6 +26,11 @@ function legacyRender(code) {
   return JSON.parse(readFileSync(path.join(out, "render-" + code + ".json"), "utf-8"));
 }
 
+/* Nomi cambiati nel sito nuovo ("Schedina" → "Le scelte del modello"): si applicano al testo vecchio. */
+const renamed = (html) => String(html)
+  .replace("La Schedina usa lo storico", "Le scelte del modello usano lo storico")
+  .replace("nessun correttivo viene applicato alla Schedina.", "nessun correttivo viene applicato alle scelte del modello.");
+
 /* Riporta l'HTML nuovo alla forma del sito attuale (e toglie dal vecchio ciò che ora fa il browser). */
 function normalize(html) {
   return String(html)
@@ -34,7 +40,9 @@ function normalize(html) {
     .replace(/<a class="share-btn ff-btn" href="[^"]*">Pagina della partita →<\/a>/g, "")
     .replace(/<a class="share-btn ff-btn" href="[^"]*">Apri la partita →<\/a>/g, "")
     .replace(/<button type="button" class="share-btn" data-goto-match="[^"]*">Apri la partita →<\/button>/g, "")
-    .replace(/<div class="match-stale-note">[^<]*<\/div>/g, "");
+    .replace(/<div class="match-stale-note">[^<]*<\/div>/g, "")
+    .replace(/<div class="stat wide"><div class="k">Quote eque 1 · X · 2<\/div><div class="v num">[^<]*<\/div><\/div>/g, "")
+    .replace(/quota equa [^<·]* · /g, "");
 }
 
 for (const L of LEAGUES) {
@@ -48,8 +56,8 @@ for (const L of LEAGUES) {
     assert.equal(normalize(grouped(ctx, turno.matches)), normalize(old.matches), "Partite");
     assert.equal(normalize(nextRoundsPanel(ctx, turno.next_rounds)), normalize(old.nextRounds), "Prossime giornate");
     const s = storicoParts(storico);
-    assert.equal(s.verdict, old.verdict, "Storico: in breve");
-    assert.equal(s.quality, old.quality, "Storico: qualità del modello");
+    assert.equal(s.verdict, renamed(old.verdict), "Storico: in breve");
+    assert.equal(s.quality, renamed(old.quality), "Storico: qualità del modello");
     assert.equal(recapPanel(storico && storico.recap), old.recap, "Storico: ultima giornata");
     assert.equal(normalize(seasonPanel(ctx, classifica && classifica.season)), normalize(old.season), "Classifica: fine stagione");
     if (old.teamName && old.team) {

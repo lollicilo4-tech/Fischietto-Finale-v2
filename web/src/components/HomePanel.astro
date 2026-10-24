@@ -22,7 +22,7 @@ const grid = ["SA", "PL", "PD", "BL1", "FL1", "CL", "EL", "UECL"].map((c) => LEA
     <span class="reference-eyebrow">IL CALCIO, LETTO DAI NUMERI</span>
     <h2>ANALISI.<br>STATISTICHE.<br><strong>PRONOSTICI.</strong></h2>
     <p>Il calcio con i numeri, sempre con te.</p>
-    <div class="reference-hero-actions"><a class="ff-btn" href={leagueUrl(league, "partite")}>Partite di oggi <span>→</span></a><a class="ff-btn gold" href={leagueUrl(league, "sicure")}>Più sicure</a></div>
+    <div class="reference-hero-actions"><a class="ff-btn" href={leagueUrl(league, "partite")}>Partite di oggi <span>→</span></a><a class="ff-btn gold" href={leagueUrl(league, "sicure")}>Più probabili</a></div>
   </div>
   <div class="reference-stadium-art" aria-hidden="true"><div class="stadium-lights"></div><div class="stadium-pitch"></div><div class="stadium-ball">⚽</div></div>
 </div>
@@ -44,10 +44,10 @@ const grid = ["SA", "PL", "PD", "BL1", "FL1", "CL", "EL", "UECL"].map((c) => LEA
         <span><b>Partite</b><small id="tile-partite">{tilePartite}</small></span></a>
       <a class="tile ff-btn" href={leagueUrl(league, "sicure")}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg>
-        <span><b>Più sicure</b><small>Le selezioni più probabili</small></span></a>
+        <span><b>Più probabili</b><small>Gli esiti più probabili del turno</small></span></a>
       <a class="tile ff-btn" href={leagueUrl(league, "schedina")}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18H6z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>
-        <span><b>Schedina modello</b><small>Sicura · Media · Bomba</small></span></a>
+        <span><b>Le scelte del modello</b><small>Facile · Media · Difficile</small></span></a>
       <a class="tile ff-btn" href={leagueUrl(league, "classifica")}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
         <span><b>Classifica</b><small id="tile-league-name">{L.name}</small></span></a>

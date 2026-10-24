@@ -1,5 +1,5 @@
 ---
-/* Più sicure: per ogni partita l'esito più probabile, combinati per vedere come scende la probabilità.
+/* Più probabili: per ogni partita l'esito più probabile, combinati per vedere come scende la probabilità.
    La pagina arriva già con 3 selezioni "nette"; i pulsanti ricalcolano nel browser (scripts/sicure.js). */
 import Base from "../../layouts/Base.astro";
 import { leagueByCode } from "../../lib/core.js";
@@ -15,12 +15,12 @@ const matches = turno ? turno.matches : [];
 const N = 3, NODC = true;
 const first = comboHtml(computePicks(matches, NODC), N);
 ---
-<Base title={"Più sicure " + L.name} description={"Le selezioni più probabili secondo il modello per " + L.name + " e come scende la probabilità combinandole. Stime statistiche, non un invito a scommettere."} league={league} section="sicure" path={"/" + L.slug + "/piu-sicure/"}>
-  <section id="p-sicure" aria-label="Più sicure">
+<Base title={"Più probabili " + L.name} description={"Le selezioni più probabili secondo il modello per " + L.name + " e come scende la probabilità combinandole. Stime statistiche, non un invito a scommettere."} league={league} section="sicure" path={"/" + L.slug + "/piu-probabili/"}>
+  <section id="p-sicure" aria-label="Più probabili">
     <p class="lead">Per ogni partita il modello sceglie l'esito più probabile. Qui li metti insieme e vedi quanto scende la probabilità complessiva.</p>
     <div class="seg" id="seg" role="group" aria-label="Numero di selezioni"><span>Selezioni</span>{[2, 3, 4, 5].map((k) => <button type="button" data-n={k} aria-pressed={String(k === N)}>{k}</button>)}</div>
     <div class="seg" id="seg2" role="group" aria-label="Tipo di selezioni"><span>Tipo</span><button type="button" data-dc="true" aria-pressed={String(NODC)}>Selezioni nette</button><button type="button" data-dc="false" aria-pressed={String(!NODC)}>Tutte</button></div>
-    <p class="lead" style="margin-top:-6px">Doppia chance (1X, X2), Over 1,5 e Under 3,5 sono quasi sempre le più probabili ma pagano pochissimo. "Selezioni nette" le esclude.</p>
+    <p class="lead" style="margin-top:-6px">Doppia chance (1X, X2), Over 1,5 e Under 3,5 sono quasi sempre le più probabili ma dicono poco sulla partita. "Selezioni nette" le esclude.</p>
     <div class="panel" id="combo" set:html={first.combo}></div>
     <div class="panel">
       <h2>Come scende la probabilità</h2>

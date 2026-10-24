@@ -19,7 +19,7 @@ export function prudentChoice(m) {
 export const strength = (m) => Math.max(m.prob.p1, m.prob.px, m.prob.p2);
 export const byStrength = (matches) => matches.slice().sort((a, b) => strength(b) - strength(a));
 
-/* Selezione più probabile di una partita per "Più sicure". nodc: esclude doppia chance, Over 1,5 e Under 3,5. */
+/* Selezione più probabile di una partita per "Più probabili". nodc: esclude doppia chance, Over 1,5 e Under 3,5. */
 export function best(m, nodc) {
   const p = m.prob;
   const o = [
@@ -90,7 +90,7 @@ export function deriveRecommendation(m) {
   return { best: top, alternatives: a.slice(0, 6) };
 }
 
-/* ---------- Schedina del modello (Sicura · Media · Bomba) ---------- */
+/* ---------- Le scelte del modello (Facile · Media · Difficile) ---------- */
 export function slipReason(x) {
   const m = x.match || {}, xg = m.xg || [], total = (Number(xg[0]) || 0) + (Number(xg[1]) || 0);
   const code = x.code || "";
@@ -125,7 +125,7 @@ function historicalMarketBoost(x, marketPerformance) {
   return 1 + gap * 0.6;
 }
 
-/* Sceglie le selezioni della schedina. mode: sicura | media | bomba; n: numero di selezioni. */
+/* Sceglie le selezioni delle "scelte del modello". mode: facile | media | difficile; n: numero di selezioni. */
 export function modelSlipPicks(matches, mode, n, marketPerformance = {}) {
   const all = [], used = {}, picks = [];
   matches.forEach((m) => {
@@ -158,12 +158,12 @@ export function modelSlipPicks(matches, mode, n, marketPerformance = {}) {
     a.forEach((x) => { if (x[2] > 0) all.push({ match: m, m: m.home + " – " + m.away, code: x[0], label: x[1], p: Number(x[2]), kind: x[3] }); });
     if (rec.best) all.push({ match: m, m: m.home + " – " + m.away, code: rec.best.code, label: rec.best.label, p: Number(rec.best.p), kind: rec.best.kind, recommended: true });
   });
-  const cfg = mode === "sicura" ? { min: 0.62, max: 1.01, score: false } : mode === "media" ? { min: 0.43, max: 0.82, score: false } : { min: 0.12, max: 0.62, score: true };
+  const cfg = mode === "facile" ? { min: 0.62, max: 1.01, score: false } : mode === "media" ? { min: 0.43, max: 0.82, score: false } : { min: 0.12, max: 0.62, score: true };
   const rank = { score: 0, combo: 1, gol: 2, doppia: 3, esito: 4, base: 4 };
   const score = (x) => {
-    const boost = x.recommended ? (mode === "sicura" ? 1.12 : mode === "media" ? 1.07 : 1.03) : 1;
-    const kindBoost = mode === "sicura" ? (x.kind === "doppia" ? 1.02 : x.kind === "gol" ? 1.01 : 1)
-      : mode === "bomba" ? (x.kind === "score" ? 1.1 : x.kind === "combo" ? 1.06 : 1) : 1;
+    const boost = x.recommended ? (mode === "facile" ? 1.12 : mode === "media" ? 1.07 : 1.03) : 1;
+    const kindBoost = mode === "facile" ? (x.kind === "doppia" ? 1.02 : x.kind === "gol" ? 1.01 : 1)
+      : mode === "difficile" ? (x.kind === "score" ? 1.1 : x.kind === "combo" ? 1.06 : 1) : 1;
     return x.p * boost * kindBoost * historicalMarketBoost(x, marketPerformance);
   };
   const take = (x) => { if (picks.length < n && !used[x.match.id]) { picks.push(x); used[x.match.id] = true; } };
@@ -171,7 +171,7 @@ export function modelSlipPicks(matches, mode, n, marketPerformance = {}) {
     .sort((a, b) => { const d = score(b) - score(a); return Math.abs(d) > 1e-9 ? d : (rank[a.kind] || 9) - (rank[b.kind] || 9); })
     .forEach(take);
   if (picks.length < n) all.filter((x) => cfg.score || x.kind !== "score").sort((a, b) => score(b) - score(a)).forEach(take);
-  if (picks.length < n && mode === "bomba") all.filter((x) => x.kind === "score").sort((a, b) => b.p - a.p).forEach(take);
+  if (picks.length < n && mode === "difficile") all.filter((x) => x.kind === "score").sort((a, b) => b.p - a.p).forEach(take);
   return picks;
 }
 

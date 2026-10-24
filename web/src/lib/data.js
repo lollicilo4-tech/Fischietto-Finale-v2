@@ -57,7 +57,7 @@ export function livePriors() {
   return out;
 }
 
-/* Solo i campi che servono a "Più sicure" e "Schedina" nel browser, incorporati nella pagina. */
+/* Solo i campi che servono a "Più probabili" e "Le scelte del modello" nel browser, incorporati nella pagina. */
 export function slimMatches(matches) {
   return (matches || []).map((m) => ({
     id: m.id, home: m.home, away: m.away, prob: m.prob, xg: m.xg, markets: m.markets,

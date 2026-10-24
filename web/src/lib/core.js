@@ -22,8 +22,8 @@ export const leagueBySlug = (slug) => LEAGUES.find((l) => l.slug === slug) || nu
 export const SECTIONS = {
   home: { path: "", panel: "p-home", label: "Home" },
   partite: { path: "partite/", panel: "p-partite", label: "Partite" },
-  sicure: { path: "piu-sicure/", panel: "p-sicure", label: "Più sicure" },
-  schedina: { path: "schedina/", panel: "p-schedina", label: "Schedina" },
+  sicure: { path: "piu-probabili/", panel: "p-sicure", label: "Più probabili" },
+  schedina: { path: "scelte-del-modello/", panel: "p-schedina", label: "Le scelte del modello" },
   classifica: { path: "classifica/", panel: "p-classifica", label: "Classifica" },
   storico: { path: "storico/", panel: "p-storico", label: "Storico" }
 };
