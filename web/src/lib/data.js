@@ -61,11 +61,18 @@ export function livePriors() {
    campionati con nomi e orario. Il Worker lo usa per chiedere a SportScore il dettaglio delle partite
    in corso anche quando la lista "live" del servizio non le elenca. */
 export function liveCalendar() {
-  const out = [];
+  const out = [], seen = new Set();
   LEAGUES.forEach((l) => {
     const t = leagueData(l.code).turno;
-    (t ? t.matches : []).forEach((m) => {
-      if (m.kickoff && m.home && m.away) out.push({ league: l.code, liveKey: l.liveKey, id: String(m.id), home: m.home, away: m.away, kickoff: m.kickoff });
+    if (!t) return;
+    /* Una partita già iniziata quando gira "Aggiorna pronostici" esce da matches e resta solo in
+       next_rounds: senza questa seconda fonte il Worker la perderebbe a metà (Napoli-Roma, 24 ottobre). */
+    const rounds = (t.next_rounds || []).flatMap((r) => (r && Array.isArray(r.matches) ? r.matches : []));
+    t.matches.concat(rounds).forEach((m) => {
+      const key = l.code + ":" + m.id;
+      if (!m || !m.kickoff || !m.home || !m.away || seen.has(key)) return;
+      seen.add(key);
+      out.push({ league: l.code, liveKey: l.liveKey, id: String(m.id), home: m.home, away: m.away, kickoff: m.kickoff });
     });
   });
   return out.sort((a, b) => a.kickoff.localeCompare(b.kickoff));
