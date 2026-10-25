@@ -194,6 +194,10 @@ def _select_upcoming_round(matches: list[dict], now=None, finished_ids: set[str]
     from datetime import datetime, timedelta, timezone
 
     now = now or datetime.now(timezone.utc)
+    active_statuses = {"IN_PLAY", "PAUSED"}
+    # Un kickoff più vecchio di 4 ore non è più una partita live credibile:
+    # alcuni calendari mantengono IN_PLAY/PAUSED anche dopo il fischio finale.
+    max_active_age = timedelta(hours=4)
 
     def kickoff(match: dict) -> datetime:
         return datetime.fromisoformat(match["utcDate"].replace("Z", "+00:00"))
@@ -208,14 +212,18 @@ def _select_upcoming_round(matches: list[dict], now=None, finished_ids: set[str]
 
     active = [
         match for match in ordered
-        if str(match.get("status", "")).upper() in {"IN_PLAY", "PAUSED"}
+        if str(match.get("status", "")).upper() in active_statuses
+        and kickoff(match) >= now - max_active_age
     ]
     if active:
         active_rounds = {m["matchday"] for m in active if m.get("matchday") is not None}
         if active_rounds:
             rounds = {
                 day: [m for m in ordered if m.get("matchday") == day
-                      and (kickoff(m) >= now or str(m.get("status", "")).upper() in {"IN_PLAY", "PAUSED"})]
+                      and (kickoff(m) >= now or (
+                          str(m.get("status", "")).upper() in active_statuses
+                          and kickoff(m) >= now - max_active_age
+                      ))]
                 for day in active_rounds
             }
             matchday = min(
@@ -251,6 +259,28 @@ def _select_upcoming_round(matches: list[dict], now=None, finished_ids: set[str]
         key=lambda item: min(kickoff(m) for m in item[1]),
     )
     return matchday, sorted(fixtures, key=kickoff)
+
+
+def _finished_source_matches(*groups: list[dict]) -> list[dict]:
+    """Unisce i feed risultati e calendario quando quest'ultimo espone già il full-time.
+
+    Alcuni provider aggiornano score e status in momenti diversi. Un punteggio finale
+    completo è sufficiente per recuperare il risultato, anche se la gara compare ancora
+    nel feed IN_PLAY/PAUSED; gli ID duplicati vengono mantenuti una sola volta.
+    """
+    by_id = {}
+    for group in groups:
+        for match in group:
+            if not isinstance(match, dict) or match.get("id") is None:
+                continue
+            score = match.get("score")
+            full_time = score.get("fullTime") if isinstance(score, dict) else None
+            if not isinstance(full_time, dict):
+                continue
+            if full_time.get("home") is None or full_time.get("away") is None:
+                continue
+            by_id.setdefault(str(match["id"]), match)
+    return list(by_id.values())
 
 
 def _missing_upcoming_matchdays(finished_matches: list[dict], selected_matchday: int | None) -> list[int]:
@@ -291,18 +321,19 @@ def _recovered_upcoming_round(
     finished_ids: set[str] | None = None,
 ) -> list[dict]:
     """Restituisce un turno recuperato solo se contiene almeno due gare ancora pertinenti."""
-    from datetime import datetime, timezone
+    from datetime import datetime, timedelta, timezone
 
     now = now or datetime.now(timezone.utc)
     finished_ids = {str(mid) for mid in (finished_ids or set())}
     active_statuses = {"IN_PLAY", "PAUSED"}
+    max_active_age = timedelta(hours=4)
     candidates = []
     for match in matches:
         if match.get("matchday") != matchday or str(match.get("id", "")) in finished_ids:
             continue
         status = str(match.get("status", "")).upper()
         kickoff = datetime.fromisoformat(match["utcDate"].replace("Z", "+00:00"))
-        if kickoff >= now or status in active_statuses:
+        if kickoff >= now or (status in active_statuses and kickoff >= now - max_active_age):
             candidates.append(match)
 
     # Una singola gara rinviata non deve prevalere su un turno futuro completo.
@@ -490,15 +521,14 @@ async def real_context(competition: str | None = None) -> dict:
         # Non pubblicare un turno futuro se tra gli ultimi risultati e il turno
         # selezionato manca una giornata intermedia: recuperala esplicitamente
         # dall'API e interrompi la generazione se non è possibile verificarla.
-        finished_ids_for_selection = {
-            str(m["id"]) for m in fin.get("matches", [])
-            if m.get("score", {}).get("fullTime", {}).get("home") is not None
-            and m.get("score", {}).get("fullTime", {}).get("away") is not None
-        }
+        # Il feed calendario può contenere già il risultato finale prima che il feed
+        # FINISHED lo includa. Usalo per escludere ID conclusi e aggiornare storico/classifica.
+        finished_raw = _finished_source_matches(fin.get("matches", []), sch.get("matches", []))
+        finished_ids_for_selection = {str(m["id"]) for m in finished_raw}
         matchday, next_round = _select_upcoming_round(
             sch.get("matches", []), finished_ids=finished_ids_for_selection
         )
-        missing_matchdays = _missing_upcoming_matchdays(fin.get("matches", []), matchday)
+        missing_matchdays = _missing_upcoming_matchdays(finished_raw, matchday)
         for missing_day in missing_matchdays:
             try:
                 recovered_response = await _get(
@@ -530,9 +560,7 @@ async def real_context(competition: str | None = None) -> dict:
         {"id": str(m["id"]), "date": m["utcDate"], "home": _name(m["homeTeam"]), "away": _name(m["awayTeam"]),
          "home_id": m["homeTeam"].get("id"), "away_id": m["awayTeam"].get("id"),
          "hg": m["score"]["fullTime"]["home"], "ag": m["score"]["fullTime"]["away"]}
-        for m in fin["matches"]
-        if m["score"]["fullTime"]["home"] is not None
-        and m["score"]["fullTime"]["away"] is not None
+        for m in finished_raw
     ]
     if not finished:
         raise RuntimeError("Nessuna partita giocata: il modello ha bisogno di almeno qualche giornata.")
