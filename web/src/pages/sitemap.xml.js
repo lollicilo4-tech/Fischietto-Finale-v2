@@ -1,10 +1,11 @@
 /* Mappa del sito per i motori di ricerca: tutte le pagine generate (tranne la 404). */
 import { LEAGUES, SECTIONS, slugify, matchSlug, INFO_URL, PRIVACY_URL } from "../lib/core.js";
+import { MYPICKS_URL } from "../lib/mypicks.js";
 import { leagueData, allTeams } from "../lib/data.js";
 
 export function GET({ site }) {
   const base = String(site).replace(/\/$/, "");
-  const urls = ["/", INFO_URL, PRIVACY_URL, "/live/"];
+  const urls = ["/", INFO_URL, PRIVACY_URL, MYPICKS_URL, "/live/"];
   LEAGUES.forEach((l) => {
     Object.values(SECTIONS).forEach((s) => { if (!(l.code === "SA" && s.path === "")) urls.push("/" + l.slug + "/" + s.path); });
     const t = leagueData(l.code).turno;
