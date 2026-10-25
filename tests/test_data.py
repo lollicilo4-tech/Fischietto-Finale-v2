@@ -4,7 +4,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from app.data import _missing_upcoming_matchdays, _recovered_upcoming_round, _select_upcoming_round, _reconcile_standings, _standings
+from app.data import (_finished_source_matches, _missing_upcoming_matchdays, _recovered_upcoming_round,
+                      _select_upcoming_round, _reconcile_standings, _standings)
 
 
 class StandingsPositionTests(unittest.TestCase):
@@ -71,6 +72,21 @@ class UpcomingRoundSelectionTests(unittest.TestCase):
         self.assertEqual(matchday, 7)
         self.assertEqual([m["id"] for m in fixtures], ["next-a", "next-b"])
 
+    def test_ignores_stale_in_play_fixture_after_four_hours(self):
+        matches = [
+            {"id": "stale-live", "utcDate": "2026-10-14T01:00:00Z",
+             "matchday": 6, "status": "IN_PLAY"},
+            {"id": "next-a", "utcDate": "2026-10-17T13:00:00Z",
+             "matchday": 7, "status": "SCHEDULED"},
+            {"id": "next-b", "utcDate": "2026-10-18T16:00:00Z",
+             "matchday": 7, "status": "SCHEDULED"},
+        ]
+
+        matchday, fixtures = _select_upcoming_round(matches, now=self.NOW)
+
+        self.assertEqual(matchday, 7)
+        self.assertEqual([m["id"] for m in fixtures], ["next-a", "next-b"])
+
     def test_empty_schedule_returns_no_round(self):
         self.assertEqual(_select_upcoming_round([], now=self.NOW), (None, []))
 
@@ -127,6 +143,35 @@ class UpcomingRoundSelectionTests(unittest.TestCase):
         self.assertEqual([m["id"] for m in fixtures], ["next-a", "next-b"])
 
 
+
+    def test_recovered_round_ignores_stale_in_play_fixture(self):
+        now = datetime(2026, 10, 20, 12, 0, tzinfo=timezone.utc)
+        fixtures = [
+            {"id": "stale-live", "matchday": 3, "utcDate": "2026-10-20T02:00:00Z", "status": "IN_PLAY"},
+            {"id": "later", "matchday": 3, "utcDate": "2026-10-21T19:00:00Z", "status": "SCHEDULED"},
+            {"id": "earlier", "matchday": 3, "utcDate": "2026-10-20T18:45:00Z", "status": "SCHEDULED"},
+        ]
+
+        recovered = _recovered_upcoming_round(fixtures, 3, now=now)
+
+        self.assertEqual([m["id"] for m in recovered], ["earlier", "later"])
+
+    def test_finished_source_recovers_full_time_score_from_schedule(self):
+        finished_feed = [
+            {"id": 564718, "score": {"fullTime": {"home": None, "away": None}}},
+        ]
+        schedule_feed = [
+            {"id": 564718, "matchday": 10, "utcDate": "2026-10-24T12:00:00Z",
+             "status": "IN_PLAY",
+             "homeTeam": {"id": 100, "name": "Rayo Vallecano", "shortName": "Rayo"},
+             "awayTeam": {"id": 300, "name": "Elche", "shortName": "Elche"},
+             "score": {"fullTime": {"home": 0, "away": 3}}},
+        ]
+
+        completed = _finished_source_matches(finished_feed, schedule_feed)
+
+        self.assertEqual([m["id"] for m in completed], [564718])
+        self.assertEqual(completed[0]["score"]["fullTime"], {"home": 0, "away": 3})
 
     def test_detects_missing_matchday_before_selected_future_round(self):
         finished = [
