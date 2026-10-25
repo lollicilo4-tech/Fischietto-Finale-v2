@@ -418,6 +418,11 @@
    "label": "1X · Como 1907 non perde",
    "p": 0.8205
   },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-24T13:00:00Z",
+   "hg": 2
+  },
   "top": [
    1,
    1
@@ -841,6 +846,11 @@
    "label": "Under 3,5 · massimo 3 gol",
    "p": 0.802
   },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-24T16:00:00Z",
+   "hg": 3
+  },
   "top": [
    1,
    1
@@ -981,6 +991,11 @@
    "kind": "doppia",
    "label": "1X · Lazio non perde",
    "p": 0.8464
+  },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-24T18:45:00Z",
+   "hg": 2
   },
   "top": [
    1,
@@ -8733,6 +8748,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8196
   },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-24T11:30:00Z",
+   "hg": 2
+  },
   "top": [
    1,
    1
@@ -9015,6 +9035,11 @@
    "label": "1X · Arsenal non perde",
    "p": 0.8515
   },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-24T14:00:00Z",
+   "hg": 2
+  },
   "top": [
    1,
    0
@@ -9155,6 +9180,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8224
+  },
+  "result": {
+   "ag": 2,
+   "date": "2026-10-24T16:30:00Z",
+   "hg": 0
   },
   "top": [
    1,
@@ -15228,6 +15258,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8701
   },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-24T13:30:00Z",
+   "hg": 2
+  },
   "top": [
    2,
    1
@@ -15369,6 +15404,11 @@
    "label": "Under 3,5 · massimo 3 gol",
    "p": 0.7787
   },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-24T13:30:00Z",
+   "hg": 0
+  },
   "top": [
    1,
    1
@@ -15509,6 +15549,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.9157
+  },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-24T13:30:00Z",
+   "hg": 4
   },
   "top": [
    2,
@@ -15796,6 +15841,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7636
+  },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-24T13:30:00Z",
+   "hg": 1
   },
   "top": [
    1,
