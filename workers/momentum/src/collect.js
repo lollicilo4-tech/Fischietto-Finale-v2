@@ -163,7 +163,7 @@ export async function collect({ fetch: fetchFn, db, now = Date.now(), calendarUr
 
     // 2. Partite del nostro calendario che dovrebbero essere in corso, cercate per nome.
     let due = [];
-    try { const cal = await get(calendarUrl); due = dueMatches(cal && cal.matches, now); }
+    try { const cal = await get(calendarUrl); due = dueMatches(cal && cal.matches, now); report.calendarUpdated = (cal && cal.updated) || null; }
     catch (e) { report.calendarError = String((e && e.message) || e).slice(0, 120); }
     const { teamCache, matchCache } = await loadCaches(db, due);
     const { resolved, budget, changedTeams, changedMatches } = await resolveDue({ due, teamCache, matchCache, getJson: get, matchDetailUrl, now });

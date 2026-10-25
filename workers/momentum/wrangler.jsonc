@@ -17,6 +17,9 @@
     }
   ],
   // Niente blocco "limits": il piano gratuito lo rifiuta (errore 100328) e applica già da sé
-  // 50 richieste esterne e 10 ms di CPU. src/collect.js resta sotto: al massimo 40 dettagli + 3 liste.
+  // 50 richieste esterne e 10 ms di CPU. src/collect.js resta sotto: al massimo 48 richieste (REQUEST_LIMIT).
+  // Avvisi via email (src/alerts.js) agli indirizzi verificati in Email Routing: gratuito. Il destinatario
+  // è il secret ALERT_TO, impostato dalla dashboard del Worker, quindi non compare nel repository.
+  "send_email": [{ "name": "EMAIL" }],
   "observability": { "enabled": true }
 }

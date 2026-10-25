@@ -36,6 +36,7 @@ sito ── /api/momentum?slug=… (web/functions/api/momentum.js, stesso domini
 | --- | --- |
 | `src/collect.js` | raccolta e salvataggio dei campioni (testabile: fetch e database arrivano da fuori) |
 | `src/calendar.js` | partite del calendario cercate per nome, con i tetti di richieste per esecuzione |
+| `src/alerts.js` | avvisi via email al proprietario (vedi sotto) |
 | `src/index.js` | gestore del cron e `GET /health` |
 | `schema.sql` | tabelle D1 (già create nel database `fischietto-momentum`) |
 | `wrangler.jsonc` | nome, cron, binding D1 |
@@ -75,6 +76,24 @@ visti nel feed e quelli riconosciuti come nostri.
 
 Il sito legge i dati da `/api/momentum` grazie al binding D1 dichiarato in `web/wrangler.jsonc`: non serve
 altro. Finché il Worker non gira, il Live usa la serie registrata dal browser come prima.
+
+## Avvisi via email
+
+`src/alerts.js` scrive al proprietario quando qualcosa non va:
+- SportScore non risponde da 10 minuti, oppure la sua lista live è vuota da un'ora (una volta al giorno);
+- una partita in corso dei nostri campionati non viene trovata da 20 minuti;
+- il calendario del sito non si legge da 15 minuti;
+- i pronostici sono fermi da più di 6 ore.
+
+Si riceve al massimo un'email ogni 6 ore per lo stesso problema e 6 al giorno in tutto. Le email partono gratis
+con il binding `EMAIL` verso un indirizzo **verificato** in Email Routing. L'indirizzo non è nel repository.
+Per attivare gli avvisi:
+
+1. **Workers & Pages → fischietto-momentum → Settings → Variables and Secrets → Add**.
+2. Type **Secret**, nome `ALERT_TO`, valore: la tua email, la stessa verificata come destinazione di
+   `info@fischiettofinale.com`. Salva con **Deploy**.
+3. Entro un minuto arriva l'email di prova "Avvisi attivi". `/health` mostra `alerts.configured` e, se l'invio
+   fallisce, `alerts.lastError`, senza mostrare l'indirizzo.
 
 ## Da verificare
 
