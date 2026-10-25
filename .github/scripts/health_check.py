@@ -28,6 +28,7 @@ LEAGUES = {"SA": "Serie A", "PL": "Premier League", "BL1": "Bundesliga", "PD": "
 WARN_AGE = timedelta(hours=5, minutes=30)
 ERROR_AGE = timedelta(hours=9)          # due aggiornamenti saltati di fila
 STALE_ROUND = timedelta(hours=12)       # tutte le partite del turno iniziate da più di 12 ore
+STALE_FIXTURE = timedelta(hours=4)      # una singola partita non può restare nel turno dopo 4 ore
 WATCHED_WORKFLOWS = ("Aggiorna pronostici", "Test Fischietto Finale", "Pubblica interfaccia statica",
                      "pages build and deployment", "Security audit")
 RECENT = timedelta(hours=6)
@@ -86,6 +87,14 @@ def check_published(root: Path, now: datetime) -> list[tuple[str, str]]:
             level = ERROR if age > ERROR_AGE else WARN if age > WARN_AGE else OK
             if level != OK:
                 out.append((level, f"{label}: dati fermi da {_age(age)}"))
+        stale_fixtures = [
+            m for m in turno["matches"]
+            if (kickoff := _parse_time(m.get("kickoff"))) is not None
+            and kickoff < now - STALE_FIXTURE
+        ]
+        if stale_fixtures:
+            examples = ", ".join(f"{m.get('home', '?')}–{m.get('away', '?')}" for m in stale_fixtures[:3])
+            out.append((ERROR, f"{label}: {len(stale_fixtures)} partite con kickoff passato da oltre 4 ore ancora nel turno ({examples})"))
         kickoffs = [_parse_time(m.get("kickoff")) for m in turno["matches"]]
         kickoffs = [k for k in kickoffs if k]
         if kickoffs and max(kickoffs) < now - STALE_ROUND:
