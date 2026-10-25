@@ -24,7 +24,8 @@ const MAX_CANDIDATES = 3;                        // slug candidati per squadra
 
 /* Nomi brevi di football-data.org che la ricerca di SportScore non trova: si cerca il nome completo. */
 export const SEARCH_ALIASES = {
-  "Man City": "Manchester City", "Man United": "Manchester United", "Brighton Hove": "Brighton",
+  "Man City": "Manchester City", "Man United": "Manchester United", "Brighton Hove": "Brighton Hove Albion",
+  "Newcastle": "Newcastle United", "West Ham": "West Ham United", "Wolverhampton": "Wolverhampton Wanderers", "Nottingham": "Nottingham Forest",
   "Atleti": "Atletico Madrid", "Barça": "Barcelona", "Athletic": "Athletic Bilbao", "Celta": "Celta Vigo",
   "Santander": "Racing Santander", "Deportivo": "Deportivo La Coruna", "Sevilla FC": "Sevilla",
   "HSV": "Hamburger SV", "Bremen": "Werder Bremen", "Leverkusen": "Bayer Leverkusen", "Bayern": "Bayern Munich",
@@ -36,7 +37,7 @@ export const SEARCH_ALIASES = {
   "Villarreal": "Villarreal CF", "Getafe": "Getafe CF", "Osasuna": "CA Osasuna", "Levante": "Levante UD"
 };
 /* Squadre giovanili, femminili, riserve: mai la prima squadra. */
-const NOT_FIRST_TEAM = /\b(o?u ?1\d|o?u ?2[0-3]|sub ?\d\d|youth|juniors?|women|woman|ladies|femen\w*|feminin\w*|reserves?|beach|futsal|indoor|esports?|legends?|ii|iii|b|c|r|am|w)\b|\(w\)|ou1\d/i;
+const NOT_FIRST_TEAM = /\b(o?u ?1\d|o?u ?2[0-3]|sub ?\d\d|youth|juniors?|women|woman|ladies|femen\w*|feminin\w*|reserves?|beach|futsal|indoor|esports?|legends?|ii|iii|xi|b|c|r|am|w)\b|\(w\)|ou1\d/i;
 /* Parole che SportScore spesso omette nei nomi ("Como 1907" è "Como"). */
 const NAME_NOISE = new Set(["fc", "sc", "ac", "cf", "afc", "rc", "sco", "ssc", "ss", "acf", "us", "as", "cd", "ud", "sd", "ca", "sv", "fsv",
   "tsg", "vfb", "vfl", "ssv", "bsc", "rcd", "club", "calcio"]);

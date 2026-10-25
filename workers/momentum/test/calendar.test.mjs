@@ -183,3 +183,9 @@ test("diagnostica delle fonti live nel riepilogo", async () => {
   assert.deepEqual(report.sources.find((x) => x.url === "/api/v1/fixtures/"), { url: "/api/v1/fixtures/", error: "HTTP 503" });
   assert.deepEqual(report.sources.find((x) => x.url === "/api/v1/matches/"), { url: "/api/v1/matches/", rows: 0 });
 });
+
+test("Brighton e Newcastle: nomi completi, niente squadre XI", () => {
+  assert.equal(withVariants("Brighton Hove", ["brighton-hove-albion-xi", "brighton-bulldogs-fc", "brighton-hove-albion"])[0], "brighton-hove-albion");
+  assert.equal(withVariants("Newcastle", ["newcastle-united"])[0], "newcastle-united");
+  assert.equal(usefulSlugs("Newcastle", ["newcastle-benfield", "newcastle-blue-star"]), false, "cache inutile: si ricerca \"Newcastle United\"");
+});
