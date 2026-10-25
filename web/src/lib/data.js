@@ -78,6 +78,21 @@ export function liveCalendar() {
   return out.sort((a, b) => a.kickoff.localeCompare(b.kickoff));
 }
 
+/* Risultati delle partite giocate di recente (/risultati-recenti.json) per "I miei pronostici":
+   { "SA:558563": { hg, ag, actual: "1"|"X"|"2", model: pronostico 1X2 del modello } }. */
+export function recentResults() {
+  const out = {};
+  LEAGUES.forEach((l) => {
+    const t = leagueData(l.code).turno;
+    ((t && t.played) || []).forEach((m) => {
+      if (m && m.id != null && ["1", "X", "2"].includes(m.actual) && Number.isFinite(m.hg) && Number.isFinite(m.ag)) {
+        out[l.code + ":" + m.id] = { hg: m.hg, ag: m.ag, actual: m.actual, model: ["1", "X", "2"].includes(m.pick) ? m.pick : null };
+      }
+    });
+  });
+  return out;
+}
+
 /* Solo i campi che servono a "Più probabili" e "Le scelte del modello" nel browser, incorporati nella pagina. */
 export function slimMatches(matches) {
   return (matches || []).map((m) => ({

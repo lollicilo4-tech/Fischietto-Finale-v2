@@ -32,7 +32,7 @@ const pageFor = (urlPath) => {
 if (!existsSync(dist)) { console.error("Manca dist/: esegui prima npm run build"); process.exit(1); }
 
 /* Pagine e file che devono esserci. */
-const expected = ["/", "/live/", "/come-funziona/", "/privacy/", "/404.html", "/sitemap.xml", "/robots.txt", "/sw.js", "/manifest.webmanifest", "/_headers", "/_redirects", "/ads.txt", "/live-calendar.json", "/turno.json"];
+const expected = ["/", "/live/", "/come-funziona/", "/privacy/", "/i-miei-pronostici/", "/risultati-recenti.json", "/404.html", "/sitemap.xml", "/robots.txt", "/sw.js", "/manifest.webmanifest", "/_headers", "/_redirects", "/ads.txt", "/live-calendar.json", "/turno.json"];
 LEAGUES.forEach((l) => Object.values(SECTIONS).forEach((s) => expected.push("/" + l.slug + "/" + s.path)));
 expected.forEach((u) => { if (!pageFor(u)) fail("manca " + u); });
 

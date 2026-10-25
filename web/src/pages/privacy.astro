@@ -3,7 +3,7 @@
    public/_headers) o nuovo dato salvato nel browser deve comparire qui. */
 import Base from "../layouts/Base.astro";
 import { CONTACT_EMAIL, KOFI_URL } from "../lib/core.js";
-const UPDATED = "24 ottobre 2026";
+const UPDATED = "25 ottobre 2026";
 const ext = { target: "_blank", rel: "noopener noreferrer" };
 ---
 <Base title="Privacy e cookie" description="Quali dati tratta Fischietto finale: niente account né moduli, cosa resta nel browser, servizi esterni (Cloudflare, SportScore, Google AdSense) e come esercitare i tuoi diritti." section={undefined} path="/privacy/">
@@ -26,6 +26,7 @@ const ext = { target: "_blank", rel: "noopener noreferrer" };
       <p>Alcune comodità funzionano salvando dati solo nel tuo browser. Non vengono mai inviati a noi:</p>
       <ul>
         <li><b>Squadre seguite</b> (<code>ff-squadre-seguite</code>): le squadre che metti in evidenza con “Segui”.</li>
+        <li><b>I miei pronostici</b> (<code>ff-miei-pronostici-v1</code>): i pronostici 1, X o 2 che scegli nelle partite e i loro risultati, per la sfida con il modello.</li>
         <li><b>Momentum del Live</b> (<code>ff-momentum-v1</code>): i valori registrati mentre guardi una partita in corso, cancellati da soli dopo 6 ore.</li>
         <li><b>Copia offline</b>: le pagine già aperte, salvate dal service worker per mostrarle anche senza connessione.</li>
       </ul>

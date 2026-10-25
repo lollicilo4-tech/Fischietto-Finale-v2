@@ -1,0 +1,16 @@
+---
+/* I miei pronostici: la sfida con il modello. Tutto nel browser (scripts/mypage.js): la pagina statica
+   ha solo la spiegazione e il contenitore. */
+import Base from "../layouts/Base.astro";
+---
+<Base title="I miei pronostici" description="Scegli 1, X o 2 prima del calcio d'inizio e sfida il modello di Fischietto finale: quante ne azzecchi tu e quante il modello. Niente soldi né quote, tutto resta sul tuo telefono." section={undefined} path="/i-miei-pronostici/">
+  <section id="p-mypicks" aria-labelledby="my-title">
+    <h2 class="sub2" id="my-title">I miei pronostici</h2>
+    <p class="lead">Nella scheda di ogni partita puoi scegliere 1, X o 2 fino al calcio d'inizio. Qui vedi quante ne azzecchi rispetto al modello. È una sfida, non una scommessa: niente soldi e niente quote. I pronostici restano solo su questo dispositivo, senza account.</p>
+    <div id="my-picks"><div class="msg">Caricamento dei tuoi pronostici…</div></div>
+    <noscript><div class="msg">Per vedere i tuoi pronostici serve JavaScript.</div></noscript>
+  </section>
+  <script>
+    import "../scripts/mypage.js";
+  </script>
+</Base>
