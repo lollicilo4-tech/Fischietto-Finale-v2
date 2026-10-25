@@ -99,3 +99,22 @@ test("minuto in corso come su SportScore", () => {
   assert.doesNotMatch(F.livePhaseHtml({ ...base, status_text: "Half time" }, now), /live-minute/);
   assert.match(F.livePhaseHtml({ ...base, status_text: "2nd half" }, now), /title="Minuto stimato/);
 });
+
+test("riquadro In corso adesso della pagina Partite", async () => {
+  const { rowsOfLeague, nowLiveHtml } = await import("../src/lib/nowlive.js");
+  const now = Date.parse("2026-10-25T15:40:00Z");
+  const rows = [
+    { home: "Frosinone", away: "Atalanta", home_score: "1", away_score: "2", status: "live", status_text: "2nd half", live_minute: "80", competition: "Italian Serie A", time: "2026-10-25T14:00:00+00:00", url: "/football/match/frosinone-vs-atalanta/x/" },
+    { home: "Hull City", away: "Brentford", home_score: "0", away_score: "0", status: "live", status_text: "2nd half", live_minute: "81", competition: "English Premier League" },
+    { home: "<b>", away: "X", competition: "LigaPro Serie A" }
+  ];
+  const sa = rowsOfLeague(rows, "serie-a");
+  assert.deepEqual(sa.map((m) => m.home), ["Frosinone"]);
+  const html = nowLiveHtml(sa, "/live/?lega=serie-a", now);
+  assert.match(html, /In corso adesso/);
+  assert.match(html, /80'/);
+  assert.match(html, /Frosinone<\/span><span class="now-live-score">1<span>:<\/span>2<\/span>/);
+  assert.match(html, /href="\/live\/\?lega=serie-a"/);
+  assert.equal(nowLiveHtml([], "/live/"), "");
+  assert.equal(rowsOfLeague(null, "serie-a").length, 0);
+});
