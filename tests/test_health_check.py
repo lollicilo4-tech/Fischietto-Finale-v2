@@ -57,6 +57,14 @@ class PublishedDataTests(unittest.TestCase):
         self.write(self.turno)
         self.assertTrue(any("già finito" in m for l, m in self.levels() if l == health.ERROR))
 
+    def test_stale_fixture_detected_even_if_other_matches_are_future(self):
+        self.turno["matches"][0]["kickoff"] = (
+            self.now - timedelta(hours=5)
+        ).isoformat().replace("+00:00", "Z")
+        self.write(self.turno)
+        errors = [m for level, m in self.levels() if level == health.ERROR]
+        self.assertTrue(any("kickoff passato" in message for message in errors))
+
     def test_invalid_or_demo_or_missing(self):
         self.write(dict(self.turno, demo=True))
         self.assertTrue(any("dati di esempio" in m for _, m in self.levels()))
