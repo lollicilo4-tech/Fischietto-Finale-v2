@@ -3960,6 +3960,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8158
   },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-24T18:45:00Z",
+   "hg": 2
+  },
   "top": [
    1,
    1
@@ -12237,6 +12242,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7799
   },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-24T12:00:00Z",
+   "hg": 0
+  },
   "top": [
    1,
    1
@@ -12806,6 +12816,11 @@
    "label": "Under 3,5 · massimo 3 gol",
    "p": 0.742
   },
+  "result": {
+   "ag": 2,
+   "date": "2026-10-24T16:30:00Z",
+   "hg": 1
+  },
   "top": [
    1,
    1
@@ -13087,6 +13102,11 @@
    "kind": "doppia",
    "label": "1X · Atleti non perde",
    "p": 0.838
+  },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-24T19:00:00Z",
+   "hg": 1
   },
   "top": [
    2,
@@ -13510,6 +13530,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8271
+  },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-24T14:15:00Z",
+   "hg": 2
   },
   "top": [
    1,
