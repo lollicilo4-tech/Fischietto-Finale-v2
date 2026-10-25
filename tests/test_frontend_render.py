@@ -179,7 +179,9 @@ class NewFeaturesRenderTests(unittest.TestCase):
     def test_team_page_favourites_and_share(self):
         result = self.results["SA"]
         self.assertTrue(result["teamOpen"] and result["teamClosed"])
-        self.assertIn("Segna il", result["team"])
+        # Il testo dipende dai dati del giorno: "Segna il 5% in più", "Segna l'11% in più" (elisione davanti
+        # a 8, 11, 80…) oppure "Nella media del campionato".
+        self.assertRegex(result["team"], r"Segna (il|l’|l')\d|Nella media del campionato")
         self.assertIn("Come può finire la stagione", result["team"])
         self.assertTrue(result["favOn"])
         self.assertIn('class="match fav"', result["matchesAfterFav"])
