@@ -32,7 +32,8 @@ interface Props {
   noindex?: boolean;
   crumbs?: { name: string; path: string }[];  // ultimi livelli del percorso (partita, squadra)
   ld?: any[];               // altri dati strutturati (schema.org) della pagina
-  itOnly?: boolean;         // pagina solo in italiano (Fantacalcio): niente hreflang, "EN" porta alla Home inglese
+  itOnly?: boolean;
+  ogImage?: { path: string; width: number; height: number; alt: string };  // anteprima del link (altrimenti l'icona)         // pagina solo in italiano (Fantacalcio): niente hreflang, "EN" porta alla Home inglese
 }
 /* La lingua segue l'indirizzo: tutti i testi e i link sotto (t(), leagueUrl...) la usano. */
 const lang = setLang(langOfPath(Astro.props.path));
@@ -82,7 +83,11 @@ const structured = noindex ? [] : [Astro.props.league ? breadcrumbLd(site, { lea
 <meta property="og:title" content={fullTitle}>
 <meta property="og:description" content={description}>
 <meta property="og:url" content={canonical}>
-<meta property="og:image" content={site + "/icon-512.png"}>
+<meta property="og:image" content={site + (Astro.props.ogImage ? Astro.props.ogImage.path : "/icon-512.png")}>
+{Astro.props.ogImage && <meta property="og:image:width" content={String(Astro.props.ogImage.width)}>}
+{Astro.props.ogImage && <meta property="og:image:height" content={String(Astro.props.ogImage.height)}>}
+{Astro.props.ogImage && <meta property="og:image:alt" content={Astro.props.ogImage.alt}>}
+{Astro.props.ogImage && <meta name="twitter:card" content="summary_large_image">}
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">

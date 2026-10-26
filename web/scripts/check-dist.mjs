@@ -42,6 +42,15 @@ LEAGUES.forEach((l) => Object.values(SECTIONS).forEach((s) => expected.push("/" 
 expected.push("/en/", "/en/live/", "/en/how-it-works/", "/en/privacy/", "/en/my-predictions/");
 expected.forEach((u) => { if (!pageFor(u)) fail("manca " + u); });
 
+/* Immagini dei consigli fantacalcio: PNG veri, della misura giusta (non l'icona di riserva usata se il disegno fallisce). */
+[["/fantacalcio/consigli.png", 1080, 1350], ["/fantacalcio/anteprima.png", 1200, 630]].forEach(([u, w, h]) => {
+  const file = pageFor(u);
+  if (!file) return fail("manca " + u);
+  const b = readFileSync(file);
+  const isPng = b.length > 24 && b.readUInt32BE(0) === 0x89504e47;
+  if (!isPng || b.readUInt32BE(16) !== w || b.readUInt32BE(20) !== h) fail(u + ": non è un PNG " + w + "×" + h + " (disegno non riuscito?)");
+});
+
 /* HTML: script, gestori inline, link interni, testo. */
 const files = walk(dist);
 const html = files.filter((f) => f.endsWith(".html"));

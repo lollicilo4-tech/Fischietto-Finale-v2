@@ -23,6 +23,10 @@
 /*.json
   Cache-Control: public, max-age=300
 
+# Le immagini dei consigli fantacalcio cambiano a ogni aggiornamento dei dati.
+/fantacalcio/*.png
+  Cache-Control: public, max-age=300
+
 # Le anteprime dei branch (*.pages.dev) non devono finire su Google al posto del sito vero.
 https://:project.pages.dev/*
   X-Robots-Tag: noindex
