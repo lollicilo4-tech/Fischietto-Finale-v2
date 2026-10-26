@@ -14,8 +14,8 @@ const dash = turno && turno.matches.length ? homeDashboard(ctx, turno.matches) :
 const L = LEAGUES.find((l) => l.code === league);
 const tilePartite = turno ? (meta.matchday ? (L.knockout ? t("Turno") : t("Giornata")) + " " + meta.matchday + " · " : "") + t("{n} partite", { n: meta.nMatches }) : t("Il prossimo turno");
 const tileStorico = storico && storico.n ? t("Esito azzeccato {hit} su {n}", { hit: storico.hit, n: storico.n }) : t("Pronostici e risultati veri");
-/* La griglia della Home segue l'ordine del sito attuale (Serie A, Premier, LaLiga...). */
-const grid = ["SA", "PL", "PD", "BL1", "FL1", "CL", "EL", "UECL"].map((c) => LEAGUES.find((l) => l.code === c));
+/* La griglia della Home segue l'ordine del sito attuale (Serie A, Premier, LaLiga...); la Copa del Rey chiude la terza riga. */
+const grid = ["SA", "PL", "PD", "BL1", "FL1", "CL", "EL", "UECL", "CDR"].map((c) => LEAGUES.find((l) => l.code === c));
 ---
 <section id="p-home" aria-label={"Home " + L.name}>
 <div id="reference-home-hero" class="reference-home-hero">
