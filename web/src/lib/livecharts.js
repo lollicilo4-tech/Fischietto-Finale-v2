@@ -7,6 +7,7 @@
    4) statistiche live (possesso, tiri...) se il feed le fornisce.
    Funzioni pure: lo stato del momentum vive in un oggetto "store" passato da fuori. */
 import { pc, esc } from "./core.js";
+import { t, isEn } from "./i18n.js";
 
 export function lcNorm(v) { return String(v || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim(); }
 export function lcText(v) {
@@ -124,7 +125,7 @@ function lcTimelineSvg(events, now, home, away) {
     g += '<text class="lc-ev ' + e.kind + '" x="' + x(e.minute) + '" y="' + y + '" text-anchor="middle"><title>' +
       esc(e.minute + "' " + (e.player || "") + " (" + (e.side === "home" ? home : away) + ")") + "</title>" + icon[e.kind] + "</text>";
   });
-  return '<svg class="lc-timeline" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Linea del tempo: in alto ' + esc(home) + ", in basso " + esc(away) + '">' + g + "</svg>";
+  return '<svg class="lc-timeline" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + t("Linea del tempo: in alto {home}, in basso {away}", { home: esc(home), away: esc(away) }) + '">' + g + "</svg>";
 }
 function lcProbSvg(pts, end) {
   const W = 340, H = 150, L = 30, R = 8, T = 8, B = 22, span = Math.max(90, end);
@@ -140,7 +141,7 @@ function lcProbSvg(pts, end) {
   [0, 0.5, 1].forEach((v) => { g += '<text class="lc-tick" x="' + (L - 4) + '" y="' + (y(v) + 3) + '" text-anchor="end">' + Math.round(v * 100) + "%</text>"; });
   [0, 45, 90].forEach((m) => { g += '<text class="lc-tick" x="' + x(m) + '" y="' + (H - 6) + '" text-anchor="middle">' + m + "'</text>"; });
   g += '<line class="lc-axis" x1="' + x(45) + '" y1="' + T + '" x2="' + x(45) + '" y2="' + (H - B) + '" stroke-dasharray="3 3"/>';
-  return '<svg class="lc-prob" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Probabilità di 1, X e 2 minuto per minuto">' + g + "</svg>";
+  return '<svg class="lc-prob" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + t("Probabilità di 1, X e 2 minuto per minuto") + '">' + g + "</svg>";
 }
 const LC_STAT_NAMES = {
   "ball possession": "Possesso palla", "possession": "Possesso palla", "total shots": "Tiri totali", "shots total": "Tiri totali",
@@ -176,9 +177,10 @@ export function lcStats(raw) {
 }
 function lcStatsHtml(stats) {
   if (!stats.length) return "";
-  return '<h5>Statistiche</h5><div class="lc-stats">' + stats.map((s) => {
-    const tot = (s.home + s.away) || 1, fmt = (v) => (s.pct ? Math.round(v) + "%" : String(Math.round(v * 100) / 100).replace(".", ","));
-    return '<div class="lc-stat"><div class="lc-stat-head"><b>' + fmt(s.home) + "</b><span>" + esc(s.label) + "</span><b>" + fmt(s.away) + "</b></div>" +
+  return "<h5>" + t("Statistiche") + '</h5><div class="lc-stats">' + stats.map((s) => {
+    const tot = (s.home + s.away) || 1, num = (v) => (isEn() ? String(v) : String(v).replace(".", ","));
+    const fmt = (v) => (s.pct ? Math.round(v) + "%" : num(Math.round(v * 100) / 100));
+    return '<div class="lc-stat"><div class="lc-stat-head"><b>' + fmt(s.home) + "</b><span>" + esc(t(s.label)) + "</span><b>" + fmt(s.away) + "</b></div>" +
       '<div class="lc-stat-bar"><i class="h" style="width:' + Math.round(s.home / tot * 100) + '%"></i><i class="a" style="width:' + Math.round(s.away / tot * 100) + '%"></i></div></div>';
   }).join("") + "</div>";
 }
@@ -260,26 +262,27 @@ function lcMomentumSvg(bars, events, now, first) {
     g += '<text class="lc-ev" x="' + x(e.minute) + '" y="' + (e.side === "home" ? mid - amp - 4 : mid + amp + 13) + '" text-anchor="middle">⚽</text>';
   });
   [0, 45, 90].forEach((m) => { g += '<text class="lc-tick" x="' + x(m) + '" y="' + (H - 1) + '" text-anchor="middle">' + m + "'</text>"; });
-  return '<svg class="lc-momentum" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Momentum stimato: barre in alto per la squadra di casa, in basso per gli ospiti">' + g + "</svg>";
+  return '<svg class="lc-momentum" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + t("Momentum stimato: barre in alto per la squadra di casa, in basso per gli ospiti") + '">' + g + "</svg>";
 }
 /* source: "server" se i campioni vengono dal Worker che registra ogni minuto le partite dei nostri
    campionati, "local" (predefinito) se li ha registrati questo browser da quando la partita è aperta. */
 function lcMomentumHtml(samples, events, now, home, away, source) {
   if (!samples || !samples.length) return "";
   const bars = lcMomentumBars(samples), first = samples[0].m, server = source === "server";
-  const how = "Stima nostra dai dati SportScore: attacchi pericolosi, tiri e angoli, minuto per minuto. Non è il momentum di Sofascore.";
+  const how = t("Stima nostra dai dati SportScore: attacchi pericolosi, tiri e angoli, minuto per minuto. Non è il momentum di Sofascore.");
+  const min = esc(first);
   if (!bars.length) {
-    return '<h5>Momentum (stima)</h5><p class="lc-note">' + (server
-      ? "Il nostro server registra la partita dal minuto " + esc(first) + "': il primo tratto compare al prossimo aggiornamento, circa un minuto. "
-      : "Il grafico si costruisce da adesso (" + esc(first) + "'): il primo tratto compare dopo il prossimo aggiornamento, circa un minuto, tenendo aperta la partita. ") +
+    return "<h5>" + t("Momentum (stima)") + '</h5><p class="lc-note">' + (server
+      ? t("Il nostro server registra la partita dal minuto {min}': il primo tratto compare al prossimo aggiornamento, circa un minuto.", { min }) + " "
+      : t("Il grafico si costruisce da adesso ({min}'): il primo tratto compare dopo il prossimo aggiornamento, circa un minuto, tenendo aperta la partita.", { min }) + " ") +
       how + "</p>";
   }
   const since = server
-    ? " Registrato dal nostro server ogni minuto" + (first > 0 ? " dal minuto " + esc(first) + "'; la zona grigia è il tempo prima." : ".")
-    : (first > 0 ? " Registrato da quando hai aperto la partita (" + esc(first) + "'); la zona grigia è il tempo prima." : "");
-  return "<h5>Momentum (stima)</h5>" + lcMomentumSvg(bars, events, now, first) +
+    ? " " + (first > 0 ? t("Registrato dal nostro server ogni minuto dal minuto {min}'; la zona grigia è il tempo prima.", { min }) : t("Registrato dal nostro server ogni minuto."))
+    : (first > 0 ? " " + t("Registrato da quando hai aperto la partita ({min}'); la zona grigia è il tempo prima.", { min }) : "");
+  return "<h5>" + t("Momentum (stima)") + "</h5>" + lcMomentumSvg(bars, events, now, first) +
     '<div class="lc-legend"><span class="k1">▲ ' + esc(home) + '</span><span class="k2">▼ ' + esc(away) + "</span></div>" +
-    '<p class="lc-note">' + how + since + " Si aggiorna ogni minuto finché i dettagli restano aperti.</p>";
+    '<p class="lc-note">' + how + since + " " + t("Si aggiorna ogni minuto finché i dettagli restano aperti.") + "</p>";
 }
 
 /* Serie da mostrare: quella del server se ha almeno due campioni (copre anche i minuti prima
@@ -299,23 +302,23 @@ export function liveChartsHtml(o) {
   if (hasTimeline) parts.push(lcTimelineSvg(events, now, o.home, o.away) + '<div class="lc-legend"><span>▲ ' + esc(o.home) + "</span><span>▼ " + esc(o.away) + "</span></div>");
   if (isFinite(gh) && isFinite(ga) && now != null && now > 0) {
     const prior = lcPrior(o.priors, o.home, o.away), pts = lcCurve(prior, events, now, gh, ga);
-    const note = (prior.model ? "Parte dal pronostico pre-partita del modello" : "Partita fuori dai nostri campionati: parte da medie generali") +
-      " e si aggiorna con risultato, minuto ed espulsioni. Non è una quota né un invito a scommettere.";
+    const note = prior.model ? t("Parte dal pronostico pre-partita del modello e si aggiorna con risultato, minuto ed espulsioni. Non è una quota né un invito a scommettere.")
+      : t("Partita fuori dai nostri campionati: parte da medie generali e si aggiorna con risultato, minuto ed espulsioni. Non è una quota né un invito a scommettere.");
     if (pts && pts.length > 1) {
       const last = pts[pts.length - 1];
-      parts.push("<h5>Chi vince? Probabilità minuto per minuto</h5>" + lcProbSvg(pts, now) +
+      parts.push("<h5>" + t("Chi vince? Probabilità minuto per minuto") + "</h5>" + lcProbSvg(pts, now) +
         '<div class="lc-legend"><span class="k1">■ 1 ' + esc(o.home) + " " + pc(last.p1) + '</span><span class="kx">■ X ' + pc(last.px) +
         '</span><span class="k2">■ 2 ' + esc(o.away) + " " + pc(last.p2) + '</span></div><p class="lc-note">' + note + "</p>");
     } else {
       const rest = Math.max(0, (90 - Math.min(now, 90)) / 90), p = lcProb(prior.lh * rest, prior.la * rest, gh, ga);
-      parts.push('<h5>Chi vince adesso?</h5><div class="lc-legend"><span class="k1">1 ' + pc(p.p1) + '</span><span class="kx">X ' + pc(p.px) +
+      parts.push("<h5>" + t("Chi vince adesso?") + '</h5><div class="lc-legend"><span class="k1">1 ' + pc(p.p1) + '</span><span class="kx">X ' + pc(p.px) +
         '</span><span class="k2">2 ' + pc(p.p2) + '</span></div><p class="lc-note">' + note +
-        " Gli eventi del feed non spiegano tutto il risultato, quindi mostriamo solo la stima attuale.</p>");
+        " " + t("Gli eventi del feed non spiegano tutto il risultato, quindi mostriamo solo la stima attuale.") + "</p>");
     }
   }
   const momentumHtml = lcMomentumHtml(o.momentum, events, now, o.home, o.away, o.momentumSource);
   if (momentumHtml) parts.splice(hasTimeline ? 1 : 0, 0, momentumHtml);  // subito dopo la linea del tempo
   const statsHtml = lcStatsHtml(lcStats(o.stats));
   if (statsHtml) parts.push(statsHtml);
-  return parts.length ? '<section class="live-charts"><h4>Andamento della partita</h4>' + parts.join("") + "</section>" : "";
+  return parts.length ? '<section class="live-charts"><h4>' + t("Andamento della partita") + "</h4>" + parts.join("") + "</section>" : "";
 }
