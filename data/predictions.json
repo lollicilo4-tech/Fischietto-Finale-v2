@@ -31223,6 +31223,7622 @@
    1.49
   ]
  },
+ "CDR-1-2026-10-27-Alcalá-Las Palmas": {
+  "ai": false,
+  "away": "Las Palmas",
+  "base": {
+   "p1": 0.1979,
+   "p2": 0.5725,
+   "px": 0.2296
+  },
+  "gg": 0.5621,
+  "home": "Alcalá",
+  "kickoff": "2026-10-27T19:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.1979
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2296
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.5725
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.4275
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.8021
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8036
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5732
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4268
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6509
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5621
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4379
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.1497
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.48
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3236
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6539
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3042
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5105
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.454
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3892
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1081,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5732,
+  "p1": 0.1979,
+  "p2": 0.5725,
+  "pick": "2",
+  "pick_p": 0.5725,
+  "px": 0.2296,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8036
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.05,
+   1.93
+  ]
+ },
+ "CDR-1-2026-10-27-Arosa-Pontevedra": {
+  "ai": false,
+  "away": "Pontevedra",
+  "base": {
+   "p1": 0.4634,
+   "p2": 0.2822,
+   "px": 0.2544
+  },
+  "gg": 0.5784,
+  "home": "Arosa",
+  "kickoff": "2026-10-27T20:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4634
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2544
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2822
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7178
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5366
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7882
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5498
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4502
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6737
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5784
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4216
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3769
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2186
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5696
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4112
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.479
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3762
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4587
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3897
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1197,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5498,
+  "p1": 0.4634,
+  "p2": 0.2822,
+  "pick": "1",
+  "pick_p": 0.4634,
+  "px": 0.2544,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7882
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.64,
+   1.24
+  ]
+ },
+ "CDR-1-2026-10-27-Atlético Pinatarense-Elche": {
+  "ai": false,
+  "away": "Elche",
+  "base": {
+   "p1": 0.0879,
+   "p2": 0.7577,
+   "px": 0.1544
+  },
+  "gg": 0.5148,
+  "home": "Atlético Pinatarense",
+  "kickoff": "2026-10-27T18:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.0879
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1544
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.7577
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.2423
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.9121
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8584
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6633
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3367
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5552
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5148
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4852
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.065
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.6753
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.1831
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.7934
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.1725
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4913
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4424
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3652
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1123,
+    "score": "0-2"
+   }
+  ],
+  "o25": 0.6633,
+  "p1": 0.0879,
+  "p2": 0.7577,
+  "pick": "2",
+  "pick_p": 0.7577,
+  "px": 0.1544,
+  "recommendation": {
+   "code": "X2",
+   "kind": "doppia",
+   "label": "X2 · Elche non perde",
+   "p": 0.9121
+  },
+  "top": [
+   0,
+   2
+  ],
+  "xg": [
+   0.8,
+   2.62
+  ]
+ },
+ "CDR-1-2026-10-27-Atlético Tordesillas-Mirandés": {
+  "ai": false,
+  "away": "Mirandés",
+  "base": {
+   "p1": 0.4634,
+   "p2": 0.2822,
+   "px": 0.2544
+  },
+  "gg": 0.5784,
+  "home": "Atlético Tordesillas",
+  "kickoff": "2026-10-27T19:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4634
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2544
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2822
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7178
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5366
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7882
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5498
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4502
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6737
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5784
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4216
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3769
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2186
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5696
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4112
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.479
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3762
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4587
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3897
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1197,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5498,
+  "p1": 0.4634,
+  "p2": 0.2822,
+  "pick": "1",
+  "pick_p": 0.4634,
+  "px": 0.2544,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7882
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.64,
+   1.24
+  ]
+ },
+ "CDR-1-2026-10-27-CD Cuarte-Girona": {
+  "ai": false,
+  "away": "Girona",
+  "base": {
+   "p1": 0.0887,
+   "p2": 0.7495,
+   "px": 0.1618
+  },
+  "gg": 0.491,
+  "home": "CD Cuarte",
+  "kickoff": "2026-10-27T17:30:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.0887
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1618
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.7495
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.2505
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.9113
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8393
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.631
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.369
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5911
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.491
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.509
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.0631
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.6567
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.1826
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.7761
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.1862
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5239
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4142
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3954
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1205,
+    "score": "0-2"
+   }
+  ],
+  "o25": 0.631,
+  "p1": 0.0887,
+  "p2": 0.7495,
+  "pick": "2",
+  "pick_p": 0.7495,
+  "px": 0.1618,
+  "recommendation": {
+   "code": "X2",
+   "kind": "doppia",
+   "label": "X2 · Girona non perde",
+   "p": 0.9113
+  },
+  "top": [
+   0,
+   2
+  ],
+  "xg": [
+   0.76,
+   2.5
+  ]
+ },
+ "CDR-1-2026-10-27-CD Tudelano-Real Zaragoza": {
+  "ai": false,
+  "away": "Real Zaragoza",
+  "base": {
+   "p1": 0.4634,
+   "p2": 0.2822,
+   "px": 0.2544
+  },
+  "gg": 0.5784,
+  "home": "CD Tudelano",
+  "kickoff": "2026-10-27T20:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4634
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2544
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2822
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7178
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5366
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7882
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5498
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4502
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6737
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5784
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4216
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3769
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2186
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5696
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4112
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.479
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3762
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4587
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3897
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1197,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5498,
+  "p1": 0.4634,
+  "p2": 0.2822,
+  "pick": "1",
+  "pick_p": 0.4634,
+  "px": 0.2544,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7882
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.64,
+   1.24
+  ]
+ },
+ "CDR-1-2026-10-27-CF Calamocha-CE Europa": {
+  "ai": false,
+  "away": "CE Europa",
+  "base": {
+   "p1": 0.4634,
+   "p2": 0.2822,
+   "px": 0.2544
+  },
+  "gg": 0.5784,
+  "home": "CF Calamocha",
+  "kickoff": "2026-10-27T18:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4634
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2544
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2822
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7178
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5366
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7882
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5498
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4502
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6737
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5784
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4216
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3769
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2186
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5696
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4112
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.479
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3762
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4587
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3897
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1197,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5498,
+  "p1": 0.4634,
+  "p2": 0.2822,
+  "pick": "1",
+  "pick_p": 0.4634,
+  "px": 0.2544,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7882
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.64,
+   1.24
+  ]
+ },
+ "CDR-1-2026-10-27-Ciudad De Lucena-Rayo Majadahonda": {
+  "ai": false,
+  "away": "Rayo Majadahonda",
+  "base": {
+   "p1": 0.4634,
+   "p2": 0.2822,
+   "px": 0.2544
+  },
+  "gg": 0.5784,
+  "home": "Ciudad De Lucena",
+  "kickoff": "2026-10-27T19:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4634
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2544
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2822
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7178
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5366
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7882
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5498
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4502
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6737
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5784
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4216
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3769
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2186
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5696
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4112
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.479
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3762
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4587
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3897
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1197,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5498,
+  "p1": 0.4634,
+  "p2": 0.2822,
+  "pick": "1",
+  "pick_p": 0.4634,
+  "px": 0.2544,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7882
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.64,
+   1.24
+  ]
+ },
+ "CDR-1-2026-10-27-Don Benito-CD Extremadura": {
+  "ai": false,
+  "away": "CD Extremadura",
+  "base": {
+   "p1": 0.4634,
+   "p2": 0.2822,
+   "px": 0.2544
+  },
+  "gg": 0.5784,
+  "home": "Don Benito",
+  "kickoff": "2026-10-27T19:30:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4634
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2544
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2822
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7178
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5366
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7882
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5498
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4502
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6737
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5784
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4216
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3769
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2186
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5696
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4112
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.479
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3762
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4587
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3897
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1197,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5498,
+  "p1": 0.4634,
+  "p2": 0.2822,
+  "pick": "1",
+  "pick_p": 0.4634,
+  "px": 0.2544,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7882
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.64,
+   1.24
+  ]
+ },
+ "CDR-1-2026-10-27-Gimnastica Segoviana-Cultural Leonesa": {
+  "ai": false,
+  "away": "Cultural Leonesa",
+  "base": {
+   "p1": 0.4634,
+   "p2": 0.2822,
+   "px": 0.2544
+  },
+  "gg": 0.5784,
+  "home": "Gimnastica Segoviana",
+  "kickoff": "2026-10-27T19:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4634
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2544
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2822
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7178
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5366
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7882
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5498
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4502
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6737
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5784
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4216
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3769
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2186
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5696
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4112
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.479
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3762
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4587
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3897
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1197,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5498,
+  "p1": 0.4634,
+  "p2": 0.2822,
+  "pick": "1",
+  "pick_p": 0.4634,
+  "px": 0.2544,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7882
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.64,
+   1.24
+  ]
+ },
+ "CDR-1-2026-10-27-Llanera-Ponferradina": {
+  "ai": false,
+  "away": "Ponferradina",
+  "base": {
+   "p1": 0.4634,
+   "p2": 0.2822,
+   "px": 0.2544
+  },
+  "gg": 0.5784,
+  "home": "Llanera",
+  "kickoff": "2026-10-27T19:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4634
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2544
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2822
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7178
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5366
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7882
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5498
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4502
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6737
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5784
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4216
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3769
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2186
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5696
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4112
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.479
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3762
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4587
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3897
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1197,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5498,
+  "p1": 0.4634,
+  "p2": 0.2822,
+  "pick": "1",
+  "pick_p": 0.4634,
+  "px": 0.2544,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7882
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.64,
+   1.24
+  ]
+ },
+ "CDR-1-2026-10-27-Manacor-Villarreal": {
+  "ai": false,
+  "away": "Villarreal",
+  "base": {
+   "p1": 0.0748,
+   "p2": 0.7837,
+   "px": 0.1415
+  },
+  "gg": 0.4994,
+  "home": "Manacor",
+  "kickoff": "2026-10-27T20:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.0748
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1415
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.7837
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.2163
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.9252
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8657
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6763
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3237
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5403
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.4994
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.5006
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.0548
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.7032
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.1625
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.811
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.1552
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4854
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4329
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3634
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1142,
+    "score": "0-2"
+   }
+  ],
+  "o25": 0.6763,
+  "p1": 0.0748,
+  "p2": 0.7837,
+  "pick": "2",
+  "pick_p": 0.7837,
+  "px": 0.1415,
+  "recommendation": {
+   "code": "X2",
+   "kind": "doppia",
+   "label": "X2 · Villarreal non perde",
+   "p": 0.9252
+  },
+  "top": [
+   0,
+   2
+  ],
+  "xg": [
+   0.76,
+   2.73
+  ]
+ },
+ "CDR-1-2026-10-27-Manresa-Sant Andreu": {
+  "ai": false,
+  "away": "Sant Andreu",
+  "base": {
+   "p1": 0.4634,
+   "p2": 0.2822,
+   "px": 0.2544
+  },
+  "gg": 0.5784,
+  "home": "Manresa",
+  "kickoff": "2026-10-27T19:30:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4634
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2544
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2822
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7178
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5366
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7882
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5498
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4502
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6737
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5784
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4216
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3769
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2186
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5696
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4112
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.479
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3762
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4587
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3897
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1197,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5498,
+  "p1": 0.4634,
+  "p2": 0.2822,
+  "pick": "1",
+  "pick_p": 0.4634,
+  "px": 0.2544,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7882
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.64,
+   1.24
+  ]
+ },
+ "CDR-1-2026-10-27-Recreativo Huelva-Rayo Vallecano": {
+  "ai": false,
+  "away": "Rayo Vallecano",
+  "base": {
+   "p1": 0.0906,
+   "p2": 0.7498,
+   "px": 0.1596
+  },
+  "gg": 0.5074,
+  "home": "Recreativo Huelva",
+  "kickoff": "2026-10-27T20:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.0906
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1596
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.7498
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.2502
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.9094
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8494
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6478
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3522
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5726
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5074
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4926
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.0661
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.6628
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.1866
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.7833
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.1812
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5057
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4322
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3778
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1153,
+    "score": "0-2"
+   }
+  ],
+  "o25": 0.6478,
+  "p1": 0.0906,
+  "p2": 0.7498,
+  "pick": "2",
+  "pick_p": 0.7498,
+  "px": 0.1596,
+  "recommendation": {
+   "code": "X2",
+   "kind": "doppia",
+   "label": "X2 · Rayo Vallecano non perde",
+   "p": 0.9094
+  },
+  "top": [
+   0,
+   2
+  ],
+  "xg": [
+   0.79,
+   2.55
+  ]
+ },
+ "CDR-1-2026-10-27-Sestao-Espanyol": {
+  "ai": false,
+  "away": "Espanyol",
+  "base": {
+   "p1": 0.0929,
+   "p2": 0.7417,
+   "px": 0.1654
+  },
+  "gg": 0.4959,
+  "home": "Sestao",
+  "kickoff": "2026-10-27T18:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.0929
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1654
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.7417
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.2583
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.9071
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8376
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6281
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3719
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5942
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.4959
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.5041
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.0664
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.6487
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.1888
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.7712
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.1913
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5242
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4176
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3948
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1194,
+    "score": "0-2"
+   }
+  ],
+  "o25": 0.6281,
+  "p1": 0.0929,
+  "p2": 0.7417,
+  "pick": "2",
+  "pick_p": 0.7417,
+  "px": 0.1654,
+  "recommendation": {
+   "code": "X2",
+   "kind": "doppia",
+   "label": "X2 · Espanyol non perde",
+   "p": 0.9071
+  },
+  "top": [
+   0,
+   2
+  ],
+  "xg": [
+   0.77,
+   2.47
+  ]
+ },
+ "CDR-1-2026-10-27-Sporting de Alcázar-Málaga": {
+  "ai": false,
+  "away": "Málaga",
+  "base": {
+   "p1": 0.11,
+   "p2": 0.7131,
+   "px": 0.1769
+  },
+  "gg": 0.5215,
+  "home": "Sporting de Alcázar",
+  "kickoff": "2026-10-27T20:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.11
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1769
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.7131
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.2869
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.89
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8373
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6273
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3727
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.595
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5215
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4785
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.0808
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.6229
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.2144
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.7565
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.2073
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5144
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4382
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3832
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1127,
+    "score": "0-2"
+   }
+  ],
+  "o25": 0.6273,
+  "p1": 0.11,
+  "p2": 0.7131,
+  "pick": "2",
+  "pick_p": 0.7131,
+  "px": 0.1769,
+  "recommendation": {
+   "code": "X2",
+   "kind": "doppia",
+   "label": "X2 · Málaga non perde",
+   "p": 0.89
+  },
+  "top": [
+   0,
+   2
+  ],
+  "xg": [
+   0.84,
+   2.39
+  ]
+ },
+ "CDR-1-2026-10-27-UD Castellonense-Almería": {
+  "ai": false,
+  "away": "Almería",
+  "base": {
+   "p1": 0.1979,
+   "p2": 0.5725,
+   "px": 0.2296
+  },
+  "gg": 0.5621,
+  "home": "UD Castellonense",
+  "kickoff": "2026-10-27T18:45:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.1979
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2296
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.5725
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.4275
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.8021
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8036
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5732
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4268
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6509
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5621
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4379
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.1497
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.48
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3236
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6539
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3042
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5105
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.454
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3892
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1081,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5732,
+  "p1": 0.1979,
+  "p2": 0.5725,
+  "pick": "2",
+  "pick_p": 0.5725,
+  "px": 0.2296,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8036
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.05,
+   1.93
+  ]
+ },
+ "CDR-1-2026-10-28-Alcoyano-Mallorca": {
+  "ai": false,
+  "away": "Mallorca",
+  "base": {
+   "p1": 0.0861,
+   "p2": 0.7587,
+   "px": 0.1551
+  },
+  "gg": 0.5036,
+  "home": "Alcoyano",
+  "kickoff": "2026-10-28T19:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.0861
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1551
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.7587
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.2413
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.9139
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8525
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6532
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3468
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5666
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5036
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4964
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.0627
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.6727
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.1798
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.7898
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.1749
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5029
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4304
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3763
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1158,
+    "score": "0-2"
+   }
+  ],
+  "o25": 0.6532,
+  "p1": 0.0861,
+  "p2": 0.7587,
+  "pick": "2",
+  "pick_p": 0.7587,
+  "px": 0.1551,
+  "recommendation": {
+   "code": "X2",
+   "kind": "doppia",
+   "label": "X2 · Mallorca non perde",
+   "p": 0.9139
+  },
+  "top": [
+   0,
+   2
+  ],
+  "xg": [
+   0.78,
+   2.59
+  ]
+ },
+ "CDR-1-2026-10-28-Amorebieta-UD Logroñés": {
+  "ai": false,
+  "away": "UD Logroñés",
+  "base": {
+   "p1": 0.4634,
+   "p2": 0.2822,
+   "px": 0.2544
+  },
+  "gg": 0.5784,
+  "home": "Amorebieta",
+  "kickoff": "2026-10-28T19:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4634
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2544
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2822
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7178
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5366
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7882
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5498
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4502
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6737
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5784
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4216
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3769
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2186
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5696
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4112
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.479
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3762
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4587
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3897
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1197,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5498,
+  "p1": 0.4634,
+  "p2": 0.2822,
+  "pick": "1",
+  "pick_p": 0.4634,
+  "px": 0.2544,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7882
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.64,
+   1.24
+  ]
+ },
+ "CDR-1-2026-10-28-Anaitasuna-Alavés": {
+  "ai": false,
+  "away": "Alavés",
+  "base": {
+   "p1": 0.0903,
+   "p2": 0.7515,
+   "px": 0.1582
+  },
+  "gg": 0.5112,
+  "home": "Anaitasuna",
+  "kickoff": "2026-10-28T18:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.0903
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1582
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.7515
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.2485
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.9097
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8527
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6534
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3466
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5663
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5112
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4888
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.0663
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.6664
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.1864
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.7865
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.1786
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5001
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4369
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3727
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1139,
+    "score": "0-2"
+   }
+  ],
+  "o25": 0.6534,
+  "p1": 0.0903,
+  "p2": 0.7515,
+  "pick": "2",
+  "pick_p": 0.7515,
+  "px": 0.1582,
+  "recommendation": {
+   "code": "X2",
+   "kind": "doppia",
+   "label": "X2 · Alavés non perde",
+   "p": 0.9097
+  },
+  "top": [
+   0,
+   2
+  ],
+  "xg": [
+   0.8,
+   2.57
+  ]
+ },
+ "CDR-1-2026-10-28-Badajoz-Tenerife": {
+  "ai": false,
+  "away": "Tenerife",
+  "base": {
+   "p1": 0.1979,
+   "p2": 0.5725,
+   "px": 0.2296
+  },
+  "gg": 0.5621,
+  "home": "Badajoz",
+  "kickoff": "2026-10-28T19:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.1979
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2296
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.5725
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.4275
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.8021
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8036
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5732
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4268
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6509
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5621
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4379
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.1497
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.48
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3236
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6539
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3042
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5105
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.454
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3892
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1081,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5732,
+  "p1": 0.1979,
+  "p2": 0.5725,
+  "pick": "2",
+  "pick_p": 0.5725,
+  "px": 0.2296,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8036
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.05,
+   1.93
+  ]
+ },
+ "CDR-1-2026-10-28-CD Artistico Navalcarnero-Real Betis": {
+  "ai": false,
+  "away": "Real Betis",
+  "base": {
+   "p1": 0.0761,
+   "p2": 0.7821,
+   "px": 0.1418
+  },
+  "gg": 0.5056,
+  "home": "CD Artistico Navalcarnero",
+  "kickoff": "2026-10-28T20:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.0761
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1418
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.7821
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.2179
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.9239
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8681
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6805
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3195
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5354
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5056
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4944
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.0562
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.7032
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.1649
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.8119
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.1549
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.48
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4393
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3581
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1124,
+    "score": "0-2"
+   }
+  ],
+  "o25": 0.6805,
+  "p1": 0.0761,
+  "p2": 0.7821,
+  "pick": "2",
+  "pick_p": 0.7821,
+  "px": 0.1418,
+  "recommendation": {
+   "code": "X2",
+   "kind": "doppia",
+   "label": "X2 · Real Betis non perde",
+   "p": 0.9239
+  },
+  "top": [
+   0,
+   2
+  ],
+  "xg": [
+   0.77,
+   2.74
+  ]
+ },
+ "CDR-1-2026-10-28-CD Minera-FC Cartagena": {
+  "ai": false,
+  "away": "FC Cartagena",
+  "base": {
+   "p1": 0.4634,
+   "p2": 0.2822,
+   "px": 0.2544
+  },
+  "gg": 0.5784,
+  "home": "CD Minera",
+  "kickoff": "2026-10-28T19:30:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4634
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2544
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2822
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7178
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5366
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7882
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5498
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4502
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6737
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5784
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4216
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3769
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2186
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5696
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4112
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.479
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3762
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4587
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3897
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1197,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5498,
+  "p1": 0.4634,
+  "p2": 0.2822,
+  "pick": "1",
+  "pick_p": 0.4634,
+  "px": 0.2544,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7882
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.64,
+   1.24
+  ]
+ },
+ "CDR-1-2026-10-28-CD Pamplona-Eibar": {
+  "ai": false,
+  "away": "Eibar",
+  "base": {
+   "p1": 0.1979,
+   "p2": 0.5725,
+   "px": 0.2296
+  },
+  "gg": 0.5621,
+  "home": "CD Pamplona",
+  "kickoff": "2026-10-28T18:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.1979
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2296
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.5725
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.4275
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.8021
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8036
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5732
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4268
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6509
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5621
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4379
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.1497
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.48
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3236
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6539
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3042
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5105
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.454
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3892
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1081,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5732,
+  "p1": 0.1979,
+  "p2": 0.5725,
+  "pick": "2",
+  "pick_p": 0.5725,
+  "px": 0.2296,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8036
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.05,
+   1.93
+  ]
+ },
+ "CDR-1-2026-10-28-CD Tarancon-Levante": {
+  "ai": false,
+  "away": "Levante",
+  "base": {
+   "p1": 0.0849,
+   "p2": 0.7648,
+   "px": 0.1502
+  },
+  "gg": 0.5169,
+  "home": "CD Tarancon",
+  "kickoff": "2026-10-28T18:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.0849
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1502
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.7648
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.2352
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.9151
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8638
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6727
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3273
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5444
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5169
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4831
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.0632
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.685
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.1789
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.8006
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.166
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4831
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4467
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3584
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1109,
+    "score": "0-2"
+   }
+  ],
+  "o25": 0.6727,
+  "p1": 0.0849,
+  "p2": 0.7648,
+  "pick": "2",
+  "pick_p": 0.7648,
+  "px": 0.1502,
+  "recommendation": {
+   "code": "X2",
+   "kind": "doppia",
+   "label": "X2 · Levante non perde",
+   "p": 0.9151
+  },
+  "top": [
+   0,
+   2
+  ],
+  "xg": [
+   0.8,
+   2.67
+  ]
+ },
+ "CDR-1-2026-10-28-Cieza-Granada": {
+  "ai": false,
+  "away": "Granada",
+  "base": {
+   "p1": 0.1979,
+   "p2": 0.5725,
+   "px": 0.2296
+  },
+  "gg": 0.5621,
+  "home": "Cieza",
+  "kickoff": "2026-10-28T19:30:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.1979
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2296
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.5725
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.4275
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.8021
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8036
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5732
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4268
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6509
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5621
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4379
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.1497
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.48
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3236
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6539
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3042
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5105
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.454
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3892
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1081,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5732,
+  "p1": 0.1979,
+  "p2": 0.5725,
+  "pick": "2",
+  "pick_p": 0.5725,
+  "px": 0.2296,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8036
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.05,
+   1.93
+  ]
+ },
+ "CDR-1-2026-10-28-Coruxo-Zamora CF": {
+  "ai": false,
+  "away": "Zamora CF",
+  "base": {
+   "p1": 0.4634,
+   "p2": 0.2822,
+   "px": 0.2544
+  },
+  "gg": 0.5784,
+  "home": "Coruxo",
+  "kickoff": "2026-10-28T18:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4634
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2544
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2822
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7178
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5366
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7882
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5498
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4502
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6737
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5784
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4216
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3769
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2186
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5696
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4112
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.479
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3762
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4587
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3897
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1197,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5498,
+  "p1": 0.4634,
+  "p2": 0.2822,
+  "pick": "1",
+  "pick_p": 0.4634,
+  "px": 0.2544,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7882
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.64,
+   1.24
+  ]
+ },
+ "CDR-1-2026-10-28-Covadonga-Real Valladolid": {
+  "ai": false,
+  "away": "Real Valladolid",
+  "base": {
+   "p1": 0.1979,
+   "p2": 0.5725,
+   "px": 0.2296
+  },
+  "gg": 0.5621,
+  "home": "Covadonga",
+  "kickoff": "2026-10-28T19:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.1979
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2296
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.5725
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.4275
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.8021
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8036
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5732
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4268
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6509
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5621
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4379
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.1497
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.48
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3236
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6539
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3042
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5105
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.454
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3892
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1081,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5732,
+  "p1": 0.1979,
+  "p2": 0.5725,
+  "pick": "2",
+  "pick_p": 0.5725,
+  "px": 0.2296,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8036
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.05,
+   1.93
+  ]
+ },
+ "CDR-1-2026-10-28-Gimnástica Torrelavega-UD Ourense": {
+  "ai": false,
+  "away": "UD Ourense",
+  "base": {
+   "p1": 0.4634,
+   "p2": 0.2822,
+   "px": 0.2544
+  },
+  "gg": 0.5784,
+  "home": "Gimnástica Torrelavega",
+  "kickoff": "2026-10-28T19:30:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4634
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2544
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2822
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7178
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5366
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7882
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5498
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4502
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6737
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5784
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4216
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3769
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2186
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5696
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4112
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.479
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3762
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4587
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3897
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1197,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5498,
+  "p1": 0.4634,
+  "p2": 0.2822,
+  "pick": "1",
+  "pick_p": 0.4634,
+  "px": 0.2544,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7882
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.64,
+   1.24
+  ]
+ },
+ "CDR-1-2026-10-28-Mijas Las Lagunas-Real Jaen CF": {
+  "ai": false,
+  "away": "Real Jaen CF",
+  "base": {
+   "p1": 0.4634,
+   "p2": 0.2822,
+   "px": 0.2544
+  },
+  "gg": 0.5784,
+  "home": "Mijas Las Lagunas",
+  "kickoff": "2026-10-28T19:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4634
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2544
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2822
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7178
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5366
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7882
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5498
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4502
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6737
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5784
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4216
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3769
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2186
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5696
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4112
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.479
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3762
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4587
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3897
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1197,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5498,
+  "p1": 0.4634,
+  "p2": 0.2822,
+  "pick": "1",
+  "pick_p": 0.4634,
+  "px": 0.2544,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7882
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.64,
+   1.24
+  ]
+ },
+ "CDR-1-2026-10-28-Numancia-Real Oviedo": {
+  "ai": false,
+  "away": "Real Oviedo",
+  "base": {
+   "p1": 0.1015,
+   "p2": 0.7236,
+   "px": 0.1749
+  },
+  "gg": 0.4973,
+  "home": "Numancia",
+  "kickoff": "2026-10-28T19:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.1015
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1749
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.7236
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.2764
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.8985
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8275
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6117
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3883
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6116
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.4973
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.5027
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.0722
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.6268
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.2007
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.7554
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.2063
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5348
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4142
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4035
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1197,
+    "score": "0-2"
+   }
+  ],
+  "o25": 0.6117,
+  "p1": 0.1015,
+  "p2": 0.7236,
+  "pick": "2",
+  "pick_p": 0.7236,
+  "px": 0.1749,
+  "recommendation": {
+   "code": "X2",
+   "kind": "doppia",
+   "label": "X2 · Real Oviedo non perde",
+   "p": 0.8985
+  },
+  "top": [
+   0,
+   2
+  ],
+  "xg": [
+   0.78,
+   2.38
+  ]
+ },
+ "CDR-1-2026-10-28-Poblense-Ceuta": {
+  "ai": false,
+  "away": "Ceuta",
+  "base": {
+   "p1": 0.1979,
+   "p2": 0.5725,
+   "px": 0.2296
+  },
+  "gg": 0.5621,
+  "home": "Poblense",
+  "kickoff": "2026-10-28T18:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.1979
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2296
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.5725
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.4275
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.8021
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8036
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5732
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4268
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6509
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5621
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4379
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.1497
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.48
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3236
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6539
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3042
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5105
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.454
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3892
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1081,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5732,
+  "p1": 0.1979,
+  "p2": 0.5725,
+  "pick": "2",
+  "pick_p": 0.5725,
+  "px": 0.2296,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8036
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.05,
+   1.93
+  ]
+ },
+ "CDR-1-2026-10-28-Portugalete-Real Unión Irun": {
+  "ai": false,
+  "away": "Real Unión Irun",
+  "base": {
+   "p1": 0.4634,
+   "p2": 0.2822,
+   "px": 0.2544
+  },
+  "gg": 0.5784,
+  "home": "Portugalete",
+  "kickoff": "2026-10-28T18:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4634
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2544
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2822
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7178
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5366
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7882
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5498
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4502
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6737
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5784
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4216
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3769
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2186
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5696
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4112
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.479
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3762
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4587
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3897
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1197,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5498,
+  "p1": 0.4634,
+  "p2": 0.2822,
+  "pick": "1",
+  "pick_p": 0.4634,
+  "px": 0.2544,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7882
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.64,
+   1.24
+  ]
+ },
+ "CDR-1-2026-10-28-Reus FC Reddis-Barakaldo": {
+  "ai": false,
+  "away": "Barakaldo",
+  "base": {
+   "p1": 0.4634,
+   "p2": 0.2822,
+   "px": 0.2544
+  },
+  "gg": 0.5784,
+  "home": "Reus FC Reddis",
+  "kickoff": "2026-10-28T19:30:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4634
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2544
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2822
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7178
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5366
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7882
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5498
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4502
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6737
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5784
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4216
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3769
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2186
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5696
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4112
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.479
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3762
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4587
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3897
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1197,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5498,
+  "p1": 0.4634,
+  "p2": 0.2822,
+  "pick": "1",
+  "pick_p": 0.4634,
+  "px": 0.2544,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7882
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.64,
+   1.24
+  ]
+ },
+ "CDR-1-2026-10-28-Salamanca UDS-Celta Vigo": {
+  "ai": false,
+  "away": "Celta Vigo",
+  "base": {
+   "p1": 0.0818,
+   "p2": 0.7627,
+   "px": 0.1555
+  },
+  "gg": 0.4818,
+  "home": "Salamanca UDS",
+  "kickoff": "2026-10-28T20:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.0818
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1555
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.7627
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.2373
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.9182
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8421
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6358
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3642
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5858
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.4818
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.5182
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.0577
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.6702
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.1719
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.7844
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.1774
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5234
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.408
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3967
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1224,
+    "score": "0-2"
+   }
+  ],
+  "o25": 0.6358,
+  "p1": 0.0818,
+  "p2": 0.7627,
+  "pick": "2",
+  "pick_p": 0.7627,
+  "px": 0.1555,
+  "recommendation": {
+   "code": "X2",
+   "kind": "doppia",
+   "label": "X2 · Celta Vigo non perde",
+   "p": 0.9182
+  },
+  "top": [
+   0,
+   2
+  ],
+  "xg": [
+   0.73,
+   2.55
+  ]
+ },
+ "CDR-1-2026-10-28-Tavernes de la Valldigna-Valencia": {
+  "ai": false,
+  "away": "Valencia",
+  "base": {
+   "p1": 0.0944,
+   "p2": 0.7382,
+   "px": 0.1674
+  },
+  "gg": 0.4949,
+  "home": "Tavernes de la Valldigna",
+  "kickoff": "2026-10-28T20:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.0944
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1674
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.7382
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.2618
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.9056
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8347
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6234
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3766
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5992
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.4949
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.5051
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.0672
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.6439
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.1908
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.7675
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.1946
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5278
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4154
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.398
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1199,
+    "score": "0-2"
+   }
+  ],
+  "o25": 0.6234,
+  "p1": 0.0944,
+  "p2": 0.7382,
+  "pick": "2",
+  "pick_p": 0.7382,
+  "px": 0.1674,
+  "recommendation": {
+   "code": "X2",
+   "kind": "doppia",
+   "label": "X2 · Valencia non perde",
+   "p": 0.9056
+  },
+  "top": [
+   0,
+   2
+  ],
+  "xg": [
+   0.77,
+   2.45
+  ]
+ },
+ "CDR-1-2026-10-28-Trival Valderas-Leganés": {
+  "ai": false,
+  "away": "Leganés",
+  "base": {
+   "p1": 0.1979,
+   "p2": 0.5725,
+   "px": 0.2296
+  },
+  "gg": 0.5621,
+  "home": "Trival Valderas",
+  "kickoff": "2026-10-28T19:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.1979
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2296
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.5725
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.4275
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.8021
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8036
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5732
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4268
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6509
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5621
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4379
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.1497
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.48
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3236
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6539
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3042
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5105
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.454
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3892
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1081,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5732,
+  "p1": 0.1979,
+  "p2": 0.5725,
+  "pick": "2",
+  "pick_p": 0.5725,
+  "px": 0.2296,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8036
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.05,
+   1.93
+  ]
+ },
+ "CDR-1-2026-10-28-Utebo-CD Sabadell": {
+  "ai": false,
+  "away": "CD Sabadell",
+  "base": {
+   "p1": 0.1979,
+   "p2": 0.5725,
+   "px": 0.2296
+  },
+  "gg": 0.5621,
+  "home": "Utebo",
+  "kickoff": "2026-10-28T18:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.1979
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2296
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.5725
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.4275
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.8021
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8036
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5732
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4268
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6509
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5621
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4379
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.1497
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.48
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3236
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6539
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3042
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5105
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.454
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3892
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1081,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5732,
+  "p1": 0.1979,
+  "p2": 0.5725,
+  "pick": "2",
+  "pick_p": 0.5725,
+  "px": 0.2296,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8036
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.05,
+   1.93
+  ]
+ },
+ "CDR-1-2026-10-28-Xerez-Cádiz": {
+  "ai": false,
+  "away": "Cádiz",
+  "base": {
+   "p1": 0.1979,
+   "p2": 0.5725,
+   "px": 0.2296
+  },
+  "gg": 0.5621,
+  "home": "Xerez",
+  "kickoff": "2026-10-28T20:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.1979
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2296
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.5725
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.4275
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.8021
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8036
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5732
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4268
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6509
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5621
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4379
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.1497
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.48
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3236
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6539
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3042
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5105
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.454
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3892
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1081,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5732,
+  "p1": 0.1979,
+  "p2": 0.5725,
+  "pick": "2",
+  "pick_p": 0.5725,
+  "px": 0.2296,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8036
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.05,
+   1.93
+  ]
+ },
+ "CDR-1-2026-10-29-AE Prat-Athletic Club": {
+  "ai": false,
+  "away": "Athletic Club",
+  "base": {
+   "p1": 0.0932,
+   "p2": 0.7433,
+   "px": 0.1636
+  },
+  "gg": 0.5037,
+  "home": "AE Prat",
+  "kickoff": "2026-10-29T20:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.0932
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1636
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.7433
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.2567
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.9068
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8433
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6375
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3625
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.584
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5037
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4963
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.0674
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.6534
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.1899
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.7759
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.1878
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5146
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4264
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3857
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1169,
+    "score": "0-2"
+   }
+  ],
+  "o25": 0.6375,
+  "p1": 0.0932,
+  "p2": 0.7433,
+  "pick": "2",
+  "pick_p": 0.7433,
+  "px": 0.1636,
+  "recommendation": {
+   "code": "X2",
+   "kind": "doppia",
+   "label": "X2 · Athletic Club non perde",
+   "p": 0.9068
+  },
+  "top": [
+   0,
+   2
+  ],
+  "xg": [
+   0.79,
+   2.5
+  ]
+ },
+ "CDR-1-2026-10-29-Antequera CF-Aguilas": {
+  "ai": false,
+  "away": "Aguilas",
+  "base": {
+   "p1": 0.4634,
+   "p2": 0.2822,
+   "px": 0.2544
+  },
+  "gg": 0.5784,
+  "home": "Antequera CF",
+  "kickoff": "2026-10-29T19:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4634
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2544
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2822
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7178
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5366
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7882
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5498
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4502
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6737
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5784
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4216
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3769
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2186
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5696
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4112
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.479
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3762
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4587
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3897
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1197,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5498,
+  "p1": 0.4634,
+  "p2": 0.2822,
+  "pick": "1",
+  "pick_p": 0.4634,
+  "px": 0.2544,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7882
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.64,
+   1.24
+  ]
+ },
+ "CDR-1-2026-10-29-Atlético Baleares-Eldense": {
+  "ai": false,
+  "away": "Eldense",
+  "base": {
+   "p1": 0.1979,
+   "p2": 0.5725,
+   "px": 0.2296
+  },
+  "gg": 0.5621,
+  "home": "Atlético Baleares",
+  "kickoff": "2026-10-29T18:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.1979
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2296
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.5725
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.4275
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.8021
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8036
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5732
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4268
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6509
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5621
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4379
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.1497
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.48
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3236
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6539
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3042
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5105
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.454
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3892
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1081,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5732,
+  "p1": 0.1979,
+  "p2": 0.5725,
+  "pick": "2",
+  "pick_p": 0.5725,
+  "px": 0.2296,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8036
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.05,
+   1.93
+  ]
+ },
+ "CDR-1-2026-10-29-Atlético Calatayud-Osasuna": {
+  "ai": false,
+  "away": "Osasuna",
+  "base": {
+   "p1": 0.0996,
+   "p2": 0.7348,
+   "px": 0.1656
+  },
+  "gg": 0.5228,
+  "home": "Atlético Calatayud",
+  "kickoff": "2026-10-29T18:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.0996
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1656
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.7348
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.2652
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.9004
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.85
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6486
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3514
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5716
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5228
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4772
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.0738
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.6497
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.2004
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.7762
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.189
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4994
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4452
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3704
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1115,
+    "score": "0-2"
+   }
+  ],
+  "o25": 0.6486,
+  "p1": 0.0996,
+  "p2": 0.7348,
+  "pick": "2",
+  "pick_p": 0.7348,
+  "px": 0.1656,
+  "recommendation": {
+   "code": "X2",
+   "kind": "doppia",
+   "label": "X2 · Osasuna non perde",
+   "p": 0.9004
+  },
+  "top": [
+   0,
+   2
+  ],
+  "xg": [
+   0.83,
+   2.51
+  ]
+ },
+ "CDR-1-2026-10-29-CD Laredo-Burgos": {
+  "ai": false,
+  "away": "Burgos",
+  "base": {
+   "p1": 0.1979,
+   "p2": 0.5725,
+   "px": 0.2296
+  },
+  "gg": 0.5621,
+  "home": "CD Laredo",
+  "kickoff": "2026-10-29T19:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.1979
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2296
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.5725
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.4275
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.8021
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8036
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5732
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4268
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6509
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5621
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4379
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.1497
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.48
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3236
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6539
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3042
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5105
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.454
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3892
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1081,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5732,
+  "p1": 0.1979,
+  "p2": 0.5725,
+  "pick": "2",
+  "pick_p": 0.5725,
+  "px": 0.2296,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8036
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.05,
+   1.93
+  ]
+ },
+ "CDR-1-2026-10-29-CD Varea-FC Andorra": {
+  "ai": false,
+  "away": "FC Andorra",
+  "base": {
+   "p1": 0.1979,
+   "p2": 0.5725,
+   "px": 0.2296
+  },
+  "gg": 0.5621,
+  "home": "CD Varea",
+  "kickoff": "2026-10-29T19:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.1979
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2296
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.5725
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.4275
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.8021
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8036
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5732
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4268
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6509
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5621
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4379
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.1497
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.48
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3236
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6539
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3042
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5105
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.454
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3892
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1081,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5732,
+  "p1": 0.1979,
+  "p2": 0.5725,
+  "pick": "2",
+  "pick_p": 0.5725,
+  "px": 0.2296,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8036
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.05,
+   1.93
+  ]
+ },
+ "CDR-1-2026-10-29-Conquense-Castellón": {
+  "ai": false,
+  "away": "Castellón",
+  "base": {
+   "p1": 0.1979,
+   "p2": 0.5725,
+   "px": 0.2296
+  },
+  "gg": 0.5621,
+  "home": "Conquense",
+  "kickoff": "2026-10-29T19:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.1979
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2296
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.5725
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.4275
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.8021
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8036
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5732
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4268
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6509
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5621
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4379
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.1497
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.48
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3236
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6539
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3042
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5105
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.454
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3892
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1081,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5732,
+  "p1": 0.1979,
+  "p2": 0.5725,
+  "pick": "2",
+  "pick_p": 0.5725,
+  "px": 0.2296,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8036
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.05,
+   1.93
+  ]
+ },
+ "CDR-1-2026-10-29-Guijuelo-Sporting Gijón": {
+  "ai": false,
+  "away": "Sporting Gijón",
+  "base": {
+   "p1": 0.1979,
+   "p2": 0.5725,
+   "px": 0.2296
+  },
+  "gg": 0.5621,
+  "home": "Guijuelo",
+  "kickoff": "2026-10-29T19:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.1979
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2296
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.5725
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.4275
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.8021
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8036
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5732
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4268
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6509
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5621
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4379
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.1497
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.48
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3236
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6539
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3042
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5105
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.454
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3892
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1081,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5732,
+  "p1": 0.1979,
+  "p2": 0.5725,
+  "pick": "2",
+  "pick_p": 0.5725,
+  "px": 0.2296,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8036
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.05,
+   1.93
+  ]
+ },
+ "CDR-1-2026-10-29-Real Ávila-Unionistas de Salamanca": {
+  "ai": false,
+  "away": "Unionistas de Salamanca",
+  "base": {
+   "p1": 0.4634,
+   "p2": 0.2822,
+   "px": 0.2544
+  },
+  "gg": 0.5784,
+  "home": "Real Ávila",
+  "kickoff": "2026-10-29T19:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4634
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2544
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2822
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7178
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5366
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7882
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5498
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4502
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6737
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5784
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4216
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3769
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2186
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5696
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4112
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.479
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3762
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4587
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3897
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1197,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5498,
+  "p1": 0.4634,
+  "p2": 0.2822,
+  "pick": "1",
+  "pick_p": 0.4634,
+  "px": 0.2544,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7882
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.64,
+   1.24
+  ]
+ },
+ "CDR-1-2026-10-29-Ribadesella-Racing Santander": {
+  "ai": false,
+  "away": "Racing Santander",
+  "base": {
+   "p1": 0.0971,
+   "p2": 0.7465,
+   "px": 0.1564
+  },
+  "gg": 0.5478,
+  "home": "Ribadesella",
+  "kickoff": "2026-10-29T20:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.0971
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1564
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.7465
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.2535
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.9029
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8709
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6849
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3151
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5301
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5478
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4522
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.0748
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.6724
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.1985
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.7961
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.1715
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.463
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4761
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3376
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1029,
+    "score": "0-2"
+   }
+  ],
+  "o25": 0.6849,
+  "p1": 0.0971,
+  "p2": 0.7465,
+  "pick": "2",
+  "pick_p": 0.7465,
+  "px": 0.1564,
+  "recommendation": {
+   "code": "X2",
+   "kind": "doppia",
+   "label": "X2 · Racing Santander non perde",
+   "p": 0.9029
+  },
+  "top": [
+   0,
+   2
+  ],
+  "xg": [
+   0.88,
+   2.65
+  ]
+ },
+ "CDR-1-2026-10-29-San Sebastián de los Reyes-Coria": {
+  "ai": false,
+  "away": "Coria",
+  "base": {
+   "p1": 0.4634,
+   "p2": 0.2822,
+   "px": 0.2544
+  },
+  "gg": 0.5784,
+  "home": "San Sebastián de los Reyes",
+  "kickoff": "2026-10-29T18:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4634
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2544
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2822
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7178
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5366
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7882
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5498
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4502
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6737
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5784
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4216
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3769
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2186
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5696
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4112
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.479
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3762
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4587
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3897
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1197,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5498,
+  "p1": 0.4634,
+  "p2": 0.2822,
+  "pick": "1",
+  "pick_p": 0.4634,
+  "px": 0.2544,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7882
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.64,
+   1.24
+  ]
+ },
+ "CDR-1-2026-10-29-Sporting Hortaleza-Sevilla": {
+  "ai": false,
+  "away": "Sevilla",
+  "base": {
+   "p1": 0.0878,
+   "p2": 0.7577,
+   "px": 0.1545
+  },
+  "gg": 0.514,
+  "home": "Sporting Hortaleza",
+  "kickoff": "2026-10-29T20:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.0878
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1545
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.7577
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.2423
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.9122
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.858
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6625
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3375
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5561
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.514
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.486
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.0649
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.675
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.183
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.7931
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.1728
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4922
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4416
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.366
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1125,
+    "score": "0-2"
+   }
+  ],
+  "o25": 0.6625,
+  "p1": 0.0878,
+  "p2": 0.7577,
+  "pick": "2",
+  "pick_p": 0.7577,
+  "px": 0.1545,
+  "recommendation": {
+   "code": "X2",
+   "kind": "doppia",
+   "label": "X2 · Sevilla non perde",
+   "p": 0.9122
+  },
+  "top": [
+   0,
+   2
+  ],
+  "xg": [
+   0.8,
+   2.61
+  ]
+ },
+ "CDR-1-2026-10-29-UB Lebrijana-Getafe": {
+  "ai": false,
+  "away": "Getafe",
+  "base": {
+   "p1": 0.102,
+   "p2": 0.7153,
+   "px": 0.1827
+  },
+  "gg": 0.4734,
+  "home": "UB Lebrijana",
+  "kickoff": "2026-10-29T18:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.102
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1827
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.7153
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.2847
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.898
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8064
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5788
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4212
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6454
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.4734
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.5266
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.0696
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.6076
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.1988
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.7368
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.2206
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5654
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3863
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4335
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.127,
+    "score": "0-2"
+   }
+  ],
+  "o25": 0.5788,
+  "p1": 0.102,
+  "p2": 0.7153,
+  "pick": "2",
+  "pick_p": 0.7153,
+  "px": 0.1827,
+  "recommendation": {
+   "code": "X2",
+   "kind": "doppia",
+   "label": "X2 · Getafe non perde",
+   "p": 0.898
+  },
+  "top": [
+   0,
+   2
+  ],
+  "xg": [
+   0.74,
+   2.27
+  ]
+ },
+ "CDR-4-2026-10-27-Atlético Paso-Córdoba": {
+  "ai": false,
+  "away": "Córdoba",
+  "base": {
+   "p1": 0.1979,
+   "p2": 0.5725,
+   "px": 0.2296
+  },
+  "gg": 0.5621,
+  "home": "Atlético Paso",
+  "kickoff": "2026-10-27T20:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.1979
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2296
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.5725
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.4275
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.8021
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8036
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5732
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4268
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6509
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5621
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4379
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.1497
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.48
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3236
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6539
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3042
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5105
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.454
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3892
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1081,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5732,
+  "p1": 0.1979,
+  "p2": 0.5725,
+  "pick": "2",
+  "pick_p": 0.5725,
+  "px": 0.2296,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8036
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.05,
+   1.93
+  ]
+ },
+ "CDR-4-2026-10-28-Calvo Sotelo-Albacete": {
+  "ai": false,
+  "away": "Albacete",
+  "base": {
+   "p1": 0.1979,
+   "p2": 0.5725,
+   "px": 0.2296
+  },
+  "gg": 0.5621,
+  "home": "Calvo Sotelo",
+  "kickoff": "2026-10-28T19:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.1979
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2296
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.5725
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.4275
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.8021
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8036
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5732
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4268
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6509
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5621
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4379
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.1497
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.48
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3236
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6539
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3042
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5105
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.454
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3892
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1081,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5732,
+  "p1": 0.1979,
+  "p2": 0.5725,
+  "pick": "2",
+  "pick_p": 0.5725,
+  "px": 0.2296,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.8036
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.05,
+   1.93
+  ]
+ },
+ "CDR-4-2026-10-28-Peña Sport-Huesca": {
+  "ai": false,
+  "away": "Huesca",
+  "base": {
+   "p1": 0.4634,
+   "p2": 0.2822,
+   "px": 0.2544
+  },
+  "gg": 0.5784,
+  "home": "Peña Sport",
+  "kickoff": "2026-10-28T18:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4634
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2544
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2822
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7178
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5366
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7882
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5498
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4502
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6737
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5784
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4216
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3769
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2186
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5696
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4112
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.479
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3762
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4587
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3897
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1197,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5498,
+  "p1": 0.4634,
+  "p2": 0.2822,
+  "pick": "1",
+  "pick_p": 0.4634,
+  "px": 0.2544,
+  "recommendation": {
+   "code": "Over 1,5",
+   "kind": "gol",
+   "label": "Over 1,5 · almeno 2 gol",
+   "p": 0.7882
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.64,
+   1.24
+  ]
+ },
+ "CDR-4-2026-10-29-Auriense Cented Academy-Deportivo": {
+  "ai": false,
+  "away": "Deportivo",
+  "base": {
+   "p1": 0.0857,
+   "p2": 0.7576,
+   "px": 0.1566
+  },
+  "gg": 0.496,
+  "home": "Auriense Cented Academy",
+  "kickoff": "2026-10-29T20:00:00Z",
+  "league": "CDR",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.0857
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1566
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.7576
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.2424
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.9143
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8474
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6445
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3555
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5762
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.496
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.504
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.0617
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.6687
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.1787
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.7857
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.1779
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5121
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4219
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.385
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1183,
+    "score": "0-2"
+   }
+  ],
+  "o25": 0.6445,
+  "p1": 0.0857,
+  "p2": 0.7576,
+  "pick": "2",
+  "pick_p": 0.7576,
+  "px": 0.1566,
+  "recommendation": {
+   "code": "X2",
+   "kind": "doppia",
+   "label": "X2 · Deportivo non perde",
+   "p": 0.9143
+  },
+  "top": [
+   0,
+   2
+  ],
+  "xg": [
+   0.76,
+   2.56
+  ]
+ },
  "EL-3-2026-10-22-Ararat-Armenia-AZ Alkmaar": {
   "ai": false,
   "away": "AZ Alkmaar",
