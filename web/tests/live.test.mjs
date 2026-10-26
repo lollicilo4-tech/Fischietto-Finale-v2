@@ -70,11 +70,14 @@ test("campionati riconosciuti per nome intero, non per parole contenute", () => 
     "UEFA Champions League": "champions-league", "Champions League": "champions-league",
     "UEFA Europa League": "europa-league", "UEFA Conference League": "conference-league", "UEFA Europa Conference League": "conference-league",
     "Bundesliga": "bundesliga", "LaLiga": "laliga", "La Liga": "laliga", "LaLiga EA Sports": "laliga", "Spain Primera División": "laliga",
-    "Ligue 1": "ligue-1", "Ligue 1 McDonald's": "ligue-1", "Serie B": "serie-b", "Eredivisie": "eredivisie", "Liga Portugal Betclic": "liga-portugal"
+    "Ligue 1": "ligue-1", "Ligue 1 McDonald's": "ligue-1", "Serie B": "serie-b", "Eredivisie": "eredivisie", "Liga Portugal Betclic": "liga-portugal",
+    "Championship": "championship", "EFL Championship": "championship", "English Championship": "championship",
+    "Brasileirão Serie A": "brasileirao", "Brazil Serie A": "brasileirao", "Brasileirão Betano": "brasileirao", "Campeonato Brasileiro Série A": "brasileirao"
   };
   for (const [name, key] of Object.entries(ours)) assert.equal(F.liveLeagueKey(name), key, name);
   const others = ["LigaPro Serie A", "Azerbaijan Premier League", "AFC Champions League", "CAF Champions League", "UEFA Women's Champions League",
-    "2. Bundesliga", "LaLiga Hypermotion", "Primera División", "Ligue 2", "Russian Premier League", "Brasileirão Serie A", "Serie A Women"];
+    "2. Bundesliga", "LaLiga Hypermotion", "Primera División", "Ligue 2", "Russian Premier League", "Serie A Women",
+    "Scottish Championship", "EFL League One", "Brasileirão Serie B", "Brazil Serie B", "Championship Women"];
   for (const name of others) assert.match(F.liveLeagueKey(name), /^other:/, name);
 });
 

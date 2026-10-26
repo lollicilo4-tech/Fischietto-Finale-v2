@@ -140,9 +140,12 @@ def _report_update_failure(code: str, label: str, detail: str) -> None:
 # già scaricati in questa esecuzione (app/strength.py), senza chiamate API in più.
 COMPETITIONS = {
     "SA": "Serie A", "PL": "Premier League", "BL1": "Bundesliga", "PD": "LaLiga", "FL1": "Ligue 1",
+    "ELC": "Championship", "DED": "Eredivisie", "PPL": "Liga Portugal", "BSA": "Brasileirão",
     "CL": "Champions League", "EL": "Europa League", "UECL": "Conference League", "CDR": "Copa del Rey",
 }
-NO_AI = {"EL", "UECL", "CDR"}  # dati da CSV pubblico, senza analisi AI per contenere le chiamate
+# Senza analisi AI, per contenere le chiamate alla quota gratuita di Groq: le coppe con dati da CSV
+# pubblico e i campionati aggiunti il 26/10/2026 (Championship, Eredivisie, Liga Portugal, Brasileirão).
+NO_AI = {"EL", "UECL", "CDR", "ELC", "DED", "PPL", "BSA"}
 
 EXIT_OK, EXIT_ALL_FAILED, EXIT_PARTIAL = 0, 1, 2
 

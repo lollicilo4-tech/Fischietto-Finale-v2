@@ -12,10 +12,12 @@ non si possono stimare in modo affidabile dai dati del sito.
 import re
 import unicodedata
 
-DOMESTIC = ("SA", "PL", "BL1", "PD", "FL1")
+DOMESTIC = ("SA", "PL", "BL1", "PD", "FL1", "DED", "PPL")
 # Livello del campionato: moltiplica l'attacco e divide la difesa della squadra.
-LEAGUE_LEVEL = {"PL": 1.10, "PD": 1.06, "SA": 1.05, "BL1": 1.04, "FL1": 0.98}
-OTHER_LEVEL = 0.92  # squadre di campionati non coperti (Portogallo, Olanda, Turchia...)
+# Eredivisie e Liga Portugal hanno lo stesso livello delle leghe non coperte (OTHER_LEVEL): in più
+# c'è solo la forza della squadra nel suo campionato, con il peso prudente DOMESTIC_WEIGHT.
+LEAGUE_LEVEL = {"PL": 1.10, "PD": 1.06, "SA": 1.05, "BL1": 1.04, "FL1": 0.98, "DED": 0.92, "PPL": 0.92}
+OTHER_LEVEL = 0.92  # squadre di campionati non coperti (Turchia, Belgio, Scozia...)
 # Copa del Rey: squadre spagnole fuori da LaLiga. Segunda División un gradino sotto, poi tutte le
 # categorie dilettanti insieme (Primera e Segunda RFEF, Tercera, regionali): non sappiamo distinguerle.
 SEGUNDA_LEVEL = 0.78

@@ -3,7 +3,7 @@
    FF_DATA_DIR permette di puntare a un'altra cartella (per esempio nei test). */
 import { readFileSync, existsSync } from "node:fs";
 import path from "node:path";
-import { LEAGUES, leagueByCode, updatedAt } from "./core.js";
+import { LEAGUES, MOMENTUM_LEAGUES, leagueByCode, updatedAt } from "./core.js";
 import { teamsOf } from "./render.js";
 
 export const dataDir = () => path.resolve(process.cwd(), process.env.FF_DATA_DIR || "../docs");
@@ -57,12 +57,12 @@ export function livePriors() {
   return out;
 }
 
-/* Calendario per il Worker del momentum (/live-calendar.json): le partite in programma degli 8
-   campionati con nomi e orario. Il Worker lo usa per chiedere a SportScore il dettaglio delle partite
+/* Calendario per il Worker del momentum (/live-calendar.json): le partite in programma dei campionati
+   seguiti dal Worker (MOMENTUM_LEAGUES) con nomi e orario. Il Worker lo usa per chiedere a SportScore il dettaglio delle partite
    in corso anche quando la lista "live" del servizio non le elenca. */
 export function liveCalendar() {
   const out = [], seen = new Set();
-  LEAGUES.forEach((l) => {
+  MOMENTUM_LEAGUES.forEach((l) => {
     const t = leagueData(l.code).turno;
     if (!t) return;
     /* Una partita già iniziata quando gira "Aggiorna pronostici" esce da matches e resta solo in

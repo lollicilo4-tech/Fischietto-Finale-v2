@@ -16,7 +16,7 @@ import {
   matchSlugOf, matchStatus, valueText, isLiveStatus
 } from "../../../web/src/lib/livefeed.js";
 import { lcMatchFromPayload, lcTimelineOf, lcMinuteOf, lcStats, lcPressure, lcNowMinute, lcEvents } from "../../../web/src/lib/livecharts.js";
-import { LEAGUES } from "../../../web/src/lib/core.js";
+import { MOMENTUM_LEAGUES } from "../../../web/src/lib/core.js";
 import { CALENDAR_URL, dueMatches, resolveDue, matchKey } from "./calendar.js";
 
 export const MAX_DETAILS = 30;             // partite dalla lista live
@@ -26,7 +26,7 @@ export const LIVE_ROW_MS = 3 * 60 * 1000;  // /api/live mostra solo righe aggior
 /* Campi del dettaglio SportScore che servono alla scheda del Live (niente eventi e statistiche). */
 const ROW_FIELDS = ["home", "away", "home_logo", "away_logo", "home_score", "away_score", "status", "status_text",
   "time", "competition", "competition_logo", "url", "live_minute"];
-const OUR_LEAGUES = new Set(LEAGUES.map((l) => l.liveKey));
+const OUR_LEAGUES = new Set(MOMENTUM_LEAGUES.map((l) => l.liveKey));
 const HEADERS = { Accept: "application/json", "User-Agent": "FischiettoFinale-Momentum/1.0 (+https://fischiettofinale.com)" };
 
 async function getJson(fetchFn, url) {

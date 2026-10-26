@@ -13,10 +13,19 @@ export const LEAGUES = [
   { code: "EL", slug: "europa-league", name: "Europa League", country: "Europa", flag: "🏆", liveKey: "europa-league", file: "league-EL-" },
   { code: "UECL", slug: "conference-league", name: "Conference League", country: "Europa", flag: "🏆", liveKey: "conference-league", file: "league-UECL-" },
   /* Coppa a eliminazione diretta: turni invece di giornate, nessuna classifica. */
-  { code: "CDR", slug: "copa-del-rey", name: "Copa del Rey", country: "Spagna", flag: "🏆", liveKey: "copa-del-rey", file: "league-CDR-", knockout: true }
+  { code: "CDR", slug: "copa-del-rey", name: "Copa del Rey", country: "Spagna", flag: "🏆", liveKey: "copa-del-rey", file: "league-CDR-", knockout: true },
+  /* Aggiunti il 26/10/2026 (piano gratuito di football-data.org). momentum: false = il Worker del
+     momentum non li segue (le sue richieste per minuto restano ai campionati principali); nel Live
+     compaiono comunque dalla lista di SportScore. */
+  { code: "ELC", slug: "championship", name: "Championship", country: "Inghilterra", flag: "🏴", liveKey: "championship", file: "league-ELC-", momentum: false },
+  { code: "DED", slug: "eredivisie", name: "Eredivisie", country: "Paesi Bassi", flag: "🇳🇱", liveKey: "eredivisie", file: "league-DED-", momentum: false },
+  { code: "PPL", slug: "liga-portugal", name: "Liga Portugal", country: "Portogallo", flag: "🇵🇹", liveKey: "liga-portugal", file: "league-PPL-", momentum: false },
+  { code: "BSA", slug: "brasileirao", name: "Brasileirão", country: "Brasile", flag: "🇧🇷", liveKey: "brasileirao", file: "league-BSA-", momentum: false }
 ];
+/* Campionati seguiti dal Worker del momentum (calendario e registrazione minuto per minuto). */
+export const MOMENTUM_LEAGUES = LEAGUES.filter((l) => l.momentum !== false);
 /* Ordine del menu a tendina nell'intestazione, come nel sito attuale. */
-export const SELECT_ORDER = ["SA", "PL", "CL", "BL1", "PD", "FL1", "EL", "UECL", "CDR"];
+export const SELECT_ORDER = ["SA", "PL", "CL", "BL1", "PD", "FL1", "EL", "UECL", "CDR", "ELC", "DED", "PPL", "BSA"];
 export const DEFAULT_LEAGUE = "SA";
 /* In inglese la Home del sito (/en/) è la Premier League. */
 export const DEFAULT_LEAGUE_EN = "PL";
