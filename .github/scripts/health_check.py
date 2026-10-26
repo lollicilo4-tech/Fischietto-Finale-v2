@@ -23,6 +23,7 @@ from pathlib import Path
 
 REPO = "lollicilo4-tech/Fischietto-Finale-v2"
 LEAGUES = {"SA": "Serie A", "PL": "Premier League", "BL1": "Bundesliga", "PD": "LaLiga", "FL1": "Ligue 1",
+           "ELC": "Championship", "DED": "Eredivisie", "PPL": "Liga Portugal", "BSA": "Brasileirão",
            "CL": "Champions League", "EL": "Europa League", "UECL": "Conference League"}
 # L'aggiornamento parte ogni 4 ore e GitHub lo avvia spesso con 20-40 minuti di ritardo.
 WARN_AGE = timedelta(hours=5, minutes=30)
