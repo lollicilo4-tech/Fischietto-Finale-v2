@@ -7711,6 +7711,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7827
   },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-26T19:30:00Z",
+   "hg": 0
+  },
   "top": [
    1,
    1
@@ -20195,6 +20200,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8062
+  },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-26T20:00:00Z",
+   "hg": 0
   },
   "top": [
    1,
