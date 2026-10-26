@@ -66,6 +66,8 @@ export const liveUrl = (league) => prefix() + "/live/" + (league ? "?lega=" + le
 export const INFO_URL = "/come-funziona/";
 export const PRIVACY_URL = "/privacy/";
 export const MYPICKS_URL = "/i-miei-pronostici/";
+/* Consigli fantacalcio: solo Serie A e solo in italiano. */
+export const FANTA_URL = "/fantacalcio/";
 /* Pagine fisse nella lingua corrente. */
 export const infoUrl = () => (isEn() ? "/en/how-it-works/" : INFO_URL);
 export const privacyUrl = () => (isEn() ? "/en/privacy/" : PRIVACY_URL);

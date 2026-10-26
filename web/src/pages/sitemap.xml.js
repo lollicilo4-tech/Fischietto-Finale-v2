@@ -1,5 +1,5 @@
 /* Mappa del sito per i motori di ricerca: tutte le pagine generate (tranne la 404), in italiano e in inglese. */
-import { LEAGUES, SECTIONS, slugify, matchSlug, INFO_URL, PRIVACY_URL, altPath } from "../lib/core.js";
+import { LEAGUES, SECTIONS, slugify, matchSlug, INFO_URL, PRIVACY_URL, FANTA_URL, altPath } from "../lib/core.js";
 import { MYPICKS_URL } from "../lib/mypicks.js";
 import { leagueData, allTeams } from "../lib/data.js";
 
@@ -13,6 +13,7 @@ export function GET({ site }) {
     [...new Set(allTeams(l.code).map(slugify))].forEach((s) => urls.push("/" + l.slug + "/squadra/" + s + "/"));
   });
   urls.push(...urls.map((u) => altPath(u, "en")));
+  urls.push(FANTA_URL);  // solo in italiano
   const xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     urls.map((u) => "  <url><loc>" + base + u + "</loc></url>").join("\n") + "\n</urlset>\n";
   return new Response(xml, { headers: { "Content-Type": "application/xml; charset=utf-8" } });

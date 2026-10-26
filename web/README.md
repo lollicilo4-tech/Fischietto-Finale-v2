@@ -30,6 +30,7 @@ Il modello, i workflow e i JSON non cambiano: questo sito legge gli stessi file 
 | `src/lib/core.js` | campionati, indirizzi delle pagine, formattazione, date nel fuso italiano (in inglese: indirizzi `/en/…`, numeri e ora del Regno Unito) |
 | `src/lib/i18n.js`, `i18n-en.js` | lingua del sito: i testi restano in italiano nel codice e passano da `t()`; `i18n-en.js` ha le traduzioni inglesi (chiave = testo italiano). `tests/i18n.test.mjs` controlla che non ne manchi nessuna |
 | `src/lib/model.js` | consiglio multi-mercato, Più probabili, Le scelte del modello (stessa logica del sito attuale) |
+| `src/lib/fanta.js` | consigli fantacalcio della Serie A (`/fantacalcio/`, solo in italiano): porta inviolata, gol attesi e calendario dai gol attesi del modello |
 | `src/lib/render.js` | HTML di partite, classifica, storico, squadra… usato dal build e dal browser |
 | `src/lib/livecharts.js`, `livefeed.js` | grafici e lettura del feed SportScore del Live Center |
 | `src/lib/data.js` | lettura dei JSON di `docs/` durante il build |
