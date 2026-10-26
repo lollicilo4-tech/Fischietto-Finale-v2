@@ -4,8 +4,9 @@
    (src/lib/fanta.js): nessun dato nuovo, nessuna API. Pagina solo in italiano: il fantacalcio è un gioco italiano. */
 import Base from "../layouts/Base.astro";
 import { FANTA_URL } from "../lib/core.js";
-import { leagueData } from "../lib/data.js";
+import { leagueData, allTeams, inlineJson } from "../lib/data.js";
 import { fantaRows, fantaCalendar, highlightsHtml, roundTableHtml, calendarHtml, deadlineText } from "../lib/fanta.js";
+import { ROLES, ROLE_ONE, MAX_NAME } from "../lib/rosa.js";
 import { setLang } from "../lib/i18n.js";
 setLang("it");
 const league = "SA";
@@ -14,6 +15,7 @@ const { turno } = leagueData(league);
 const matches = turno ? turno.matches : [];
 const rows = fantaRows(matches);
 const cal = fantaCalendar(turno);
+const teams = allTeams(league).slice().sort((a, b) => a.localeCompare(b, "it"));
 const day = turno && turno.matchday ? "giornata " + turno.matchday : "prossima giornata";
 const deadline = deadlineText(matches);
 const title = "Consigli fantacalcio " + day + " di Serie A";
@@ -25,6 +27,19 @@ const description = "Chi schierare al fantacalcio nella " + day + " di Serie A: 
     <p class="lead">Chi schierare secondo il modello statistico di Fischietto finale: le squadre con più gol attesi per scegliere attaccanti e capitano, quelle con la porta inviolata più probabile per portiere e difesa. {deadline && <b>{deadline}.</b>}</p>
     {turno ? (
       <Fragment>
+        <div class="panel rosa-panel" id="la-mia-rosa">
+          <h2>La mia rosa</h2>
+          <div id="rosa" aria-live="polite"><p class="lead" style="margin:0">Inserisci i giocatori della tua rosa: per ogni ruolo vedrai chi ha la partita più favorevole e chi mettere capitano.</p></div>
+          <form id="rosa-form" class="rosa-form" hidden>
+            <label>Ruolo<select name="role" required>{ROLES.map((r) => <option value={r}>{ROLE_ONE[r]}</option>)}</select></label>
+            <label>Squadra<select name="team" required><option value="">Scegli…</option>{teams.map((x) => <option value={x}>{x}</option>)}</select></label>
+            <label class="rosa-name">Giocatore<input name="name" type="text" maxlength={MAX_NAME} autocomplete="off" placeholder="Nome del giocatore" required></label>
+            <button type="submit">Aggiungi</button>
+            <p id="rosa-msg" class="rosa-msg" role="status"></p>
+          </form>
+          <noscript><div class="msg">Per usare la tua rosa serve JavaScript.</div></noscript>
+          <p class="rosa-note">La rosa resta solo su questo dispositivo: nessun account, niente viene inviato al sito.</p>
+        </div>
         <Fragment set:html={highlightsHtml(ctx, rows)} />
         <div class="panel">
           <h2>Gol attesi e porta inviolata</h2>
@@ -43,4 +58,8 @@ const description = "Chi schierare al fantacalcio nella " + day + " di Serie A: 
     )}
     <p class="lead">Il modello conosce le squadre, non i singoli giocatori: per titolari e infortuni controlla le probabili formazioni prima di chiudere la tua. Sono stime statistiche, non certezze.</p>
   </section>
+  <script is:inline type="application/json" id="ff-fanta" set:html={inlineJson({ rows, teams })}></script>
+  <script>
+    import "../scripts/rosa.js";
+  </script>
 </Base>

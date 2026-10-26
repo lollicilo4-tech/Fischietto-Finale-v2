@@ -31,6 +31,7 @@ Il modello, i workflow e i JSON non cambiano: questo sito legge gli stessi file 
 | `src/lib/i18n.js`, `i18n-en.js` | lingua del sito: i testi restano in italiano nel codice e passano da `t()`; `i18n-en.js` ha le traduzioni inglesi (chiave = testo italiano). `tests/i18n.test.mjs` controlla che non ne manchi nessuna |
 | `src/lib/model.js` | consiglio multi-mercato, Più probabili, Le scelte del modello (stessa logica del sito attuale) |
 | `src/lib/fanta.js` | consigli fantacalcio della Serie A (`/fantacalcio/`, solo in italiano): porta inviolata, gol attesi e calendario dai gol attesi del modello |
+| `src/lib/rosa.js`, `src/scripts/rosa.js` | "La mia rosa" nella pagina Fantacalcio: giocatori salvati solo nel browser (`ff-fanta-rosa-v1`), consigli per ruolo e capitano dalla squadra di ogni giocatore |
 | `src/lib/render.js` | HTML di partite, classifica, storico, squadra… usato dal build e dal browser |
 | `src/lib/livecharts.js`, `livefeed.js` | grafici e lettura del feed SportScore del Live Center |
 | `src/lib/data.js` | lettura dei JSON di `docs/` durante il build |
