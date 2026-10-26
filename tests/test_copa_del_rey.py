@@ -92,6 +92,8 @@ class CopaDelReyTests(unittest.TestCase):
         manacor = next(m for m in turno["matches"] if m["away"] == "Villarreal")
         self.assertEqual(manacor["conf"], "bassa")
         self.assertIn("forza di base prudente", manacor["analysis"]["text"])
+        self.assertIn("cautious base strength", manacor["analysis"]["text_en"])
+        self.assertTrue(manacor["analysis"]["text_en"].startswith("The model expects"))
         self.assertGreater(manacor["prob"]["p2"], 0.65)
 
     def test_classifica_has_no_season_simulation(self):
