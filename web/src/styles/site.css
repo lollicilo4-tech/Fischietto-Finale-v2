@@ -86,3 +86,12 @@ a.ff-btn.now-live-row { display: grid; grid-template-columns: minmax(0, 1fr) aut
 /* Passaggio di lingua (IT · EN) nell'intestazione, accanto al pulsante "‹ Home" (sopra il titolo nella Home). */
 .lang-switch { flex: 0 0 auto; font: inherit; font-weight: 700; font-size: 12px; letter-spacing: .04em; color: var(--link); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 6px 8px; white-space: nowrap; text-decoration: none; }
 .top .toprow:has(.lang-switch) { column-gap: 8px; }
+
+/* Classifica: la posizione resta su una riga ("10", non "1" sopra "0") e sui telefoni, dove le colonne
+   V · N · P sono nascoste, la tabella entra nella larghezza dello schermo invece di scorrere di lato. */
+#p-classifica #table td:first-child, #p-classifica #table th:first-child { white-space: nowrap; width: 2.4em; }
+#p-classifica #table td:not(:nth-child(2)), #p-classifica #table th:not(:nth-child(2)) { white-space: nowrap; }
+@media (max-width: 439px) {
+  #p-classifica #table table { min-width: 0; }
+  #p-classifica #table td, #p-classifica #table th { padding-left: 6px; padding-right: 6px; }
+}
