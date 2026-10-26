@@ -6,6 +6,7 @@ import { leagueByCode, matchUrl, dayOf, when, pc, leagueUrl } from "../lib/core.
 import { card } from "../lib/render.js";
 import { finalOutcome } from "../lib/model.js";
 import { setLang, langOfPath, t } from "../lib/i18n.js";
+import { sportsEventLd } from "../lib/seo.js";
 interface Props { league: string; match: any }
 setLang(langOfPath(Astro.url.pathname));
 const { league, match: m } = Astro.props;
@@ -14,8 +15,10 @@ const fo = finalOutcome(m), s = m.top_scores[0];
 const title = m.home + " – " + m.away + ": " + t("pronostico");
 const description = t("{league}, {day} {time}. {home} – {away}: per il modello {code} ({name}) al {p}, risultato più probabile {score}. Probabilità 1X2, gol attesi e assenze confermate.",
   { league: L.name, day: dayOf(m), time: when(m), home: m.home, away: m.away, code: fo[0], name: fo[1], p: pc(fo[2]), score: s[0] + "-" + s[1] });
+const site = Astro.site ? Astro.site.href.replace(/\/$/, "") : "";
+const ld = [sportsEventLd(site, league, m, description)];
 ---
-<Base title={title} description={description} league={league} section="partite" path={matchUrl(league, m)}>
+<Base title={title} description={description} league={league} section="partite" path={matchUrl(league, m)} crumbs={[{ name: m.home + " – " + m.away, path: matchUrl(league, m) }]} ld={ld}>
   <section id="p-partite" aria-label={m.home + " – " + m.away}>
     <h2 class="sub2">{m.home} – {m.away}</h2>
     <p class="lead">{L.name} · {dayOf(m)} {when(m)}. {t("Stime statistiche del modello: non sono certezze e non sono un invito a scommettere.")}</p>

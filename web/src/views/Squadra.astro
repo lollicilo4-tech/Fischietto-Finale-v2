@@ -11,7 +11,7 @@ const { league, team } = Astro.props;
 const L = leagueByCode(league);
 const html = teamPage({ league, favs: [] }, team, leagueData(league));
 ---
-<Base title={team + " · " + L.name} description={t("{team} in {league}: forza in attacco e difesa, forma, prossima partita con le probabilità del modello e pronostici passati.", { team, league: L.name })} league={league} section={undefined} path={teamUrl(league, team)}>
+<Base title={team + " · " + L.name} description={t("{team} in {league}: forza in attacco e difesa, forma, prossima partita con le probabilità del modello e pronostici passati.", { team, league: L.name })} league={league} section={undefined} path={teamUrl(league, team)} crumbs={[{ name: team, path: teamUrl(league, team) }]}>
   <section id="p-team" aria-labelledby="team-title">
     <div id="team-page" set:html={html}></div>
   </section>

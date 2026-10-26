@@ -17,7 +17,8 @@ import "../styles/legacy.css";
 import "../styles/site.css";
 import { LEAGUES, SELECT_ORDER, leagueByCode, leagueUrl, liveUrl, infoUrl, KOFI_URL, privacyUrl, CONTACT_EMAIL, SECTIONS, altPath, defaultLeague, roundWord } from "../lib/core.js";
 import { statusTags } from "../lib/render.js";
-import { leagueData, leagueMeta } from "../lib/data.js";
+import { leagueData, leagueMeta, inlineJson } from "../lib/data.js";
+import { breadcrumbLd } from "../lib/seo.js";
 import { setLang, langOfPath, t } from "../lib/i18n.js";
 
 interface Props {
@@ -29,6 +30,8 @@ interface Props {
   sub?: string;             // sottotitolo sotto il nome del sito
   inner?: boolean;          // pagine interne: pulsante "‹ Home" e intestazione compatta
   noindex?: boolean;
+  crumbs?: { name: string; path: string }[];  // ultimi livelli del percorso (partita, squadra)
+  ld?: any[];               // altri dati strutturati (schema.org) della pagina
 }
 /* La lingua segue l'indirizzo: tutti i testi e i link sotto (t(), leagueUrl...) la usano. */
 const lang = setLang(langOfPath(Astro.props.path));
@@ -56,6 +59,8 @@ const navItems = [
   { key: "storico", label: t("Storico"), href: leagueUrl(league, "storico"), icon: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>' }
 ];
 const tags = statusTags(turno, meta.updated);
+/* Dati strutturati: percorso della pagina (solo nelle pagine di un campionato) e quelli passati dalla pagina. */
+const structured = noindex ? [] : [Astro.props.league ? breadcrumbLd(site, { league, section, extra: Astro.props.crumbs }) : null, ...(Astro.props.ld || [])].filter(Boolean);
 ---
 <!doctype html>
 <html lang={lang}>
@@ -86,6 +91,7 @@ const tags = statusTags(turno, meta.updated);
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#edf1f6" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0a1018" media="(prefers-color-scheme: dark)">
+{structured.map((x) => <script is:inline type="application/ld+json" set:html={inlineJson(x)}></script>)}
 <slot name="head" />
 </head>
 <body class={inner ? "inner" : undefined} data-league={league} data-league-slug={L.slug}>
