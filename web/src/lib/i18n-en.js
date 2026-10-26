@@ -5,6 +5,7 @@
 export const EN = {
   // ---------- core.js ----------
   "Da programmare": "To be scheduled",
+  "Calcio": "Football",
 
   // ---------- model.js: mercati e selezioni ----------
   "Pareggio": "Draw",

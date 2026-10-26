@@ -5,6 +5,7 @@ import Base from "../layouts/Base.astro";
 import HomePanel from "../components/HomePanel.astro";
 import { leagueByCode, leagueUrl } from "../lib/core.js";
 import { setLang, langOfPath, t } from "../lib/i18n.js";
+import { websiteLd } from "../lib/seo.js";
 interface Props { league: string; root?: boolean }
 setLang(langOfPath(Astro.url.pathname));
 const { league, root = false } = Astro.props;
@@ -13,7 +14,8 @@ const title = root ? "Fischietto finale" : t("{league}: pronostici e probabilit�
 const description = root
   ? t("Pronostici statistici di Serie A, Premier League, LaLiga, Bundesliga, Ligue 1 e coppe europee: probabilità, risultato probabile e spiegazione di ogni partita. Solo informazione, nessuna scommessa.")
   : t("Come potrebbe andare ogni partita di {league}: probabilità 1X2, risultato più probabile, gol attesi e spiegazione del modello.", { league: L.name });
+const site = Astro.site ? Astro.site.href.replace(/\/$/, "") : "";
 ---
-<Base title={title} description={description} league={league} section="home" path={leagueUrl(league, "home")} inner={false}>
+<Base title={title} description={description} league={league} section="home" path={leagueUrl(league, "home")} inner={false} ld={root ? [websiteLd(site, description)] : []}>
   <HomePanel league={league} />
 </Base>

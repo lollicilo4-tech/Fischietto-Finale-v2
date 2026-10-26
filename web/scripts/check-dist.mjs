@@ -7,7 +7,8 @@
    - ogni indirizzo della sitemap esiste;
    - ogni redirect di _redirects porta a una pagina che esiste, per ogni campionato;
    - nessun "undefined", "NaN" o "[object Object]" nel testo delle pagine;
-   - ogni pagina ha la lingua giusta (/en/ in inglese) e il link hreflang all'altra versione. */
+   - ogni pagina ha la lingua giusta (/en/ in inglese) e il link hreflang all'altra versione;
+   - i dati strutturati (JSON-LD) sono JSON valido con @context schema.org; ogni partita ha il suo SportsEvent. */
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -42,16 +43,22 @@ expected.forEach((u) => { if (!pageFor(u)) fail("manca " + u); });
 /* HTML: script, gestori inline, link interni, testo. */
 const files = walk(dist);
 const html = files.filter((f) => f.endsWith(".html"));
-let links = 0;
+let links = 0, ldCount = 0;
 for (const file of html) {
   const rel = "/" + path.relative(dist, file);
   const src = readFileSync(file, "utf-8");
   for (const m of src.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)) {
     const attrs = m[1], body = m[2];
     if (/type="application\/json"/.test(attrs)) { try { JSON.parse(body); } catch (e) { fail(rel + ": JSON incorporato non valido"); } continue; }
+    if (/type="application\/ld\+json"/.test(attrs)) {
+      try { const ld = JSON.parse(body); if (ld["@context"] !== "https://schema.org" || !ld["@type"]) fail(rel + ": dati strutturati senza @context o @type"); ldCount++; }
+      catch (e) { fail(rel + ": dati strutturati (JSON-LD) non validi"); }
+      continue;
+    }
     if (!/\bsrc="\/_astro\//.test(attrs) || body.trim()) fail(rel + ": script inline o esterno: " + attrs.trim().slice(0, 80));
   }
   if (/<[^>]+\son[a-z]+\s*=/i.test(src)) fail(rel + ": attributo on...= (vietato dalla CSP)");
+  if (/\/(partita|match)\//.test(rel) && !src.includes('"@type":"SportsEvent"')) fail(rel + ": manca il dato strutturato SportsEvent");
   if (/javascript:/i.test(src)) fail(rel + ": link javascript:");
   if (/fonts\.(googleapis|gstatic)\.com/.test(src)) fail(rel + ": carica caratteri da Google Fonts");
   const text = src.replace(/<script[\s\S]*?<\/script>/g, "");
@@ -118,4 +125,4 @@ if (problems.length) {
   console.error(problems.length + " problemi nel sito generato:\n- " + problems.slice(0, 50).join("\n- "));
   process.exit(1);
 }
-console.log("dist/ ok: " + html.length + " pagine, " + files.length + " file, " + links + " link interni verificati, " + locs.length + " indirizzi in sitemap.");
+console.log("dist/ ok: " + html.length + " pagine, " + files.length + " file, " + links + " link interni verificati, " + locs.length + " indirizzi in sitemap, " + ldCount + " blocchi di dati strutturati.");
