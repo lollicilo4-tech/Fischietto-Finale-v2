@@ -1,8 +1,5 @@
 ---
 /* Home del sito: Serie A, come oggi su fischiettofinale.com. */
-import Base from "../layouts/Base.astro";
-import HomePanel from "../components/HomePanel.astro";
+import LeagueHome from "../views/LeagueHome.astro";
 ---
-<Base title="Fischietto finale" description="Pronostici statistici di Serie A, Premier League, LaLiga, Bundesliga, Ligue 1 e coppe europee: probabilità, risultato probabile e spiegazione di ogni partita. Solo informazione, nessuna scommessa." league="SA" section="home" path="/" inner={false}>
-  <HomePanel league="SA" />
-</Base>
+<LeagueHome league="SA" root />

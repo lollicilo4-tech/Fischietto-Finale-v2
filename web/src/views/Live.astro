@@ -1,0 +1,34 @@
+---
+/* Live Center: risultati in diretta dal feed SportScore, caricati nel browser (scripts/live.js).
+   La pagina incorpora i gol attesi di tutte le partite in programma, così il grafico delle
+   probabilità parte dal nostro pronostico per qualsiasi campionato, non solo per quello scelto. */
+import Base from "../layouts/Base.astro";
+import { LEAGUES, leagueUrl, liveUrl } from "../lib/core.js";
+import { livePriors, inlineJson } from "../lib/data.js";
+import { setLang, langOfPath, t } from "../lib/i18n.js";
+setLang(langOfPath(Astro.url.pathname));
+const links = Object.fromEntries(LEAGUES.map((l) => [l.slug, {
+  code: l.code, liveKey: l.liveKey, name: l.name,
+  home: leagueUrl(l.code, "home"), partite: leagueUrl(l.code, "partite"), live: liveUrl(l.code), sicure: leagueUrl(l.code, "sicure"),
+  schedina: leagueUrl(l.code, "schedina"), classifica: leagueUrl(l.code, "classifica"), storico: leagueUrl(l.code, "storico")
+}]));
+---
+<Base title={t("Live Center: risultati in diretta")} description={t("Risultati in diretta, eventi, statistiche e probabilità minuto per minuto delle partite in corso. Dati SportScore.")} section="live" path={liveUrl()} sub={t("Live Center · risultati in diretta")}>
+  <section id="p-live" aria-label="Live Center">
+    <div class="live-head">
+      <div><div class="live-kicker">{t("AGGIORNAMENTI PARTITE")}</div><h2>Live Center</h2><p class="expl">{t("Risultati in diretta dal feed SportScore. Gli aggiornamenti possono avere un ritardo.")}</p></div>
+      <button id="live-refresh" type="button" class="live-refresh">↻ {t("Aggiorna")}</button>
+    </div>
+    <div id="live-status" class="panel" role="status" aria-live="polite">{t("Caricamento delle partite live…")}</div>
+    <div class="live-controls"><div class="live-filter-field"><label for="live-league">{t("Campionato")}</label><select id="live-league" aria-label={t("Filtra per campionato")}><option value="all">{t("Tutti i campionati")}</option></select></div><div class="live-filter-field live-search-field"><label for="live-search">{t("Cerca squadra o lega")}</label><input id="live-search" type="search" placeholder={t("Es. Inter, Arsenal, Champions…")} autocomplete="off" aria-label={t("Cerca una squadra o un campionato")}></div></div>
+    <div id="live-filter-empty" class="panel" role="status" hidden>{t("Nessuna partita live corrisponde ai filtri selezionati.")}</div>
+    <div id="live-list" class="live-list"></div>
+    <noscript><p class="panel">{t("Il Live Center ha bisogno di JavaScript per scaricare i risultati in diretta.")}</p></noscript>
+    <p class="live-attribution">{t("Dati sportivi forniti da")} <a class="sportscore-credit" href="https://sportscore.com/" target="_blank" rel="noopener noreferrer" aria-label={t("Powered by SportScore — apri il sito SportScore")}>Powered by SportScore ↗</a></p>
+  </section>
+  <script is:inline type="application/json" id="ff-live-priors" set:html={inlineJson(livePriors())}></script>
+  <script is:inline type="application/json" id="ff-league-links" set:html={inlineJson(links)}></script>
+  <script>
+    import "../scripts/live.js";
+  </script>
+</Base>

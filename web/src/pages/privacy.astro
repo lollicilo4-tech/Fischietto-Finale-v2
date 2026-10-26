@@ -3,7 +3,7 @@
    public/_headers) o nuovo dato salvato nel browser deve comparire qui. */
 import Base from "../layouts/Base.astro";
 import { CONTACT_EMAIL, KOFI_URL } from "../lib/core.js";
-const UPDATED = "25 ottobre 2026";
+const UPDATED = "26 ottobre 2026";
 const ext = { target: "_blank", rel: "noopener noreferrer" };
 ---
 <Base title="Privacy e cookie" description="Quali dati tratta Fischietto finale: niente account né moduli, cosa resta nel browser, servizi esterni (Cloudflare, SportScore, Google AdSense) e come esercitare i tuoi diritti." section={undefined} path="/privacy/">
@@ -46,7 +46,7 @@ const ext = { target: "_blank", rel: "noopener noreferrer" };
     <div class="panel info-section">
       <h2>6. Email e link esterni</h2>
       <p>Se scrivi a {CONTACT_EMAIL}, il messaggio viene inoltrato dal servizio di posta di Cloudflare alla casella del gestore e usato solo per risponderti.</p>
-      <p>I link a siti esterni (articoli citati come fonti, <a href={KOFI_URL} {...ext}>Ko-fi</a> per le donazioni, Telefono Verde dell'ISS) si aprono solo se li tocchi: da quel momento valgono le informative di quei siti. Non passiamo loro l'indirizzo della pagina da cui arrivi.</p>
+      <p>I link a siti esterni (articoli citati come fonti, <a href={KOFI_URL} {...ext}>Ko-fi</a> per le donazioni, Telefono Verde dell'ISS e, nelle pagine in inglese, GamCare) si aprono solo se li tocchi: da quel momento valgono le informative di quei siti. Non passiamo loro l'indirizzo della pagina da cui arrivi.</p>
     </div>
 
     <div class="panel info-section">
@@ -68,7 +68,7 @@ const ext = { target: "_blank", rel: "noopener noreferrer" };
 
     <div class="panel info-section">
       <h2>9. Modifiche</h2>
-      <p>Se il sito aggiunge servizi o cambia il modo in cui tratta i dati, questa pagina viene aggiornata e la data in alto cambia.</p>
+      <p>Se il sito aggiunge servizi o cambia il modo in cui tratta i dati, questa pagina viene aggiornata e la data in alto cambia. La versione inglese del sito (indirizzi che iniziano con /en/) tratta gli stessi dati: la sua informativa è la traduzione di questa.</p>
     </div>
   </section>
 </Base>

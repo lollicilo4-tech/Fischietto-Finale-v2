@@ -1,0 +1,37 @@
+---
+/* Partite del turno: tutte le schede sono nel codice HTML, quindi visibili ai motori di ricerca
+   e anche con JavaScript disattivato. Il browser aggiunge solo preferiti e orari trascorsi. */
+import Base from "../layouts/Base.astro";
+import { leagueByCode, leagueUrl, liveUrl, myPicksUrl, roundWord } from "../lib/core.js";
+import { leagueData } from "../lib/data.js";
+import { hero, grouped, nextRoundsPanel, playedSection, favStripData } from "../lib/render.js";
+import { byStrength } from "../lib/model.js";
+import { setLang, langOfPath, t } from "../lib/i18n.js";
+interface Props { league: string }
+setLang(langOfPath(Astro.url.pathname));
+const { league } = Astro.props;
+const L = leagueByCode(league);
+const { turno } = leagueData(league);
+const ctx = { league, favs: [] };
+const matches = turno ? turno.matches : [];
+const favData = JSON.stringify(favStripData(matches)).replace(/</g, "\\u003c");
+const day = turno && turno.matchday ? " · " + roundWord(league) + " " + turno.matchday : "";
+---
+<Base title={t("Partite") + " " + L.name + day} description={t("Pronostici di tutte le partite di {league}{day}: probabilità 1X2, risultato più probabile, gol attesi e assenze confermate.", { league: L.name, day })} league={league} section="partite" path={leagueUrl(league, "partite")}>
+  <section id="p-partite" aria-label={t("Partite") + " " + L.name}>
+    <div id="hero" set:html={matches.length ? hero(byStrength(matches)[0]) : ""}></div>
+    <p class="lead">{t("Tocca una partita per aprire il dettaglio. Nel dettaglio puoi fare anche il tuo pronostico e sfidare il modello:")} <a href={myPicksUrl()}>{t("I miei pronostici →")}</a></p>
+    <!-- Partite in corso di questo campionato (da /api/live): le riempie scripts/nowlive.js. Una partita
+         iniziata esce dall'elenco qui sotto al primo aggiornamento dei pronostici, quindi senza questo
+         riquadro sparirebbe fino al risultato finale. -->
+    <section id="now-live" class="panel now-live" aria-live="polite" hidden data-live-key={L.liveKey} data-live-url={liveUrl(league)}></section>
+    <div id="fav-strip"></div>
+    <div class="list" id="matches" set:html={matches.length ? grouped(ctx, matches) : '<div class="msg err">' + t("Partite non disponibili per questo campionato in questo momento.") + "</div>"}></div>
+    <div id="next-rounds" set:html={turno ? nextRoundsPanel(ctx, turno.next_rounds) : ""}></div>
+    <div id="played" set:html={turno ? playedSection(turno.played) : ""}></div>
+  </section>
+  <script is:inline type="application/json" id="ff-fav-data" set:html={favData}></script>
+  <script>
+    import "../scripts/nowlive.js";
+  </script>
+</Base>

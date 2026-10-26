@@ -1,0 +1,73 @@
+---
+/* Privacy and cookies: traduzione inglese di src/pages/privacy.astro. Va aggiornata insieme a quella. */
+import Base from "../../layouts/Base.astro";
+import { CONTACT_EMAIL, KOFI_URL } from "../../lib/core.js";
+const UPDATED = "26 October 2026";
+const ext = { target: "_blank", rel: "noopener noreferrer" };
+---
+<Base title="Privacy and cookies" description="What data Fischietto finale handles: no accounts or forms, what stays in your browser, external services (Cloudflare, SportScore, Google AdSense) and how to exercise your rights." section={undefined} path="/en/privacy/">
+  <section id="p-privacy" aria-labelledby="privacy-title">
+    <h2 class="sub2" id="privacy-title">Privacy and cookies</h2>
+    <p class="lead">In short: Fischietto finale has no accounts, forms or newsletters and does not ask for personal data. Here is what happens to the little technical data needed to show you the site. Last updated: {UPDATED}. This is a translation of the <a href="/privacy/" hreflang="it" lang="it">Italian notice</a>.</p>
+
+    <div class="panel info-section">
+      <h2>1. Who runs the site</h2>
+      <p>Fischietto finale is a free personal project, available at fischiettofinale.com. For any question about this notice or your data, write to <a href={"mailto:" + CONTACT_EMAIL}>{CONTACT_EMAIL}</a>.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>2. What we do not collect</h2>
+      <p>There are no sign-ups, log-ins, contact forms or newsletters. The site uses no visitor analytics and, until advertising is active (section 7), sets no cookies.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>3. What stays on your device</h2>
+      <p>A few conveniences work by saving data only in your browser. It is never sent to us:</p>
+      <ul>
+        <li><b>Followed teams</b> (<code>ff-squadre-seguite</code>): the teams you highlight with “Follow”.</li>
+        <li><b>My predictions</b> (<code>ff-miei-pronostici-v1</code>): the 1, X or 2 predictions you choose and their results, for the challenge against the model.</li>
+        <li><b>Live momentum</b> (<code>ff-momentum-v1</code>): the values recorded while you watch a live match, deleted automatically after 6 hours.</li>
+        <li><b>Offline copy</b>: pages you have already opened, saved by the service worker so they also work without a connection.</li>
+      </ul>
+      <p>You can delete all of this in your browser settings (site data / storage) for fischiettofinale.com.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>4. Hosting: Cloudflare</h2>
+      <p>The site is hosted by Cloudflare. To deliver the pages and protect them from abuse and attacks, Cloudflare processes technical data such as IP address, browser and requested page, for as long as strictly necessary. We do not use this data to identify or profile visitors. The site's fonts, scripts and images are served by the site itself. Cloudflare's privacy policy: <a href="https://www.cloudflare.com/privacypolicy/" {...ext}>cloudflare.com/privacypolicy</a>.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>5. Live Center: SportScore</h2>
+      <p>Only when you open Live does your browser ask SportScore (sportscore.com) directly for the scores and statistics of live matches and download the team logos from there. SportScore therefore receives your IP address and the technical data of the request, under its own policy. Other pages do not contact SportScore.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>6. Email and external links</h2>
+      <p>If you write to {CONTACT_EMAIL}, the message is forwarded by Cloudflare's email service to the site owner's mailbox and used only to reply to you.</p>
+      <p>Links to external sites (articles cited as sources, <a href={KOFI_URL} {...ext}>Ko-fi</a> for donations, GamCare and the Italian ISS helpline) open only if you tap them: from then on those sites' policies apply. We do not pass them the address of the page you come from.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>7. Advertising: Google AdSense</h2>
+      <p>To cover the time spent on the project, the site may show Google AdSense ads. When ads are active:</p>
+      <ul>
+        <li>third-party vendors, including Google, use cookies and similar technologies to serve ads, including based on your previous visits to this and other websites;</li>
+        <li>advertising cookies enable Google and its partners to serve ads based on visits to this site and other sites on the Internet;</li>
+        <li>in the European Union and the United Kingdom you are asked for consent first, through a Google-certified message: you can refuse personalised ads and change your mind at any time;</li>
+        <li>you can also turn off personalised ads in <a href="https://myadcenter.google.com/" {...ext}>Google's ad settings</a>.</li>
+      </ul>
+      <p>How Google uses data from sites that show its ads: <a href="https://policies.google.com/technologies/partner-sites" {...ext}>policies.google.com/technologies/partner-sites</a>. Betting and gambling ads are blocked: the site does not take bets and is not an invitation to gamble.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>8. Your rights</h2>
+      <p>Under the EU General Data Protection Regulation (GDPR) you can ask to access the data about you, correct it, delete it, restrict its use or object to its processing, by writing to <a href={"mailto:" + CONTACT_EMAIL}>{CONTACT_EMAIL}</a>. You can also lodge a complaint with the Italian data protection authority, the <a href="https://www.garanteprivacy.it/" {...ext}>Garante per la protezione dei dati personali</a>, or with the authority of the country where you live.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>9. Changes</h2>
+      <p>If the site adds services or changes the way it handles data, this page is updated and the date at the top changes.</p>
+    </div>
+  </section>
+</Base>

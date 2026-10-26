@@ -8,6 +8,8 @@ export default defineConfig({
   trailingSlash: "always",
   build: {
     format: "directory",
+    // Una pagina alla volta: la lingua (src/lib/i18n.js) è impostata da ogni pagina mentre si genera.
+    concurrency: 1,
     // Nessuno script inline: la Content Security Policy in public/_headers permette solo file del sito.
     inlineStylesheets: "never"
   },

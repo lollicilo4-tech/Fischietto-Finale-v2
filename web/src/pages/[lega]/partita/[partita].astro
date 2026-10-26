@@ -1,29 +1,7 @@
 ---
-/* Pagina di una partita del turno: la stessa scheda di "Partite", già aperta, con un indirizzo
-   proprio da condividere e da indicizzare. Esiste finché la partita è nel turno pubblicato. */
-import Base from "../../../layouts/Base.astro";
-import { LEAGUES, matchSlug, dayOf, when, pc, leagueUrl } from "../../../lib/core.js";
-import { leagueData } from "../../../lib/data.js";
-import { card } from "../../../lib/render.js";
-import { finalOutcome } from "../../../lib/model.js";
-export function getStaticPaths() {
-  return LEAGUES.flatMap((l) => {
-    const t = leagueData(l.code).turno;
-    return (t ? t.matches : []).map((m) => ({ params: { lega: l.slug, partita: matchSlug(m) }, props: { league: l.code, match: m } }));
-  });
-}
-const { league, match: m } = Astro.props;
-const L = LEAGUES.find((l) => l.code === league);
-const fo = finalOutcome(m), s = m.top_scores[0];
-const title = m.home + " – " + m.away + ": pronostico";
-const description = L.name + ", " + dayOf(m) + " " + when(m) + ". " + m.home + " – " + m.away + ": per il modello " + fo[0] + " (" + fo[1] + ") al " + pc(fo[2]) +
-  ", risultato più probabile " + s[0] + "-" + s[1] + ". Probabilità 1X2, gol attesi e assenze confermate.";
+import Partita from "../../../views/Partita.astro";
+import { matchPaths } from "../../../lib/paths.js";
+export const getStaticPaths = matchPaths;
+const { league, match } = Astro.props;
 ---
-<Base title={title} description={description} league={league} section="partite" path={"/" + L.slug + "/partita/" + matchSlug(m) + "/"}>
-  <section id="p-partite" aria-label={m.home + " – " + m.away}>
-    <h2 class="sub2">{m.home} – {m.away}</h2>
-    <p class="lead">{L.name} · {dayOf(m)} {when(m)}. Stime statistiche del modello: non sono certezze e non sono un invito a scommettere.</p>
-    <div class="list" id="match-detail" set:html={card({ league, favs: [] }, m, 0, { open: true, standalone: true })}></div>
-    <p class="lead"><a href={leagueUrl(league, "partite")}>Tutte le partite di {L.name} →</a></p>
-  </section>
-</Base>
+<Partita league={league} match={match} />

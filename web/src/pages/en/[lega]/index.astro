@@ -1,0 +1,7 @@
+---
+import LeagueHome from "../../../views/LeagueHome.astro";
+import { leaguePaths } from "../../../lib/paths.js";
+export const getStaticPaths = leaguePaths;
+const { league } = Astro.props;
+---
+<LeagueHome league={league} />

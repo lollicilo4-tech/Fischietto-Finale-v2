@@ -1,0 +1,57 @@
+---
+/* How it works: traduzione inglese di src/pages/come-funziona.astro. Va aggiornata insieme a quella. */
+import { KOFI_URL } from "../../lib/core.js";
+import Base from "../../layouts/Base.astro";
+---
+<Base title="How it works" description="Where Fischietto finale's numbers come from: a statistical model, the role of AI with verified sources, a public record of every prediction and the limits of the estimates." section={undefined} path="/en/how-it-works/">
+  <section id="p-info" aria-labelledby="info-title">
+    <h2 class="sub2" id="info-title">How it works</h2>
+    <p class="lead">Fischietto finale estimates how a match could go. Here is where the numbers come from and what the artificial intelligence does.</p>
+    <div class="panel info-section">
+      <h2>1. The numbers come from a statistical model</h2>
+      <p>We start from the real results of every match. Each team gets an attacking and a defensive strength: scoring against the strongest team is worth more, and recent matches count more than old ones. At the start of the season the previous season is used as well.</p>
+      <p>These strengths give each team's expected goals and, from there, the probability of every possible score (0-0, 1-0, 2-1…). A small correction, estimated for each league, accounts for low-scoring draws being slightly more common than the pure calculation would say.</p>
+      <p>In each match card, “Why the model says this” shows the factors that weigh most: both teams' attack and defence compared with the average, home advantage, form and, if there are any, confirmed absences. In Matches you also find the probabilities for the following rounds, calculated with the statistical model only.</p>
+    </div>
+    <div class="panel info-section">
+      <h2>2. The European cups</h2>
+      <p>In the Champions, Europa and Conference League each team plays few matches. So the model starts from the level of its league (Premier League, LaLiga, Serie A, Bundesliga and Ligue 1 highest, the other leagues a little lower) and from its strength in that league. The European matches then correct the estimate.</p>
+      <p>In the <b>Copa del Rey</b> LaLiga teams start from their league strength. For the others (Segunda División and amateur sides) the model has no data: it uses a cautious base strength, with Segunda a step above the amateur levels. That is why matches involving these teams always have low reliability.</p>
+    </div>
+    <div class="panel info-section">
+      <h2>3. The recommended prediction</h2>
+      <p>It is not simply the most likely one. An “Over 1.5” at 85% looks strong, but it happens almost always: it says nothing about the match. The recommendation is the market that stands out most from the league average, as long as it has at least a 50% probability. In the card you find the average next to the recommendation.</p>
+    </div>
+    <div class="panel info-section">
+      <h2>4. The role of AI</h2>
+      <p>In the 48 hours before the match the AI looks for news on injuries and suspensions. An absence counts only if an article that was found confirms it: the player's name, the right team and a sentence saying he is unavailable, without words like “doubtful” or “back in training”.</p>
+      <p>With confirmed absences the AI can correct a team's expected goals by at most 15%, and the match shows the <b>Adjusted for absences</b> label with links to the articles. The AI does not invent probabilities or odds: if it finds no verifiable sources, the model's numbers stay as they are. The explanation is written in Italian and English in the same request.</p>
+    </div>
+    <div class="panel info-section">
+      <h2>5. How the season could end</h2>
+      <p>In Table the model plays all the remaining matches thousands of times, starting from today's points, and counts how often each team finishes first, in the top 4 or at the bottom (in the cups: top 8, play-offs, eliminated). Teams level on points are separated by goal difference and goals scored, not head-to-head. Tapping a team opens its page: attacking and defensive strength, form, next match and past predictions. With “Follow” the team stays highlighted: the choice is saved only on your phone.</p>
+    </div>
+    <div class="panel info-section">
+      <h2>6. The Live Center</h2>
+      <p>Opening the details of a live match you find the timeline with goals, cards and substitutions, the statistics if the data service provides them, and the probability of 1, X and 2 minute by minute: it starts from the pre-match prediction and updates with the score, the minute and red cards. There is also an <b>estimated momentum</b>, similar to other apps: the free service only gives totals (dangerous attacks, shots, corners), so we read them every minute and draw how much they grow for each team. For matches in the site's competitions our server records it from the first minute the match is live; for other matches the page records it from when you open the details. Minutes without data stay empty, because we do not invent them.</p>
+    </div>
+    <div class="panel info-section">
+      <h2>7. How to check on us</h2>
+      <p>Every prediction is saved before kick-off and never changed. In <b>History</b> we compare it with the real result: how often we got it right and how reliable the percentages are (if we say 60%, it should happen about 6 times in 10).</p>
+    </div>
+    <div class="panel info-section">
+      <h2>8. The limits</h2>
+      <ul>
+        <li>These are estimates, not certainties: a team given 60% still fails to win 4 times in 10.</li>
+        <li>In <b>Most likely</b> and <b>The model's picks</b> matches are treated as independent.</li>
+        <li>At the start of the season and in the cups there is little data, so the estimates are more uncertain.</li>
+        <li>Times are shown in UK time on the English pages and in Italian time on the Italian ones.</li>
+      </ul>
+    </div>
+    <div class="panel info-section">
+      <h2>9. Free and without gambling</h2>
+      <p>The site is free, does not take bets and does not show bookmaker odds. It is an information service only and is not an invitation to gamble.</p>
+      <p>If you find it useful you can support it with a donation of your choice on <a href={KOFI_URL} target="_blank" rel="noopener noreferrer">Ko-fi</a>. Donations do not unlock content and do not change the predictions: the site stays the same for everyone.</p>
+    </div>
+  </section>
+</Base>

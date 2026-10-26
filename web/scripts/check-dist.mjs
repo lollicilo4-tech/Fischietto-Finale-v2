@@ -6,7 +6,8 @@
    - la CSP in _headers non permette script inline o esterni;
    - ogni indirizzo della sitemap esiste;
    - ogni redirect di _redirects porta a una pagina che esiste, per ogni campionato;
-   - nessun "undefined", "NaN" o "[object Object]" nel testo delle pagine. */
+   - nessun "undefined", "NaN" o "[object Object]" nel testo delle pagine;
+   - ogni pagina ha la lingua giusta (/en/ in inglese) e il link hreflang all'altra versione. */
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -33,7 +34,9 @@ if (!existsSync(dist)) { console.error("Manca dist/: esegui prima npm run build"
 
 /* Pagine e file che devono esserci. */
 const expected = ["/", "/live/", "/come-funziona/", "/privacy/", "/i-miei-pronostici/", "/risultati-recenti.json", "/404.html", "/sitemap.xml", "/robots.txt", "/sw.js", "/manifest.webmanifest", "/_headers", "/_redirects", "/ads.txt", "/live-calendar.json", "/turno.json"];
-LEAGUES.forEach((l) => Object.values(SECTIONS).forEach((s) => expected.push("/" + l.slug + "/" + s.path)));
+LEAGUES.forEach((l) => Object.values(SECTIONS).forEach((s) => expected.push("/" + l.slug + "/" + s.path, "/en/" + l.slug + "/" + s.en)));
+/* Versione inglese (/en/): stesse pagine con indirizzi inglesi. */
+expected.push("/en/", "/en/live/", "/en/how-it-works/", "/en/privacy/", "/en/my-predictions/");
 expected.forEach((u) => { if (!pageFor(u)) fail("manca " + u); });
 
 /* HTML: script, gestori inline, link interni, testo. */
@@ -58,7 +61,10 @@ for (const file of html) {
     if (!pageFor(m[1])) fail(rel + ": link rotto " + m[1]);
   }
   if (!/<link rel="canonical" href="https:\/\/fischiettofinale\.com\//.test(src)) fail(rel + ": manca il link canonico");
-  if (!src.includes('href="/privacy/"')) fail(rel + ": manca il link a Privacy e cookie");
+  const en = rel.startsWith("/en/");
+  if (!src.includes(en ? 'href="/en/privacy/"' : 'href="/privacy/"')) fail(rel + ": manca il link a Privacy e cookie");
+  if (rel !== "/404.html" && !src.includes('<html lang="' + (en ? "en" : "it") + '"')) fail(rel + ": lingua della pagina sbagliata");
+  if (rel !== "/404.html" && !/<link rel="alternate" hreflang="en" href="https:\/\/fischiettofinale\.com\//.test(src)) fail(rel + ": manca il link hreflang alla versione inglese");
   if (!src.includes('href="' + KOFI_URL + '" target="_blank" rel="noopener noreferrer"')) fail(rel + ": manca il link Ko-fi");
 }
 

@@ -1,0 +1,33 @@
+---
+/* Le scelte del modello: combinazione costruita dalle probabilità già calcolate, senza nuove chiamate AI.
+   La pagina arriva con il livello "Facile" a 3 selezioni; i pulsanti ricalcolano nel browser. */
+import Base from "../layouts/Base.astro";
+import { leagueByCode, leagueUrl } from "../lib/core.js";
+import { leagueData, slimMatches, inlineJson } from "../lib/data.js";
+import { slipHtml } from "../lib/render.js";
+import { modelSlipPicks } from "../lib/model.js";
+import { setLang, langOfPath, t } from "../lib/i18n.js";
+interface Props { league: string }
+setLang(langOfPath(Astro.url.pathname));
+const { league } = Astro.props;
+const L = leagueByCode(league);
+const { turno } = leagueData(league);
+const matches = turno ? turno.matches : [];
+const mp = (turno && turno.market_performance) || {}, bm = (turno && turno.backtest && turno.backtest.markets) || {};
+const MODE = "facile", N = 3;
+const first = matches.length ? slipHtml(modelSlipPicks(matches, MODE, N, mp), MODE, matches, mp, bm) : '<div class="msg">' + t("Nessuna selezione disponibile.") + "</div>";
+const extra = { market_performance: mp, backtest_markets: bm };
+const LEVEL = { facile: "Facile", media: "Media", difficile: "Difficile" };
+---
+<Base title={t("Le scelte del modello") + " " + L.name} description={t("Combinazione costruita dalle probabilità del modello per {league}: Facile, Media o Difficile. Stima statistica, non un invito a scommettere.", { league: L.name })} league={league} section="schedina" path={leagueUrl(league, "schedina")}>
+  <section id="p-schedina" aria-label={t("Le scelte del modello")}>
+    <p class="lead">{t("Combinazione costruita automaticamente usando le probabilità già calcolate dal modello. Per crearla non serve una nuova analisi dell'AI: si usano solo i numeri già pronti.")}</p>
+    <div class="slip-toggle" id="slip-toggle" role="group" aria-label={t("Livello")}>{["facile", "media", "difficile"].map((m) => <button type="button" data-mode={m} aria-pressed={String(m === MODE)}>{t(LEVEL[m])}</button>)}</div><div class="slip-toggle" id="slip-count" role="group" aria-label={t("Numero di selezioni")}>{[3, 4, 5].map((k) => <button type="button" data-count={k} aria-pressed={String(k === N)}>{t("{n} selezioni", { n: k })}</button>)}</div>
+    <div id="slip" set:html={first}></div>
+  </section>
+  <script is:inline type="application/json" id="ff-matches" set:html={inlineJson(slimMatches(matches))}></script>
+  <script is:inline type="application/json" id="ff-slip-extra" set:html={inlineJson(extra)}></script>
+  <script>
+    import "../scripts/schedina.js";
+  </script>
+</Base>

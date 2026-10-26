@@ -1,0 +1,7 @@
+---
+import Partita from "../../../../views/Partita.astro";
+import { matchPaths } from "../../../../lib/paths.js";
+export const getStaticPaths = matchPaths;
+const { league, match } = Astro.props;
+---
+<Partita league={league} match={match} />

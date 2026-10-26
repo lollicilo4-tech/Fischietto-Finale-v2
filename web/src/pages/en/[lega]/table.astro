@@ -1,0 +1,7 @@
+---
+import Classifica from "../../../views/Classifica.astro";
+import { leaguePaths } from "../../../lib/paths.js";
+export const getStaticPaths = leaguePaths;
+const { league } = Astro.props;
+---
+<Classifica league={league} />

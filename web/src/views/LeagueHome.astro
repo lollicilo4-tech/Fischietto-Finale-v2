@@ -1,0 +1,19 @@
+---
+/* Home di un campionato. root: la Home del sito ("/" in italiano con la Serie A, "/en/" in inglese con
+   la Premier League); le altre indicano come canonica la stessa pagina. */
+import Base from "../layouts/Base.astro";
+import HomePanel from "../components/HomePanel.astro";
+import { leagueByCode, leagueUrl } from "../lib/core.js";
+import { setLang, langOfPath, t } from "../lib/i18n.js";
+interface Props { league: string; root?: boolean }
+setLang(langOfPath(Astro.url.pathname));
+const { league, root = false } = Astro.props;
+const L = leagueByCode(league);
+const title = root ? "Fischietto finale" : t("{league}: pronostici e probabilità", { league: L.name });
+const description = root
+  ? t("Pronostici statistici di Serie A, Premier League, LaLiga, Bundesliga, Ligue 1 e coppe europee: probabilità, risultato probabile e spiegazione di ogni partita. Solo informazione, nessuna scommessa.")
+  : t("Come potrebbe andare ogni partita di {league}: probabilità 1X2, risultato più probabile, gol attesi e spiegazione del modello.", { league: L.name });
+---
+<Base title={title} description={description} league={league} section="home" path={leagueUrl(league, "home")} inner={false}>
+  <HomePanel league={league} />
+</Base>

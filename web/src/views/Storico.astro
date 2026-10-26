@@ -1,0 +1,24 @@
+---
+import Base from "../layouts/Base.astro";
+import { leagueByCode, leagueUrl } from "../lib/core.js";
+import { leagueData } from "../lib/data.js";
+import { storicoParts } from "../lib/render.js";
+import { setLang, langOfPath, t } from "../lib/i18n.js";
+interface Props { league: string }
+setLang(langOfPath(Astro.url.pathname));
+const { league } = Astro.props;
+const L = leagueByCode(league);
+const { storico } = leagueData(league);
+const s = storicoParts(storico);
+---
+<Base title={t("Storico pronostici") + " " + L.name} description={t("Ogni pronostico di {league} salvato prima della partita e confrontato con il risultato vero: precisione, calibrazione e affidabilità del modello.", { league: L.name })} league={league} section="storico" path={leagueUrl(league, "storico")}>
+  <section id="p-storico" aria-label={t("Storico") + " " + L.name}>
+    <p class="lead" id="hist-lead">{s.lead}</p>
+    <div id="verdict" set:html={s.verdict}></div>
+    <div id="recap" set:html={s.recap}></div>
+    <div class="hist-hero" id="hist-hero" set:html={s.hero}></div>
+    <div class="sum" id="sum" set:html={s.sum}></div>
+    <div id="quality" set:html={s.quality}></div>
+    <div class="panel" style="margin-top:14px"><div class="perf-head"><h2>{t("Ultimi pronostici")}</h2><small>{t("più recente → meno recente")}</small></div><div class="hist" id="hist" set:html={s.hist}></div></div>
+  </section>
+</Base>
