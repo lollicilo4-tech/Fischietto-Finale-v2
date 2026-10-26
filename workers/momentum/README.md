@@ -1,6 +1,7 @@
 # Worker del momentum
 
-Registra ogni minuto il **momentum stimato** delle partite in corso degli 8 campionati del sito, così il
+Registra ogni minuto il **momentum stimato** delle partite in corso dei campionati e delle coppe principali del sito
+(`MOMENTUM_LEAGUES` in `web/src/lib/core.js`: Championship, Eredivisie, Liga Portugal e Brasileirão sono esclusi), così il
 grafico del Live Center parte dal primo minuto e non da quando il visitatore apre la partita.
 
 ```

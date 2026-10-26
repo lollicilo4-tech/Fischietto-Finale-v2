@@ -32,7 +32,14 @@ def zones(competition: str, n_teams: int) -> list[dict]:
             {"key": "playoff", "label": "9ª-24ª (spareggi)", "from": 9, "to": 24},
             {"key": "out", "label": "Eliminata", "from": 25, "to": n_teams},
         ]
-    relegated = 3 if n_teams >= 20 else 2
+    if competition == "ELC":  # Championship: le prime 2 salgono, dalla 3ª alla 6ª spareggi
+        return [
+            {"key": "title", "label": "Primo posto", "from": 1, "to": 1},
+            {"key": "top2", "label": "Prime 2", "from": 1, "to": 2},
+            {"key": "top6", "label": "Prime 6", "from": 1, "to": 6},
+            {"key": "releg", "label": "Ultime 3", "from": n_teams - 2, "to": n_teams},
+        ]
+    relegated = 4 if competition == "BSA" else 3 if n_teams >= 20 else 2
     return [
         {"key": "title", "label": "Primo posto", "from": 1, "to": 1},
         {"key": "top4", "label": "Prime 4", "from": 1, "to": 4},

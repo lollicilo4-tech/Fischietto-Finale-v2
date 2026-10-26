@@ -316,7 +316,7 @@ export function seasonPct(v) { return v == null ? "–" : v === 0 ? "0%" : v < 0
 export function zoneLabel(z) {
   if (!isEn()) return z.label;
   const n = (z.to || 0) - (z.from || 0) + 1;
-  return ({ title: "First place", top4: "Top 4", releg: "Bottom " + n, top8: "Top 8 (last 16)", playoff: "9th–24th (play-offs)", out: "Eliminated" })[z.key] || z.label;
+  return ({ title: "First place", top2: "Top 2", top4: "Top 4", top6: "Top 6", releg: "Bottom " + n, top8: "Top 8 (last 16)", playoff: "9th–24th (play-offs)", out: "Eliminated" })[z.key] || z.label;
 }
 export function seasonPanel(ctx, se) {
   if (!se || !se.teams || !se.teams.length || !se.zones || !se.zones.length) return "";
