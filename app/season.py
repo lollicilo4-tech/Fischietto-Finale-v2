@@ -15,12 +15,15 @@ from . import model
 
 SIMULATIONS = 5000
 SEED = 20261023  # seme fisso: con gli stessi dati, gli stessi numeri a ogni aggiornamento
-CUPS = {"CL", "EL", "UECL"}
+CUPS = {"CL", "EL", "UECL", "CDR"}
+KNOCKOUT = {"CDR"}  # eliminazione diretta: niente simulazione di classifica
 
 
 def zones(competition: str, n_teams: int) -> list[dict]:
     """Zone di classifica da mostrare. Descrittive, senza promettere qualificazioni che dipendono
     da regolamenti e coefficienti: "prime 4", non "Champions League"."""
+    if competition in KNOCKOUT:
+        return []
     if competition in CUPS:
         if n_teams < 24:
             return []

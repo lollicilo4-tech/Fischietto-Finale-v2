@@ -11,7 +11,7 @@ const meta = leagueMeta(league);
 const ctx = { league, favs: [] };
 const dash = turno && turno.matches.length ? homeDashboard(ctx, turno.matches) : null;
 const L = LEAGUES.find((l) => l.code === league);
-const tilePartite = turno ? (meta.matchday ? "Giornata " + meta.matchday + " · " : "") + meta.nMatches + " partite" : "Il prossimo turno";
+const tilePartite = turno ? (meta.matchday ? (L.knockout ? "Turno " : "Giornata ") + meta.matchday + " · " : "") + meta.nMatches + " partite" : "Il prossimo turno";
 const tileStorico = storico && storico.n ? "Esito azzeccato " + storico.hit + " su " + storico.n : "Pronostici e risultati veri";
 /* La griglia della Home segue l'ordine del sito attuale (Serie A, Premier, LaLiga...). */
 const grid = ["SA", "PL", "PD", "BL1", "FL1", "CL", "EL", "UECL"].map((c) => LEAGUES.find((l) => l.code === c));

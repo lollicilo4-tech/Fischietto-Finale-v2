@@ -9,14 +9,18 @@ export const LEAGUES = [
   { code: "FL1", slug: "ligue-1", name: "Ligue 1", country: "Francia", flag: "🇫🇷", liveKey: "ligue-1", file: "league-FL1-" },
   { code: "CL", slug: "champions-league", name: "Champions League", country: "Europa", flag: "🏆", liveKey: "champions-league", file: "league-CL-" },
   { code: "EL", slug: "europa-league", name: "Europa League", country: "Europa", flag: "🏆", liveKey: "europa-league", file: "league-EL-" },
-  { code: "UECL", slug: "conference-league", name: "Conference League", country: "Europa", flag: "🏆", liveKey: "conference-league", file: "league-UECL-" }
+  { code: "UECL", slug: "conference-league", name: "Conference League", country: "Europa", flag: "🏆", liveKey: "conference-league", file: "league-UECL-" },
+  /* Coppa a eliminazione diretta: turni invece di giornate, nessuna classifica. */
+  { code: "CDR", slug: "copa-del-rey", name: "Copa del Rey", country: "Spagna", flag: "🏆", liveKey: "copa-del-rey", file: "league-CDR-", knockout: true }
 ];
 /* Ordine del menu a tendina nell'intestazione, come nel sito attuale. */
-export const SELECT_ORDER = ["SA", "PL", "CL", "BL1", "PD", "FL1", "EL", "UECL"];
+export const SELECT_ORDER = ["SA", "PL", "CL", "BL1", "PD", "FL1", "EL", "UECL", "CDR"];
 export const DEFAULT_LEAGUE = "SA";
 
 export const leagueByCode = (code) => LEAGUES.find((l) => l.code === code) || null;
 export const leagueBySlug = (slug) => LEAGUES.find((l) => l.slug === slug) || null;
+/* "giornata" nei campionati e nella fase a girone delle coppe europee, "turno" nelle coppe a eliminazione diretta. */
+export const roundWord = (code) => (leagueByCode(code) && leagueByCode(code).knockout ? "turno" : "giornata");
 
 /* Sezioni di ogni campionato: slug nell'URL, id del pannello (usato dal CSS) ed etichetta. */
 export const SECTIONS = {

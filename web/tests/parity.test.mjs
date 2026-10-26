@@ -45,7 +45,9 @@ function normalize(html) {
     .replace(/quota equa [^<·]* · /g, "");
 }
 
-for (const L of LEAGUES) {
+/* Campionati che esistevano nel sito vecchio: la Copa del Rey c'è solo nel sito nuovo. */
+const LEGACY = new Set(["SA", "PL", "CL", "BL1", "PD", "FL1", "EL", "UECL"]);
+for (const L of LEAGUES.filter((l) => LEGACY.has(l.code))) {
   const prefix = L.file;
   const turno = read(prefix + "turno.json"), storico = read(prefix + "storico.json"), classifica = read(prefix + "classifica.json");
   test("stesso HTML del sito attuale · " + L.name, { skip: !turno && "dati non pubblicati" }, () => {

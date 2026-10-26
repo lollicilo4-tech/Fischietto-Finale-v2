@@ -1,10 +1,10 @@
 # Fischietto finale
 
-App che stima come potrebbe andare ogni partita di Serie A, Premier League, Bundesliga, LaLiga, Ligue 1, Champions League, Europa League e Conference League. Soluzione ibrida in tre livelli:
+App che stima come potrebbe andare ogni partita di Serie A, Premier League, Bundesliga, LaLiga, Ligue 1, Champions League, Europa League, Conference League e Copa del Rey. Soluzione ibrida in tre livelli:
 
 | Livello | Cosa fa | File |
 |---|---|---|
-| Dati | Risultati e calendario da football-data.org; Europa e Conference League da un CSV pubblico ([open-matchday](https://github.com/oladeeayo/open-matchday)) | `app/data.py` |
+| Dati | Risultati e calendario da football-data.org; Europa League, Conference League e Copa del Rey da un CSV pubblico ([open-matchday](https://github.com/oladeeayo/open-matchday)) | `app/data.py` |
 | Modello | Poisson con correzione di Dixon-Coles stimata dai risultati di ogni campionato, forma recente, quote eque (1 / probabilità) | `app/model.py` |
 | Groq + GPT-OSS, con Gemini di riserva | Cerca notizie e indisponibilità; ogni assenza viene confermata leggendo il testo delle fonti prima di correggere i gol attesi | `app/analyst.py`, `app/evidence.py` |
 | Ricerca gratuita | Quando Groq è fuori quota l'app cerca le notizie da sola (SearXNG, poi Tavily) e Gemini legge gli articoli trovati | `app/news.py` |
@@ -44,7 +44,7 @@ py -m uvicorn app.main:app --reload
 Apri http://localhost:8000.
 
 - **Senza chiavi**: dati inventati e analisi a regole (etichetta "Dati di esempio").
-- **Con `FOOTBALL_DATA_KEY`**: dati reali dei campionati supportati. I sei campionati di football-data.org usano l’analisi AI quando disponibile (Europa e Conference League solo statistica); Groq è il provider principale e Gemini quello di riserva. Se un provider non è disponibile, il modello statistico continua a produrre le probabilità e lo stato dell’analisi segnala il fallback.
+- **Con `FOOTBALL_DATA_KEY`**: dati reali dei campionati supportati. I sei campionati di football-data.org usano l’analisi AI quando disponibile (Europa League, Conference League e Copa del Rey solo statistica); Groq è il provider principale e Gemini quello di riserva. Se un provider non è disponibile, il modello statistico continua a produrre le probabilità e lo stato dell’analisi segnala il fallback.
 - **Con `GROQ_API_KEY`**: Groq è il provider principale e usa `browser_search`. Per restare nella quota gratuita l'AI analizza solo le partite che iniziano entro 48 ore; le altre mostrano l'analisi statistica finché non si avvicinano.
 - **Con anche `GEMINI_API_KEY`**: Gemini entra in funzione solo se Groq fallisce o raggiunge un limite. Nel piano gratuito Gemini **non può cercare sul web** (Google Search grounding è solo a pagamento): per questo l'app cerca le notizie da sola e Gemini legge gli articoli trovati. La cache di 72 ore evita chiamate ripetute.
 - **Ricerca notizie gratuita**: `SEARXNG_URL` (SearXNG, gratuito e illimitato; nel workflow parte in automatico come container) e `TAVILY_API_KEY` (facoltativo: 1.000 ricerche gratis al mese, senza carta di credito, account su tavily.com). Si prova prima SearXNG, poi Tavily. Senza nessuno dei due si usa Gemini con Google Search, che nel piano gratuito di solito risponde senza fonti: in quel caso non si applicano correzioni e il testo lo dichiara.
@@ -101,6 +101,9 @@ football-data.org richiede l'attribuzione, già presente nel piè di pagina.
   Bundesliga, Ligue 1; le altre leghe con un livello unico più basso) e, in misura minore, dalla sua
   forza nel campionato; le partite europee poi correggono la stima (`app/strength.py`). Il peso della
   forza nazionale è tarato su poche partite: va ricontrollato quando lo storico delle coppe crescerà.
-- Gli orari di Europa e Conference League arrivano dal CSV in ora CET fissa (UTC+1): con l'ora legale conviene verificarli.
+- Copa del Rey: coppa a eliminazione diretta, senza classifica. Le squadre fuori da LaLiga non hanno dati: partono da una forza
+  fissa (Segunda División un gradino sotto, poi tutte le categorie dilettanti), e le loro partite hanno affidabilità bassa.
+  Tra un turno e il sorteggio del successivo la lega non si aggiorna e non è un errore.
+- Gli orari di Europa League, Conference League e Copa del Rey arrivano dal CSV in ora CET fissa (UTC+1): con l'ora legale conviene verificarli.
 - Le multiple mostrano la probabilità composta assumendo partite indipendenti.
 - Durante le pause per le nazionali non ci sono partite in programma e il sito resta fermo all'ultimo turno.

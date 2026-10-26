@@ -16,6 +16,10 @@ DOMESTIC = ("SA", "PL", "BL1", "PD", "FL1")
 # Livello del campionato: moltiplica l'attacco e divide la difesa della squadra.
 LEAGUE_LEVEL = {"PL": 1.10, "PD": 1.06, "SA": 1.05, "BL1": 1.04, "FL1": 0.98}
 OTHER_LEVEL = 0.92  # squadre di campionati non coperti (Portogallo, Olanda, Turchia...)
+# Copa del Rey: squadre spagnole fuori da LaLiga. Segunda División un gradino sotto, poi tutte le
+# categorie dilettanti insieme (Primera e Segunda RFEF, Tercera, regionali): non sappiamo distinguerle.
+SEGUNDA_LEVEL = 0.78
+AMATEUR_LEVEL = 0.50
 # Quanto conta la forza della squadra nel suo campionato, oltre al livello del campionato:
 # 0 = solo il livello della lega, 1 = valutazione nazionale piena. Tarato il 22/10/2026 sulle
 # 30 partite di Champions già concluse: il livello della lega porta quasi tutto il segnale
@@ -50,6 +54,13 @@ ALIASES = {
     "newcastle united": "newcastle",
     "nottingham forest": "nottingham",
     "lens": "rc lens",
+    # Copa del Rey (nomi del CSV ESPN)
+    "celta vigo": "celta",
+    "racing santander": "santander",
+    "dep a coruna": "deportivo",
+    "deportivo la coruna": "deportivo",
+    "real oviedo": "oviedo",
+    "real mallorca": "mallorca",
 }
 
 
@@ -95,9 +106,11 @@ def match_team(name: str, ratings: dict) -> dict | None:
     return None
 
 
-def cup_priors(team_names, contexts: dict) -> tuple[dict | None, dict]:
+def cup_priors(team_names, contexts: dict, fallback_levels: dict | None = None) -> tuple[dict | None, dict]:
     """Priori di attacco e difesa per le squadre di una coppa.
 
+    fallback_levels: per le coppe nazionali ({nome normalizzato con _norm: livello} delle squadre di categorie inferiori note);
+    con fallback_levels presente, chi non è né nei nostri campionati né nell'elenco parte da AMATEUR_LEVEL.
     Ritorna (priori o None se non ci sono campionati disponibili, resoconto
     {"matched": n, "total": m, "leagues": [...]}) da pubblicare nel turno.
     """
@@ -113,5 +126,6 @@ def cup_priors(team_names, contexts: dict) -> tuple[dict | None, dict]:
             priors[name] = {"att": hit["att"], "def": hit["def"]}
             report["matched"] += 1
         else:
-            priors[name] = {"att": OTHER_LEVEL, "def": 1 / OTHER_LEVEL}
+            level = OTHER_LEVEL if fallback_levels is None else fallback_levels.get(_norm(name), AMATEUR_LEVEL)
+            priors[name] = {"att": level, "def": 1 / level}
     return priors, report

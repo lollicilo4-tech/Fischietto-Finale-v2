@@ -16,7 +16,8 @@ export const MAJOR_LEAGUES = [
   { key: "laliga", label: "🇪🇸 LaLiga" }, { key: "bundesliga", label: "🇩🇪 Bundesliga" },
   { key: "ligue-1", label: "🇫🇷 Ligue 1" }, { key: "champions-league", label: "🏆 Champions League" },
   { key: "europa-league", label: "🏆 Europa League" }, { key: "conference-league", label: "🏆 Conference League" },
-  { key: "serie-b", label: "🇮🇹 Serie B" }, { key: "eredivisie", label: "🇳🇱 Eredivisie" }, { key: "liga-portugal", label: "🇵🇹 Liga Portugal" }
+  { key: "serie-b", label: "🇮🇹 Serie B" }, { key: "eredivisie", label: "🇳🇱 Eredivisie" }, { key: "liga-portugal", label: "🇵🇹 Liga Portugal" },
+  { key: "copa-del-rey", label: "🏆 Copa del Rey" }
 ];
 
 export function rowsFrom(data) {
@@ -94,7 +95,8 @@ const LEAGUE_PATTERNS = [
   ["ligue-1", /^(france |french )?ligue 1( mcdonald s| uber eats)?$/],
   ["serie-b", /^(italy |italia |italian )?serie b( bkt)?$/],
   ["eredivisie", /^(netherlands |dutch )?eredivisie$/],
-  ["liga-portugal", /^(portugal )?(liga portugal( betclic)?|primeira liga)$/]
+  ["liga-portugal", /^(portugal )?(liga portugal( betclic)?|primeira liga)$/],
+  ["copa-del-rey", /^(spain |spanish )?copa del rey$/]
 ];
 export function liveLeagueKey(name) {
   const n = String(name || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, " ").trim();

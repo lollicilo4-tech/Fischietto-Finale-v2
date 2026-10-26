@@ -347,7 +347,14 @@ def _recovered_upcoming_round(
 
 
 # --- Coppe: forza delle squadre dai campionati nazionali ---------------------
-CUPS = {"CL", "EL", "UECL"}
+CUPS = {"CL", "EL", "UECL", "CDR"}
+# Coppe a eliminazione diretta: niente classifica, niente simulazione di fine stagione.
+KNOCKOUT = {"CDR"}
+
+
+class NoUpcomingRound(RuntimeError):
+    """Nessun turno in programma nel calendario. Per una coppa a eliminazione diretta è normale tra
+    un turno e il sorteggio del successivo: generate.py la salta senza segnalare un errore."""
 POINTS_STAGES = {"REGULAR_SEASON", "LEAGUE_STAGE"}  # fasi che assegnano punti in classifica
 LEAGUE_PHASE_MATCHDAYS = {"EL": 8, "UECL": 6}       # giornate della fase a girone unico (CSV)
 
@@ -361,12 +368,14 @@ def _cached_domestic_contexts() -> dict:
             if code in strength.DOMESTIC and now - entry["t"] < CACHE_SECONDS}
 
 
-def _cup_model(finished: list[dict], previous: list[dict], fixtures: list[dict]) -> tuple[dict, float, float, dict]:
-    """Modello di una coppa che parte dalla forza nazionale delle squadre (vedi app/strength.py)."""
+def _cup_model(finished: list[dict], previous: list[dict], fixtures: list[dict],
+               fallback_levels: dict | None = None) -> tuple[dict, float, float, dict]:
+    """Modello di una coppa che parte dalla forza nazionale delle squadre (vedi app/strength.py).
+    fallback_levels: livello delle squadre fuori dai nostri campionati (Copa del Rey: Segunda e dilettanti)."""
     from . import model, strength
     names = {m[k] for m in finished + previous for k in ("home", "away")} | \
             {f[k] for f in fixtures for k in ("home", "away")}
-    priors, report = strength.cup_priors(names, _cached_domestic_contexts())
+    priors, report = strength.cup_priors(names, _cached_domestic_contexts(), fallback_levels=fallback_levels)
     teams, avg_h, avg_a = model.build_teams(finished, previous, priors=priors,
                                             prior_k=strength.CUP_PRIOR_K if priors else None)
     for name in names - set(teams):  # squadre senza partite giocate: si parte dal priore
@@ -375,11 +384,67 @@ def _cup_model(finished: list[dict], previous: list[dict], fixtures: list[dict])
     return teams, avg_h, avg_a, report
 
 
+def _knockout_model(finished: list[dict], fixtures: list[dict], fallback_levels: dict | None) -> tuple[dict, float, float, dict]:
+    """Coppa nazionale a eliminazione diretta (Copa del Rey): ogni squadra gioca una partita per turno e
+    i primi turni sono tra dilettanti. Stimare la forza da quelle partite riporterebbe i dilettanti alla
+    media (1,0) e li metterebbe alla pari con LaLiga, quindi qui la forza è solo il punto di partenza:
+    LaLiga dal campionato, Segunda e dilettanti da livelli fissi (app/strength.py). Gol medi di LaLiga."""
+    from . import model, strength
+    names = {f[k] for f in fixtures for k in ("home", "away")}
+    domestic = _cached_domestic_contexts()
+    priors, report = strength.cup_priors(names, domestic, fallback_levels=fallback_levels or {})
+    forms = model.build_teams(finished)[0] if finished else {}
+    ratings = strength.domestic_ratings(domestic)
+    teams = {}
+    for name in names:
+        p = (priors or {}).get(name) or {"att": strength.AMATEUR_LEVEL, "def": 1 / strength.AMATEUR_LEVEL}
+        # known: la forza viene da un nostro campionato (LaLiga); altrimenti è un livello fisso stimato.
+        teams[name] = {"att": p["att"], "def": p["def"], "form": (forms.get(name) or {}).get("form", ""),
+                       "known": strength.match_team(name, ratings) is not None}
+    pd_ctx = domestic.get("PD") or {}
+    avg_h = pd_ctx.get("avg_h") or (sum(m["hg"] for m in finished) / len(finished) if finished else 1.5)
+    avg_a = pd_ctx.get("avg_a") or (sum(m["ag"] for m in finished) / len(finished) if finished else 1.2)
+    report["knockout"] = True
+    return teams, avg_h, avg_a, report
+
+
 # --- Competizioni UEFA senza copertura nel piano gratuito football-data.org ---
 OPEN_MATCHDAY_LEAGUES = {
     "EL": ("UEFA_1_europa-league", "UEFA Europa League"),
     "UECL": ("UEFA_1_conference-league", "UEFA Conference League"),
+    "CDR": ("ESP_CUP_copa-del-rey", "Copa del Rey"),
 }
+# Copa del Rey: le squadre di Segunda (dal CSV della Segunda División) partono più forti dei dilettanti.
+SEGUNDA_FOLDER = "ESP_2_segunda-division"
+
+
+def _same_team(a: set[str], b: set[str]) -> bool:
+    """Stessa squadra se le parole distintive del nome più corto stanno tutte nell'altro
+    ("paso" in "paso"; "rayo vallecano" non è "rayo majadahonda")."""
+    return bool(a and b) and (a <= b or b <= a)
+
+
+def _dedupe_cup_fixtures(rows: list[dict]) -> list[dict]:
+    """Il CSV della Copa del Rey a volte ha la stessa partita due volte, da due fonti con nomi diversi
+    ("Atl. Paso - Cordoba" senza orario e "Atlético Paso - Córdoba" alle 21:00). Una squadra gioca una
+    sola volta al giorno: due righe dello stesso giorno con la stessa squadra nella stessa posizione
+    (casa con casa, o trasferta con trasferta) sono la stessa partita, e resta quella con l'orario.
+    Parole comuni come "Atlético" o "Real" non contano."""
+    from . import strength
+    generic = {"atletico", "real", "sporting", "club", "deportivo", "ciudad", "union", "racing", "cultural",
+               "gimnastica", "sociedad", "academy", "recreativo", "unionistas", "juventud", "balompie"}
+
+    def words(name: str) -> set[str]:
+        return {w for w in strength._norm(name).split() if len(w) >= 4 and w not in generic}
+
+    kept: list[dict] = []
+    for row in sorted(rows, key=lambda r: (not (r.get("time") or "").strip())):
+        home, away = words(row.get("home", "")), words(row.get("away", ""))
+        if any(k.get("date") == row.get("date") and (_same_team(words(k.get("home", "")), home) or _same_team(words(k.get("away", "")), away))
+               for k in kept):
+            continue
+        kept.append(row)
+    return kept
 OPEN_MATCHDAY_BASE = "https://raw.githubusercontent.com/oladeeayo/open-matchday/master/data"
 
 
@@ -435,8 +500,14 @@ async def _open_matchday_context(competition: str) -> dict:
 
     result_rows = _parse_open_matchday_rows(results_text)
     fixture_rows = _parse_open_matchday_rows(fixtures_text)
+    fallback_levels = None
+    if competition in KNOCKOUT:
+        fixture_rows = _dedupe_cup_fixtures(fixture_rows)
+        fallback_levels = await _segunda_levels(base.rsplit("/", 1)[0], season_tag)
+    if competition in KNOCKOUT and result_rows and not fixture_rows:
+        raise NoUpcomingRound(f"Nessuna partita in calendario per {competition}.")
     if not result_rows or not fixture_rows:
-        raise RuntimeError(f"Dataset UEFA vuoto per {competition}; aggiornamento annullato.")
+        raise RuntimeError(f"Dataset vuoto per {competition}; aggiornamento annullato.")
 
     finished = []
     for row in result_rows:
@@ -465,7 +536,9 @@ async def _open_matchday_context(competition: str) -> dict:
             if not home or not away or parsed < now:
                 continue
             upcoming.append({"id": _open_match_id(competition, row), "utcDate": kickoff,
-                             "matchday": int(row["gw"]), "status": "SCHEDULED",
+                             # Coppa a eliminazione diretta: il turno è quello dei prossimi 10 giorni,
+                             # il numero "gw" del CSV non è affidabile (righe dello stesso turno con 1 e 4).
+                             "matchday": 1 if competition in KNOCKOUT else int(row["gw"]), "status": "SCHEDULED",
                              "homeTeam": {"name": home, "shortName": home},
                              "awayTeam": {"name": away, "shortName": away}})
         except (KeyError, TypeError, ValueError):
@@ -473,23 +546,45 @@ async def _open_matchday_context(competition: str) -> dict:
     finished_ids = {match["id"] for match in finished}
     matchday, next_round = _select_upcoming_round(upcoming, now=now, finished_ids=finished_ids)
     if not next_round:
-        raise RuntimeError(f"Nessuna prossima giornata UEFA valida per {competition}; aggiornamento annullato.")
+        raise NoUpcomingRound(f"Nessuna prossima giornata valida per {competition}; aggiornamento annullato.")
 
     fixtures = [{"id": match["id"], "home": _name(match["homeTeam"]),
                  "away": _name(match["awayTeam"]), "kickoff": match["utcDate"], "label": None}
                 for match in next_round]
     from . import model
-    teams, avg_h, avg_a, cup_prior = _cup_model(finished, [], fixtures)
-    standings = _open_matchday_standings(finished)
-    # Solo le giornate della fase a girone unico (le eventuali righe successive sono eliminazione diretta).
-    remaining = [{"id": m["id"], "home": _name(m["homeTeam"]), "away": _name(m["awayTeam"]),
-                  "kickoff": m["utcDate"], "matchday": m["matchday"]} for m in upcoming
-                 if m["matchday"] <= LEAGUE_PHASE_MATCHDAYS.get(competition, 8)]
-    return {"demo": False, "teams_simple": model.build_teams_simple(finished), "remaining": remaining,
+    if competition in KNOCKOUT:
+        teams, avg_h, avg_a, cup_prior = _knockout_model(finished, fixtures, fallback_levels)
+    else:
+        teams, avg_h, avg_a, cup_prior = _cup_model(finished, [], fixtures, fallback_levels)
+    if competition in KNOCKOUT:
+        # Eliminazione diretta: niente classifica né partite "rimanenti" da simulare.
+        standings, remaining = [], []
+    else:
+        standings = _open_matchday_standings(finished)
+        # Solo le giornate della fase a girone unico (le eventuali righe successive sono eliminazione diretta).
+        remaining = [{"id": m["id"], "home": _name(m["homeTeam"]), "away": _name(m["awayTeam"]),
+                      "kickoff": m["utcDate"], "matchday": m["matchday"]} for m in upcoming
+                     if m["matchday"] <= LEAGUE_PHASE_MATCHDAYS.get(competition, 8)]
+    # Il modello della prima versione (solo confronto) non ha senso con i soli turni tra dilettanti.
+    simple = None if competition in KNOCKOUT else model.build_teams_simple(finished)
+    return {"demo": False, "teams_simple": simple, "remaining": remaining,
             "teams": teams, "avg_h": avg_h, "avg_a": avg_a, "cup_prior": cup_prior,
             "rho": model.fit_rho(finished, [], teams, avg_h, avg_a), "fixtures": fixtures,
             "finished": finished, "matchday": matchday, "previous": [],
             "standings": standings}
+
+
+async def _segunda_levels(base: str, season_tag: str) -> dict:
+    """{nome normalizzato: livello} per le squadre di Segunda División (dal suo CSV dei risultati).
+    Se il file non si legge, nessun livello in più: tutte le squadre fuori da LaLiga partono come dilettanti."""
+    from . import strength
+    try:
+        async with httpx.AsyncClient(follow_redirects=True) as client:
+            text = await _open_matchday_csv(client, f"{base}/{SEGUNDA_FOLDER}/results_{season_tag}.csv")
+    except httpx.HTTPError:
+        return {}
+    names = {r.get(k, "").strip() for r in _parse_open_matchday_rows(text) for k in ("home", "away")}
+    return {strength._norm(name): strength.SEGUNDA_LEVEL for name in names if name}
 
 
 async def real_context(competition: str | None = None) -> dict:

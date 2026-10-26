@@ -184,6 +184,12 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
             if an.get("deferred"):
                 an["text"] += (f" Le notizie su infortuni e squalifiche vengono cercate nelle "
                                f"{analyst.AI_WINDOW_HOURS} ore prima della partita.")
+        conf = s["conf"]
+        if league in data.KNOCKOUT and not (teams.get(fx["home"], {}).get("known") and teams.get(fx["away"], {}).get("known")):
+            # Coppa con squadre fuori dai nostri campionati: la loro forza è un livello fisso, non un dato.
+            conf = "bassa"
+            an["text"] += (" Per le squadre fuori da LaLiga il modello non ha dati sufficienti: parte da una forza di base "
+                           "prudente (Segunda División o categorie dilettanti), quindi questa stima è meno affidabile.")
         prob = {k: round(s[k], 4) for k in KEYS}
         recommendation = _recommendations(s, fx["home"], fx["away"], base_rates)
         market_predictions = _market_predictions(s, recommendation)
@@ -191,7 +197,7 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
             "id": fx["id"], "home": fx["home"], "away": fx["away"], "kickoff": fx["kickoff"], "label": fx["label"],
             "prob": prob, "fair_odds": {k: model.fair_odds(prob[k]) for k in KEYS},
             "xg": [round(lh, 2), round(la, 2)], "xg_base": [round(item["base"]["lh"], 2), round(item["base"]["la"], 2)],
-            "top_scores": s["top_scores"], "markets": s.get("markets", {}), "recommendation": recommendation, "conf": s["conf"],
+            "top_scores": s["top_scores"], "markets": s.get("markets", {}), "recommendation": recommendation, "conf": conf,
             "form": {"home": teams.get(fx["home"], {}).get("form", ""), "away": teams.get(fx["away"], {}).get("form", "")},
             "last": {"home": _last(ctx["finished"], fx["home"]), "away": _last(ctx["finished"], fx["away"])},
             "h2h": _h2h(ctx.get("previous", []) + ctx["finished"], fx["home"], fx["away"]),
@@ -308,6 +314,9 @@ async def build_classifica(competition: str | None = None) -> dict:
     table = ctx.get("standings", [])
     out = {"demo": False, "table": table, "ratings": team_ratings(ctx),
            "stats": explain.team_stats(ctx.get("finished", []))}
+    if league in data.KNOCKOUT:  # coppa a eliminazione diretta: niente fine stagione
+        out["season"] = None
+        return out
     try:
         out["season"] = season.simulate(table, ctx.get("remaining", []), ctx["teams"], ctx["avg_h"],
                                         ctx["avg_a"], ctx.get("rho", model.DEFAULT_RHO), league)
