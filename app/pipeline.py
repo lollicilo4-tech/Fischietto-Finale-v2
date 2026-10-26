@@ -180,16 +180,23 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
         lh, la = item["base"]["lh"] * an["factor_home"], item["base"]["la"] * an["factor_away"]
         s = model.summarize(lh, la, rho)
         if not an["ai"]:  # il testo a regole deve citare le stesse cifre mostrate nella scheda
-            an["text"] = analyst.fallback_analysis(fx, {**s, "lh": lh, "la": la}, teams)["text"]
+            fallback = analyst.fallback_analysis(fx, {**s, "lh": lh, "la": la}, teams)
+            an["text"], an["text_en"] = fallback["text"], fallback["text_en"]
             if an.get("deferred"):
                 an["text"] += (f" Le notizie su infortuni e squalifiche vengono cercate nelle "
                                f"{analyst.AI_WINDOW_HOURS} ore prima della partita.")
+                an["text_en"] += (f" News on injuries and suspensions is checked in the "
+                                  f"{analyst.AI_WINDOW_HOURS} hours before the match.")
+        elif not an.get("text_en"):  # analisi in cache da prima della versione inglese
+            an["text_en"] = analyst.english_text(an, fx)
         conf = s["conf"]
         if league in data.KNOCKOUT and not (teams.get(fx["home"], {}).get("known") and teams.get(fx["away"], {}).get("known")):
             # Coppa con squadre fuori dai nostri campionati: la loro forza è un livello fisso, non un dato.
             conf = "bassa"
             an["text"] += (" Per le squadre fuori da LaLiga il modello non ha dati sufficienti: parte da una forza di base "
                            "prudente (Segunda División o categorie dilettanti), quindi questa stima è meno affidabile.")
+            an["text_en"] = (an.get("text_en") or "") + (" For teams outside LaLiga the model does not have enough data: it starts "
+                             "from a cautious base strength (Segunda División or amateur levels), so this estimate is less reliable.")
         prob = {k: round(s[k], 4) for k in KEYS}
         recommendation = _recommendations(s, fx["home"], fx["away"], base_rates)
         market_predictions = _market_predictions(s, recommendation)
@@ -204,7 +211,7 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
             "explain": explain.explain_match(
                 teams, avg_h, avg_a, fx["home"], fx["away"], lh, la, an["factor_home"], an["factor_away"],
                 len(an.get("absences_home") or []) + len(an.get("absences_away") or [])),
-            "analysis": {**{k: an.get(k) for k in ("ai", "text", "factor_home", "factor_away",
+            "analysis": {**{k: an.get(k) for k in ("ai", "text", "text_en", "factor_home", "factor_away",
                                                     "absences_home", "absences_away", "sources")},
                          "provider": an.get("provider"),
                          "deferred": bool(an.get("deferred")),

@@ -7,6 +7,7 @@
 from . import model
 
 FORM_MAX_EFFECT = 3  # form_factor va da 0,97 a 1,03: al massimo ±3%
+FORM_EN = str.maketrans({"V": "W", "N": "D", "P": "L"})  # forma in inglese: vittoria, pareggio, sconfitta
 
 
 def _pct(value: float) -> int:
@@ -29,51 +30,67 @@ def explain_match(teams: dict, avg_h: float, avg_a: float, home: str, away: str,
     """Fattori del pronostico, dal più al meno importante.
 
     Ogni voce: {"side": "home"|"away"|"both", "effect": percentuale sui gol attesi di quella
-    squadra, "text": frase}. None se il modello non ha le forze delle squadre (dati di esempio).
+    squadra, "text": frase, "text_en": la stessa frase in inglese (pagine /en/ del sito)}.
+    None se il modello non ha le forze delle squadre (dati di esempio).
     """
     H, A = teams.get(home), teams.get(away)
     if not H or not A or "att" not in H or "att" not in A:
         return None
     items = []
 
-    def add(side, effect, text):
-        items.append({"side": side, "effect": effect, "text": text})
+    def add(side, effect, text, text_en):
+        items.append({"side": side, "effect": effect, "text": text, "text_en": text_en})
 
     def attack(team, n):
         return f"Attacco {team}: nella media del campionato." if n == 0 else \
             f"Attacco {team}: segna {_art(n)}{abs(n)}% {'in più' if n > 0 else 'in meno'} della media del campionato."
 
+    def attack_en(team, n):
+        return f"{team} attack: in line with the league average." if n == 0 else \
+            f"{team} attack: scores {abs(n)}% {'more' if n > 0 else 'less'} than the league average."
+
     def defence(team, n):
         return f"Difesa {team}: nella media del campionato." if n == 0 else \
             f"Difesa {team}: subisce {_art(n)}{abs(n)}% {'in più' if n > 0 else 'in meno'} della media."
 
+    def defence_en(team, n):
+        return f"{team} defence: in line with the league average." if n == 0 else \
+            f"{team} defence: concedes {abs(n)}% {'more' if n > 0 else 'less'} than average."
+
     att_h, def_a = _pct(H["att"]), _pct(A["def"])
     att_a, def_h = _pct(A["att"]), _pct(H["def"])
-    add("home", att_h, attack(home, att_h))
-    add("away", def_a, defence(away, def_a))
-    add("away", att_a, attack(away, att_a))
-    add("home", def_h, defence(home, def_h))
+    add("home", att_h, attack(home, att_h), attack_en(home, att_h))
+    add("away", def_a, defence(away, def_a), defence_en(away, def_a))
+    add("away", att_a, attack(away, att_a), attack_en(away, att_a))
+    add("home", def_h, defence(home, def_h), defence_en(home, def_h))
     if avg_a > 0:
         edge = round((avg_h / avg_a - 1) * 100)
         if edge:
             add("both", edge, f"Fattore campo: in questo campionato chi gioca in casa segna in media "
-                              f"{_art(edge)}{abs(edge)}% {'in più' if edge > 0 else 'in meno'} di chi è in trasferta.")
+                              f"{_art(edge)}{abs(edge)}% {'in più' if edge > 0 else 'in meno'} di chi è in trasferta.",
+                f"Home advantage: in this league the home side scores on average {abs(edge)}% "
+                f"{'more' if edge > 0 else 'less'} than the away side.")
     form_h, form_a = H.get("form", ""), A.get("form", "")
     if form_h or form_a:
         ff_h, ff_a = _pct(model.form_factor(form_h)), _pct(model.form_factor(form_a))
         add("both", max(abs(ff_h), abs(ff_a)),
             f"Forma recente: {home} {form_h or '–'}, {away} {form_a or '–'} "
-            f"(peso piccolo: al massimo ±{FORM_MAX_EFFECT}% sui gol attesi).")
+            f"(peso piccolo: al massimo ±{FORM_MAX_EFFECT}% sui gol attesi).",
+            f"Recent form: {home} {form_h.translate(FORM_EN) or '–'}, {away} {form_a.translate(FORM_EN) or '–'} "
+            f"(small weight: at most ±{FORM_MAX_EFFECT}% on expected goals).")
     adj_h, adj_a = _pct(factor_home), _pct(factor_away)
     if adj_h or adj_a:
         parts = ([f"{home} {_sign(adj_h)}"] if adj_h else []) + ([f"{away} {_sign(adj_a)}"] if adj_a else [])
         add("both", max(abs(adj_h), abs(adj_a)),
-            f"Assenze confermate dalle fonti ({absences}): gol attesi corretti di {', '.join(parts)}.")
+            f"Assenze confermate dalle fonti ({absences}): gol attesi corretti di {', '.join(parts)}.",
+            f"Absences confirmed by sources ({absences}): expected goals adjusted by {', '.join(parts)}.")
 
     ordered = sorted(items, key=lambda x: -abs(x["effect"]))
     summary = (f"Mettendo insieme questi fattori il modello stima {model_d1(lh)} gol per {home} "
                f"e {model_d1(la)} per {away}: da qui escono le probabilità di ogni risultato.")
-    return {"items": ordered, "summary": summary}
+    summary_en = (f"Putting these factors together, the model expects {lh:.1f} goals for {home} "
+                  f"and {la:.1f} for {away}: the probability of every score comes from here.")
+    return {"items": ordered, "summary": summary, "summary_en": summary_en}
 
 
 def model_d1(x: float) -> str:
