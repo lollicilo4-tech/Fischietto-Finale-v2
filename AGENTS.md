@@ -83,7 +83,7 @@ Per non fare due volte lo stesso lavoro:
   e `docs/` contiene solo i dati (più la vecchia pagina unica, non pubblicata).
 - `workers/momentum/` è il Worker Cloudflare che ogni minuto registra in D1 il momentum delle partite live
   (riusa `web/src/lib/livecharts.js` e `livefeed.js`: se le cambi, esegui anche `npm test` lì).
-- `app/data.py` dati (football-data.org; Europa e Conference League da CSV pubblico),
+- `app/data.py` dati (football-data.org; Europa League, Conference League e Copa del Rey da CSV pubblico),
   `app/model.py` modello Poisson + Dixon-Coles, `app/analyst.py` + `app/evidence.py` analisi AI
   con verifica delle assenze sul testo degli articoli, `app/news.py` ricerca notizie gratuita
   (SearXNG/Tavily) quando Groq è fuori quota, `app/season.py` simulazione di fine stagione,

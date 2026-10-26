@@ -19,7 +19,7 @@ try:
 except ImportError:
     pass
 
-from app import pipeline  # noqa: E402
+from app import data, pipeline  # noqa: E402
 from app.validation import summarize_source_coverage, validate_turno_payload  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent
@@ -140,9 +140,9 @@ def _report_update_failure(code: str, label: str, detail: str) -> None:
 # già scaricati in questa esecuzione (app/strength.py), senza chiamate API in più.
 COMPETITIONS = {
     "SA": "Serie A", "PL": "Premier League", "BL1": "Bundesliga", "PD": "LaLiga", "FL1": "Ligue 1",
-    "CL": "Champions League", "EL": "Europa League", "UECL": "Conference League",
+    "CL": "Champions League", "EL": "Europa League", "UECL": "Conference League", "CDR": "Copa del Rey",
 }
-NO_AI = {"EL", "UECL"}  # dati da CSV pubblico, senza analisi AI per contenere le chiamate
+NO_AI = {"EL", "UECL", "CDR"}  # dati da CSV pubblico, senza analisi AI per contenere le chiamate
 
 EXIT_OK, EXIT_ALL_FAILED, EXIT_PARTIAL = 0, 1, 2
 
@@ -194,6 +194,13 @@ async def main() -> int:
             adjusted = sum(1 for m in turno["matches"] if m["analysis"].get("adjusted"))
             print(f"{label}: {len(turno['matches'])} partite, analisi "
                   f"{'AI' if turno['ai'] else 'solo statistica'}, correzioni AI applicate: {adjusted}.")
+        except data.NoUpcomingRound:
+            if code not in data.KNOCKOUT:
+                _report_update_failure(code, label, "Nessuna prossima giornata in calendario")
+                failed.append(label)
+                continue
+            # Coppa a eliminazione diretta tra un turno e l'altro: restano i file pubblicati, niente errore.
+            print(f"{label}: nessun turno in calendario (pausa tra un turno e l'altro), file invariati.")
         except Exception as exc:
             # Alcune eccezioni HTTP (es. httpx.HTTPStatusError) hanno str(exc) vuoto:
             # registra tipo e repr senza esporre chiavi o variabili d'ambiente.

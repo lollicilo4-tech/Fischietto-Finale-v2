@@ -15,7 +15,7 @@ import "@fontsource/ibm-plex-mono/500.css";
 import "@fontsource/ibm-plex-mono/600.css";
 import "../styles/legacy.css";
 import "../styles/site.css";
-import { LEAGUES, SELECT_ORDER, leagueByCode, leagueUrl, liveUrl, INFO_URL, KOFI_URL, PRIVACY_URL, CONTACT_EMAIL, SECTIONS } from "../lib/core.js";
+import { LEAGUES, SELECT_ORDER, leagueByCode, leagueUrl, liveUrl, INFO_URL, KOFI_URL, PRIVACY_URL, CONTACT_EMAIL, SECTIONS, roundWord } from "../lib/core.js";
 import { statusTags } from "../lib/render.js";
 import { leagueData, leagueMeta } from "../lib/data.js";
 
@@ -33,7 +33,7 @@ const { title, description, league = "SA", section, path, inner = true, noindex 
 const L = leagueByCode(league);
 const meta = leagueMeta(league);
 const { turno } = leagueData(league);
-const sub = Astro.props.sub ?? (L.name + (meta.matchday ? " · giornata " + meta.matchday : " · come potrebbe andare ogni partita"));
+const sub = Astro.props.sub ?? (L.name + (meta.matchday ? " · " + roundWord(league) + " " + meta.matchday : " · come potrebbe andare ogni partita"));
 const site = Astro.site ? Astro.site.href.replace(/\/$/, "") : "";
 const canonical = site + path;
 const fullTitle = title === "Fischietto finale" ? title : title + " · Fischietto finale";

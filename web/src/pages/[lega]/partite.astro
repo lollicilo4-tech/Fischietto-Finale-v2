@@ -2,7 +2,7 @@
 /* Partite del turno: tutte le schede sono nel codice HTML, quindi visibili ai motori di ricerca
    e anche con JavaScript disattivato. Il browser aggiunge solo preferiti e orari trascorsi. */
 import Base from "../../layouts/Base.astro";
-import { leagueByCode, liveUrl } from "../../lib/core.js";
+import { leagueByCode, liveUrl, roundWord } from "../../lib/core.js";
 import { leaguePaths } from "../../lib/paths.js";
 import { leagueData } from "../../lib/data.js";
 import { hero, grouped, nextRoundsPanel, playedSection, favStripData } from "../../lib/render.js";
@@ -14,7 +14,7 @@ const { turno } = leagueData(league);
 const ctx = { league, favs: [] };
 const matches = turno ? turno.matches : [];
 const favData = JSON.stringify(favStripData(matches)).replace(/</g, "\\u003c");
-const day = turno && turno.matchday ? " · giornata " + turno.matchday : "";
+const day = turno && turno.matchday ? " · " + roundWord(league) + " " + turno.matchday : "";
 ---
 <Base title={"Partite " + L.name + day} description={"Pronostici di tutte le partite di " + L.name + day + ": probabilità 1X2, risultato più probabile, gol attesi e assenze confermate."} league={league} section="partite" path={"/" + L.slug + "/partite/"}>
   <section id="p-partite" aria-label={"Partite " + L.name}>

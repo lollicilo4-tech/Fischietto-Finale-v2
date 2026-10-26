@@ -118,3 +118,9 @@ test("riquadro In corso adesso della pagina Partite", async () => {
   assert.equal(nowLiveHtml([], "/live/"), "");
   assert.equal(rowsOfLeague(null, "serie-a").length, 0);
 });
+
+test("Copa del Rey riconosciuta nel Live, non le coppe omonime", () => {
+  assert.equal(F.liveLeagueKey("Spanish Copa del Rey"), "copa-del-rey");
+  assert.equal(F.liveLeagueKey("Copa del Rey"), "copa-del-rey");
+  assert.notEqual(F.liveLeagueKey("Copa del Rey de Fútbol Sala"), "copa-del-rey");
+});
