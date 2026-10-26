@@ -34,7 +34,9 @@ const pageFor = (urlPath) => {
 if (!existsSync(dist)) { console.error("Manca dist/: esegui prima npm run build"); process.exit(1); }
 
 /* Pagine e file che devono esserci. */
-const expected = ["/", "/live/", "/come-funziona/", "/privacy/", "/i-miei-pronostici/", "/risultati-recenti.json", "/404.html", "/sitemap.xml", "/robots.txt", "/sw.js", "/manifest.webmanifest", "/_headers", "/_redirects", "/ads.txt", "/live-calendar.json", "/turno.json"];
+/* Pagine solo in italiano: niente versione inglese, quindi niente hreflang. */
+const IT_ONLY = ["/fantacalcio/index.html"];
+const expected = ["/", "/live/", "/come-funziona/", "/privacy/", "/i-miei-pronostici/", "/fantacalcio/", "/risultati-recenti.json", "/404.html", "/sitemap.xml", "/robots.txt", "/sw.js", "/manifest.webmanifest", "/_headers", "/_redirects", "/ads.txt", "/live-calendar.json", "/turno.json"];
 LEAGUES.forEach((l) => Object.values(SECTIONS).forEach((s) => expected.push("/" + l.slug + "/" + s.path, "/en/" + l.slug + "/" + s.en)));
 /* Versione inglese (/en/): stesse pagine con indirizzi inglesi. */
 expected.push("/en/", "/en/live/", "/en/how-it-works/", "/en/privacy/", "/en/my-predictions/");
@@ -71,7 +73,7 @@ for (const file of html) {
   const en = rel.startsWith("/en/");
   if (!src.includes(en ? 'href="/en/privacy/"' : 'href="/privacy/"')) fail(rel + ": manca il link a Privacy e cookie");
   if (rel !== "/404.html" && !src.includes('<html lang="' + (en ? "en" : "it") + '"')) fail(rel + ": lingua della pagina sbagliata");
-  if (rel !== "/404.html" && !/<link rel="alternate" hreflang="en" href="https:\/\/fischiettofinale\.com\//.test(src)) fail(rel + ": manca il link hreflang alla versione inglese");
+  if (rel !== "/404.html" && !IT_ONLY.includes(rel) && !/<link rel="alternate" hreflang="en" href="https:\/\/fischiettofinale\.com\//.test(src)) fail(rel + ": manca il link hreflang alla versione inglese");
   if (!src.includes('href="' + KOFI_URL + '" target="_blank" rel="noopener noreferrer"')) fail(rel + ": manca il link Ko-fi");
 }
 

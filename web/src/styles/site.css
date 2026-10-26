@@ -95,3 +95,35 @@ a.ff-btn.now-live-row { display: grid; grid-template-columns: minmax(0, 1fr) aut
   #p-classifica #table table { min-width: 0; }
   #p-classifica #table td, #p-classifica #table th { padding-left: 6px; padding-right: 6px; }
 }
+
+/* Fantacalcio: squadre in evidenza, tabella della giornata e calendario colorato. */
+.fanta-picks { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 14px; }
+.fanta-picks .panel { margin: 0; }
+.fanta-pick-head h3 { margin: 0; font-family: var(--font-display); font-size: 20px; text-transform: uppercase; letter-spacing: .03em; }
+.fanta-pick-head small { color: var(--muted); font-size: 12px; }
+.fanta-pick ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.fanta-pick li { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding-top: 8px; border-top: 1px solid var(--line); }
+.fanta-pick li:first-child { border-top: 0; padding-top: 0; }
+.fanta-pick li > span { display: flex; flex-direction: column; min-width: 0; }
+.fanta-pick li > span small { color: var(--muted); font-size: 12px; }
+.fanta-pick li > b { font-family: var(--font-num); font-size: 17px; text-align: right; white-space: nowrap; }
+.fanta-pick li > b small { display: block; font-family: var(--font-body); font-weight: 500; font-size: 11px; color: var(--muted); }
+.fanta-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.fanta-table th:nth-child(2), .fanta-table td:nth-child(2) { text-align: left; font-family: var(--font-body); }
+.fanta-table th:first-child, .fanta-table td:first-child { width: auto; text-align: left; color: inherit; font-family: var(--font-body); }
+.fanta-table td:first-child, .fanta-table td:nth-child(2) { overflow-wrap: normal; white-space: nowrap; }
+.fanta-where { color: var(--muted); font-size: 11px; }
+.fanta-cal { width: 100%; border-collapse: separate; border-spacing: 3px; font-size: 13px; }
+.fanta-cal th { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; padding: 0 4px 4px; text-align: center; }
+.fanta-cal th:first-child { text-align: left; }
+.fanta-cal td { text-align: center; padding: 6px 4px; border-radius: 8px; font-family: var(--font-num); min-width: 56px; }
+.fanta-cal td:first-child { text-align: left; font-family: var(--font-body); min-width: 0; }
+.fanta-cal td b { display: block; font-size: 13px; }
+.fanta-cal td small { display: block; font-size: 10px; opacity: .85; white-space: nowrap; }
+.fanta-cal td:last-child { font-weight: 700; }
+.fanta-cal td.easy, .fanta-cs.easy, .fanta-legend .easy { background: color-mix(in srgb, var(--good) 22%, transparent); }
+.fanta-cal td.mid, .fanta-cs.mid, .fanta-legend .mid { background: color-mix(in srgb, var(--gold) 20%, transparent); }
+.fanta-cal td.hard, .fanta-cs.hard, .fanta-legend .hard { background: color-mix(in srgb, var(--bad) 20%, transparent); }
+.fanta-cal td.none { color: var(--muted); }
+.fanta-legend { display: flex; gap: 8px; flex-wrap: wrap; font-size: 12px; }
+.fanta-legend span { padding: 3px 10px; border-radius: 999px; }

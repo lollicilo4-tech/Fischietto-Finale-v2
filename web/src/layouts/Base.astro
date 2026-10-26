@@ -32,11 +32,12 @@ interface Props {
   noindex?: boolean;
   crumbs?: { name: string; path: string }[];  // ultimi livelli del percorso (partita, squadra)
   ld?: any[];               // altri dati strutturati (schema.org) della pagina
+  itOnly?: boolean;         // pagina solo in italiano (Fantacalcio): niente hreflang, "EN" porta alla Home inglese
 }
 /* La lingua segue l'indirizzo: tutti i testi e i link sotto (t(), leagueUrl...) la usano. */
 const lang = setLang(langOfPath(Astro.props.path));
 const en = lang === "en";
-const { title, description, league = defaultLeague(), section, path, inner = true, noindex = false } = Astro.props;
+const { title, description, league = defaultLeague(), section, path, inner = true, noindex = false, itOnly = false } = Astro.props;
 const L = leagueByCode(league);
 const meta = leagueMeta(league);
 const { turno } = leagueData(league);
@@ -45,7 +46,8 @@ const site = Astro.site ? Astro.site.href.replace(/\/$/, "") : "";
 const canonical = site + path;
 /* La stessa pagina nell'altra lingua: link nell'intestazione e indicazioni hreflang per i motori di ricerca. */
 const itPath = en ? altPath(path, "it") : path, enPath = en ? path : altPath(path, "en");
-const switchHref = en ? itPath : enPath;
+const switchHref = en ? itPath : itOnly ? "/en/" : enPath;
+const alternates = !noindex && !itOnly;
 const fullTitle = title === "Fischietto finale" ? title : title + " · Fischietto finale";
 /* Nel menu dei campionati si resta sulla stessa sezione (Partite di Serie A → Partite di Premier). */
 const selectSection = section && SECTIONS[section] ? section : "home";
@@ -71,9 +73,9 @@ const structured = noindex ? [] : [Astro.props.league ? breadcrumbLd(site, { lea
 <meta name="description" content={description}>
 <link rel="canonical" href={canonical}>
 {noindex && <meta name="robots" content="noindex">}
-{!noindex && <link rel="alternate" hreflang="it" href={site + itPath}>}
-{!noindex && <link rel="alternate" hreflang="en" href={site + enPath}>}
-{!noindex && <link rel="alternate" hreflang="x-default" href={site + itPath}>}
+{alternates && <link rel="alternate" hreflang="it" href={site + itPath}>}
+{alternates && <link rel="alternate" hreflang="en" href={site + enPath}>}
+{alternates && <link rel="alternate" hreflang="x-default" href={site + itPath}>}
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Fischietto finale">
 <meta property="og:locale" content={en ? "en_GB" : "it_IT"}>

@@ -1,0 +1,46 @@
+---
+/* Consigli fantacalcio della giornata di Serie A: capitano, portiere e difesa, squadre in giornata difficile,
+   tabella dei gol attesi e calendario delle prossime giornate. Tutto dai gol attesi del modello in turno.json
+   (src/lib/fanta.js): nessun dato nuovo, nessuna API. Pagina solo in italiano: il fantacalcio è un gioco italiano. */
+import Base from "../layouts/Base.astro";
+import { FANTA_URL } from "../lib/core.js";
+import { leagueData } from "../lib/data.js";
+import { fantaRows, fantaCalendar, highlightsHtml, roundTableHtml, calendarHtml, deadlineText } from "../lib/fanta.js";
+import { setLang } from "../lib/i18n.js";
+setLang("it");
+const league = "SA";
+const ctx = { league, favs: [] };
+const { turno } = leagueData(league);
+const matches = turno ? turno.matches : [];
+const rows = fantaRows(matches);
+const cal = fantaCalendar(turno);
+const day = turno && turno.matchday ? "giornata " + turno.matchday : "prossima giornata";
+const deadline = deadlineText(matches);
+const title = "Consigli fantacalcio " + day + " di Serie A";
+const description = "Chi schierare al fantacalcio nella " + day + " di Serie A: capitano, portiere e difesa con la porta inviolata più probabile, gol attesi di ogni squadra e calendario delle prossime giornate. Stime del modello statistico.";
+---
+<Base title={title} description={description} league={league} path={FANTA_URL} sub={"Serie A · Fantacalcio · " + day} crumbs={[{ name: "Fantacalcio", path: FANTA_URL }]} itOnly>
+  <section id="p-fanta" aria-labelledby="fanta-title">
+    <h2 class="sub2" id="fanta-title">Consigli fantacalcio · {day}</h2>
+    <p class="lead">Chi schierare secondo il modello statistico di Fischietto finale: le squadre con più gol attesi per scegliere attaccanti e capitano, quelle con la porta inviolata più probabile per portiere e difesa. {deadline && <b>{deadline}.</b>}</p>
+    {turno ? (
+      <Fragment>
+        <Fragment set:html={highlightsHtml(ctx, rows)} />
+        <div class="panel">
+          <h2>Gol attesi e porta inviolata</h2>
+          <p class="lead" style="margin:0">Partite della giornata ancora da giocare, dalla squadra con più gol attesi. C = in casa, T = in trasferta.</p>
+          <Fragment set:html={roundTableHtml(ctx, rows)} />
+        </div>
+        <div class="panel">
+          <h2>Calendario delle prossime giornate</h2>
+          <p class="lead" style="margin:0">Probabilità di vittoria di ogni squadra: verde favorevole, giallo equilibrata, rosso difficile. Utile per scambi e asta di riparazione.</p>
+          <Fragment set:html={calendarHtml(ctx, cal)} />
+          <div class="fanta-legend" aria-hidden="true"><span class="easy">da 50%</span><span class="mid">30–50%</span><span class="hard">sotto 30%</span></div>
+        </div>
+      </Fragment>
+    ) : (
+      <div class="msg">I dati della Serie A non sono ancora disponibili: riprova dopo il prossimo aggiornamento.</div>
+    )}
+    <p class="lead">Il modello conosce le squadre, non i singoli giocatori: per titolari e infortuni controlla le probabili formazioni prima di chiudere la tua. Sono stime statistiche, non certezze.</p>
+  </section>
+</Base>
