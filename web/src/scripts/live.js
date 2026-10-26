@@ -10,6 +10,7 @@ import {
 import {
   liveChartsHtml, lcMatchFromPayload, lcTimelineOf, lcMinuteOf, lcStats, lcNowMinute, lcEvents, lcRecordSample, pickMomentum
 } from "../lib/livecharts.js";
+import { t } from "../lib/i18n.js";
 
 const $ = (id) => document.getElementById(id);
 const read = (id, fallback) => { const el = $(id); try { return el ? JSON.parse(el.textContent) : fallback; } catch (e) { return fallback; } };
@@ -79,8 +80,8 @@ function applyFilters() {
   if (filterEmpty) {
     filterEmpty.hidden = visible > 0;
     if (!visible) filterEmpty.textContent = query || league !== "all"
-      ? "Nessuna partita live corrisponde alla ricerca o al campionato selezionato. Prova a cambiare filtro."
-      : "Nessuna partita live disponibile dal feed.";
+      ? t("Nessuna partita live corrisponde alla ricerca o al campionato selezionato. Prova a cambiare filtro.")
+      : t("Nessuna partita live disponibile dal feed.");
   }
 }
 
@@ -94,11 +95,11 @@ async function loadLiveMatches(force) {
   if (liveLoading || (!force && liveLoaded)) return;
   liveLoading = true; liveLoaded = true;
   status.hidden = false;
-  status.textContent = "Caricamento delle partite in diretta…";
+  status.textContent = t("Caricamento delle partite in diretta…");
   const reopen = openSlugs();
   const previousFilter = leagueSelect ? leagueSelect.value : "all";
   list.innerHTML = "";
-  if (refresh) { refresh.disabled = true; refresh.textContent = "Caricamento…"; }
+  if (refresh) { refresh.disabled = true; refresh.textContent = t("Caricamento…"); }
   try {
     /* Si interrogano tutte le fonti: la lista "fixtures" a volte ne restituisce solo una parte e spesso
        non elenca i campionati principali. Per prime le partite dei nostri campionati registrate dal
@@ -115,7 +116,7 @@ async function loadLiveMatches(force) {
       if (!leagueSelect.value) leagueSelect.value = "all";
     }
     if (!live.length) {
-      status.innerHTML = '<strong>Nessuna partita in diretta restituita dal servizio.</strong><p class="expl">Il feed live non segnala incontri in corso in questo momento. Puoi comunque scegliere una lega o cercare una squadra; le partite concluse non vengono mostrate in questa sezione.</p>';
+      status.innerHTML = "<strong>" + t("Nessuna partita in diretta restituita dal servizio.") + '</strong><p class="expl">' + t("Il feed live non segnala incontri in corso in questo momento. Puoi comunque scegliere una lega o cercare una squadra; le partite concluse non vengono mostrate in questa sezione.") + "</p>";
       if (filterEmpty) filterEmpty.hidden = true;
       return;
     }
@@ -131,10 +132,10 @@ async function loadLiveMatches(force) {
     liveLoaded = false;
     status.hidden = false;
     list.innerHTML = "";
-    status.innerHTML = '<strong>Impossibile caricare il feed live.</strong><p class="expl">Il servizio dati non ha risposto correttamente. Riprova con ↻ Aggiorna; non mostriamo risultati non verificati.</p>';
+    status.innerHTML = "<strong>" + t("Impossibile caricare il feed live.") + '</strong><p class="expl">' + t("Il servizio dati non ha risposto correttamente. Riprova con ↻ Aggiorna; non mostriamo risultati non verificati.") + "</p>";
   } finally {
     liveLoading = false;
-    if (refresh) { refresh.disabled = false; refresh.textContent = "↻ Aggiorna"; }
+    if (refresh) { refresh.disabled = false; refresh.textContent = "↻ " + t("Aggiorna"); }
   }
 }
 
@@ -148,7 +149,7 @@ async function loadLiveDetails(card, quiet) {
     if (!details.querySelector(".live-events")) {
       const note = document.createElement("p");
       note.className = "expl";
-      note.textContent = "Il feed non fornisce un identificativo partita utilizzabile per caricare la cronologia.";
+      note.textContent = t("Il feed non fornisce un identificativo partita utilizzabile per caricare la cronologia.");
       details.appendChild(note);
     }
     return;
@@ -157,7 +158,7 @@ async function loadLiveDetails(card, quiet) {
   if (!quiet) {
     const loading = document.createElement("p");
     loading.className = "expl live-detail-loading";
-    loading.textContent = "Caricamento eventi e statistiche…";
+    loading.textContent = t("Caricamento eventi e statistiche…");
     details.appendChild(loading);
   }
   const fromServer = serverMomentum(slug);  // in parallelo al dettaglio SportScore
@@ -196,11 +197,11 @@ async function loadLiveDetails(card, quiet) {
       section.innerHTML = eventsHtml;
       if (existing) details.replaceChild(section, existing); else details.appendChild(section);
       const fallback = details.querySelector(".expl");
-      if (fallback && fallback.textContent.indexOf("non include eventi") >= 0) fallback.remove();
+      if (fallback && fallback.textContent === t("Il feed non include eventi verificabili per questa partita. Il risultato e lo stato live restano disponibili.")) fallback.remove();
     } else if (!existing && !details.querySelector(".live-no-events")) {
       const empty = document.createElement("p");
       empty.className = "expl live-no-events";
-      empty.textContent = "Il dettaglio del servizio non contiene eventi verificabili per questa partita.";
+      empty.textContent = t("Il dettaglio del servizio non contiene eventi verificabili per questa partita.");
       details.appendChild(empty);
     }
     card.dataset.detailsLoaded = "true";
@@ -208,7 +209,7 @@ async function loadLiveDetails(card, quiet) {
     if (!quiet) {  // un aggiornamento periodico fallito lascia i dati già mostrati
       const err = document.createElement("p");
       err.className = "expl";
-      err.textContent = "Non è stato possibile caricare gli eventi dal servizio. Puoi riprovare aggiornando le partite live.";
+      err.textContent = t("Non è stato possibile caricare gli eventi dal servizio. Puoi riprovare aggiornando le partite live.");
       details.appendChild(err);
     }
   } finally {

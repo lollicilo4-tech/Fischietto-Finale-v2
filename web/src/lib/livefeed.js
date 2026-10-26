@@ -1,6 +1,7 @@
 /* Live Center: lettura del feed SportScore e schede delle partite. Ricavato da static/index.html.
    Funzioni pure (niente DOM, niente fetch) così si possono provare in Node. */
 import { esc, safeUrl } from "./core.js";
+import { t, isEn } from "./i18n.js";
 import { liveChartsHtml } from "./livecharts.js";
 
 /* Fixtures esplicitamente live più due fonti di riserva (che contengono anche partite finite). */
@@ -103,7 +104,7 @@ export function liveLeagueKey(name) {
   for (const [key, re] of LEAGUE_PATTERNS) if (re.test(n)) return key;
   return "other:" + n;
 }
-export const leagueNameOf = (m) => valueText(m.league || m.competition || m.tournament || m.league_name || m.competition_name) || "Competizione non disponibile";
+export const leagueNameOf = (m) => valueText(m.league || m.competition || m.tournament || m.league_name || m.competition_name) || t("Competizione non disponibile");
 
 /* Opzioni del filtro campionato: i principali sempre, poi gli altri presenti nel feed. */
 export function leagueOptions(live) {
@@ -111,12 +112,14 @@ export function leagueOptions(live) {
   live.forEach((m) => { const name = leagueNameOf(m), key = liveLeagueKey(name); if (!feedLeagues[key]) feedLeagues[key] = name; });
   const extra = Object.keys(feedLeagues).filter((key) => !MAJOR_LEAGUES.some((item) => item.key === key))
     .sort((a, b) => feedLeagues[a].localeCompare(feedLeagues[b]));
-  return '<option value="all">Tutti i campionati</option>' +
+  return '<option value="all">' + t("Tutti i campionati") + "</option>" +
     MAJOR_LEAGUES.map((item) => '<option value="' + item.key + '">' + esc(item.label) + "</option>").join("") +
     extra.map((key) => '<option value="' + esc(key) + '">' + esc(feedLeagues[key]) + "</option>").join("");
 }
 
 function translateKind(kind) {
+  // Il feed scrive gli eventi in inglese: nelle pagine inglesi restano come sono.
+  if (isEn()) return kind;
   const k = kind.toLocaleLowerCase();
   if (/penalty goal|penalty scored/.test(k)) return "Gol su rigore";
   if (/own goal/.test(k)) return "Autogol";
@@ -154,8 +157,8 @@ export function eventsListHtml(rawEvents) {
     return '<li class="live-event live-event-' + cls + '"><span class="live-event-minute">' + esc(minute || "•") + '</span><span class="live-event-body"><span class="live-event-icon" aria-hidden="true">' + icon +
       '</span><span class="live-event-copy"><b>' + esc(label) + "</b>" + (team ? "<small>" + esc(team) + "</small>" : "") + "</span></span></li>";
   }).filter(Boolean);
-  return items.length ? '<section class="live-events"><h4>Eventi della partita</h4><ol>' + items.join("") + "</ol></section>"
-    : '<p class="expl">Il feed non include eventi verificabili per questa partita. Il risultato e lo stato live restano disponibili.</p>';
+  return items.length ? '<section class="live-events"><h4>' + t("Eventi della partita") + "</h4><ol>" + items.join("") + "</ol></section>"
+    : '<p class="expl">' + t("Il feed non include eventi verificabili per questa partita. Il risultato e lo stato live restano disponibili.") + "</p>";
 }
 /* Eventi dal dettaglio della partita (api/widget/match), usati quando si aprono i dettagli. */
 export function detailEventsHtml(timeline, homeName, awayName) {
@@ -170,7 +173,7 @@ export function detailEventsHtml(timeline, homeName, awayName) {
     return label ? '<li class="live-event"><span class="live-event-minute">' + esc(minute ? String(minute).replace(/'$/, "") + "'" : "•") + "</span><span><b>" + esc(label) + "</b>" +
       (team ? "<small>" + esc(team) + "</small>" : "") + "</span></li>" : "";
   }).filter(Boolean);
-  return items.length ? '<h4>Eventi della partita</h4><ol>' + items.join("") + "</ol>" : "";
+  return items.length ? "<h4>" + t("Eventi della partita") + "</h4><ol>" + items.join("") + "</ol>" : "";
 }
 
 /* Identificativo SportScore della partita (usato per il dettaglio e per il momentum).
@@ -215,13 +218,13 @@ export function minuteLabel(minute, phase) {
   const end = phase === "1H" ? 45 : phase === "2H" ? 90 : phase === "ET" ? 120 : null;
   return end && minute > end ? end + "+" + Math.min(minute - end, 15) + "'" : minute + "'";
 }
-/* Testo dell'etichetta: minuto (se c'è) e fase in italiano. */
+/* Testo dell'etichetta: minuto (se c'è) e fase nella lingua della pagina. */
 export function livePhaseHtml(m, now = Date.now()) {
   const info = liveMinute(m, now);
-  const label = PHASE_LABEL[info.phase] || PHASE_LABEL.LIVE;
+  const label = t(PHASE_LABEL[info.phase] || PHASE_LABEL.LIVE);
   const min = info.minute != null
     ? '<b class="live-minute" data-minute="' + info.minute + '" data-minute-at="' + now + '" data-phase="' + info.phase + '"' +
-      (info.exact ? "" : ' title="Minuto stimato dall\'orario d\'inizio"') + ">" + minuteLabel(info.minute, info.phase) + "</b>"
+      (info.exact ? "" : ' title="' + t("Minuto stimato dall'orario d'inizio") + '"') + ">" + minuteLabel(info.minute, info.phase) + "</b>"
     : "";
   return '<span class="live-pulse"></span>' + min + '<span class="live-phase-label">' + esc(label) + "</span>";
 }
@@ -240,13 +243,13 @@ export function liveCardHtml(m, priors, now = Date.now()) {
   const awayLogo = m.away_logo || (awayObj && typeof awayObj === "object" ? awayObj.logo || awayObj.image : "") || "";
   const details = [];
   const kickoff = m.start_at || m.start_time || m.kickoff || m.date || m.fixture_date, venue = m.venue || m.stadium || m.location, round = m.round || m.stage || m.matchday;
-  if (kickoff) details.push("<div><small>Orario</small><b>" + esc(valueText(kickoff)) + "</b></div>");
-  if (venue) details.push("<div><small>Stadio</small><b>" + esc(valueText(venue)) + "</b></div>");
-  if (round) details.push("<div><small>Turno</small><b>" + esc(valueText(round)) + "</b></div>");
+  if (kickoff) details.push("<div><small>" + t("Orario") + "</small><b>" + esc(valueText(kickoff)) + "</b></div>");
+  if (venue) details.push("<div><small>" + t("Stadio") + "</small><b>" + esc(valueText(venue)) + "</b></div>");
+  if (round) details.push("<div><small>" + t("Turno") + "</small><b>" + esc(valueText(round)) + "</b></div>");
   /* Alcuni feed includono gli eventi: si mostrano se presenti, senza inventarli. */
   const rawEvents = firstArray([m.events, m.incidents, m.timeline, m.fixture_events, m.match_events, m.event_list]);
   const chartsMarkup = liveChartsHtml({
-    home: homeName || "Casa", away: awayName || "Ospiti",
+    home: homeName || t("Casa"), away: awayName || t("Ospiti"),
     homeId: homeObj && typeof homeObj === "object" ? homeObj.id : m.home_id, awayId: awayObj && typeof awayObj === "object" ? awayObj.id : m.away_id,
     homeScore, awayScore, status: matchStatus(m) || m.minute || m.elapsed, events: rawEvents, stats: m.statistics || m.stats || m.match_statistics, priors
   });
@@ -256,7 +259,7 @@ export function liveCardHtml(m, priors, now = Date.now()) {
   return '<article class="live-match" data-live-slug="' + esc(matchSlug) + '" data-home="' + esc(homeName) + '" data-away="' + esc(awayName) +
     '" data-hs="' + esc(homeScore == null ? "" : homeScore) + '" data-as="' + esc(awayScore == null ? "" : awayScore) + '" data-status="' + esc(matchStatus(m)) + '" data-live-league="' + esc(leagueKey) +
     '" data-live-search="' + esc(searchText) + '"><div class="live-league-name">' + esc(league) + '</div><div class="live-phase">' + livePhaseHtml(m, now) +
-    '</div><div class="live-teams"><div class="live-team">' + logo(homeLogo) + "<b>" + esc(homeName || "Squadra casa") + '</b></div><div class="live-score">' + hs + "<span>:</span>" + as +
-    '</div><div class="live-team away">' + logo(awayLogo) + "<b>" + esc(awayName || "Squadra ospite") + '</b></div></div><button type="button" class="live-detail-toggle" aria-expanded="false">Dettagli partita <span aria-hidden="true">＋</span></button><div class="live-match-details" hidden>' +
+    '</div><div class="live-teams"><div class="live-team">' + logo(homeLogo) + "<b>" + esc(homeName || t("Squadra casa")) + '</b></div><div class="live-score">' + hs + "<span>:</span>" + as +
+    '</div><div class="live-team away">' + logo(awayLogo) + "<b>" + esc(awayName || t("Squadra ospite")) + '</b></div></div><button type="button" class="live-detail-toggle" aria-expanded="false">' + t("Dettagli partita") + ' <span aria-hidden="true">＋</span></button><div class="live-match-details" hidden>' +
     (details.length ? '<div class="live-detail-grid">' + details.join("") + "</div>" : "") + chartsMarkup + eventsListHtml(rawEvents) + "</div></article>";
 }

@@ -1,8 +1,9 @@
 /* Comportamenti comuni a tutte le pagine. Le pagine sono già complete in HTML:
    questo script aggiunge solo ciò che dipende dal browser (preferiti salvati sul telefono,
    condivisione, ora attuale, vecchi link) e funziona anche se una parte fallisce. */
-import { favStripHtml } from "../lib/render.js";
+import { favStripHtml, starHtml } from "../lib/render.js";
 import { leagueByCode, leagueUrl, INFO_URL, DEFAULT_LEAGUE } from "../lib/core.js";
+import { t } from "../lib/i18n.js";
 
 const $ = (id) => document.getElementById(id);
 
@@ -34,11 +35,10 @@ function toggleFav(name) {
   decorateFavs();
   return i < 0;
 }
-const starHtml = '<span class="fav-star" aria-label="Squadra seguita">★</span>';
 function setStar(container, on) {
   if (!container) return;
   const star = container.querySelector(":scope > .fav-star");
-  if (on && !star) container.insertAdjacentHTML("afterbegin", starHtml);
+  if (on && !star) container.insertAdjacentHTML("afterbegin", starHtml());
   if (!on && star) star.remove();
 }
 /* Stelle su partite e classifiche, striscia "Le tue squadre", pulsante Segui. */
@@ -52,7 +52,7 @@ function decorateFavs() {
   document.querySelectorAll("tr[data-team-row]").forEach((row) => setStar(row.cells[row.closest(".season-table") ? 0 : 1], favs.has(row.dataset.teamRow)));
   document.querySelectorAll(".fav-btn[data-fav]").forEach((b) => {
     const on = favs.has(b.dataset.fav);
-    b.setAttribute("aria-pressed", String(on)); b.textContent = on ? "★ Seguita" : "☆ Segui";
+    b.setAttribute("aria-pressed", String(on)); b.textContent = on ? t("★ Seguita") : t("☆ Segui");
   });
   const strip = $("fav-strip"), data = $("ff-fav-data");
   if (strip && data) {
@@ -73,7 +73,7 @@ function shareMatch(btn) {
   const text = btn.dataset.shareText || "", url = location.origin + (btn.dataset.shareUrl || location.pathname);
   const whatsapp = () => window.open("https://wa.me/?text=" + encodeURIComponent(text + " " + url), "_blank", "noopener");
   if (navigator.share) navigator.share({ title: "Fischietto finale", text, url }).catch(() => {});
-  else if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text + " " + url).then(() => toast("Link copiato"), whatsapp);
+  else if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text + " " + url).then(() => toast(t("Link copiato")), whatsapp);
   else whatsapp();
 }
 
@@ -98,7 +98,7 @@ function markStaleKickoffs() {
     const t = Date.parse(card.dataset.kickoff);
     if (!Number.isFinite(t) || t > now || card.querySelector(".match-stale-note")) return;
     const pick = card.querySelector("summary .match-pick");
-    if (pick) pick.insertAdjacentHTML("afterend", '<div class="match-stale-note">Orario trascorso · risultati live non disponibili</div>');
+    if (pick) pick.insertAdjacentHTML("afterend", '<div class="match-stale-note">' + t("Orario trascorso · risultati live non disponibili") + "</div>");
   });
 }
 
@@ -188,7 +188,7 @@ function init() {
   /* Senza rete la pagina arriva dalla copia salvata: lo si dice, come faceva il sito attuale. */
   const offline = () => {
     const tags = $("tags"), tag = tags && tags.querySelector(".tag.offline");
-    if (navigator.onLine === false && tags && !tag) tags.insertAdjacentHTML("afterbegin", '<span class="tag warn offline">Offline · ultimi dati salvati</span>');
+    if (navigator.onLine === false && tags && !tag) tags.insertAdjacentHTML("afterbegin", '<span class="tag warn offline">' + t("Offline · ultimi dati salvati") + "</span>");
     if (navigator.onLine !== false && tag) tag.remove();
   };
   offline(); window.addEventListener("online", offline); window.addEventListener("offline", offline);
@@ -205,7 +205,7 @@ function init() {
     if (!el) return;
     if (el.hasAttribute("data-fav")) {
       const name = el.getAttribute("data-fav"), now = toggleFav(name);
-      toast(now ? "Ora segui " + name : "Non segui più " + name);
+      toast(now ? t("Ora segui {team}", { team: name }) : t("Non segui più {team}", { team: name }));
     } else if (el.hasAttribute("data-share")) {
       e.preventDefault(); shareMatch(el);
     } else if (el.hasAttribute("data-goto-match")) {

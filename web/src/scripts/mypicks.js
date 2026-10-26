@@ -2,6 +2,7 @@
    dettaglio e, nell'intestazione, il pronostico scelto. Salvato solo in questo browser. Se ci sono
    pronostici di partite già finite senza risultato, scarica /risultati-recenti.json e li completa. */
 import { PICKS_KEY, parseStore, setPick, withResults, pickerHtml, pickKey, isOpen } from "../lib/mypicks.js";
+import { t } from "../lib/i18n.js";
 
 export function readStore() { try { return parseStore(localStorage.getItem(PICKS_KEY)); } catch (e) { return parseStore(""); } }
 export function writeStore(store) { try { localStorage.setItem(PICKS_KEY, JSON.stringify(store)); } catch (e) { /* storage non disponibile */ } }
@@ -35,7 +36,7 @@ function decorate(store) {
     const head = card.querySelector(".mhead");
     let badge = head && head.querySelector(".my-pick-badge");
     if (head && current && !badge) { badge = document.createElement("span"); badge.className = "my-pick-badge"; head.appendChild(badge); }
-    if (badge) { if (current) badge.textContent = "Tu: " + current.pick; else badge.remove(); }
+    if (badge) { if (current) badge.textContent = t("Tu:") + " " + current.pick; else badge.remove(); }
     // Nel dettaglio: i pulsanti (solo se la partita non è iniziata o c'è già un pronostico).
     const detail = card.querySelector(".detail");
     if (!detail) return;

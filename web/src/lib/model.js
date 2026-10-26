@@ -1,16 +1,44 @@
 /* Calcoli del sito sulle probabilità già pubblicate dal modello Python.
-   Copiati senza cambiare la logica da static/index.html: nessun numero nuovo viene inventato qui. */
+   Copiati senza cambiare la logica da static/index.html: nessun numero nuovo viene inventato qui.
+   Le etichette passano da t() (src/lib/i18n.js): in italiano restano identiche. */
+import { t, isEn } from "./i18n.js";
+
+/* Nome di un mercato nella lingua corrente ("Over 2,5", "Gol + Over 2,5" → "Over 2.5", "Both score + Over 2.5"). */
+export function marketText(s) {
+  if (!isEn()) return s;
+  return String(s).replace(/Ris\. esatto/g, "Exact score").replace(/\bNo Gol\b/g, "Not both score").replace(/\bGol\b/g, "Both score").replace(/(\d),(\d)/g, "$1.$2");
+}
+/* Etichette "codice · descrizione" dei mercati, come le scrive il modello Python. */
+const LABELS = {
+  "1": "1 · Vince {home}", X: "X · Pareggio", "2": "2 · Vince {away}",
+  "1X": "1X · {home} non perde", X2: "X2 · {away} non perde",
+  "Over 1,5": "Over 1,5 · almeno 2 gol", "Over 2,5": "Over 2,5 · almeno 3 gol",
+  "Under 2,5": "Under 2,5 · massimo 2 gol", "Under 3,5": "Under 3,5 · massimo 3 gol",
+  Gol: "Gol · entrambe segnano", "No Gol": "No Gol · almeno una resta a 0",
+  score: "Risultato esatto · {score}", "Ris. esatto": "Risultato esatto · {score}"
+};
+const marketLabel = (code, m, score) => t(LABELS[code], { home: m.home, away: m.away, score });
+/* Etichetta di una selezione già pronta (anche quelle scritte in italiano dal modello Python, es.
+   recommendation.best): in inglese si ricostruisce dal codice. */
+export function recLabel(x, m) {
+  if (!isEn() || !x) return x && x.label;
+  if (LABELS[x.code] && m) {
+    const z = /(\d+-\d+)\s*$/.exec(x.label || "");
+    return marketLabel(x.code, m, z ? z[1] : "");
+  }
+  return marketText(x.label);
+}
 
 /* Esito 1X2 più probabile: [codice, nome, probabilità]. */
 export function finalOutcome(m) {
   const p = m.prob;
   return p.p1 >= p.px && p.p1 >= p.p2 ? ["1", m.home, p.p1]
-    : (p.px >= p.p1 && p.px >= p.p2 ? ["X", "Pareggio", p.px] : ["2", m.away, p.p2]);
+    : (p.px >= p.p1 && p.px >= p.p2 ? ["X", t("Pareggio"), p.px] : ["2", m.away, p.p2]);
 }
 /* Variante usata dalla Home (a parità tra X e 2 preferisce X): mantenuta per avere lo stesso risultato. */
 export function homeOutcome(m) {
   const p = m.prob;
-  return p.p1 >= p.px && p.p1 >= p.p2 ? ["1", m.home, p.p1] : p.px >= p.p2 ? ["X", "Pareggio", p.px] : ["2", m.away, p.p2];
+  return p.p1 >= p.px && p.p1 >= p.p2 ? ["1", m.home, p.p1] : p.px >= p.p2 ? ["X", t("Pareggio"), p.px] : ["2", m.away, p.p2];
 }
 export function prudentChoice(m) {
   const p = m.prob;
@@ -23,11 +51,11 @@ export const byStrength = (matches) => matches.slice().sort((a, b) => strength(b
 export function best(m, nodc) {
   const p = m.prob;
   const o = [
-    ["1", "Vince " + m.home, p.p1], ["2", "Vince " + m.away, p.p2],
-    ["1X", m.home + " non perde", p.p1 + p.px], ["X2", m.away + " non perde", p.p2 + p.px],
-    ["Over 1,5", "Almeno 2 gol", p.o15], ["Under 3,5", "Al massimo 3 gol", p.u35],
-    ["Over 2,5", "Almeno 3 gol", p.o25], ["Under 2,5", "Al massimo 2 gol", p.u25],
-    ["Gol", "Segnano entrambe", p.gg], ["No Gol", "Non segnano entrambe", p.ng]
+    ["1", t("Vince {team}", { team: m.home }), p.p1], ["2", t("Vince {team}", { team: m.away }), p.p2],
+    ["1X", t("{team} non perde", { team: m.home }), p.p1 + p.px], ["X2", t("{team} non perde", { team: m.away }), p.p2 + p.px],
+    ["Over 1,5", t("Almeno 2 gol"), p.o15], ["Under 3,5", t("Al massimo 3 gol"), p.u35],
+    ["Over 2,5", t("Almeno 3 gol"), p.o25], ["Under 2,5", t("Al massimo 2 gol"), p.u25],
+    ["Gol", t("Segnano entrambe"), p.gg], ["No Gol", t("Non segnano entrambe"), p.ng]
   ].filter((x) => !(nodc && (x[0] === "1X" || x[0] === "X2" || x[0] === "Over 1,5" || x[0] === "Under 3,5")))
     .sort((a, b) => b[2] - a[2])[0];
   return { m: m.home + " – " + m.away, code: o[0], label: o[1], p: o[2] };
@@ -64,22 +92,22 @@ export function deriveRecommendation(m) {
   if (m.recommendation && m.recommendation.best) return m.recommendation;
   const p = m.prob || {}, q = marketsOf(m), z = m.top_scores && m.top_scores[0];
   let a = [
-    { code: "1", label: "1 · Vince " + m.home, p: p.p1, kind: "esito" },
-    { code: "X", label: "X · Pareggio", p: p.px, kind: "esito" },
-    { code: "2", label: "2 · Vince " + m.away, p: p.p2, kind: "esito" },
-    { code: "1X", label: "1X · " + m.home + " non perde", p: p.p1 + p.px, kind: "doppia" },
-    { code: "X2", label: "X2 · " + m.away + " non perde", p: p.p2 + p.px, kind: "doppia" },
-    { code: "Over 2,5", label: "Over 2,5 · almeno 3 gol", p: p.o25, kind: "gol" },
-    { code: "Under 3,5", label: "Under 3,5 · massimo 3 gol", p: p.u35, kind: "gol" },
-    { code: "Gol", label: "Gol · entrambe segnano", p: p.gg, kind: "gol" },
-    { code: "No Gol", label: "No Gol · almeno una resta a 0", p: p.ng, kind: "gol" },
-    { code: "1_o15", label: "1 + Over 1,5", p: q["1_o15"], kind: "combo" },
-    { code: "2_o15", label: "2 + Over 1,5", p: q["2_o15"], kind: "combo" },
-    { code: "1x_o15", label: "1X + Over 1,5", p: q["1x_o15"], kind: "combo" },
-    { code: "x2_o15", label: "X2 + Over 1,5", p: q["x2_o15"], kind: "combo" },
-    { code: "gg_o25", label: "Gol + Over 2,5", p: q["gg_o25"], kind: "combo" }
+    { code: "1", label: marketLabel("1", m), p: p.p1, kind: "esito" },
+    { code: "X", label: marketLabel("X", m), p: p.px, kind: "esito" },
+    { code: "2", label: marketLabel("2", m), p: p.p2, kind: "esito" },
+    { code: "1X", label: marketLabel("1X", m), p: p.p1 + p.px, kind: "doppia" },
+    { code: "X2", label: marketLabel("X2", m), p: p.p2 + p.px, kind: "doppia" },
+    { code: "Over 2,5", label: marketLabel("Over 2,5", m), p: p.o25, kind: "gol" },
+    { code: "Under 3,5", label: marketLabel("Under 3,5", m), p: p.u35, kind: "gol" },
+    { code: "Gol", label: marketLabel("Gol", m), p: p.gg, kind: "gol" },
+    { code: "No Gol", label: marketLabel("No Gol", m), p: p.ng, kind: "gol" },
+    { code: "1_o15", label: marketText("1 + Over 1,5"), p: q["1_o15"], kind: "combo" },
+    { code: "2_o15", label: marketText("2 + Over 1,5"), p: q["2_o15"], kind: "combo" },
+    { code: "1x_o15", label: marketText("1X + Over 1,5"), p: q["1x_o15"], kind: "combo" },
+    { code: "x2_o15", label: marketText("X2 + Over 1,5"), p: q["x2_o15"], kind: "combo" },
+    { code: "gg_o25", label: marketText("Gol + Over 2,5"), p: q["gg_o25"], kind: "combo" }
   ];
-  if (z) a.push({ code: "score", label: "Risultato esatto · " + z[0] + "-" + z[1], p: Number(z[2] || 0), kind: "score" });
+  if (z) a.push({ code: "score", label: marketLabel("score", m, z[0] + "-" + z[1]), p: Number(z[2] || 0), kind: "score" });
   a = a.filter((x) => x.p > 0);
   const w = { esito: 1, doppia: 0.99, gol: 1.015, combo: 1.035, score: 0.9 };
   a.sort((x, y) => y.p * w[y.kind] - x.p * w[x.kind]);
@@ -94,15 +122,16 @@ export function deriveRecommendation(m) {
 export function slipReason(x) {
   const m = x.match || {}, xg = m.xg || [], total = (Number(xg[0]) || 0) + (Number(xg[1]) || 0);
   const code = x.code || "";
-  if (code === "Gol") return "xG combinati " + total.toFixed(2) + " · entrambe le squadre hanno una probabilità favorevole di segnare.";
-  if (code === "No Gol") return "Il modello vede una buona probabilità che almeno una delle due squadre resti a 0.";
-  if (code.indexOf("Over") === 0) return "Produzione offensiva stimata favorevole: xG combinati " + total.toFixed(2) + ".";
-  if (code.indexOf("Under") === 0) return "Il modello stima un volume di gol contenuto: xG combinati " + total.toFixed(2) + ".";
-  if (code.indexOf("+") >= 0) return "Combo coerente con la distribuzione dei punteggi del modello e con le probabilità dei mercati coinvolti.";
-  if (code === "Ris. esatto") return "È il risultato esatto con la maggiore probabilità nella matrice dei punteggi.";
-  if (code === "1X" || code === "X2") return "La doppia chance raccoglie due esiti e offre una copertura più ampia rispetto al segno singolo.";
-  if (code === "1" || code === "2" || code === "X") return "È l'esito con maggiore forza nella stima 1X2 del modello.";
-  return "Selezione derivata dalla probabilità complessiva e dalla raccomandazione multi-mercato del modello.";
+  const sum = total.toFixed(2);
+  if (code === "Gol") return t("xG combinati {xg} · entrambe le squadre hanno una probabilità favorevole di segnare.", { xg: sum });
+  if (code === "No Gol") return t("Il modello vede una buona probabilità che almeno una delle due squadre resti a 0.");
+  if (code.indexOf("Over") === 0) return t("Produzione offensiva stimata favorevole: xG combinati {xg}.", { xg: sum });
+  if (code.indexOf("Under") === 0) return t("Il modello stima un volume di gol contenuto: xG combinati {xg}.", { xg: sum });
+  if (code.indexOf("+") >= 0) return t("Combo coerente con la distribuzione dei punteggi del modello e con le probabilità dei mercati coinvolti.");
+  if (code === "Ris. esatto") return t("È il risultato esatto con la maggiore probabilità nella matrice dei punteggi.");
+  if (code === "1X" || code === "X2") return t("La doppia chance raccoglie due esiti e offre una copertura più ampia rispetto al segno singolo.");
+  if (code === "1" || code === "2" || code === "X") return t("È l'esito con maggiore forza nella stima 1X2 del modello.");
+  return t("Selezione derivata dalla probabilità complessiva e dalla raccomandazione multi-mercato del modello.");
 }
 
 export function marketReliability(x, marketPerformance, backtestMarkets) {
@@ -131,17 +160,17 @@ export function modelSlipPicks(matches, mode, n, marketPerformance = {}) {
   matches.forEach((m) => {
     const rec = deriveRecommendation(m), p = m.prob || {}, q = marketsOf(m);
     const a = [
-      ["1X", "1X · " + m.home + " non perde", p.p1 + p.px, "base"],
-      ["X2", "X2 · " + m.away + " non perde", p.p2 + p.px, "base"],
-      ["1", "1 · Vince " + m.home, p.p1, "base"],
-      ["X", "X · Pareggio", p.px, "base"],
-      ["2", "2 · Vince " + m.away, p.p2, "base"],
-      ["Over 1,5", "Over 1,5 · almeno 2 gol", p.o15, "gol"],
-      ["Over 2,5", "Over 2,5 · almeno 3 gol", p.o25, "gol"],
-      ["Under 2,5", "Under 2,5 · massimo 2 gol", p.u25, "gol"],
-      ["Under 3,5", "Under 3,5 · massimo 3 gol", p.u35, "gol"],
-      ["Gol", "Gol · entrambe segnano", p.gg, "gol"],
-      ["No Gol", "No Gol · almeno una resta a 0", p.ng, "gol"],
+      ["1X", marketLabel("1X", m), p.p1 + p.px, "base"],
+      ["X2", marketLabel("X2", m), p.p2 + p.px, "base"],
+      ["1", marketLabel("1", m), p.p1, "base"],
+      ["X", marketLabel("X", m), p.px, "base"],
+      ["2", marketLabel("2", m), p.p2, "base"],
+      ["Over 1,5", marketLabel("Over 1,5", m), p.o15, "gol"],
+      ["Over 2,5", marketLabel("Over 2,5", m), p.o25, "gol"],
+      ["Under 2,5", marketLabel("Under 2,5", m), p.u25, "gol"],
+      ["Under 3,5", marketLabel("Under 3,5", m), p.u35, "gol"],
+      ["Gol", marketLabel("Gol", m), p.gg, "gol"],
+      ["No Gol", marketLabel("No Gol", m), p.ng, "gol"],
       ["1 + Over 1,5", "1 + Over 1,5", q["1_o15"], "combo"],
       ["2 + Over 1,5", "2 + Over 1,5", q["2_o15"], "combo"],
       ["1X + Over 1,5", "1X + Over 1,5", q["1x_o15"], "combo"],
@@ -153,10 +182,10 @@ export function modelSlipPicks(matches, mode, n, marketPerformance = {}) {
     ];
     if (m.top_scores && m.top_scores[0]) {
       const z = m.top_scores[0];
-      a.push(["Ris. esatto", "Risultato esatto · " + z[0] + "-" + z[1], Number(z[2] || 0), "score"]);
+      a.push(["Ris. esatto", marketLabel("Ris. esatto", m, z[0] + "-" + z[1]), Number(z[2] || 0), "score"]);
     }
-    a.forEach((x) => { if (x[2] > 0) all.push({ match: m, m: m.home + " – " + m.away, code: x[0], label: x[1], p: Number(x[2]), kind: x[3] }); });
-    if (rec.best) all.push({ match: m, m: m.home + " – " + m.away, code: rec.best.code, label: rec.best.label, p: Number(rec.best.p), kind: rec.best.kind, recommended: true });
+    a.forEach((x) => { if (x[2] > 0) all.push({ match: m, m: m.home + " – " + m.away, code: x[0], label: x[1].indexOf(" + ") >= 0 ? marketText(x[1]) : x[1], p: Number(x[2]), kind: x[3] }); });
+    if (rec.best) all.push({ match: m, m: m.home + " – " + m.away, code: rec.best.code, label: recLabel(rec.best, m), p: Number(rec.best.p), kind: rec.best.kind, recommended: true });
   });
   const cfg = mode === "facile" ? { min: 0.62, max: 1.01, score: false } : mode === "media" ? { min: 0.43, max: 0.82, score: false } : { min: 0.12, max: 0.62, score: true };
   const rank = { score: 0, combo: 1, gol: 2, doppia: 3, esito: 4, base: 4 };
