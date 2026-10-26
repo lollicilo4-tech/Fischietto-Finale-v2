@@ -82,3 +82,7 @@ a.ff-btn.now-live-row { display: grid; grid-template-columns: minmax(0, 1fr) aut
 .my-row-pick { text-align: right; font-weight: 700; white-space: nowrap; }
 .my-row-pick.ok { color: #3fd28a; }
 .my-row-pick.ko { color: #ff6b6b; }
+
+/* Passaggio di lingua (IT · EN) nell'intestazione, accanto al pulsante "‹ Home" (sopra il titolo nella Home). */
+.lang-switch { flex: 0 0 auto; font: inherit; font-weight: 700; font-size: 12px; letter-spacing: .04em; color: var(--link); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 6px 8px; white-space: nowrap; text-decoration: none; }
+.top .toprow:has(.lang-switch) { column-gap: 8px; }

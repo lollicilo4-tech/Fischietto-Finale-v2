@@ -33,7 +33,8 @@ Il modello, i workflow e i JSON non cambiano: questo sito legge gli stessi file 
 | `src/lib/render.js` | HTML di partite, classifica, storico, squadra… usato dal build e dal browser |
 | `src/lib/livecharts.js`, `livefeed.js` | grafici e lettura del feed SportScore del Live Center |
 | `src/lib/data.js` | lettura dei JSON di `docs/` durante il build |
-| `src/pages/` | le pagine (Astro) |
+| `src/views/` | il contenuto di ogni pagina, uguale nelle due lingue: la lingua segue l'indirizzo (`/en/…` in inglese) |
+| `src/pages/` | le pagine (Astro): quelle italiane e, in `src/pages/en/`, quelle inglesi, che usano le stesse viste; "Come funziona" e "Privacy" hanno un testo inglese a parte |
 | `src/scripts/` | le isole interattive: `app.js` (tutte le pagine), `live.js`, `sicure.js`, `schedina.js` |
 | `src/styles/legacy.css` | CSS del sito attuale, **generato** da `scripts/import-legacy-css.mjs` |
 | `src/styles/site.css` | le poche regole nuove |

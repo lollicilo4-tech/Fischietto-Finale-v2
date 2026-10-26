@@ -25,7 +25,7 @@ export const defaultLeague = () => (isEn() ? DEFAULT_LEAGUE_EN : DEFAULT_LEAGUE)
 export const leagueByCode = (code) => LEAGUES.find((l) => l.code === code) || null;
 export const leagueBySlug = (slug) => LEAGUES.find((l) => l.slug === slug) || null;
 /* "giornata" nei campionati e nella fase a girone delle coppe europee, "turno" nelle coppe a eliminazione diretta. */
-export const roundWord = (code) => (leagueByCode(code) && leagueByCode(code).knockout ? "turno" : "giornata");
+export const roundWord = (code) => t(leagueByCode(code) && leagueByCode(code).knockout ? "turno" : "giornata");
 
 /* Sezioni di ogni campionato: slug nell'URL (italiano e inglese), id del pannello (usato dal CSS) ed etichetta. */
 export const SECTIONS = {

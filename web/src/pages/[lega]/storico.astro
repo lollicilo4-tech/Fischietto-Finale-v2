@@ -1,23 +1,7 @@
 ---
-import Base from "../../layouts/Base.astro";
-import { leagueByCode } from "../../lib/core.js";
+import Storico from "../../views/Storico.astro";
 import { leaguePaths } from "../../lib/paths.js";
-import { leagueData } from "../../lib/data.js";
-import { storicoParts } from "../../lib/render.js";
 export const getStaticPaths = leaguePaths;
 const { league } = Astro.props;
-const L = leagueByCode(league);
-const { storico } = leagueData(league);
-const s = storicoParts(storico);
 ---
-<Base title={"Storico pronostici " + L.name} description={"Ogni pronostico di " + L.name + " salvato prima della partita e confrontato con il risultato vero: precisione, calibrazione e affidabilità del modello."} league={league} section="storico" path={"/" + L.slug + "/storico/"}>
-  <section id="p-storico" aria-label={"Storico " + L.name}>
-    <p class="lead" id="hist-lead">{s.lead}</p>
-    <div id="verdict" set:html={s.verdict}></div>
-    <div id="recap" set:html={s.recap}></div>
-    <div class="hist-hero" id="hist-hero" set:html={s.hero}></div>
-    <div class="sum" id="sum" set:html={s.sum}></div>
-    <div id="quality" set:html={s.quality}></div>
-    <div class="panel" style="margin-top:14px"><div class="perf-head"><h2>Ultimi pronostici</h2><small>più recente → meno recente</small></div><div class="hist" id="hist" set:html={s.hist}></div></div>
-  </section>
-</Base>
+<Storico league={league} />

@@ -1,6 +1,7 @@
 ---
 /* Pannello Home di un campionato: presentazione, scelta del campionato, partita del giorno e scorciatoie. */
-import { LEAGUES, leagueUrl, INFO_URL } from "../lib/core.js";
+import { LEAGUES, leagueUrl, infoUrl, myPicksUrl } from "../lib/core.js";
+import { t } from "../lib/i18n.js";
 import { homeDashboard } from "../lib/render.js";
 import { leagueData, leagueMeta } from "../lib/data.js";
 
@@ -11,54 +12,54 @@ const meta = leagueMeta(league);
 const ctx = { league, favs: [] };
 const dash = turno && turno.matches.length ? homeDashboard(ctx, turno.matches) : null;
 const L = LEAGUES.find((l) => l.code === league);
-const tilePartite = turno ? (meta.matchday ? (L.knockout ? "Turno " : "Giornata ") + meta.matchday + " · " : "") + meta.nMatches + " partite" : "Il prossimo turno";
-const tileStorico = storico && storico.n ? "Esito azzeccato " + storico.hit + " su " + storico.n : "Pronostici e risultati veri";
+const tilePartite = turno ? (meta.matchday ? (L.knockout ? t("Turno") : t("Giornata")) + " " + meta.matchday + " · " : "") + t("{n} partite", { n: meta.nMatches }) : t("Il prossimo turno");
+const tileStorico = storico && storico.n ? t("Esito azzeccato {hit} su {n}", { hit: storico.hit, n: storico.n }) : t("Pronostici e risultati veri");
 /* La griglia della Home segue l'ordine del sito attuale (Serie A, Premier, LaLiga...). */
 const grid = ["SA", "PL", "PD", "BL1", "FL1", "CL", "EL", "UECL"].map((c) => LEAGUES.find((l) => l.code === c));
 ---
 <section id="p-home" aria-label={"Home " + L.name}>
 <div id="reference-home-hero" class="reference-home-hero">
   <div class="reference-hero-copy">
-    <span class="reference-eyebrow">IL CALCIO, LETTO DAI NUMERI</span>
-    <h2>ANALISI.<br>STATISTICHE.<br><strong>PRONOSTICI.</strong></h2>
-    <p>Il calcio con i numeri, sempre con te.</p>
-    <div class="reference-hero-actions"><a class="ff-btn" href={leagueUrl(league, "partite")}>Partite di oggi <span>→</span></a><a class="ff-btn gold" href={leagueUrl(league, "sicure")}>Più probabili</a></div>
+    <span class="reference-eyebrow">{t("IL CALCIO, LETTO DAI NUMERI")}</span>
+    <h2>{t("ANALISI.")}<br>{t("STATISTICHE.")}<br><strong>{t("PRONOSTICI.")}</strong></h2>
+    <p>{t("Il calcio con i numeri, sempre con te.")}</p>
+    <div class="reference-hero-actions"><a class="ff-btn" href={leagueUrl(league, "partite")}>{t("Partite di oggi")} <span>→</span></a><a class="ff-btn gold" href={leagueUrl(league, "sicure")}>{t("Più probabili")}</a></div>
   </div>
   <div class="reference-stadium-art" aria-hidden="true"><div class="stadium-lights"></div><div class="stadium-pitch"></div><div class="stadium-ball">⚽</div></div>
 </div>
 <div class="reference-leagues">
-  <div class="reference-section-title"><h2>Campionati</h2><span>SELEZIONA LEGA</span></div>
+  <div class="reference-section-title"><h2>{t("Campionati")}</h2><span>{t("SELEZIONA LEGA")}</span></div>
   <div class="reference-league-grid">
     {grid.map((l) => (
-      <a class="ff-btn" href={leagueUrl(l.code, "partite")} aria-current={l.code === league ? "true" : undefined}><span class="league-symbol">{l.flag}</span><b>{l.name}</b><small>{l.country}</small><em>Vedi partite →</em></a>
+      <a class="ff-btn" href={leagueUrl(l.code, "partite")} aria-current={l.code === league ? "true" : undefined}><span class="league-symbol">{l.flag}</span><b>{l.name}</b><small>{t(l.country)}</small><em>{t("Vedi partite →")}</em></a>
     ))}
   </div>
 </div>
 {dash && (
-  <div id="home-dashboard"><div class="home-kicker"><h2>Partita del giorno</h2><span>modello</span></div><div id="feature-home" set:html={dash.feature}></div><div class="home-kicker"><h2>In un colpo d'occhio</h2><span>turno</span></div><div id="quick-home" class="quick-grid" set:html={dash.quick}></div><div class="home-section"><div class="home-kicker"><h2>Le previsioni più forti</h2><span>1X2</span></div><div id="strong-home" class="home-list" set:html={dash.strong}></div></div></div>
+  <div id="home-dashboard"><div class="home-kicker"><h2>{t("Partita del giorno")}</h2><span>{t("modello")}</span></div><div id="feature-home" set:html={dash.feature}></div><div class="home-kicker"><h2>{t("In un colpo d'occhio")}</h2><span>{t("turno")}</span></div><div id="quick-home" class="quick-grid" set:html={dash.quick}></div><div class="home-section"><div class="home-kicker"><h2>{t("Le previsioni più forti")}</h2><span>1X2</span></div><div id="strong-home" class="home-list" set:html={dash.strong}></div></div></div>
 )}
-    <p class="lead">Scegli cosa vedere.</p>
+    <p class="lead">{t("Scegli cosa vedere.")}</p>
     <div class="tiles">
       <a class="tile main ff-btn" href={leagueUrl(league, "partite")}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M12 5v14M3 12h4M17 12h4"/></svg>
-        <span><b>Partite</b><small id="tile-partite">{tilePartite}</small></span></a>
+        <span><b>{t("Partite")}</b><small id="tile-partite">{tilePartite}</small></span></a>
       <a class="tile ff-btn" href={leagueUrl(league, "sicure")}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg>
-        <span><b>Più probabili</b><small>Gli esiti più probabili del turno</small></span></a>
+        <span><b>{t("Più probabili")}</b><small>{t("Gli esiti più probabili del turno")}</small></span></a>
       <a class="tile ff-btn" href={leagueUrl(league, "schedina")}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18H6z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>
-        <span><b>Le scelte del modello</b><small>Facile · Media · Difficile</small></span></a>
-      <a class="tile ff-btn" href="/i-miei-pronostici/" style="grid-column: 1 / -1">
+        <span><b>{t("Le scelte del modello")}</b><small>{t("Facile · Media · Difficile")}</small></span></a>
+      <a class="tile ff-btn" href={myPicksUrl()} style="grid-column: 1 / -1">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg>
-        <span><b>I miei pronostici</b><small>Scegli 1, X o 2 e sfida il modello</small></span></a>
+        <span><b>{t("I miei pronostici")}</b><small>{t("Scegli 1, X o 2 e sfida il modello")}</small></span></a>
       <a class="tile ff-btn" href={leagueUrl(league, "classifica")}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
-        <span><b>Classifica</b><small id="tile-league-name">{L.name}</small></span></a>
+        <span><b>{t("Classifica")}</b><small id="tile-league-name">{L.name}</small></span></a>
       <a class="tile ff-btn" href={leagueUrl(league, "storico")} style="grid-column: 1 / -1; min-height: 100px">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-        <span><b>Storico</b><small id="tile-storico">{tileStorico}</small></span></a>
-      <a class="tile ff-btn" href={INFO_URL} style="grid-column: 1 / -1">
+        <span><b>{t("Storico")}</b><small id="tile-storico">{tileStorico}</small></span></a>
+      <a class="tile ff-btn" href={infoUrl()} style="grid-column: 1 / -1">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>
-        <span><b>Come funziona</b><small>Modello, AI e verifica delle fonti</small></span></a>
+        <span><b>{t("Come funziona")}</b><small>{t("Modello, AI e verifica delle fonti")}</small></span></a>
     </div>
 </section>

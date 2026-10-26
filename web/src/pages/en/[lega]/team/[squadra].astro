@@ -1,0 +1,7 @@
+---
+import Squadra from "../../../../views/Squadra.astro";
+import { teamPaths } from "../../../../lib/paths.js";
+export const getStaticPaths = teamPaths;
+const { league, team } = Astro.props;
+---
+<Squadra league={league} team={team} />

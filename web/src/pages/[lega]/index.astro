@@ -1,13 +1,7 @@
 ---
-/* Home di un campionato. Quella della Serie A coincide con la Home del sito (indicata come canonica). */
-import Base from "../../layouts/Base.astro";
-import HomePanel from "../../components/HomePanel.astro";
-import { leagueByCode } from "../../lib/core.js";
+import LeagueHome from "../../views/LeagueHome.astro";
 import { leaguePaths } from "../../lib/paths.js";
 export const getStaticPaths = leaguePaths;
 const { league } = Astro.props;
-const L = leagueByCode(league);
 ---
-<Base title={L.name + ": pronostici e probabilità"} description={"Come potrebbe andare ogni partita di " + L.name + ": probabilità 1X2, risultato più probabile, gol attesi e spiegazione del modello."} league={league} section="home" path={league === "SA" ? "/" : "/" + L.slug + "/"} inner={false}>
-  <HomePanel league={league} />
-</Base>
+<LeagueHome league={league} />

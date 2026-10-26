@@ -1,0 +1,7 @@
+---
+import PiuProbabili from "../../../views/PiuProbabili.astro";
+import { leaguePaths } from "../../../lib/paths.js";
+export const getStaticPaths = leaguePaths;
+const { league } = Astro.props;
+---
+<PiuProbabili league={league} />

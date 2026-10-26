@@ -1,0 +1,26 @@
+---
+import Base from "../layouts/Base.astro";
+import { leagueByCode, leagueUrl } from "../lib/core.js";
+import { leagueData } from "../lib/data.js";
+import { tableHtml, seasonPanel } from "../lib/render.js";
+import { setLang, langOfPath, t } from "../lib/i18n.js";
+interface Props { league: string }
+setLang(langOfPath(Astro.url.pathname));
+const { league } = Astro.props;
+const L = leagueByCode(league);
+const { classifica } = leagueData(league);
+const ctx = { league, favs: [] };
+---
+<Base title={t("Classifica") + " " + L.name} description={t("Classifica di {league} e come può finire la stagione: probabilità di titolo, piazzamenti e retrocessione da migliaia di simulazioni del modello.", { league: L.name })} league={league} section="classifica" path={leagueUrl(league, "classifica")}>
+  <section id="p-classifica" aria-label={t("Classifica") + " " + L.name}>
+    {L.knockout ? (
+      <div class="panel"><h2>{t("Coppa a eliminazione diretta")}</h2><p class="expl" set:html={t("Nella {league} non c'è una classifica: ogni turno è una partita secca e chi perde è eliminato. Le partite del turno, con i pronostici, sono in <a href=\"{url}\">Partite</a>.", { league: L.name, url: leagueUrl(league, "partite") })}></p></div>
+    ) : (
+      <>
+        <div class="panel"><div id="table" set:html={tableHtml(ctx, classifica)}></div></div>
+        <p class="legend">{t("Barra blu: prime quattro. Barra rossa: ultime tre. Tocca una squadra per aprire la sua scheda.")}</p>
+        <div id="season" set:html={classifica ? seasonPanel(ctx, classifica.season) : ""}></div>
+      </>
+    )}
+  </section>
+</Base>

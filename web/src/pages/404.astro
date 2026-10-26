@@ -7,5 +7,6 @@ import { LEAGUES, leagueUrl } from "../lib/core.js";
     <h2 class="sub2" id="nf-title">Pagina non trovata</h2>
     <p class="lead">Forse la partita è già stata giocata: le pagine delle partite restano online finché sono nel turno pubblicato. Il risultato e il pronostico fatto prima sono nello Storico.</p>
     <div class="panel"><ul>{LEAGUES.map((l) => <li><a href={leagueUrl(l.code, "partite")}>Partite di {l.name}</a> · <a href={leagueUrl(l.code, "storico")}>Storico</a></li>)}</ul></div>
+    <p class="lead" lang="en">Page not found: the match may already have been played. <a href="/en/" hreflang="en">English version →</a></p>
   </section>
 </Base>

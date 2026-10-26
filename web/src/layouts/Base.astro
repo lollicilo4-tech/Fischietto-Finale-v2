@@ -15,43 +15,50 @@ import "@fontsource/ibm-plex-mono/500.css";
 import "@fontsource/ibm-plex-mono/600.css";
 import "../styles/legacy.css";
 import "../styles/site.css";
-import { LEAGUES, SELECT_ORDER, leagueByCode, leagueUrl, liveUrl, INFO_URL, KOFI_URL, PRIVACY_URL, CONTACT_EMAIL, SECTIONS, roundWord } from "../lib/core.js";
+import { LEAGUES, SELECT_ORDER, leagueByCode, leagueUrl, liveUrl, infoUrl, KOFI_URL, privacyUrl, CONTACT_EMAIL, SECTIONS, altPath, defaultLeague, roundWord } from "../lib/core.js";
 import { statusTags } from "../lib/render.js";
 import { leagueData, leagueMeta } from "../lib/data.js";
+import { setLang, langOfPath, t } from "../lib/i18n.js";
 
 interface Props {
   title: string;
   description: string;
   league?: string;          // campionato corrente (codice), per menu e barra in basso
   section?: string;         // voce attiva della barra: home | partite | live | sicure | schedina | classifica | storico
-  path: string;             // URL canonico della pagina, es. "/serie-a/partite/"
+  path: string;             // URL canonico della pagina, es. "/serie-a/partite/" (sotto /en/ la pagina è in inglese)
   sub?: string;             // sottotitolo sotto il nome del sito
   inner?: boolean;          // pagine interne: pulsante "‹ Home" e intestazione compatta
   noindex?: boolean;
 }
-const { title, description, league = "SA", section, path, inner = true, noindex = false } = Astro.props;
+/* La lingua segue l'indirizzo: tutti i testi e i link sotto (t(), leagueUrl...) la usano. */
+const lang = setLang(langOfPath(Astro.props.path));
+const en = lang === "en";
+const { title, description, league = defaultLeague(), section, path, inner = true, noindex = false } = Astro.props;
 const L = leagueByCode(league);
 const meta = leagueMeta(league);
 const { turno } = leagueData(league);
-const sub = Astro.props.sub ?? (L.name + (meta.matchday ? " · " + roundWord(league) + " " + meta.matchday : " · come potrebbe andare ogni partita"));
+const sub = Astro.props.sub ?? (L.name + (meta.matchday ? " · " + roundWord(league) + " " + meta.matchday : " · " + t("come potrebbe andare ogni partita")));
 const site = Astro.site ? Astro.site.href.replace(/\/$/, "") : "";
 const canonical = site + path;
+/* La stessa pagina nell'altra lingua: link nell'intestazione e indicazioni hreflang per i motori di ricerca. */
+const itPath = en ? altPath(path, "it") : path, enPath = en ? path : altPath(path, "en");
+const switchHref = en ? itPath : enPath;
 const fullTitle = title === "Fischietto finale" ? title : title + " · Fischietto finale";
 /* Nel menu dei campionati si resta sulla stessa sezione (Partite di Serie A → Partite di Premier). */
 const selectSection = section && SECTIONS[section] ? section : "home";
 const navItems = [
   { key: "home", label: "Home", href: leagueUrl(league, "home"), icon: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>' },
-  { key: "partite", label: "Partite", href: leagueUrl(league, "partite"), icon: '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M12 5v14M3 12h4M17 12h4"/>' },
+  { key: "partite", label: t("Partite"), href: leagueUrl(league, "partite"), icon: '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M12 5v14M3 12h4M17 12h4"/>' },
   { key: "live", label: "Live", href: liveUrl(league), icon: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', live: true },
-  { key: "sicure", label: "Più probabili", href: leagueUrl(league, "sicure"), icon: '<path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/>' },
-  { key: "schedina", label: "Scelte", href: leagueUrl(league, "schedina"), icon: '<path d="M6 3h12v18H6z"/><path d="M9 7h6M9 11h6M9 15h4"/>' },
-  { key: "classifica", label: "Classifica", href: leagueUrl(league, "classifica"), icon: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>' },
-  { key: "storico", label: "Storico", href: leagueUrl(league, "storico"), icon: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>' }
+  { key: "sicure", label: t("Più probabili"), href: leagueUrl(league, "sicure"), icon: '<path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/>' },
+  { key: "schedina", label: t("Scelte"), href: leagueUrl(league, "schedina"), icon: '<path d="M6 3h12v18H6z"/><path d="M9 7h6M9 11h6M9 15h4"/>' },
+  { key: "classifica", label: t("Classifica"), href: leagueUrl(league, "classifica"), icon: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>' },
+  { key: "storico", label: t("Storico"), href: leagueUrl(league, "storico"), icon: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>' }
 ];
 const tags = statusTags(turno, meta.updated);
 ---
 <!doctype html>
-<html lang="it">
+<html lang={lang}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -59,9 +66,12 @@ const tags = statusTags(turno, meta.updated);
 <meta name="description" content={description}>
 <link rel="canonical" href={canonical}>
 {noindex && <meta name="robots" content="noindex">}
+{!noindex && <link rel="alternate" hreflang="it" href={site + itPath}>}
+{!noindex && <link rel="alternate" hreflang="en" href={site + enPath}>}
+{!noindex && <link rel="alternate" hreflang="x-default" href={site + itPath}>}
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Fischietto finale">
-<meta property="og:locale" content="it_IT">
+<meta property="og:locale" content={en ? "en_GB" : "it_IT"}>
 <meta property="og:title" content={fullTitle}>
 <meta property="og:description" content={description}>
 <meta property="og:url" content={canonical}>
@@ -79,29 +89,40 @@ const tags = statusTags(turno, meta.updated);
 <slot name="head" />
 </head>
 <body class={inner ? "inner" : undefined} data-league={league} data-league-slug={L.slug}>
-<a class="skip-link" href="#contenuto">Vai al contenuto</a>
+<a class="skip-link" href="#contenuto">{t("Vai al contenuto")}</a>
 <header class="top">
-  <div class="toprow"><a class="back ff-btn" id="back" href={leagueUrl(league, "home")} hidden={!inner}>‹ Home</a><h1>Fischietto <span>finale</span></h1></div>
+  <div class="toprow"><a class="back ff-btn" id="back" href={leagueUrl(league, "home")} hidden={!inner}>‹ Home</a><a class="lang-switch ff-btn" href={switchHref} hreflang={en ? "it" : "en"} lang={en ? "it" : "en"} aria-label={en ? "Versione italiana" : "English version"}>{en ? "IT" : "EN"}</a><h1>Fischietto <span>finale</span></h1></div>
   <p class="sub" id="sub">{sub}</p>
-  <label for="league-select" class="league-label">CAMPIONATO</label><select id="league-select" aria-label="Seleziona campionato" class="league-select">
+  <label for="league-select" class="league-label">{t("CAMPIONATO")}</label><select id="league-select" aria-label={t("Seleziona campionato")} class="league-select">
     {SELECT_ORDER.map((code) => <option value={code} data-href={leagueUrl(code, selectSection)} selected={code === league}>{leagueByCode(code).name}</option>)}
   </select>
   <div class="tags" id="tags" set:html={tags}></div>
-  <div id="aierr">{turno && turno.ai_error && <div class="msg err"><b>Notizie non caricate.</b>{turno.ai_error}</div>}</div>
+  <div id="aierr">{turno && turno.ai_error && <div class="msg err"><b>{t("Notizie non caricate.")}</b>{en ? " The news check could not run: the probabilities come from the statistical model only." : turno.ai_error}</div>}</div>
 </header>
 
 <main id="contenuto">
   <slot />
   <footer class="site-foot">
-    <p class="note">Sono stime statistiche, non certezze: una squadra data al 60% non vince 4 volte su 10, e succede spesso. I numeri vengono da un modello statistico; l'AI aggiunge le assenze solo quando le conferma un articolo. <a class="foot-link ff-btn" href={INFO_URL}>Come funziona →</a></p>
+    {en ? (
+    <Fragment>
+    <p class="note">These are statistical estimates, not certainties: a team given 60% still fails to win 4 times in 10, and that happens often. The numbers come from a statistical model; the AI adds absences only when an article confirms them. Times are UK time. <a class="foot-link ff-btn" href={infoUrl()}>How it works →</a></p>
+    <p class="note responsible"><b>Information only, no gambling.</b> Fischietto finale does not take bets, does not show bookmaker odds and is not an invitation to gamble. Gambling is for adults only (18+) and can be addictive. If gambling is causing you problems, help is free and confidential: in the UK call the National Gambling Helpline on <a href="tel:08088020133">0808 8020 133</a> (<a href="https://www.gamcare.org.uk/" target="_blank" rel="noopener noreferrer">GamCare</a>); elsewhere, contact your local support service.</p>
+    <p class="note support">Fischietto finale is free, with no subscriptions. If you find it useful, you can buy us a coffee: <a class="foot-link ff-btn" href={KOFI_URL} target="_blank" rel="noopener noreferrer">☕ Support us on Ko-fi</a></p>
+    <p class="note"><a class="foot-link ff-btn" href={privacyUrl()}>Privacy and cookies</a> · Contact: <a href={"mailto:" + CONTACT_EMAIL}>{CONTACT_EMAIL}</a> · <a href={itPath} hreflang="it" lang="it">Versione italiana</a></p>
+    </Fragment>
+    ) : (
+    <Fragment>
+    <p class="note">Sono stime statistiche, non certezze: una squadra data al 60% non vince 4 volte su 10, e succede spesso. I numeri vengono da un modello statistico; l'AI aggiunge le assenze solo quando le conferma un articolo. <a class="foot-link ff-btn" href={infoUrl()}>Come funziona →</a></p>
     <p class="note responsible"><b>Solo informazione, nessuna scommessa.</b> Fischietto finale non accetta giocate, non mostra quote dei bookmaker e non è un invito a scommettere. Il gioco d'azzardo è vietato ai minori di 18 anni e può causare dipendenza. Se il gioco ti crea problemi, puoi chiamare il Telefono Verde Nazionale dell'Istituto Superiore di Sanità: <a href="tel:800558822">800 55 88 22</a> (<a href="https://www.iss.it/dipendenze/-/asset_publisher/zwfXwoiZC6zu/content/telefono-verde-nazionale-per-le-problematiche-legate-al-gioco-d-azzardo-tvnga-800-55-88-22" target="_blank" rel="noopener noreferrer">informazioni</a>).</p>
     <p class="note support">Fischietto finale è gratuito e senza abbonamenti. Se ti è utile, puoi offrirci un caffè: <a class="foot-link ff-btn" href={KOFI_URL} target="_blank" rel="noopener noreferrer">☕ Sostienici su Ko-fi</a></p>
-    <p class="note"><a class="foot-link ff-btn" href={PRIVACY_URL}>Privacy e cookie</a> · Contatti: <a href={"mailto:" + CONTACT_EMAIL}>{CONTACT_EMAIL}</a></p>
+    <p class="note"><a class="foot-link ff-btn" href={privacyUrl()}>Privacy e cookie</a> · Contatti: <a href={"mailto:" + CONTACT_EMAIL}>{CONTACT_EMAIL}</a></p>
+    </Fragment>
+    )}
     <p class="note">Football data provided by the Football-Data.org API.</p>
   </footer>
 </main>
 
-<nav class="nav" aria-label="Sezioni">
+<nav class="nav" aria-label={t("Sezioni")}>
   {navItems.map((item) => (
     <a class="ff-btn" id={"t-" + item.key} href={item.href} aria-current={item.key === section ? "page" : undefined}>
       <svg viewBox="0 0 24 24" aria-hidden="true" set:html={item.icon}></svg>{item.label}{item.live && <span class="live-dot" aria-hidden="true"></span>}
