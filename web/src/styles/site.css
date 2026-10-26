@@ -159,3 +159,8 @@ a.ff-btn.now-live-row { display: grid; grid-template-columns: minmax(0, 1fr) aut
 .rosa-remove { font: inherit; font-size: 20px; line-height: 1; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: transparent; color: var(--muted); cursor: pointer; }
 .rosa-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin: 0; font-size: 12px; color: var(--muted); }
 .rosa-foot button { font: inherit; font-size: 13px; padding: 6px 12px; border-radius: 10px; border: 1px solid var(--line); background: transparent; color: var(--bad); cursor: pointer; }
+
+/* Fantacalcio: immagine da condividere. */
+.fanta-share-img { display: block; max-width: 360px; }
+.fanta-share-img img { display: block; width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--line); }
+a.ff-btn.fanta-download { align-self: flex-start; font: inherit; font-weight: 700; padding: 10px 16px; border-radius: 10px; border: 0; background: var(--gold); color: var(--gold-ink); min-height: 0; }

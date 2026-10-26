@@ -4,6 +4,7 @@
    (src/lib/fanta.js): nessun dato nuovo, nessuna API. Pagina solo in italiano: il fantacalcio è un gioco italiano. */
 import Base from "../layouts/Base.astro";
 import { FANTA_URL } from "../lib/core.js";
+import { SOCIAL, PREVIEW } from "../lib/fantacard.js";
 import { leagueData, allTeams, inlineJson } from "../lib/data.js";
 import { fantaRows, fantaCalendar, highlightsHtml, roundTableHtml, calendarHtml, deadlineText } from "../lib/fanta.js";
 import { ROLES, ROLE_ONE, MAX_NAME } from "../lib/rosa.js";
@@ -21,7 +22,8 @@ const deadline = deadlineText(matches);
 const title = "Consigli fantacalcio " + day + " di Serie A";
 const description = "Chi schierare al fantacalcio nella " + day + " di Serie A: capitano, portiere e difesa con la porta inviolata più probabile, gol attesi di ogni squadra e calendario delle prossime giornate. Stime del modello statistico.";
 ---
-<Base title={title} description={description} league={league} path={FANTA_URL} sub={"Serie A · Fantacalcio · " + day} crumbs={[{ name: "Fantacalcio", path: FANTA_URL }]} itOnly>
+<Base title={title} description={description} league={league} path={FANTA_URL} sub={"Serie A · Fantacalcio · " + day} crumbs={[{ name: "Fantacalcio", path: FANTA_URL }]} itOnly
+  ogImage={{ path: FANTA_URL + "anteprima.png", width: PREVIEW.width, height: PREVIEW.height, alt: "Consigli fantacalcio " + day + " di Serie A: capitano e porta inviolata" }}>
   <section id="p-fanta" aria-labelledby="fanta-title">
     <h2 class="sub2" id="fanta-title">Consigli fantacalcio · {day}</h2>
     <p class="lead">Chi schierare secondo il modello statistico di Fischietto finale: le squadre con più gol attesi per scegliere attaccanti e capitano, quelle con la porta inviolata più probabile per portiere e difesa. {deadline && <b>{deadline}.</b>}</p>
@@ -41,6 +43,12 @@ const description = "Chi schierare al fantacalcio nella " + day + " di Serie A: 
           <p class="rosa-note">La rosa resta solo su questo dispositivo: nessun account, niente viene inviato al sito.</p>
         </div>
         <Fragment set:html={highlightsHtml(ctx, rows)} />
+        <div class="panel fanta-share">
+          <h2>Condividi i consigli</h2>
+          <p class="lead" style="margin:0">L'immagine con capitano, porta inviolata e squadre in giornata difficile, pronta da pubblicare. Si aggiorna da sola con i dati della giornata.</p>
+          <a class="fanta-share-img" href={FANTA_URL + "consigli.png"}><img src={FANTA_URL + "consigli.png"} width={SOCIAL.width} height={SOCIAL.height} loading="lazy" decoding="async" alt={"Consigli fantacalcio " + day + " di Serie A"}></a>
+          <a class="ff-btn fanta-download" href={FANTA_URL + "consigli.png"} download={"consigli-fantacalcio-" + (turno && turno.matchday ? "giornata-" + turno.matchday : "serie-a") + ".png"}>Scarica l'immagine</a>
+        </div>
         <div class="panel">
           <h2>Gol attesi e porta inviolata</h2>
           <p class="lead" style="margin:0">Partite della giornata ancora da giocare, dalla squadra con più gol attesi. C = in casa, T = in trasferta.</p>
