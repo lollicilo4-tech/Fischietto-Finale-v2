@@ -7,7 +7,7 @@
    si usano le traduzioni e, per i testi scritti dal modello Python, i campi *_en quando ci sono. */
 import {
   pc, d1, d2, esc, safeUrl, when, dayOf, shortDay, roundDay, fmtDay, decimalIt, thousandsIt,
-  leagueByCode, teamUrl, matchUrl, leagueUrl
+  leagueByCode, teamUrl, matchUrl, leagueUrl, calendarUrl
 } from "./core.js";
 import { finalOutcome, homeOutcome, prudentChoice, byStrength, deriveRecommendation, slipReason, marketReliability, recLabel, marketText } from "./model.js";
 import { t, isEn, loc } from "./i18n.js";
@@ -612,6 +612,16 @@ export function teamPage(ctx, name, { turno, storico, classifica }) {
       '<p class="expl">' + t("Vittoria {w} · pareggio {d} · sconfitta {l}", { w: pc(home ? p.p1 : p.p2), d: pc(p.px), l: pc(home ? p.p2 : p.p1) }) + "</p>" +
       '<div class="match-actions"><a class="share-btn ff-btn" href="' + matchUrl(ctx.league, next) + '">' + t("Apri la partita →") + "</a></div></div>";
   }
+  /* Calendario del telefono: webcal:// lo aggiunge come calendario che si aggiorna da solo (serve l'indirizzo
+     completo del sito, ctx.site); il link normale scarica il file. */
+  let cal = "";
+  if (ctx.site) {
+    const ics = calendarUrl(ctx.league, name), host = String(ctx.site).replace(/^https?:\/\//, "");
+    cal = '<div class="panel cal-panel"><h2>' + t("Calendario") + '</h2><p class="expl">' + t("Le prossime partite di {team} nel calendario del telefono, con orario e pronostico del modello. Si aggiorna da solo.", { team: esc(name) }) +
+      '</p><div class="match-actions"><a class="share-btn ff-btn" href="webcal://' + esc(host + ics) + '">📅 ' + t("Aggiungi al calendario") + '</a><a class="share-btn ff-btn" href="' + esc(ics) + '" download>' + t("Scarica il file .ics") + "</a></div>" +
+      '<p class="legend">' + t("Con Google Calendar sul computer: Altri calendari → Da URL, e incolla l'indirizzo del file.") + "</p></div>";
+  }
+  html += cal;
   html += teamStatsPanel(name, classifica) + teamScorersPanel(name, classifica) + teamUpcomingPanel(ctx, name, next, turno && turno.next_rounds);
   if (srow && se.zones && se.zones.length && se.remaining) {
     html += '<div class="panel"><h2>' + t("Come può finire la stagione") + '</h2><div class="team-list">' +

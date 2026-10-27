@@ -75,6 +75,8 @@ export const myPicksUrl = () => (isEn() ? "/en/my-predictions/" : MYPICKS_URL);
 export const homeUrl = () => prefix() + "/";
 export const TODAY_URL = "/oggi/";
 export const todayUrl = () => (isEn() ? "/en/today/" : TODAY_URL);
+/* Calendario .ics delle prossime partite di una squadra (src/lib/ics.js). */
+export const calendarUrl = (league, team) => (isEn() ? "/en/calendar/" : "/calendario/") + leagueByCode(league).slug + "/" + slugify(team) + ".ics";
 /* Donazioni libere: un link normale (nessuno script di Ko-fi), così la CSP non cambia. */
 export const KOFI_URL = "https://ko-fi.com/fischiettofinale";
 export const CONTACT_EMAIL = "info@fischiettofinale.com";

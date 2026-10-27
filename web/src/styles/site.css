@@ -192,3 +192,6 @@ a.today-row.ff-btn:first-child { border-top: 0; }
 .scorers-table td.sc-goals { font-weight: 800; font-size: 15px; white-space: nowrap; }
 .scorers-table .pens { font-size: 10px; font-weight: 500; color: var(--muted); }
 .scorers-table td:first-child { white-space: nowrap; width: 2.4em; }
+/* Calendario della squadra: i due pulsanti vanno a capo puliti sui telefoni. */
+.cal-panel .match-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.cal-panel .match-actions > * + * { margin-left: 0; }
