@@ -27,6 +27,14 @@
 /fantacalcio/*.png
   Cache-Control: public, max-age=300
 
+# Calendari .ics delle squadre: il telefono li riscarica da solo ogni poche ore.
+/calendario/*
+  Content-Type: text/calendar; charset=utf-8
+  Cache-Control: public, max-age=3600
+/en/calendar/*
+  Content-Type: text/calendar; charset=utf-8
+  Cache-Control: public, max-age=3600
+
 # Le anteprime dei branch (*.pages.dev) non devono finire su Google al posto del sito vero.
 https://:project.pages.dev/*
   X-Robots-Tag: noindex

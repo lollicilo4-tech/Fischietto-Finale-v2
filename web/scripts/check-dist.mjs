@@ -86,6 +86,17 @@ for (const file of html) {
   if (!src.includes('href="' + KOFI_URL + '" target="_blank" rel="noopener noreferrer"')) fail(rel + ": manca il link Ko-fi");
 }
 
+/* Calendari .ics: uno per squadra e per lingua, formato iCalendar con fine riga CRLF. */
+const icsFiles = files.filter((f) => f.endsWith(".ics"));
+if (icsFiles.length < 100) fail("calendari .ics: solo " + icsFiles.length + " file");
+icsFiles.forEach((f) => {
+  const s = readFileSync(f, "utf-8"), rel = path.relative(dist, f);
+  if (!s.startsWith("BEGIN:VCALENDAR\r\n") || !s.endsWith("END:VCALENDAR\r\n")) fail(rel + ": calendario non valido");
+  if (/[^\r]\n/.test(s)) fail(rel + ": righe senza CRLF");
+  if ((s.match(/BEGIN:VEVENT/g) || []).length !== (s.match(/END:VEVENT/g) || []).length) fail(rel + ": eventi non chiusi");
+  for (const bad of ["undefined", "NaN", "[object Object]"]) if (s.includes(bad)) fail(rel + ": contiene " + bad);
+});
+
 /* Content Security Policy. */
 const headers = readFileSync(path.join(dist, "_headers"), "utf-8");
 const csp = (headers.match(/Content-Security-Policy: (.*)/) || [])[1] || "";

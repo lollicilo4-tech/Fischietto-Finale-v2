@@ -531,6 +531,16 @@ export const EN = {
   "Tra i capocannonieri": "Among the top scorers",
   "1 gol": "1 goal",
   "{n} gol": "{n} goals",
+  // ---------- Calendario della squadra (.ics) ----------
+  "Calendario": "Calendar",
+  "Le prossime partite di {team} nel calendario del telefono, con orario e pronostico del modello. Si aggiorna da solo.": "{team}'s next matches in your phone's calendar, with kick-off time and the model's prediction. It updates by itself.",
+  "Aggiungi al calendario": "Add to calendar",
+  "Scarica il file .ics": "Download the .ics file",
+  "Con Google Calendar sul computer: Altri calendari → Da URL, e incolla l'indirizzo del file.": "With Google Calendar on a computer: Other calendars → From URL, then paste the file's address.",
+  "Prossime partite di {team} ({league}) con il pronostico del modello. Stime statistiche, non un invito a scommettere.": "{team}'s next matches ({league}) with the model's prediction. Statistical estimates, not an invitation to gamble.",
+  "Modello: {odds}": "Model: {odds}",
+  "risultato probabile {score}": "likely score {score}",
+  "Stime statistiche, non un invito a scommettere.": "Statistical estimates, not an invitation to gamble.",
 
   // ---------- Live Center e I miei pronostici (pagine) ----------
   "Live Center: risultati in diretta": "Live Center: live scores",
