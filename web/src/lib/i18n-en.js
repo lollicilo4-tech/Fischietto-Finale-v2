@@ -508,6 +508,20 @@ export const EN = {
   "Coppa a eliminazione diretta": "Knockout cup",
   "Nella {league} non c'è una classifica: ogni turno è una partita secca e chi perde è eliminato. Le partite del turno, con i pronostici, sono in <a href=\"{url}\">Partite</a>.": "The {league} has no table: every round is a single match and the loser is out. This round's matches, with the predictions, are in <a href=\"{url}\">Matches</a>.",
 
+  // ---------- Oggi in campo ----------
+  "Oggi": "Today",
+  "Domani": "Tomorrow",
+  "Iniziata": "Started",
+  "Modello: {pick} · probabile {score}": "Model: {pick} · likely {score}",
+  "Nei prossimi giorni non ci sono partite in programma nei nostri campionati.": "There are no matches scheduled in our competitions in the next few days.",
+  "Oggi non ci sono partite nei nostri campionati: ecco le prossime.": "There are no matches in our competitions today: here are the next ones.",
+  "Oggi in campo": "Today's matches",
+  "Oggi in campo: le partite di oggi": "Today's matches: football predictions for today",
+  "Oggi in campo · tutti i campionati": "Today's matches · all competitions",
+  "Tutte le partite di oggi e dei prossimi giorni di Serie A, Premier League, LaLiga, Bundesliga, Ligue 1, coppe europee e altri campionati, in ordine di orario, con le probabilità del modello. Solo informazione, nessuna scommessa.": "All of today's and the next few days' matches in the Premier League, Serie A, LaLiga, Bundesliga, Ligue 1, the European cups and other competitions, in kick-off order, with the model's probabilities. Information only, no gambling.",
+  "Le partite di tutti i campionati, in ordine di orario. Tocca una partita per aprire l'analisi completa. Stime statistiche, non un invito a scommettere.": "Matches from every competition, in kick-off order. Tap a match to open the full analysis. Statistical estimates, not an invitation to gamble.",
+  "Le partite di oggi di tutti i campionati": "Today's matches from every competition",
+
   // ---------- Live Center e I miei pronostici (pagine) ----------
   "Live Center: risultati in diretta": "Live Center: live scores",
   "Risultati in diretta, eventi, statistiche e probabilità minuto per minuto delle partite in corso. Dati SportScore.": "Live scores, events, statistics and minute-by-minute probabilities of the matches in progress. SportScore data.",
