@@ -64,7 +64,8 @@ class ClassificaPayloadTests(unittest.TestCase):
         ctx = {"demo": False, "standings": table([20, 18, 15, 12, 10, 8]), "teams": ratings(), "avg_h": 1.4,
                "avg_a": 1.1, "rho": -0.05, "remaining": round_robin()[:10]}
         with patch.object(pipeline.data, "has_key", return_value=True), \
-                patch.object(pipeline.data, "get_context", AsyncMock(return_value=ctx)):
+                patch.object(pipeline.data, "get_context", AsyncMock(return_value=ctx)), \
+                patch.object(pipeline.data, "get_scorers", AsyncMock(return_value=[])):
             out = asyncio.run(pipeline.build_classifica("SA"))
         self.assertEqual(out["ratings"]["Alfa"]["att"], 1.6)
         self.assertEqual(out["season"]["remaining"], 10)
@@ -73,6 +74,7 @@ class ClassificaPayloadTests(unittest.TestCase):
         ctx = {"demo": False, "standings": table([1] * 6), "teams": {}, "avg_h": 1.4, "avg_a": 1.1}
         with patch.object(pipeline.data, "has_key", return_value=True), \
                 patch.object(pipeline.data, "get_context", AsyncMock(return_value=ctx)), \
+                patch.object(pipeline.data, "get_scorers", AsyncMock(return_value=[])), \
                 patch.object(pipeline.season, "simulate", side_effect=RuntimeError("boom")):
             out = asyncio.run(pipeline.build_classifica("SA"))
         self.assertIsNone(out["season"])

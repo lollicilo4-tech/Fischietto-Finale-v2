@@ -182,3 +182,13 @@ a.today-row.ff-btn:first-child { border-top: 0; }
 .today-p i small { font-size: 9px; color: var(--muted); font-weight: 600; }
 .today-p i.hot { background: color-mix(in srgb, var(--gold, #f5c84b) 26%, transparent); }
 @media (max-width: 380px) { .today-p i { min-width: 32px; font-size: 11px; } a.today-row.ff-btn { grid-template-columns: 40px minmax(0, 1fr) auto; gap: 8px; } }
+/* Capocannonieri (Classifica): giocatore con la squadra sotto, gol in evidenza. */
+#scorers .scorers-panel { margin-top: 14px; }
+#p-classifica .scorers-table { min-width: 0; width: 100%; }
+.scorers-table td:nth-child(2) { text-align: left; }
+.scorers-table .sc-player { display: block; font-weight: 700; }
+.scorers-table .sc-team { display: block; font-size: 11px; color: var(--muted); }
+.scorers-table .sc-team a.team-link { font-size: 11px; font-weight: 500; }
+.scorers-table td.sc-goals { font-weight: 800; font-size: 15px; white-space: nowrap; }
+.scorers-table .pens { font-size: 10px; font-weight: 500; color: var(--muted); }
+.scorers-table td:first-child { white-space: nowrap; width: 2.4em; }
