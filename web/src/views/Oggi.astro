@@ -1,0 +1,24 @@
+---
+/* Oggi in campo: le partite di oggi (e dei due giorni dopo) di tutti i campionati, in ordine di orario.
+   Il browser (scripts/today.js) ricalcola "Oggi" e "Domani" con l'ora vera. */
+import Base from "../layouts/Base.astro";
+import { LEAGUES, todayUrl } from "../lib/core.js";
+import { leagueData, inlineJson } from "../lib/data.js";
+import { todayItems, todayHtml } from "../lib/today.js";
+import { setLang, langOfPath, t } from "../lib/i18n.js";
+setLang(langOfPath(Astro.url.pathname));
+const turni = Object.fromEntries(LEAGUES.map((l) => [l.code, leagueData(l.code).turno]));
+const items = todayItems(turni);
+const now = Date.now();
+---
+<Base title={t("Oggi in campo: le partite di oggi")} description={t("Tutte le partite di oggi e dei prossimi giorni di Serie A, Premier League, LaLiga, Bundesliga, Ligue 1, coppe europee e altri campionati, in ordine di orario, con le probabilità del modello. Solo informazione, nessuna scommessa.")} path={todayUrl()} sub={t("Oggi in campo · tutti i campionati")}>
+  <section id="p-oggi" aria-labelledby="today-title">
+    <h2 class="sub2" id="today-title">{t("Oggi in campo")}</h2>
+    <p class="lead">{t("Le partite di tutti i campionati, in ordine di orario. Tocca una partita per aprire l'analisi completa. Stime statistiche, non un invito a scommettere.")}</p>
+    <div id="today" aria-live="polite" set:html={todayHtml(items, now)}></div>
+  </section>
+  <script is:inline type="application/json" id="ff-today" set:html={inlineJson(items)}></script>
+  <script>
+    import "../scripts/today.js";
+  </script>
+</Base>

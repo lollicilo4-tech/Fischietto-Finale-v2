@@ -39,7 +39,7 @@ const IT_ONLY = ["/fantacalcio/index.html"];
 const expected = ["/", "/live/", "/come-funziona/", "/privacy/", "/i-miei-pronostici/", "/fantacalcio/", "/risultati-recenti.json", "/404.html", "/sitemap.xml", "/robots.txt", "/sw.js", "/manifest.webmanifest", "/_headers", "/_redirects", "/ads.txt", "/live-calendar.json", "/turno.json"];
 LEAGUES.forEach((l) => Object.values(SECTIONS).forEach((s) => expected.push("/" + l.slug + "/" + s.path, "/en/" + l.slug + "/" + s.en)));
 /* Versione inglese (/en/): stesse pagine con indirizzi inglesi. */
-expected.push("/en/", "/en/live/", "/en/how-it-works/", "/en/privacy/", "/en/my-predictions/");
+expected.push("/en/", "/en/live/", "/en/how-it-works/", "/en/privacy/", "/en/my-predictions/", "/oggi/", "/en/today/");
 expected.forEach((u) => { if (!pageFor(u)) fail("manca " + u); });
 
 /* Immagini dei consigli fantacalcio: PNG veri, della misura giusta (non l'icona di riserva usata se il disegno fallisce). */

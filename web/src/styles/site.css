@@ -164,3 +164,21 @@ a.ff-btn.now-live-row { display: grid; grid-template-columns: minmax(0, 1fr) aut
 .fanta-share-img { display: block; max-width: 360px; }
 .fanta-share-img img { display: block; width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--line); }
 a.ff-btn.fanta-download { align-self: flex-start; font: inherit; font-weight: 700; padding: 10px 16px; border-radius: 10px; border: 0; background: var(--gold); color: var(--gold-ink); min-height: 0; }
+
+/* Oggi in campo: una riga per partita (orario · campionato e squadre · 1 X 2). */
+.today-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.today-head h2 { margin: 0 0 6px; }
+.today-head span { color: var(--muted); font-size: 12px; }
+.today-list { display: flex; flex-direction: column; }
+a.today-row.ff-btn { display: grid; grid-template-columns: 46px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 10px 2px; border: 0; border-top: 1px solid var(--line); background: none; color: inherit; text-align: left; font: inherit; }
+a.today-row.ff-btn:first-child { border-top: 0; }
+.today-time { font-family: var(--font-num); font-weight: 700; font-size: 14px; }
+.today-started { color: var(--away, #ff7a6b); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+.today-main { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.today-main b { font-size: 14px; overflow-wrap: anywhere; }
+.today-main small { color: var(--muted); font-size: 11px; }
+.today-p { display: flex; gap: 4px; }
+.today-p i { font-style: normal; display: flex; flex-direction: column; align-items: center; min-width: 38px; padding: 4px 2px; border-radius: 8px; background: var(--surface2, rgba(255,255,255,.04)); font-family: var(--font-num); font-size: 12px; font-weight: 700; }
+.today-p i small { font-size: 9px; color: var(--muted); font-weight: 600; }
+.today-p i.hot { background: color-mix(in srgb, var(--gold, #f5c84b) 26%, transparent); }
+@media (max-width: 380px) { .today-p i { min-width: 32px; font-size: 11px; } a.today-row.ff-btn { grid-template-columns: 40px minmax(0, 1fr) auto; gap: 8px; } }
