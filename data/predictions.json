@@ -133,6 +133,11 @@
    "label": "X2 · Grêmio non perde",
    "p": 0.5685
   },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-26T22:30:00Z",
+   "hg": 0
+  },
   "top": [
    1,
    1
@@ -276,6 +281,11 @@
    "label": "1 + Over 1,5",
    "p": 0.5042
   },
+  "result": {
+   "ag": 2,
+   "date": "2026-10-26T23:00:00Z",
+   "hg": 2
+  },
   "top": [
    2,
    0
@@ -283,6 +293,1436 @@
   "xg": [
    1.88,
    0.78
+  ]
+ },
+ "555060": {
+  "ai": false,
+  "away": "Cruzeiro",
+  "base": {
+   "p1": 0.4525,
+   "p2": 0.2821,
+   "px": 0.2654
+  },
+  "gg": 0.5672,
+  "home": "Mineiro",
+  "kickoff": "2026-10-29T22:30:00Z",
+  "league": "BSA",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4525
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2654
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2821
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7179
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5475
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7773
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.53
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.47
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6925
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5672
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4328
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3645
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2172
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5602
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4128
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.494
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.394
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4413
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4028
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1259,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.53,
+  "old": {
+   "p1": 0.5128,
+   "p2": 0.2623,
+   "px": 0.2249
+  },
+  "p1": 0.4525,
+  "p2": 0.2821,
+  "pick": "1",
+  "pick_p": 0.4525,
+  "px": 0.2654,
+  "recommendation": {
+   "base": 0.4821,
+   "code": "Over 2,5",
+   "edge": 0.0479,
+   "kind": "gol",
+   "label": "Over 2,5 · almeno 3 gol",
+   "p": 0.53
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.59,
+   1.21
+  ]
+ },
+ "555061": {
+  "ai": false,
+  "away": "São Paulo",
+  "base": {
+   "p1": 0.4701,
+   "p2": 0.2407,
+   "px": 0.2892
+  },
+  "gg": 0.4696,
+  "home": "Bahia",
+  "kickoff": "2026-10-29T00:30:00Z",
+  "league": "BSA",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4701
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2892
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2407
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7593
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5299
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.6898
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.417
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.583
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7893
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.4696
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.5304
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3448
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1606
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5292
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.345
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5949
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4352
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3338
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.5051
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1358,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.417,
+  "old": {
+   "p1": 0.5023,
+   "p2": 0.2071,
+   "px": 0.2906
+  },
+  "p1": 0.4701,
+  "p2": 0.2407,
+  "pick": "1",
+  "pick_p": 0.4701,
+  "px": 0.2892,
+  "recommendation": {
+   "base": 0.5179,
+   "code": "Under 2,5",
+   "edge": 0.0651,
+   "kind": "gol",
+   "label": "Under 2,5 · massimo 2 gol",
+   "p": 0.583
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.41,
+   0.94
+  ]
+ },
+ "555062": {
+  "ai": false,
+  "away": "Chapecoense",
+  "base": {
+   "p1": 0.6392,
+   "p2": 0.143,
+   "px": 0.2177
+  },
+  "gg": 0.5117,
+  "home": "Bragantino",
+  "kickoff": "2026-10-28T22:30:00Z",
+  "league": "BSA",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.6392
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2177
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.143
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.857
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.3608
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.794
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5559
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4441
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6679
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5117
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4883
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.535
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.103
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.691
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.2589
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5596
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.2739
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4078
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4236
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1138,
+    "score": "2-0"
+   }
+  ],
+  "o25": 0.5559,
+  "old": {
+   "p1": 0.6199,
+   "p2": 0.1437,
+   "px": 0.2364
+  },
+  "p1": 0.6392,
+  "p2": 0.143,
+  "pick": "1",
+  "pick_p": 0.6392,
+  "px": 0.2177,
+  "recommendation": {
+   "base": 0.3644,
+   "code": "1_o15",
+   "edge": 0.1706,
+   "kind": "combo",
+   "label": "1 + Over 1,5",
+   "p": 0.535
+  },
+  "top": [
+   2,
+   0
+  ],
+  "xg": [
+   2.04,
+   0.87
+  ]
+ },
+ "555063": {
+  "ai": false,
+  "away": "Mirassol",
+  "base": {
+   "p1": 0.3813,
+   "p2": 0.326,
+   "px": 0.2927
+  },
+  "gg": 0.5057,
+  "home": "Corinthians",
+  "kickoff": "2026-10-30T23:00:00Z",
+  "league": "BSA",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.3813
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2927
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.326
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.674
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.6187
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7101
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.441
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.559
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7701
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5057
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4943
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.2797
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2344
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.4757
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4304
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5215
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4844
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3665
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.473
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1391,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.441,
+  "old": {
+   "p1": 0.3826,
+   "p2": 0.2906,
+   "px": 0.3268
+  },
+  "p1": 0.3813,
+  "p2": 0.326,
+  "pick": "1",
+  "pick_p": 0.3813,
+  "px": 0.2927,
+  "recommendation": {
+   "base": 0.5108,
+   "code": "X2",
+   "edge": 0.1079,
+   "kind": "doppia",
+   "label": "X2 · Mirassol non perde",
+   "p": 0.6187
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.28,
+   1.16
+  ]
+ },
+ "555064": {
+  "ai": false,
+  "away": "Vitória",
+  "base": {
+   "p1": 0.3975,
+   "p2": 0.3148,
+   "px": 0.2878
+  },
+  "gg": 0.517,
+  "home": "Coritiba",
+  "kickoff": "2026-10-31T19:00:00Z",
+  "league": "BSA",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.3975
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2878
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.3148
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.6852
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.6025
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7228
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.4569
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.5431
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.757
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.517
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.483
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.2975
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.229
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.4938
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4253
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5199
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4656
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3799
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4602
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1371,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.4569,
+  "old": {
+   "p1": 0.526,
+   "p2": 0.2104,
+   "px": 0.2636
+  },
+  "p1": 0.3975,
+  "p2": 0.3148,
+  "pick": "1",
+  "pick_p": 0.3975,
+  "px": 0.2878,
+  "recommendation": {
+   "base": 0.5108,
+   "code": "X2",
+   "edge": 0.0917,
+   "kind": "doppia",
+   "label": "X2 · Vitória non perde",
+   "p": 0.6025
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.34,
+   1.16
+  ]
+ },
+ "555065": {
+  "ai": false,
+  "away": "Internacional",
+  "base": {
+   "p1": 0.5494,
+   "p2": 0.1957,
+   "px": 0.2549
+  },
+  "gg": 0.5077,
+  "home": "Fluminense",
+  "kickoff": "2026-10-28T22:30:00Z",
+  "league": "BSA",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.5494
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2549
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1957
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8043
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.4506
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7517
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.4955
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.5045
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7238
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5077
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4923
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.4372
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1383
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6134
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.3145
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.573
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3511
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.386
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.452
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1216,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.4955,
+  "old": {
+   "p1": 0.551,
+   "p2": 0.1933,
+   "px": 0.2557
+  },
+  "p1": 0.5494,
+  "p2": 0.1957,
+  "pick": "1",
+  "pick_p": 0.5494,
+  "px": 0.2549,
+  "recommendation": {
+   "base": 0.4892,
+   "code": "1",
+   "edge": 0.0602,
+   "kind": "esito",
+   "label": "1 · Vince Fluminense",
+   "p": 0.5494
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.72,
+   0.94
+  ]
+ },
+ "555066": {
+  "ai": false,
+  "away": "Paranaense",
+  "base": {
+   "p1": 0.3438,
+   "p2": 0.3827,
+   "px": 0.2735
+  },
+  "gg": 0.5661,
+  "home": "Grêmio",
+  "kickoff": "2026-10-30T00:30:00Z",
+  "league": "BSA",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.3438
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2735
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.3827
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.6173
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.6562
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7686
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5175
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4825
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.704
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5661
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4339
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.2674
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.3009
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.4677
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.5012
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.442
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4652
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4361
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4081
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.13,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5175,
+  "old": {
+   "p1": 0.3542,
+   "p2": 0.3929,
+   "px": 0.2529
+  },
+  "p1": 0.3438,
+  "p2": 0.3827,
+  "pick": "2",
+  "pick_p": 0.3827,
+  "px": 0.2735,
+  "recommendation": {
+   "base": 0.5108,
+   "code": "X2",
+   "edge": 0.1454,
+   "kind": "doppia",
+   "label": "X2 · Paranaense non perde",
+   "p": 0.6562
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.33,
+   1.42
+  ]
+ },
+ "555067": {
+  "ai": false,
+  "away": "Botafogo",
+  "base": {
+   "p1": 0.4048,
+   "p2": 0.3023,
+   "px": 0.2929
+  },
+  "gg": 0.4984,
+  "home": "Clube do Remo",
+  "kickoff": "2026-10-29T00:30:00Z",
+  "league": "BSA",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4048
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2929
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.3023
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.6977
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5952
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7051
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.4349
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.5651
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.775
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.4984
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.5016
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.2973
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2137
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.4914
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4078
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5411
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4717
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3594
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4799
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1389,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.4349,
+  "old": {
+   "p1": 0.4151,
+   "p2": 0.3152,
+   "px": 0.2697
+  },
+  "p1": 0.4048,
+  "p2": 0.3023,
+  "pick": "1",
+  "pick_p": 0.4048,
+  "px": 0.2929,
+  "recommendation": {
+   "base": 0.5108,
+   "code": "X2",
+   "edge": 0.0844,
+   "kind": "doppia",
+   "label": "X2 · Botafogo non perde",
+   "p": 0.5952
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.32,
+   1.1
+  ]
+ },
+ "555068": {
+  "ai": false,
+  "away": "Palmeiras",
+  "base": {
+   "p1": 0.2835,
+   "p2": 0.4356,
+   "px": 0.2809
+  },
+  "gg": 0.523,
+  "home": "Santos",
+  "kickoff": "2026-10-28T22:30:00Z",
+  "league": "BSA",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.2835
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2809
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.4356
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.5644
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.7165
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7339
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.4711
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.5289
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.745
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.523
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.477
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.2063
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.3334
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.4005
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.5276
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4339
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5319
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.389
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4515
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.134,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.4711,
+  "old": {
+   "p1": 0.1769,
+   "p2": 0.5848,
+   "px": 0.2383
+  },
+  "p1": 0.2835,
+  "p2": 0.4356,
+  "pick": "2",
+  "pick_p": 0.4356,
+  "px": 0.2809,
+  "recommendation": {
+   "base": 0.5108,
+   "code": "X2",
+   "edge": 0.2057,
+   "kind": "doppia",
+   "label": "X2 · Palmeiras non perde",
+   "p": 0.7165
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.12,
+   1.44
+  ]
+ },
+ "555069": {
+  "ai": false,
+  "away": "Flamengo",
+  "base": {
+   "p1": 0.2431,
+   "p2": 0.4989,
+   "px": 0.258
+  },
+  "gg": 0.5574,
+  "home": "Vasco da Gama",
+  "kickoff": "2026-10-29T23:00:00Z",
+  "league": "BSA",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.2431
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.258
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.4989
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.5011
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.7569
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7788
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5324
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4676
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6902
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5574
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4426
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.1842
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.4054
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3733
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.5946
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3658
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5159
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4348
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4077
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1225,
+    "score": "1-1"
+   }
+  ],
+  "o25": 0.5324,
+  "old": {
+   "p1": 0.1873,
+   "p2": 0.5922,
+   "px": 0.2205
+  },
+  "p1": 0.2431,
+  "p2": 0.4989,
+  "pick": "2",
+  "pick_p": 0.4989,
+  "px": 0.258,
+  "recommendation": {
+   "base": 0.5108,
+   "code": "X2",
+   "edge": 0.2461,
+   "kind": "doppia",
+   "label": "X2 · Flamengo non perde",
+   "p": 0.7569
+  },
+  "top": [
+   1,
+   1
+  ],
+  "xg": [
+   1.12,
+   1.69
   ]
  },
  "558549": {
