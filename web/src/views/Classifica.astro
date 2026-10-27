@@ -2,7 +2,7 @@
 import Base from "../layouts/Base.astro";
 import { leagueByCode, leagueUrl } from "../lib/core.js";
 import { leagueData } from "../lib/data.js";
-import { tableHtml, seasonPanel } from "../lib/render.js";
+import { tableHtml, seasonPanel, scorersPanel } from "../lib/render.js";
 import { setLang, langOfPath, t } from "../lib/i18n.js";
 interface Props { league: string }
 setLang(langOfPath(Astro.url.pathname));
@@ -20,6 +20,7 @@ const ctx = { league, favs: [] };
         <div class="panel"><div id="table" set:html={tableHtml(ctx, classifica)}></div></div>
         <p class="legend">{t("Barra blu: prime quattro. Barra rossa: ultime tre. Tocca una squadra per aprire la sua scheda.")}</p>
         <div id="season" set:html={classifica ? seasonPanel(ctx, classifica.season) : ""}></div>
+        <div id="scorers" set:html={classifica ? scorersPanel(ctx, classifica.scorers) : ""}></div>
       </>
     )}
   </section>

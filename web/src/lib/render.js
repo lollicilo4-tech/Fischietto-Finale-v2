@@ -311,6 +311,22 @@ export function tableHtml(ctx, classifica) {
         '</td><td class="hide-s">' + r.d + '</td><td class="hide-s">' + r.l + "</td><td>" + (dr > 0 ? "+" : "") + dr + "</td><td>" + r.pts + "</td></tr>";
     }).join("") + "</tbody></table>";
 }
+/* Capocannonieri (classifica.scorers, da football-data.org). A parità di gol stessa posizione. */
+export function scorersPanel(ctx, scorers) {
+  const list = (scorers || []).filter((x) => x && x.player && Number.isFinite(x.goals));
+  if (!list.length) return "";
+  const num = (v) => (Number.isFinite(v) ? String(v) : "–");
+  let pos = 0;
+  const rows = list.map((x, i) => {
+    if (!i || x.goals !== list[i - 1].goals) pos = i + 1;
+    const pens = Number.isFinite(x.penalties) && x.penalties > 0 ? ' <small class="pens">' + t("({n} rig.)", { n: x.penalties }) + "</small>" : "";
+    return "<tr><td>" + pos + '</td><td><span class="sc-player">' + esc(x.player) + '</span><small class="sc-team">' + (isFav(ctx, x.team) ? starHtml() : "") + teamLink(ctx, x.team) + "</small></td>" +
+      '<td class="sc-goals">' + x.goals + pens + '</td><td class="hide-s">' + num(x.assists) + '</td><td class="hide-s">' + num(x.played) + "</td></tr>";
+  }).join("");
+  return '<div class="panel scorers-panel"><h2>' + t("Capocannonieri") + '</h2><table class="table scorers-table"><thead><tr><th>#</th><th>' + t("Giocatore") + "</th><th>" + t("Gol") +
+    '</th><th class="hide-s">' + t("Assist") + '</th><th class="hide-s">' + t("Pres.") + "</th></tr></thead><tbody>" + rows + "</tbody></table>" +
+    '<p class="legend">' + t("Gol in campionato; tra parentesi quelli su rigore. Fonte: football-data.org, aggiornata ogni 4 ore.") + "</p></div>";
+}
 export function seasonPct(v) { return v == null ? "–" : v === 0 ? "0%" : v < 0.005 ? "&lt;1%" : (v > 0.995 && v < 1) ? "&gt;99%" : pc(v); }
 /* Nome di una zona della classifica (le scrive il modello Python in italiano): in inglese dalla chiave. */
 export function zoneLabel(z) {
@@ -548,6 +564,13 @@ function teamStatsPanel(name, classifica) {
     row("Almeno 3 gol in partita", (s) => share(s.o25, s.pg)) + row("Segnano entrambe", (s) => share(s.btts, s.pg)) +
     "</tbody></table></div>";
 }
+/* Marcatori della squadra tra i capocannonieri del campionato. */
+function teamScorersPanel(name, classifica) {
+  const list = ((classifica && classifica.scorers) || []).filter((x) => x && x.team === name && Number.isFinite(x.goals));
+  if (!list.length) return "";
+  return '<div class="panel"><h2>' + t("Tra i capocannonieri") + '</h2><div class="team-list">' + list.map((x) =>
+    "<div><span>" + esc(x.player) + "</span><b>" + (x.goals === 1 ? t("1 gol") : t("{n} gol", { n: x.goals })) + "</b></div>").join("") + "</div></div>";
+}
 const pctArt = (n) => { n = Math.abs(n); return (n === 1 || n === 11 || String(n).charAt(0) === "8") ? "l’" : "il "; };
 function vsAverage(v, verb) {
   const d = Math.round((v - 1) * 100);
@@ -589,7 +612,7 @@ export function teamPage(ctx, name, { turno, storico, classifica }) {
       '<p class="expl">' + t("Vittoria {w} · pareggio {d} · sconfitta {l}", { w: pc(home ? p.p1 : p.p2), d: pc(p.px), l: pc(home ? p.p2 : p.p1) }) + "</p>" +
       '<div class="match-actions"><a class="share-btn ff-btn" href="' + matchUrl(ctx.league, next) + '">' + t("Apri la partita →") + "</a></div></div>";
   }
-  html += teamStatsPanel(name, classifica) + teamUpcomingPanel(ctx, name, next, turno && turno.next_rounds);
+  html += teamStatsPanel(name, classifica) + teamScorersPanel(name, classifica) + teamUpcomingPanel(ctx, name, next, turno && turno.next_rounds);
   if (srow && se.zones && se.zones.length && se.remaining) {
     html += '<div class="panel"><h2>' + t("Come può finire la stagione") + '</h2><div class="team-list">' +
       "<div><span>" + t("Posizione media") + "</span><b>" + t("{avg} (tra {best} e {worst})", { avg: isEn() ? decimalIt(srow.pos_avg) : decimalIt(srow.pos_avg) + "ª", best: ordinal(srow.best), worst: ordinal(srow.worst) }) + "</b></div>" +

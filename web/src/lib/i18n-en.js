@@ -521,6 +521,16 @@ export const EN = {
   "Tutte le partite di oggi e dei prossimi giorni di Serie A, Premier League, LaLiga, Bundesliga, Ligue 1, coppe europee e altri campionati, in ordine di orario, con le probabilità del modello. Solo informazione, nessuna scommessa.": "All of today's and the next few days' matches in the Premier League, Serie A, LaLiga, Bundesliga, Ligue 1, the European cups and other competitions, in kick-off order, with the model's probabilities. Information only, no gambling.",
   "Le partite di tutti i campionati, in ordine di orario. Tocca una partita per aprire l'analisi completa. Stime statistiche, non un invito a scommettere.": "Matches from every competition, in kick-off order. Tap a match to open the full analysis. Statistical estimates, not an invitation to gamble.",
   "Le partite di oggi di tutti i campionati": "Today's matches from every competition",
+  // ---------- Capocannonieri ----------
+  "Capocannonieri": "Top scorers",
+  "Giocatore": "Player",
+  "Assist": "Assists",
+  "Pres.": "Apps",
+  "({n} rig.)": "({n} pen.)",
+  "Gol in campionato; tra parentesi quelli su rigore. Fonte: football-data.org, aggiornata ogni 4 ore.": "League goals; penalties in brackets. Source: football-data.org, updated every 4 hours.",
+  "Tra i capocannonieri": "Among the top scorers",
+  "1 gol": "1 goal",
+  "{n} gol": "{n} goals",
 
   // ---------- Live Center e I miei pronostici (pagine) ----------
   "Live Center: risultati in diretta": "Live Center: live scores",

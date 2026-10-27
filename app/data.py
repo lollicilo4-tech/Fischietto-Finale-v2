@@ -690,6 +690,39 @@ async def real_context(competition: str | None = None) -> dict:
             "standings": _reconcile_standings(_standings(st), finished)}
 
 
+SCORERS_LIMIT = 20
+
+
+def _scorers(payload: dict) -> list[dict]:
+    """Capocannonieri di football-data.org: solo i campi mostrati dal sito, numeri interi o None."""
+    def num(v):
+        return int(v) if isinstance(v, (int, float)) and not isinstance(v, bool) else None
+    out = []
+    for s in (payload or {}).get("scorers") or []:
+        player, team = s.get("player") or {}, s.get("team") or {}
+        goals = num(s.get("goals"))
+        if not player.get("name") or not (team.get("shortName") or team.get("name")) or goals is None:
+            continue
+        out.append({"player": str(player["name"]), "team": _name(team), "goals": goals,
+                    "assists": num(s.get("assists")), "penalties": num(s.get("penalties")),
+                    "played": num(s.get("playedMatches"))})
+    return sorted(out, key=lambda x: (-x["goals"], -(x["assists"] or 0), x["played"] or 0, x["player"]))[:SCORERS_LIMIT]
+
+
+async def get_scorers(competition: str) -> list[dict]:
+    """Classifica marcatori (una richiesta, piano gratuito di football-data.org). Le coppe con dati da
+    CSV non ce l'hanno; se la richiesta fallisce la classifica marcatori resta vuota, il resto no."""
+    if competition in OPEN_MATCHDAY_LEAGUES or not has_key():
+        return []
+    try:
+        async with httpx.AsyncClient() as client:
+            payload = await _get(client, f"/competitions/{competition}/scorers", {"limit": SCORERS_LIMIT})
+    except Exception as exc:  # i marcatori sono un di più: un errore non deve fermare la classifica
+        print(f"[scorers] {competition}: non disponibile ({type(exc).__name__})")
+        return []
+    return _scorers(payload)
+
+
 async def get_context(competition: str | None = None) -> dict:
     competition = competition or COMPETITION
     if competition in OPEN_MATCHDAY_LEAGUES:

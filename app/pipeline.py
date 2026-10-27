@@ -320,7 +320,8 @@ async def build_classifica(competition: str | None = None) -> dict:
     ctx = await data.get_context(league)
     table = ctx.get("standings", [])
     out = {"demo": False, "table": table, "ratings": team_ratings(ctx),
-           "stats": explain.team_stats(ctx.get("finished", []))}
+           "stats": explain.team_stats(ctx.get("finished", [])),
+           "scorers": await data.get_scorers(league)}
     if league in data.KNOCKOUT:  # coppa a eliminazione diretta: niente fine stagione
         out["season"] = None
         return out
