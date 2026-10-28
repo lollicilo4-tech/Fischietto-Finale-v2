@@ -7,7 +7,8 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import satori from "satori";
-import { initWasm, Resvg } from "@resvg/resvg-wasm";
+import { Resvg } from "@resvg/resvg-wasm";
+import { resvgReady } from "./resvg.js";
 import { pc, d2, roundDay } from "./core.js";
 import { fantaRows, highlights, firstKickoff } from "./fanta.js";
 import { setLang } from "./i18n.js";
@@ -109,7 +110,7 @@ let ready = null;
 function setup() {
   if (!ready) {
     const font = (pkg, file) => readFileSync(nm("@fontsource", pkg, "files", file));
-    ready = initWasm(readFileSync(nm("@resvg", "resvg-wasm", "index_bg.wasm"))).then(() => [
+    ready = resvgReady().then(() => [
       { name: "Barlow", data: font("barlow-condensed", "barlow-condensed-latin-700-normal.woff"), weight: 700, style: "normal" },
       { name: "Barlow", data: font("barlow-condensed", "barlow-condensed-latin-800-normal.woff"), weight: 800, style: "normal" },
       { name: "Plex", data: font("ibm-plex-sans", "ibm-plex-sans-latin-400-normal.woff"), weight: 400, style: "normal" },

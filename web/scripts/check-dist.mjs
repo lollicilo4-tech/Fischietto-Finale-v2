@@ -8,6 +8,7 @@
    - ogni redirect di _redirects porta a una pagina che esiste, per ogni campionato;
    - nessun "undefined", "NaN" o "[object Object]" nel testo delle pagine;
    - ogni pagina ha la lingua giusta (/en/ in inglese) e il link hreflang all'altra versione;
+   - ogni stemma nelle pagine (/stemmi/…) esiste ed è un PNG;
    - i dati strutturati (JSON-LD) sono JSON valido con @context schema.org; ogni partita ha il suo SportsEvent. */
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
@@ -54,7 +55,7 @@ expected.forEach((u) => { if (!pageFor(u)) fail("manca " + u); });
 /* HTML: script, gestori inline, link interni, testo. */
 const files = walk(dist);
 const html = files.filter((f) => f.endsWith(".html"));
-let links = 0, ldCount = 0;
+let links = 0, ldCount = 0, crestImgs = 0;
 for (const file of html) {
   const rel = "/" + path.relative(dist, file);
   const src = readFileSync(file, "utf-8");
@@ -74,6 +75,10 @@ for (const file of html) {
   if (/fonts\.(googleapis|gstatic)\.com/.test(src)) fail(rel + ": carica caratteri da Google Fonts");
   const text = src.replace(/<script[\s\S]*?<\/script>/g, "");
   for (const bad of ["undefined", "NaN", "[object Object]"]) if (text.includes(bad)) fail(rel + ": contiene " + bad);
+  for (const m of src.matchAll(/<img\b[^>]*\ssrc="(\/stemmi\/[^"]*)"/g)) {
+    crestImgs++;
+    if (!pageFor(m[1])) fail(rel + ": stemma mancante " + m[1]);
+  }
   for (const m of src.matchAll(/\shref="(\/[^"]*)"/g)) {
     links++;
     if (!pageFor(m[1])) fail(rel + ": link rotto " + m[1]);
@@ -95,6 +100,12 @@ icsFiles.forEach((f) => {
   if (/[^\r]\n/.test(s)) fail(rel + ": righe senza CRLF");
   if ((s.match(/BEGIN:VEVENT/g) || []).length !== (s.match(/END:VEVENT/g) || []).length) fail(rel + ": eventi non chiusi");
   for (const bad of ["undefined", "NaN", "[object Object]"]) if (s.includes(bad)) fail(rel + ": contiene " + bad);
+});
+
+/* Stemmi: solo PNG veri (al build ogni stemma passa da resvg, mai l'SVG originale). */
+files.filter((f) => f.includes(path.sep + "stemmi" + path.sep)).forEach((f) => {
+  const b = readFileSync(f);
+  if (!f.endsWith(".png") || b.subarray(0, 8).toString("hex") !== "89504e470d0a1a0a") fail(path.relative(dist, f) + ": lo stemma non è un PNG");
 });
 
 /* Content Security Policy. */
@@ -147,4 +158,4 @@ if (problems.length) {
   console.error(problems.length + " problemi nel sito generato:\n- " + problems.slice(0, 50).join("\n- "));
   process.exit(1);
 }
-console.log("dist/ ok: " + html.length + " pagine, " + files.length + " file, " + links + " link interni verificati, " + locs.length + " indirizzi in sitemap, " + ldCount + " blocchi di dati strutturati.");
+console.log("dist/ ok: " + html.length + " pagine, " + files.length + " file, " + links + " link interni verificati, " + locs.length + " indirizzi in sitemap, " + ldCount + " blocchi di dati strutturati, " + crestImgs + " stemmi nelle pagine.");

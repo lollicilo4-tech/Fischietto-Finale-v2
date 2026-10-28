@@ -203,3 +203,17 @@ a.today-row.ff-btn:first-child { border-top: 0; }
 .season-table td:first-child, .season-table td:first-child .team-link { overflow-wrap: normal; word-break: normal; hyphens: manual; }
 .season-table td:first-child { min-width: 6.5em; }
 .season-table thead th { white-space: normal !important; overflow-wrap: normal; vertical-align: bottom; line-height: 1.2; }
+/* Stemmi delle squadre (PNG 64×64 del sito, mostrati più piccoli). Decorativi: il nome è sempre accanto. */
+img.crest { display: inline-block; object-fit: contain; flex: 0 0 auto; }
+.crest-row, .crest-inline { vertical-align: -4px; margin-right: 6px; }
+.crest-inline { vertical-align: -3px; margin-right: 4px; }
+.match-team .crest-card { display: block; margin-bottom: 4px; }
+.match-team.away .crest-card { margin-left: auto; }
+.mc-teams.has-crest .mc-team:first-child:before, .mc-teams.has-crest .mc-team:last-child:after { display: none; }
+.mc-team .crest-mc { display: block; margin: 0 auto 9px; width: 40px; height: 40px; }
+.feature-team .crest-feature { display: block; margin-bottom: 6px; }
+.feature-team.r .crest-feature { margin-left: auto; }
+.hero .side .crest-hero { display: block; margin-bottom: 4px; }
+.hero .side.r .crest-hero { margin-left: auto; }
+.team-head { gap: 12px; }
+.team-head .crest-team { align-self: center; }

@@ -90,6 +90,8 @@ jobs:
         run: |
           mkdir -p out/docs out/data
           find docs -maxdepth 1 -type f -name '*.json' -exec cp {} out/docs/ \;
+          # Stemmi delle squadre (app/crests.py): li controlla apply_generated.py prima di salvarli.
+          if [ -d docs/crests ]; then mkdir -p out/docs/crests && find docs/crests -maxdepth 1 -type f \( -name '*.png' -o -name '*.svg' \) -exec cp {} out/docs/crests/ \; ; fi
           for f in predictions.json ai_cache.json; do
             if [ -f "data/$f" ]; then cp "data/$f" "out/data/$f"; fi
           done

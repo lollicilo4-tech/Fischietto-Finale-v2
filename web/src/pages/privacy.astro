@@ -3,7 +3,7 @@
    public/_headers) o nuovo dato salvato nel browser deve comparire qui. */
 import Base from "../layouts/Base.astro";
 import { CONTACT_EMAIL, KOFI_URL } from "../lib/core.js";
-const UPDATED = "26 ottobre 2026";
+const UPDATED = "28 ottobre 2026";
 const ext = { target: "_blank", rel: "noopener noreferrer" };
 ---
 <Base title="Privacy e cookie" description="Quali dati tratta Fischietto finale: niente account né moduli, cosa resta nel browser, servizi esterni (Cloudflare, SportScore, Google AdSense) e come esercitare i tuoi diritti." section={undefined} path="/privacy/">
@@ -36,7 +36,7 @@ const ext = { target: "_blank", rel: "noopener noreferrer" };
 
     <div class="panel info-section">
       <h2>4. Hosting: Cloudflare</h2>
-      <p>Il sito è ospitato da Cloudflare. Per consegnare le pagine e proteggerle da abusi e attacchi, Cloudflare tratta dati tecnici come indirizzo IP, browser e pagina richiesta, per il tempo strettamente necessario. Noi non usiamo questi dati per identificare o profilare i visitatori. Caratteri, script e immagini del sito sono serviti dal sito stesso. Informativa di Cloudflare: <a href="https://www.cloudflare.com/privacypolicy/" {...ext}>cloudflare.com/privacypolicy</a>.</p>
+      <p>Il sito è ospitato da Cloudflare. Per consegnare le pagine e proteggerle da abusi e attacchi, Cloudflare tratta dati tecnici come indirizzo IP, browser e pagina richiesta, per il tempo strettamente necessario. Noi non usiamo questi dati per identificare o profilare i visitatori. Caratteri, script e immagini del sito sono serviti dal sito stesso, compresi gli stemmi delle squadre: li scarichiamo da football-data.org durante l'aggiornamento dei dati, quindi il tuo browser non contatta football-data.org. Informativa di Cloudflare: <a href="https://www.cloudflare.com/privacypolicy/" {...ext}>cloudflare.com/privacypolicy</a>.</p>
     </div>
 
     <div class="panel info-section">

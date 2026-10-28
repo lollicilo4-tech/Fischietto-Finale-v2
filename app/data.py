@@ -84,6 +84,20 @@ def _name(t: dict) -> str:
     return t.get("shortName") or t["name"]
 
 
+def cached_contexts() -> dict:
+    """Contesti di tutti i campionati già scaricati in questa esecuzione (per gli stemmi, app/crests.py)."""
+    return {code: entry["v"] for code, entry in _cache.items()}
+
+
+def _crests(teams: list) -> dict:
+    """{nome della squadra: indirizzo dello stemma} dalle squadre di football-data.org (app/crests.py)."""
+    out = {}
+    for t in teams:
+        if isinstance(t, dict) and (t.get("shortName") or t.get("name")) and isinstance(t.get("crest"), str):
+            out.setdefault(_name(t), t["crest"])
+    return out
+
+
 def _standings(st: dict) -> list[dict]:
     tables = [t for t in st.get("standings", []) if t.get("type") == "TOTAL"] or st.get("standings", [])
     if not tables:
@@ -683,8 +697,10 @@ async def real_context(competition: str | None = None) -> dict:
         and m.get("stage", "REGULAR_SEASON") in POINTS_STAGES
         and (m.get("homeTeam") or {}).get("name") and (m.get("awayTeam") or {}).get("name")
     ]
+    crests = _crests([m.get(k) for m in fin.get("matches", []) + sch.get("matches", []) for k in ("homeTeam", "awayTeam")] +
+                     [r.get("team") for t in st.get("standings", []) for r in t.get("table", [])])
     return {"demo": False, "teams_simple": simple, "teams": teams, "avg_h": avg_h, "avg_a": avg_a,
-            "cup_prior": cup_prior, "remaining": remaining,
+            "cup_prior": cup_prior, "remaining": remaining, "crests": crests,
             "rho": model.fit_rho(finished, previous, teams, avg_h, avg_a), "fixtures": fixtures, "finished": finished, "matchday": matchday,
             "previous": previous,
             "standings": _reconcile_standings(_standings(st), finished)}

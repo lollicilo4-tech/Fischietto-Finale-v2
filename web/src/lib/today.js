@@ -5,6 +5,7 @@
 import { LEAGUES, esc, pc, romeParts, dayOf, matchUrl } from "./core.js";
 import { finalOutcome } from "./model.js";
 import { t } from "./i18n.js";
+import { crestSrc, crestImgSrc } from "./crests.js";
 
 const DAY_MS = 24 * 3600 * 1000;
 /* Una partita resta in pagina fino a due ore dopo l'inizio, poi è finita (o quasi). */
@@ -22,7 +23,8 @@ export function todayItems(turni) {
       out.push({
         league: l.code, flag: l.flag, name: l.name, id: String(m.id), home: m.home, away: m.away, kickoff: m.kickoff,
         p1: m.prob.p1, px: m.prob.px, p2: m.prob.p2, conf: m.conf, pick: [fo[0], fo[1], fo[2]],
-        score: s ? s[0] + "-" + s[1] : "", url: matchUrl(l.code, m)
+        score: s ? s[0] + "-" + s[1] : "", url: matchUrl(l.code, m),
+        ch: crestSrc(l.code, m.home), ca: crestSrc(l.code, m.away)
       });
     });
   });
@@ -50,7 +52,7 @@ function row(x, now) {
   const cell = (code, p) => "<i" + (x.pick[0] === code ? ' class="hot"' : "") + "><small>" + code + "</small>" + pc(p) + "</i>";
   return '<a class="today-row ff-btn" href="' + esc(x.url) + '">' +
     '<span class="today-time">' + (started ? '<b class="today-started">' + t("Iniziata") + "</b>" : esc(time)) + "</span>" +
-    '<span class="today-main"><small>' + esc(x.flag + " " + x.name) + "</small><b>" + esc(x.home) + " – " + esc(x.away) + "</b>" +
+    '<span class="today-main"><small>' + esc(x.flag + " " + x.name) + "</small><b>" + crestImgSrc(x.ch, 16, "crest-inline") + esc(x.home) + " – " + crestImgSrc(x.ca, 16, "crest-inline") + esc(x.away) + "</b>" +
     "<small>" + t("Modello: {pick} · probabile {score}", { pick: esc(x.pick[0] + " · " + x.pick[1]) + " " + pc(x.pick[2]), score: esc(x.score) }) + "</small></span>" +
     '<span class="today-p">' + cell("1", x.p1) + cell("X", x.px) + cell("2", x.p2) + "</span></a>";
 }

@@ -11,6 +11,7 @@ import {
 } from "./core.js";
 import { finalOutcome, homeOutcome, prudentChoice, byStrength, deriveRecommendation, slipReason, marketReliability, recLabel, marketText } from "./model.js";
 import { t, isEn, loc } from "./i18n.js";
+import { crestImg, crestSrc } from "./crests.js";
 
 const favSet = (ctx) => new Set((ctx && ctx.favs) || []);
 const isFav = (ctx, name) => favSet(ctx).has(name);
@@ -68,7 +69,7 @@ const NOTE_NO_BET = "Stima statistica del modello: non è una certezza e non cos
 function matchCenter(ctx, m, p, a, s, fo, prudent) {
   return '<div class="match-center">' +
     '<div class="mc-kicker"><span>Match Center</span><span class="mc-ai">' + (a.ai && a.sources.length ? t("AI + statistiche") : t("Solo statistiche")) + "</span></div>" +
-    '<div class="mc-teams"><div class="mc-team"><small>' + t("CASA") + "</small><b>" + teamLink(ctx, m.home) + '</b></div><div class="mc-vs">VS</div><div class="mc-team"><small>' + t("TRASFERTA") + "</small><b>" + teamLink(ctx, m.away) + "</b></div></div>" +
+    '<div class="mc-teams' + (crestSrc(ctx.league, m.home) || crestSrc(ctx.league, m.away) ? " has-crest" : "") + '"><div class="mc-team">' + crestImg(ctx.league, m.home, 40, "crest-mc") + "<small>" + t("CASA") + "</small><b>" + teamLink(ctx, m.home) + '</b></div><div class="mc-vs">VS</div><div class="mc-team">' + crestImg(ctx.league, m.away, 40, "crest-mc") + "<small>" + t("TRASFERTA") + "</small><b>" + teamLink(ctx, m.away) + "</b></div></div>" +
     '<div class="mc-probs"><div class="mc-prob ' + (fo[0] === "1" ? "hot" : "") + '"><small>1</small><strong>' + pc(p.p1) + "</strong></div>" +
     '<div class="mc-prob ' + (fo[0] === "X" ? "hot" : "") + '"><small>X</small><strong>' + pc(p.px) + "</strong></div>" +
     '<div class="mc-prob ' + (fo[0] === "2" ? "hot" : "") + '"><small>2</small><strong>' + pc(p.p2) + "</strong></div></div>" +
@@ -127,9 +128,9 @@ export function card(ctx, m, i, opts = {}) {
     (m.kickoff ? ' data-kickoff="' + esc(m.kickoff) + '"' : "") + (opts.open ? " open" : "") + "><summary>" +
     '<div class="mhead"><span>' + (fav ? starHtml() : "") + esc(when(m)) + '</span><span class="conf ' + esc(m.conf) + '">' + esc(t("Affidabilità " + m.conf)) + "</span></div>" +
     '<div class="match-summary-main">' +
-    '<div class="match-team"><div class="team-side">' + t("Casa") + '</div><div class="team-name">' + esc(m.home) + "</div></div>" +
+    '<div class="match-team">' + crestImg(ctx.league, m.home, 28, "crest-card") + '<div class="team-side">' + t("Casa") + '</div><div class="team-name">' + esc(m.home) + "</div></div>" +
     '<div class="match-score"><strong>' + s[0] + "-" + s[1] + "</strong>" + t("probabile") + "</div>" +
-    '<div class="match-team away"><div class="team-side">' + t("Trasferta") + '</div><div class="team-name">' + esc(m.away) + "</div></div>" +
+    '<div class="match-team away">' + crestImg(ctx.league, m.away, 28, "crest-card") + '<div class="team-side">' + t("Trasferta") + '</div><div class="team-name">' + esc(m.away) + "</div></div>" +
     "</div>" +
     '<div class="bar" role="img" aria-label="' + t("{home} {p1}, pareggio {px}, {away} {p2}", { home: esc(m.home), p1: pc(p.p1), px: pc(p.px), away: esc(m.away), p2: pc(p.p2) }) + '">' +
     '<i class="h" style="flex:' + p.p1 + '"><small>1</small>' + pc(p.p1) + "</i>" +
@@ -207,13 +208,13 @@ export function playedSection(list) {
 }
 
 /* Il pronostico più netto del turno, in cima a Partite. */
-export function hero(m) {
+export function hero(m, league) {
   if (!m) return "";
   const p = m.prob, s = m.top_scores[0], rec = deriveRecommendation(m);
   return '<div class="hero" style="--i:0"><span class="badge">' + t("Pronostico più netto del turno") + "</span>" +
-    '<div class="vs"><div class="side l"><div class="nm">' + esc(m.home) + '</div><div class="big">' + pc(p.p1) + "</div></div>" +
+    '<div class="vs"><div class="side l">' + crestImg(league, m.home, 32, "crest-hero") + '<div class="nm">' + esc(m.home) + '</div><div class="big">' + pc(p.p1) + "</div></div>" +
     '<div class="mid"><div class="label">X</div><div class="big">' + pc(p.px) + "</div></div>" +
-    '<div class="side r"><div class="nm">' + esc(m.away) + '</div><div class="big">' + pc(p.p2) + "</div></div></div>" +
+    '<div class="side r">' + crestImg(league, m.away, 32, "crest-hero") + '<div class="nm">' + esc(m.away) + '</div><div class="big">' + pc(p.p2) + "</div></div></div>" +
     '<div class="meta"><span>' + t("Risultato probabile") + ' <b class="num">' + s[0] + "-" + s[1] + "</b></span>" +
     "<span>" + t("Pronostico del modello") + " <b>" + esc(recLabel(rec.best, m)) + " · " + pc(rec.best.p) + "</b></span></div>" +
     '<a class="cta ff-btn" href="#m-' + esc(m.id) + '" data-open="m-' + esc(m.id) + '">' + t("Apri l'analisi") + "</a></div>";
@@ -226,7 +227,7 @@ export function homeDashboard(ctx, matches) {
   const m = ranked[0], p = m.prob, s = m.top_scores[0], rec = deriveRecommendation(m), fo = homeOutcome(m);
   const open = (x) => leagueUrl(ctx.league, "partite") + "#m-" + encodeURIComponent(x.id);
   const feature = '<div class="feature-card"><div class="feature-top"><span class="badge">' + esc(recLabel(rec.best, m)) + " " + pc(rec.best.p) + '</span><span class="conf ' + esc(m.conf) + '">' + esc(t("Affidabilità " + m.conf)) +
-    '</span></div><div class="feature-match"><div class="feature-team"><small>' + t("Casa") + "</small><b>" + esc(m.home) + '</b></div><div class="feature-vs">VS</div><div class="feature-team r"><small>' + t("Trasferta") + "</small><b>" + esc(m.away) +
+    '</span></div><div class="feature-match"><div class="feature-team">' + crestImg(ctx.league, m.home, 36, "crest-feature") + "<small>" + t("Casa") + "</small><b>" + esc(m.home) + '</b></div><div class="feature-vs">VS</div><div class="feature-team r">' + crestImg(ctx.league, m.away, 36, "crest-feature") + "<small>" + t("Trasferta") + "</small><b>" + esc(m.away) +
     '</b></div></div><div class="feature-prob"><span class="' + (fo[0] === "1" ? "hot" : "") + '"><b>1</b>' + pc(p.p1) + '</span><span class="' + (fo[0] === "X" ? "hot" : "") + '"><b>X</b>' + pc(p.px) +
     '</span><span class="' + (fo[0] === "2" ? "hot" : "") + '"><b>2</b>' + pc(p.p2) + '</span></div><div class="feature-bottom"><div class="feature-score"><small>' + t("Risultato più probabile") + "</small>" + s[0] + "-" + s[1] +
     '</div><a class="feature-open ff-btn" href="' + esc(open(m)) + '">' + t("Vedi analisi →") + "</a></div></div>";
@@ -307,7 +308,7 @@ export function tableHtml(ctx, classifica) {
   return '<table class="table"><thead><tr><th>#</th><th>' + t("Squadra") + "</th><th>" + t("PG") + '</th><th class="hide-s">' + t("V") + '</th><th class="hide-s">' + t("N") + '</th><th class="hide-s">' + t("P") + "</th><th>" + t("DR") + "</th><th>" + t("Pt") + "</th></tr></thead><tbody>" +
     tb.map((r) => {
       const dr = r.gf - r.ga, cls = r.pos <= 4 ? "ucl" : (n >= 18 && r.pos > n - 3) ? "rel" : "";
-      return '<tr class="' + cls + '" data-team-row="' + esc(r.team) + '"><td>' + r.pos + "</td><td>" + (isFav(ctx, r.team) ? starHtml() : "") + teamLink(ctx, r.team) + "</td><td>" + r.pg + '</td><td class="hide-s">' + r.w +
+      return '<tr class="' + cls + '" data-team-row="' + esc(r.team) + '"><td>' + r.pos + "</td><td>" + (isFav(ctx, r.team) ? starHtml() : "") + crestImg(ctx.league, r.team, 20, "crest-row") + teamLink(ctx, r.team) + "</td><td>" + r.pg + '</td><td class="hide-s">' + r.w +
         '</td><td class="hide-s">' + r.d + '</td><td class="hide-s">' + r.l + "</td><td>" + (dr > 0 ? "+" : "") + dr + "</td><td>" + r.pts + "</td></tr>";
     }).join("") + "</tbody></table>";
 }
@@ -596,7 +597,7 @@ export function teamPage(ctx, name, { turno, storico, classifica }) {
   const next = matches.find((m) => m.home === name || m.away === name);
   const past = ((storico && storico.items) || []).filter((x) => { const parts = String(x.match).split(" – "); return parts[0] === name || parts[1] === name; }).slice(0, 8);
   const on = isFav(ctx, name);
-  let html = '<div class="team-head"><div><small>' + esc(leagueByCode(ctx.league).name) + '</small><h2 id="team-title" tabindex="-1">' + esc(name) + "</h2>" +
+  let html = '<div class="team-head">' + crestImg(ctx.league, name, 56, "crest-team") + '<div><small>' + esc(leagueByCode(ctx.league).name) + '</small><h2 id="team-title" tabindex="-1">' + esc(name) + "</h2>" +
     (row ? "<small>" + t("{pos} in classifica · {pts} punti in {pg} partite · differenza reti {dr}", { pos: ordinal(row.pos), pts: row.pts, pg: row.pg, dr: (row.gf - row.ga > 0 ? "+" : "") + (row.gf - row.ga) }) + "</small>" : "") +
     '</div><button type="button" class="fav-btn" data-fav="' + esc(name) + '" aria-pressed="' + on + '">' + (on ? t("★ Seguita") : t("☆ Segui")) + "</button></div>";
   if (rating) {
