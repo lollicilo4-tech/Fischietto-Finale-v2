@@ -37391,6 +37391,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8036
   },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-27T19:00:00Z",
+   "hg": 1
+  },
   "top": [
    1,
    1
@@ -37526,6 +37531,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7882
+  },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-27T20:00:00Z",
+   "hg": 2
   },
   "top": [
    1,
@@ -37663,6 +37673,11 @@
    "label": "X2 · Elche non perde",
    "p": 0.9121
   },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-27T18:00:00Z",
+   "hg": 1
+  },
   "top": [
    0,
    2
@@ -37798,6 +37813,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7882
+  },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-27T19:00:00Z",
+   "hg": 3
   },
   "top": [
    1,
@@ -37935,6 +37955,11 @@
    "label": "X2 · Girona non perde",
    "p": 0.9113
   },
+  "result": {
+   "ag": 2,
+   "date": "2026-10-27T17:30:00Z",
+   "hg": 0
+  },
   "top": [
    0,
    2
@@ -38070,6 +38095,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7882
+  },
+  "result": {
+   "ag": 4,
+   "date": "2026-10-27T20:00:00Z",
+   "hg": 0
   },
   "top": [
    1,
@@ -38207,6 +38237,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7882
   },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-27T18:00:00Z",
+   "hg": 0
+  },
   "top": [
    1,
    1
@@ -38342,6 +38377,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7882
+  },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-27T19:00:00Z",
+   "hg": 0
   },
   "top": [
    1,
@@ -38479,6 +38519,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7882
   },
+  "result": {
+   "ag": 4,
+   "date": "2026-10-27T19:30:00Z",
+   "hg": 2
+  },
   "top": [
    1,
    1
@@ -38614,6 +38659,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7882
+  },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-27T19:00:00Z",
+   "hg": 0
   },
   "top": [
    1,
@@ -38751,6 +38801,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7882
   },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-27T19:00:00Z",
+   "hg": 1
+  },
   "top": [
    1,
    1
@@ -38886,6 +38941,11 @@
    "kind": "doppia",
    "label": "X2 · Villarreal non perde",
    "p": 0.9252
+  },
+  "result": {
+   "ag": 5,
+   "date": "2026-10-27T20:00:00Z",
+   "hg": 0
   },
   "top": [
    0,
@@ -39023,6 +39083,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7882
   },
+  "result": {
+   "ag": 2,
+   "date": "2026-10-27T19:30:00Z",
+   "hg": 2
+  },
   "top": [
    1,
    1
@@ -39158,6 +39223,11 @@
    "kind": "doppia",
    "label": "X2 · Rayo Vallecano non perde",
    "p": 0.9094
+  },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-27T20:00:00Z",
+   "hg": 2
   },
   "top": [
    0,
@@ -39295,6 +39365,11 @@
    "label": "X2 · Espanyol non perde",
    "p": 0.9071
   },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-27T18:00:00Z",
+   "hg": 4
+  },
   "top": [
    0,
    2
@@ -39431,6 +39506,11 @@
    "label": "X2 · Málaga non perde",
    "p": 0.89
   },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-27T20:00:00Z",
+   "hg": 0
+  },
   "top": [
    0,
    2
@@ -39566,6 +39646,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8036
+  },
+  "result": {
+   "ag": 2,
+   "date": "2026-10-27T18:45:00Z",
+   "hg": 1
   },
   "top": [
    1,
@@ -44462,6 +44547,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8036
+  },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-27T20:00:00Z",
+   "hg": 3
   },
   "top": [
    1,
