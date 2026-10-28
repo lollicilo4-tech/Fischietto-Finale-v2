@@ -4,20 +4,13 @@
    Il disegno è fatto con satori (layout e testo diventano tracciati SVG, con i caratteri del sito già
    installati da Fontsource) e trasformato in PNG da resvg (WebAssembly): niente servizi esterni,
    niente programmi da installare. Dati: gli stessi della pagina (src/lib/fanta.js). */
-import { readFileSync } from "node:fs";
-import path from "node:path";
-import satori from "satori";
-import { Resvg } from "@resvg/resvg-wasm";
-import { resvgReady } from "./resvg.js";
+import { C, h, text, brand, frame, renderPng, pngFrom, PREVIEW, SOCIAL } from "./cardkit.js";
 import { pc, d2, roundDay } from "./core.js";
 import { fantaRows, highlights, firstKickoff } from "./fanta.js";
 import { setLang } from "./i18n.js";
 
-export const SOCIAL = { width: 1080, height: 1350 };
-export const PREVIEW = { width: 1200, height: 630 };
+export { SOCIAL, PREVIEW, renderPng };
 export const SITE_LABEL = "fischiettofinale.com/fantacalcio";
-
-const C = { bg: "#0a1018", panel: "#111b27", line: "#22344a", fg: "#eaf1f8", muted: "#8fa3b8", gold: "#f2b01e", blue: "#3d9bff", good: "#3fd29b", bad: "#ff7a6b" };
 
 /* ---------- Dati ---------- */
 /* Le tre liste dell'immagine e le scritte di testa, dalla giornata pubblicata in turno.json. */
@@ -38,13 +31,7 @@ export function cardData(turno) {
   };
 }
 
-/* ---------- Disegno (albero per satori: { type, props: { style, children } }) ---------- */
-const h = (style, ...children) => ({ type: "div", props: { style: { display: "flex", ...style }, children: children.flat().filter((c) => c !== null && c !== "") } });
-const text = (style, value) => h(style, String(value));
-
-const brand = (size) => h({ alignItems: "baseline", gap: size * 0.3, fontFamily: "Barlow", fontWeight: 800, fontSize: size, letterSpacing: 1 },
-  text({ color: C.fg }, "FISCHIETTO"), text({ color: C.blue }, "FINALE"));
-
+/* ---------- Disegno (strumenti in src/lib/cardkit.js) ---------- */
 function row(item, accent, sizes) {
   return h({ alignItems: "center", justifyContent: "space-between", padding: sizes.pad + "px 0", borderTop: "2px solid " + C.line, gap: 20 },
     h({ flexDirection: "column", flexShrink: 1, minWidth: 0 },
@@ -62,12 +49,6 @@ function section(title, hint, items, accent, sizes) {
       hint ? text({ fontFamily: "Plex", fontSize: sizes.unit + 2, color: C.muted }, hint) : null),
     items.length ? items.map((it) => row(it, accent, sizes)) : [text({ fontFamily: "Plex", fontSize: sizes.sub || 22, color: C.muted, padding: "14px 0" }, "In arrivo con il prossimo aggiornamento")]);
 }
-
-/* Satori non conta il padding nella larghezza: lo sfondo prende tutta l'immagine e il contenuto sta in
-   un riquadro interno di misura esatta. */
-const frame = (size, pad, bgPos, inner) => h({ width: size.width, height: size.height, backgroundColor: C.bg, overflow: "hidden",
-  backgroundImage: "radial-gradient(circle at " + bgPos + ", #1b3a5e 0%, " + C.bg + " 58%)" },
-  h({ flexDirection: "column", width: size.width - 2 * pad.x, height: size.height - pad.top - pad.bottom, marginLeft: pad.x, marginTop: pad.top, color: C.fg }, inner));
 
 const disclaimer = "Stime statistiche, non certezze.";
 
@@ -105,38 +86,7 @@ export function previewTree(d) {
 }
 
 /* ---------- PNG ---------- */
-const nm = (...p) => path.resolve(process.cwd(), "node_modules", ...p);
-let ready = null;
-function setup() {
-  if (!ready) {
-    const font = (pkg, file) => readFileSync(nm("@fontsource", pkg, "files", file));
-    ready = resvgReady().then(() => [
-      { name: "Barlow", data: font("barlow-condensed", "barlow-condensed-latin-700-normal.woff"), weight: 700, style: "normal" },
-      { name: "Barlow", data: font("barlow-condensed", "barlow-condensed-latin-800-normal.woff"), weight: 800, style: "normal" },
-      { name: "Plex", data: font("ibm-plex-sans", "ibm-plex-sans-latin-400-normal.woff"), weight: 400, style: "normal" },
-      { name: "Plex", data: font("ibm-plex-sans", "ibm-plex-sans-latin-600-normal.woff"), weight: 600, style: "normal" }
-    ]);
-  }
-  return ready;
-}
-
-export async function renderPng(tree, { width, height }) {
-  const fonts = await setup();
-  const svg = await satori(tree, { width, height, fonts });
-  return new Resvg(svg, { fitTo: { mode: "width", value: width } }).render().asPng();
-}
-
-/* Risposta per gli endpoint di Astro. Se il disegno fallisce il sito si pubblica lo stesso:
-   al posto dell'immagine va l'icona del sito (e l'errore resta nel log del build). */
-export async function pngResponse(kind, turno) {
-  const size = kind === "preview" ? PREVIEW : SOCIAL;
-  let body;
-  try {
-    const d = cardData(turno);
-    body = await renderPng(kind === "preview" ? previewTree(d) : socialTree(d), size);
-  } catch (e) {
-    console.error("Immagine fantacalcio non generata (" + kind + "): " + (e && e.message));
-    body = readFileSync(path.resolve(process.cwd(), "public", "icon-512.png"));
-  }
-  return new Response(body, { headers: { "Content-Type": "image/png" } });
-}
+export const pngResponse = (kind, turno) => pngFrom("fantacalcio " + kind, () => {
+  const d = cardData(turno);
+  return renderPng(kind === "preview" ? previewTree(d) : socialTree(d), kind === "preview" ? PREVIEW : SOCIAL);
+});

@@ -7,6 +7,7 @@ import { card } from "../lib/render.js";
 import { finalOutcome } from "../lib/model.js";
 import { setLang, langOfPath, t } from "../lib/i18n.js";
 import { sportsEventLd } from "../lib/seo.js";
+import { previewPath, PREVIEW } from "../lib/matchcard.js";
 interface Props { league: string; match: any }
 setLang(langOfPath(Astro.url.pathname));
 const { league, match: m } = Astro.props;
@@ -17,8 +18,11 @@ const description = t("{league}, {day} {time}. {home} – {away}: per il modello
   { league: L.name, day: dayOf(m), time: when(m), home: m.home, away: m.away, code: fo[0], name: fo[1], p: pc(fo[2]), score: s[0] + "-" + s[1] });
 const site = Astro.site ? Astro.site.href.replace(/\/$/, "") : "";
 const ld = [sportsEventLd(site, league, m, description)];
+/* Anteprima del link (stemmi e probabilità 1 X 2): la stessa immagine per la pagina italiana e quella inglese. */
+const ogImage = { path: previewPath(league, m), width: PREVIEW.width, height: PREVIEW.height,
+  alt: t("{home} – {away}: probabilità 1 X 2 del modello", { home: m.home, away: m.away }) };
 ---
-<Base title={title} description={description} league={league} section="partite" path={matchUrl(league, m)} crumbs={[{ name: m.home + " – " + m.away, path: matchUrl(league, m) }]} ld={ld}>
+<Base title={title} description={description} league={league} section="partite" path={matchUrl(league, m)} crumbs={[{ name: m.home + " – " + m.away, path: matchUrl(league, m) }]} ld={ld} ogImage={ogImage}>
   <section id="p-partite" aria-label={m.home + " – " + m.away}>
     <h2 class="sub2">{m.home} – {m.away}</h2>
     <p class="lead">{L.name} · {dayOf(m)} {when(m)}. {t("Stime statistiche del modello: non sono certezze e non sono un invito a scommettere.")}</p>
