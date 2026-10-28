@@ -18,12 +18,14 @@ export function calendarData() {
 
 export function calendarTree(cal, crests = {}) {
   const n = Math.max(cal.teams.length, 1), rowH = Math.min(64, Math.floor((1330 - 6 * (n - 1)) / n));
-  const cols = Math.max(cal.rounds.length, 1), cellW = Math.floor((600 - 8 * (cols - 1)) / cols);
+  /* Riquadro interno largo 992 px: colonna delle squadre e celle delle giornate (spazio 8 px tra le celle). */
+  const cols = Math.max(cal.rounds.length, 1), teamW = cols >= 5 ? 300 : 352, cellW = Math.floor((992 - teamW - 8 * cols) / cols);
   const span = cal.rounds.length ? (cal.rounds.length > 1 ? "GIORNATE " + cal.rounds[0] + "–" + cal.rounds[cal.rounds.length - 1] : "GIORNATA " + cal.rounds[0]) : "";
+  /* Due righe per cella (avversaria, poi casa/trasferta e probabilità): il testo non va mai a capo. */
   const cell = (c) => c && Number.isFinite(c.v)
-    ? h({ width: cellW - 24, height: rowH, flexShrink: 0, borderRadius: 12, backgroundColor: BG[METRICS.win.tier(c.v)], alignItems: "center", justifyContent: "space-between", padding: "0 12px" },
-      text({ fontFamily: "Barlow", fontWeight: 800, fontSize: 26, color: C.fg }, short(c.opp)),
-      text({ fontFamily: "Barlow", fontWeight: 700, fontSize: 22, color: C.fg }, (c.home ? "C " : "T ") + Math.round(c.v * 100) + "%"))
+    ? h({ width: cellW, height: rowH, flexShrink: 0, borderRadius: 12, backgroundColor: BG[METRICS.win.tier(c.v)], flexDirection: "column", alignItems: "center", justifyContent: "center" },
+      text({ fontFamily: "Barlow", fontWeight: 800, fontSize: Math.round(rowH * 0.4), color: C.fg, lineHeight: 1 }, short(c.opp)),
+      text({ fontFamily: "Barlow", fontWeight: 700, fontSize: Math.round(rowH * 0.3), color: C.fg, lineHeight: 1, marginTop: 3 }, (c.home ? "C " : "T ") + Math.round(c.v * 100) + "%"))
     : h({ width: cellW, height: rowH, flexShrink: 0, borderRadius: 12, backgroundColor: C.panel, alignItems: "center", justifyContent: "center" }, text({ fontFamily: "Barlow", fontSize: 26, color: C.muted }, "–"));
   return frame(STORY, { x: 44, top: 64, bottom: 50 }, "80% 0%", [
     h({ justifyContent: "space-between", alignItems: "center" }, brand(38), text({ fontFamily: "Barlow", fontWeight: 700, fontSize: 30, color: C.muted, letterSpacing: 2 }, "SERIE A")),
@@ -32,13 +34,13 @@ export function calendarTree(cal, crests = {}) {
       text({ fontFamily: "Barlow", fontWeight: 800, fontSize: 48, color: C.gold, marginTop: 8 }, span),
       text({ fontFamily: "Plex", fontSize: 23, color: C.muted, marginTop: 6 }, "Probabilità di vittoria del modello · C casa, T trasferta")),
     h({ alignItems: "center", gap: 8, marginBottom: 8 },
-      h({ width: 352 }, text({ fontFamily: "Plex", fontWeight: 600, fontSize: 20, color: C.muted }, "dal calendario più favorevole")),
-      cal.rounds.map((d) => h({ width: cellW, justifyContent: "center" }, text({ fontFamily: "Barlow", fontWeight: 700, fontSize: 24, color: C.muted }, "G" + d)))),
+      h({ width: teamW }, text({ fontFamily: "Plex", fontWeight: 600, fontSize: 20, color: C.muted }, "dal calendario più favorevole")),
+      cal.rounds.map((d) => h({ width: cellW, flexShrink: 0, justifyContent: "center" }, text({ fontFamily: "Barlow", fontWeight: 700, fontSize: 24, color: C.muted }, "G" + d)))),
     h({ flexDirection: "column", gap: 6, flexGrow: 1 }, cal.teams.map((r, i) => h({ alignItems: "center", gap: 8, height: rowH },
-      h({ width: 352, alignItems: "center", gap: 12, flexShrink: 0 },
+      h({ width: teamW, alignItems: "center", gap: 12, flexShrink: 0 },
         text({ fontFamily: "Barlow", fontWeight: 700, fontSize: 24, color: C.muted, width: 34 }, String(i + 1)),
         badge(crests[r.team] || "", r.team, Math.min(44, rowH - 10)),
-        text({ fontFamily: "Barlow", fontWeight: 700, fontSize: 30, color: C.fg, textTransform: "uppercase" }, clip(r.team, 14))),
+        text({ fontFamily: "Barlow", fontWeight: 700, fontSize: 30, color: C.fg, textTransform: "uppercase" }, clip(r.team, 13))),
       r.cells.map(cell)))),
     h({ justifyContent: "space-between", alignItems: "flex-end", marginTop: 16 },
       h({ flexDirection: "column" },
