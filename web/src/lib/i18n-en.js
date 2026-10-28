@@ -503,6 +503,7 @@ export const EN = {
   "{league}, {day} {time}. {home} – {away}: per il modello {code} ({name}) al {p}, risultato più probabile {score}. Probabilità 1X2, gol attesi e assenze confermate.": "{league}, {day} {time}. {home} – {away}: the model says {code} ({name}) at {p}, most likely score {score}. 1X2 probabilities, expected goals and confirmed absences.",
   "Stime statistiche del modello: non sono certezze e non sono un invito a scommettere.": "Statistical estimates from the model: not certainties and not an invitation to gamble.",
   "Tutte le partite di {league} →": "All {league} matches →",
+  "{home} – {away}: probabilità 1 X 2 del modello": "{home} – {away}: model 1 X 2 probabilities",
   "{team} in {league}: forza in attacco e difesa, forma, prossima partita con le probabilità del modello e pronostici passati.": "{team} in {league}: attacking and defensive strength, form, next match with the model's probabilities and past predictions.",
 
   "Coppa a eliminazione diretta": "Knockout cup",
