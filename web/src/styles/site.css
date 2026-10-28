@@ -195,3 +195,11 @@ a.today-row.ff-btn:first-child { border-top: 0; }
 /* Calendario della squadra: i due pulsanti vanno a capo puliti sui telefoni. */
 .cal-panel .match-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .cal-panel .match-actions > * + * { margin-left: 0; }
+
+/* "Come può finire la stagione": i nomi delle squadre vanno a capo solo tra una parola e l'altra (non
+   "Atal-anta") e le intestazioni lunghe delle zone su più righe; se la tabella resta più larga dello
+   schermo, scorre dentro il suo riquadro invece di spingere fuori la pagina. */
+.season-panel { overflow-x: auto; }
+.season-table td:first-child, .season-table td:first-child .team-link { overflow-wrap: normal; word-break: normal; hyphens: manual; }
+.season-table td:first-child { min-width: 6.5em; }
+.season-table thead th { white-space: normal !important; overflow-wrap: normal; vertical-align: bottom; line-height: 1.2; }
