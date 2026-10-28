@@ -5,6 +5,7 @@ import { readFileSync, existsSync } from "node:fs";
 import path from "node:path";
 import { LEAGUES, MOMENTUM_LEAGUES, leagueByCode, updatedAt } from "./core.js";
 import { teamsOf } from "./render.js";
+import { setCrests } from "./crests.js";
 
 export const dataDir = () => path.resolve(process.cwd(), process.env.FF_DATA_DIR || "../docs");
 
@@ -24,9 +25,29 @@ function readJson(file) {
 /* Nome del file pubblicato per un campionato: Serie A usa turno.json, le altre league-XX-turno.json. */
 export const fileName = (league, kind) => leagueByCode(league).file + kind + ".json";
 
+/* Stemmi delle squadre (docs/crests.json, app/crests.py): caricati una volta, alla prima pagina. */
+let crestsLoaded = false;
+export function crestIndex() {
+  const v = readJson("crests.json");
+  return v && v.teams && typeof v.teams === "object" ? v.teams : {};
+}
+function loadCrests() {
+  if (crestsLoaded) return;
+  crestsLoaded = true;
+  setCrests(crestIndex());
+}
+/* File degli stemmi da trasformare in PNG: [{ stem, file }] (nomi già controllati da apply_generated.py). */
+export function crestFiles() {
+  const files = new Set();
+  Object.values(crestIndex()).forEach((teams) => Object.values(teams || {}).forEach((f) => { if (/^[0-9a-f]{16}\.(png|svg)$/.test(f)) files.add(f); }));
+  return [...files].filter((f) => existsSync(path.join(dataDir(), "crests", f))).map((f) => ({ stem: f.slice(0, 16), file: f }));
+}
+export const crestPath = (file) => path.join(dataDir(), "crests", file);
+
 /* {turno, storico, classifica} di un campionato. Un file mancante diventa null: la pagina
    mostra il messaggio "non disponibile", come oggi quando una lega non è stata aggiornata. */
 export function leagueData(league) {
+  loadCrests();
   const turno = readJson(fileName(league, "turno"));
   return {
     turno: turno && Array.isArray(turno.matches) ? turno : null,

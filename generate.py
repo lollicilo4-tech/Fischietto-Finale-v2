@@ -19,7 +19,7 @@ try:
 except ImportError:
     pass
 
-from app import data, pipeline  # noqa: E402
+from app import crests, data, pipeline  # noqa: E402
 from app.validation import summarize_source_coverage, validate_turno_payload  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent
@@ -215,6 +215,10 @@ async def main() -> int:
     _report_source_coverage(payloads)
     _report_verification(payloads)
     _publish(payloads)
+    try:  # gli stemmi sono un di più: un errore non deve fermare l'aggiornamento
+        await crests.update(OUT, payloads, data.cached_contexts())
+    except Exception as exc:
+        print(f"Stemmi non aggiornati: {type(exc).__name__}: {exc!r}", file=sys.stderr)
     print(f"Sito aggiornato: {len(payloads)} campionati pubblicati.")
     if failed:
         print(f"Leghe non aggiornate: {', '.join(failed)}.", file=sys.stderr)
