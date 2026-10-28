@@ -1,6 +1,6 @@
 ---
 import Base from "../layouts/Base.astro";
-import { leagueByCode, leagueUrl } from "../lib/core.js";
+import { leagueByCode, leagueUrl, weekUrl } from "../lib/core.js";
 import { leagueData } from "../lib/data.js";
 import { storicoParts } from "../lib/render.js";
 import { setLang, langOfPath, t } from "../lib/i18n.js";
@@ -16,6 +16,7 @@ const s = storicoParts(storico);
     <p class="lead" id="hist-lead">{s.lead}</p>
     <div id="verdict" set:html={s.verdict}></div>
     <div id="recap" set:html={s.recap}></div>
+    <p class="lead"><a href={weekUrl()}>{t("Il modello negli ultimi 7 giorni, in tutti i campionati →")}</a></p>
     <div class="hist-hero" id="hist-hero" set:html={s.hero}></div>
     <div class="sum" id="sum" set:html={s.sum}></div>
     <div id="quality" set:html={s.quality}></div>

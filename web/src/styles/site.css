@@ -224,3 +224,13 @@ img.crest { display: inline-block; object-fit: contain; flex: 0 0 auto; }
 .social-img img { display: block; width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--line); }
 .social-item figcaption { display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
 .social-item figcaption small { color: var(--muted); }
+
+/* Riepilogo della settimana. */
+.week-hero .week-range { margin: 0; color: var(--muted); font-weight: 600; }
+.week-hero .week-big { margin: 4px 0 6px; font-family: "Barlow Condensed", sans-serif; font-size: 22px; font-weight: 700; }
+.week-hero .week-big b { font-size: 56px; line-height: 1; }
+.week-hero .week-big small { color: var(--muted); font-size: 22px; }
+.week-list > div > span { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.week-list > div > span small { color: var(--muted); font-size: 12px; }
+.week-list b.ok { color: var(--good, #3fd29b); white-space: nowrap; }
+.week-list b.ko { color: var(--bad, #ff7a6b); white-space: nowrap; }

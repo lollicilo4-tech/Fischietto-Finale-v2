@@ -75,6 +75,9 @@ export const myPicksUrl = () => (isEn() ? "/en/my-predictions/" : MYPICKS_URL);
 export const homeUrl = () => prefix() + "/";
 export const TODAY_URL = "/oggi/";
 export const todayUrl = () => (isEn() ? "/en/today/" : TODAY_URL);
+/* Riepilogo degli ultimi 7 giorni (src/lib/week.js). */
+export const WEEK_URL = "/settimana/";
+export const weekUrl = () => (isEn() ? "/en/week/" : WEEK_URL);
 /* Calendario .ics delle prossime partite di una squadra (src/lib/ics.js). */
 export const calendarUrl = (league, team) => (isEn() ? "/en/calendar/" : "/calendario/") + leagueByCode(league).slug + "/" + slugify(team) + ".ics";
 /* Donazioni libere: un link normale (nessuno script di Ko-fi), così la CSP non cambia. */
@@ -83,7 +86,7 @@ export const CONTACT_EMAIL = "info@fischiettofinale.com";
 
 /* Stessa pagina nell'altra lingua, per il selettore di lingua e i link hreflang.
    La Home italiana (/) è la Serie A, quella inglese (/en/) la Premier League. */
-const PAGES = [["/come-funziona/", "/en/how-it-works/"], ["/privacy/", "/en/privacy/"], ["/i-miei-pronostici/", "/en/my-predictions/"], ["/live/", "/en/live/"], ["/oggi/", "/en/today/"]];
+const PAGES = [["/come-funziona/", "/en/how-it-works/"], ["/privacy/", "/en/privacy/"], ["/i-miei-pronostici/", "/en/my-predictions/"], ["/live/", "/en/live/"], ["/oggi/", "/en/today/"], ["/settimana/", "/en/week/"]];
 export function altPath(pathname, to) {
   const p = String(pathname || "/");
   const from = to === "en" ? 0 : 1, dest = to === "en" ? 1 : 0;
