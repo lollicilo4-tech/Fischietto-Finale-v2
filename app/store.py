@@ -345,6 +345,32 @@ def round_recap(rows: list[tuple[str, dict, dict]]) -> dict:
             "surprises": surprises, "best": best}
 
 
+WEEK_DAYS = 10  # il sito mostra gli ultimi 7 giorni: qualche giorno in più copre i build in ritardo
+
+
+def week_items(rows: list[tuple[str, dict, dict]], now=None) -> list[dict]:
+    """Le partite concluse degli ultimi WEEK_DAYS giorni, una per riga, per il riepilogo della settimana
+    del sito (tutti i campionati insieme). Solo pronostici salvati prima della partita; dalla più recente."""
+    from datetime import datetime, timedelta, timezone
+
+    now = now or datetime.now(timezone.utc)
+    out = []
+    for mid, p, m in rows:
+        try:
+            when = datetime.fromisoformat(str(p.get("kickoff")).replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        if when.tzinfo is None or not (now - timedelta(days=WEEK_DAYS) <= when <= now):
+            continue
+        actual = _outcome(m)
+        out.append({"id": str(mid), "home": p["home"], "away": p["away"], "kickoff": p["kickoff"],
+                    "pick": p["pick"], "pick_p": round(float(p["pick_p"]), 4),
+                    "p_actual": round(float(p[_OUTCOME_KEY[actual]]), 4),
+                    "hg": m["hg"], "ag": m["ag"], "ok": p["pick"] == actual,
+                    "exact": list(p.get("top") or [])[:2] == [m["hg"], m["ag"]]})
+    return sorted(out, key=lambda i: i["kickoff"], reverse=True)
+
+
 def history(finished: list[dict], league: str | None = None) -> dict:
     rows = _joined(finished, league=league)
     items, brier, outcomes = [], [], []
@@ -431,4 +457,5 @@ def history(finished: list[dict], league: str | None = None) -> dict:
     out["recommendation_performance"] = _recommendation_performance(rows)
     out["backtest"] = _backtest(rows)
     out["recap"] = round_recap(rows)
+    out["week"] = week_items(rows)
     return out

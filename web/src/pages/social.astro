@@ -6,7 +6,9 @@ import Base from "../layouts/Base.astro";
 import { FANTA_URL, todayUrl } from "../lib/core.js";
 import { buildSets, SOCIAL_URL, STORY } from "../lib/socialcard.js";
 import { SOCIAL } from "../lib/fantacard.js";
+import { buildWeek } from "../lib/weekcard.js";
 import { setLang } from "../lib/i18n.js";
+const week = buildWeek("it");
 setLang("it");
 const { day, sets } = buildSets();
 const dayName = day ? day.title.toLowerCase() : "";
@@ -27,6 +29,13 @@ const fileName = (set) => "partite-" + (day ? day.key : "oggi") + "-" + set.slug
               <a class="ff-btn fanta-download" href={set.file} download={fileName(set)}>Scarica</a>
             </figure>
           ))}
+          {week.n > 0 && (
+            <figure class="panel social-item">
+              <a class="social-img" href="/settimana/riepilogo.png"><img src="/settimana/riepilogo.png" width={STORY.width} height={STORY.height} loading="lazy" decoding="async" alt="Il modello negli ultimi 7 giorni"></a>
+              <figcaption><b>Il modello in 7 giorni</b><small>{week.hit} su {week.n} esiti azzeccati</small></figcaption>
+              <a class="ff-btn fanta-download" href="/settimana/riepilogo.png" download={"riepilogo-settimana-" + week.to + ".png"}>Scarica</a>
+            </figure>
+          )}
           <figure class="panel social-item">
             <a class="social-img" href={FANTA_URL + "consigli.png"}><img src={FANTA_URL + "consigli.png"} width={SOCIAL.width} height={SOCIAL.height} loading="lazy" decoding="async" alt="Consigli fantacalcio della giornata di Serie A"></a>
             <figcaption><b>Consigli fantacalcio</b><small>formato post 4:5</small></figcaption>

@@ -1,0 +1,35 @@
+---
+/* Riepilogo della settimana: com'è andato il modello negli ultimi 7 giorni in tutti i campionati
+   (src/lib/week.js), con l'immagine da condividere. Italiano e inglese. */
+import Base from "../layouts/Base.astro";
+import { weekUrl, todayUrl } from "../lib/core.js";
+import { setLang, langOfPath, t } from "../lib/i18n.js";
+import { weekHtml, rangeLabel } from "../lib/week.js";
+import { buildWeek, PREVIEW } from "../lib/weekcard.js";
+const lang = setLang(langOfPath(Astro.url.pathname));
+const s = buildWeek(lang);
+setLang(lang);
+const range = rangeLabel(s);
+const title = t("Il modello negli ultimi 7 giorni");
+const description = s.n
+  ? t("Com'è andato il modello di Fischietto finale dal {range}: {hit} esiti azzeccati su {n} ({rate}) in tutti i campionati, i colpi migliori e i flop. Solo pronostici salvati prima delle partite.", { range, hit: s.hit, n: s.n, rate: Math.round(s.rate * 100) + "%" })
+  : t("Com'è andato il modello di Fischietto finale negli ultimi 7 giorni, in tutti i campionati: esiti azzeccati, colpi migliori e flop.");
+const preview = lang === "en" ? "/en/week/preview.png" : "/settimana/anteprima.png";
+---
+<Base title={title} description={description} path={weekUrl()} sub={t("Riepilogo della settimana · tutti i campionati")}
+  ogImage={{ path: preview, width: PREVIEW.width, height: PREVIEW.height, alt: t("Il modello negli ultimi 7 giorni") + (s.n ? ": " + s.hit + "/" + s.n : "") }}>
+  <section id="p-settimana" aria-labelledby="week-title">
+    <h2 class="sub2" id="week-title">{title}</h2>
+    <p class="lead">{t("Ogni pronostico viene salvato prima della partita e confrontato con il risultato finale: qui ci sono tutti i campionati insieme. Stime statistiche, non un invito a scommettere.")}</p>
+    <Fragment set:html={weekHtml(s)} />
+    {lang === "it" && s.n > 0 && (
+      <div class="panel fanta-share">
+        <h2>Condividi il riepilogo</h2>
+        <p class="lead" style="margin:0">L'immagine verticale per storie, Reels e TikTok, rigenerata a ogni aggiornamento dei dati.</p>
+        <a class="fanta-share-img" href="/settimana/riepilogo.png"><img src="/settimana/riepilogo.png" width="1080" height="1920" loading="lazy" decoding="async" alt={"Il modello negli ultimi 7 giorni: " + s.hit + " su " + s.n}></a>
+        <a class="ff-btn fanta-download" href="/settimana/riepilogo.png" download={"riepilogo-settimana-" + s.to + ".png"}>Scarica l'immagine</a>
+      </div>
+    )}
+    <p class="lead"><a href={todayUrl()}>{t("Le partite di oggi →")}</a></p>
+  </section>
+</Base>

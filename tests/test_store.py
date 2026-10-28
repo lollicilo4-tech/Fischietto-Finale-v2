@@ -182,5 +182,25 @@ class ArchivedResultsTests(unittest.TestCase):
         self.assertEqual(actual["base_rates"], {"1": 0.5, "X": 0.25, "2": 0.25})
 
 
+class WeekItemsTests(unittest.TestCase):
+    def test_week_items_keeps_recent_finished_matches_newest_first(self):
+        from datetime import datetime, timezone
+        now = datetime(2026, 10, 28, 12, 0, tzinfo=timezone.utc)
+        base = {"p1": 0.6, "px": 0.25, "p2": 0.15, "pick": "1", "pick_p": 0.6, "top": [1, 0]}
+        rows = [
+            ("1", {**base, "home": "A", "away": "B", "kickoff": "2026-10-26T18:00:00Z"}, {"hg": 1, "ag": 0}),
+            ("2", {**base, "home": "C", "away": "D", "kickoff": "2026-10-27T18:00:00Z"}, {"hg": 0, "ag": 2}),
+            ("3", {**base, "home": "E", "away": "F", "kickoff": "2026-10-01T18:00:00Z"}, {"hg": 1, "ag": 1}),
+            ("4", {**base, "home": "G", "away": "H", "kickoff": "non è una data"}, {"hg": 1, "ag": 1}),
+        ]
+        items = store.week_items(rows, now=now)
+        self.assertEqual([i["id"] for i in items], ["2", "1"])
+        self.assertEqual(items[0]["p_actual"], 0.15)
+        self.assertFalse(items[0]["ok"])
+        self.assertTrue(items[1]["ok"])
+        self.assertTrue(items[1]["exact"])
+        self.assertEqual(set(items[0]), {"id", "home", "away", "kickoff", "pick", "pick_p", "p_actual", "hg", "ag", "ok", "exact"})
+
+
 if __name__ == "__main__":
     unittest.main()
