@@ -4,7 +4,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from app.data import (_finished_source_matches, _missing_upcoming_matchdays, _recovered_upcoming_round,
+from app.data import (_final_matches, _finished_source_matches, _missing_upcoming_matchdays, _recovered_upcoming_round,
                       _select_upcoming_round, _reconcile_standings, _standings)
 
 
@@ -155,6 +155,16 @@ class UpcomingRoundSelectionTests(unittest.TestCase):
         recovered = _recovered_upcoming_round(fixtures, 3, now=now)
 
         self.assertEqual([m["id"] for m in recovered], ["earlier", "later"])
+
+    def test_live_score_is_not_a_result(self):
+        """Una partita in corso esce dal turno, ma il suo punteggio parziale non diventa un risultato."""
+        live = {"id": 1, "status": "IN_PLAY", "score": {"fullTime": {"home": 0, "away": 0}}}
+        paused = {"id": 2, "status": "PAUSED", "score": {"fullTime": {"home": 1, "away": 0}}}
+        done = {"id": 3, "status": "FINISHED", "score": {"fullTime": {"home": 2, "away": 0}}}
+        awarded = {"id": 4, "status": "AWARDED", "score": {"fullTime": {"home": 3, "away": 0}}}
+        started = _finished_source_matches([done], [live, paused, awarded])
+        self.assertEqual(sorted(m["id"] for m in started), [1, 2, 3, 4])
+        self.assertEqual([m["id"] for m in _final_matches(started)], [3, 4])
 
     def test_finished_source_recovers_full_time_score_from_schedule(self):
         finished_feed = [

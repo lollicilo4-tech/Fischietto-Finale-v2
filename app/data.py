@@ -275,12 +275,23 @@ def _select_upcoming_round(matches: list[dict], now=None, finished_ids: set[str]
     return matchday, sorted(fixtures, key=kickoff)
 
 
-def _finished_source_matches(*groups: list[dict]) -> list[dict]:
-    """Unisce i feed risultati e calendario quando quest'ultimo espone già il full-time.
+# Stati di football-data.org con il risultato finale. Durante la partita (IN_PLAY, PAUSED) il campo
+# score.fullTime contiene il punteggio del momento, non quello finale.
+FINAL_STATUSES = {"FINISHED", "AWARDED"}
 
-    Alcuni provider aggiornano score e status in momenti diversi. Un punteggio finale
-    completo è sufficiente per recuperare il risultato, anche se la gara compare ancora
-    nel feed IN_PLAY/PAUSED; gli ID duplicati vengono mantenuti una sola volta.
+
+def _final_matches(matches: list[dict]) -> list[dict]:
+    """Solo le partite davvero finite: il loro punteggio può diventare un risultato dello storico.
+    (Fino al 28/10/2026 entravano anche le partite in corso, con il punteggio parziale: per esempio
+    PSG-Lione salvata 0-0 invece di 2-0.)"""
+    return [m for m in matches if m.get("status") in FINAL_STATUSES]
+
+
+def _finished_source_matches(*groups: list[dict]) -> list[dict]:
+    """Partite già iniziate con un punteggio, dai feed risultati e calendario (ID una volta sola).
+
+    Serve a scegliere il prossimo turno: una partita in corso non è più "in programma". Il punteggio
+    di una partita IN_PLAY/PAUSED è parziale: per i risultati si usa _final_matches().
     """
     by_id = {}
     for group in groups:
@@ -669,7 +680,7 @@ async def real_context(competition: str | None = None) -> dict:
         {"id": str(m["id"]), "date": m["utcDate"], "home": _name(m["homeTeam"]), "away": _name(m["awayTeam"]),
          "home_id": m["homeTeam"].get("id"), "away_id": m["awayTeam"].get("id"),
          "hg": m["score"]["fullTime"]["home"], "ag": m["score"]["fullTime"]["away"]}
-        for m in finished_raw
+        for m in _final_matches(finished_raw)
     ]
     if not finished:
         raise RuntimeError("Nessuna partita giocata: il modello ha bisogno di almeno qualche giornata.")

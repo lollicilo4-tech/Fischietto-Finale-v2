@@ -120,19 +120,34 @@ class ArchivedResultsTests(unittest.TestCase):
             self.assertEqual((rows_after[0][2]["hg"], rows_after[0][2]["ag"]), (2, 1))
             write.assert_called_once_with(predictions)
 
-    def test_joined_does_not_overwrite_an_archived_result(self):
+    def test_joined_corrects_an_archived_result_from_the_finished_feed(self):
+        """Il feed delle partite finite (solo FINISHED, app/data._final_matches) è la fonte giusta: un
+        risultato salvato diverso, per esempio il punteggio di una partita ancora in corso, si corregge
+        e la correzione resta scritta nel record. Il pronostico non cambia."""
         prediction = self.prediction()
-        prediction["result"] = {"hg": 1, "ag": 0, "date": "2026-10-17"}
+        prediction["result"] = {"hg": 0, "ag": 0, "date": "2026-10-17"}
+        before = {k: v for k, v in prediction.items() if k != "result"}
         predictions = {"42": prediction}
-        changed_provider_result = [{"id": "42", "hg": 0, "ag": 3, "date": "2026-10-17"}]
+        provider_result = [{"id": "42", "hg": 2, "ag": 0, "date": "2026-10-17"}]
 
         with patch("app.store._load", return_value=predictions), patch("app.store._write") as write:
-            rows = store._joined(changed_provider_result, league="SA")
+            rows = store._joined(provider_result, league="SA")
 
-        self.assertEqual((rows[0][2]["hg"], rows[0][2]["ag"]), (1, 0))
-        # La migrazione assegna la lega al record legacy, senza sovrascrivere il punteggio.
+        self.assertEqual((rows[0][2]["hg"], rows[0][2]["ag"]), (2, 0))
+        self.assertEqual(predictions["42"]["result_corrected"], {"from": [0, 0], "to": [2, 0]})
         self.assertEqual(predictions["42"]["league"], "SA")
+        for key, value in before.items():
+            self.assertEqual(predictions["42"][key], value, key)
         write.assert_called_once_with(predictions)
+
+    def test_joined_leaves_a_matching_result_alone(self):
+        prediction = self.prediction()
+        prediction.update(league="SA", result={"hg": 1, "ag": 0, "date": "2026-10-17"})
+        predictions = {"42": prediction}
+        with patch("app.store._load", return_value=predictions), patch("app.store._write") as write:
+            store._joined([{"id": "42", "hg": 1, "ag": 0, "date": "2026-10-17"}], league="SA")
+        write.assert_not_called()
+        self.assertNotIn("result_corrected", predictions["42"])
 
     def test_joined_excludes_archived_results_from_other_leagues(self):
         home = self.prediction()
