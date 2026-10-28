@@ -117,7 +117,9 @@ a.ff-btn.now-live-row { display: grid; grid-template-columns: minmax(0, 1fr) aut
 .fanta-cal th { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; padding: 0 4px 4px; text-align: center; }
 .fanta-cal th:first-child { text-align: left; }
 .fanta-cal td { text-align: center; padding: 6px 4px; border-radius: 8px; font-family: var(--font-num); min-width: 56px; }
-.fanta-cal td:first-child { text-align: left; font-family: var(--font-body); min-width: 0; }
+.fanta-cal td:first-child { text-align: left; font-family: var(--font-body); min-width: 92px; white-space: nowrap; }
+/* Con 5 giornate la tabella scorre di lato: la colonna delle squadre resta ferma. */
+.fanta-cal th:first-child, .fanta-cal td:first-child { position: sticky; left: 0; z-index: 1; background: var(--surface); }
 .fanta-cal td b { display: block; font-size: 13px; }
 .fanta-cal td small { display: block; font-size: 10px; opacity: .85; white-space: nowrap; }
 .fanta-cal td:last-child { font-weight: 700; }
@@ -234,3 +236,12 @@ img.crest { display: inline-block; object-fit: contain; flex: 0 0 auto; }
 .week-list > div > span small { color: var(--muted); font-size: 12px; }
 .week-list b.ok { color: var(--good, #3fd29b); white-space: nowrap; }
 .week-list b.ko { color: var(--bad, #ff7a6b); white-space: nowrap; }
+
+/* Calendario fantacalcio: tre misure scelte con pulsanti radio (niente JavaScript). */
+.cal-radio { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+.cal-switch { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+.cal-label { cursor: pointer; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); font-weight: 600; font-size: 14px; }
+.cal-pane { display: none; }
+.cal-radio-win:checked ~ .cal-pane-win, .cal-radio-xg:checked ~ .cal-pane-xg, .cal-radio-cs:checked ~ .cal-pane-cs { display: block; }
+.cal-radio-win:checked ~ .cal-switch .cal-label-win, .cal-radio-xg:checked ~ .cal-switch .cal-label-xg, .cal-radio-cs:checked ~ .cal-switch .cal-label-cs { background: var(--gold); color: var(--gold-ink); border-color: var(--gold); }
+.cal-radio:focus-visible ~ .cal-switch { outline: 2px solid var(--link); outline-offset: 3px; border-radius: 12px; }

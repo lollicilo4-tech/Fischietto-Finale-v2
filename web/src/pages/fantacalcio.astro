@@ -59,6 +59,7 @@ const description = "Chi schierare al fantacalcio nella " + day + " di Serie A: 
           <p class="lead" style="margin:0">Probabilità di vittoria di ogni squadra: verde favorevole, giallo equilibrata, rosso difficile. Utile per scambi e asta di riparazione.</p>
           <Fragment set:html={calendarHtml(ctx, cal)} />
           <div class="fanta-legend" aria-hidden="true"><span class="easy">da 50%</span><span class="mid">30–50%</span><span class="hard">sotto 30%</span></div>
+          <p class="lead" style="margin:8px 0 0"><a href={FANTA_URL + "calendario/"}>Calendario completo: gol attesi e porta inviolata, con l'immagine da condividere →</a></p>
         </div>
       </Fragment>
     ) : (

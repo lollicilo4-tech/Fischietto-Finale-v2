@@ -36,31 +36,41 @@ export function highlights(rows) {
   };
 }
 
-/* Calendario: le giornate disponibili (quella in corso e le prossime) e, per ogni squadra, avversaria,
-   casa/trasferta e probabilità di vittoria. Ordinato dalla media più alta. */
-export function fantaCalendar(turno) {
-  if (!turno) return { rounds: [], teams: [] };
+/* Calendario: le prossime giornate (quella in corso e al massimo 4 dopo) e, per ogni squadra, avversaria,
+   casa/trasferta e tre misure: probabilità di vittoria (win), gol attesi (xg), porta inviolata (cs).
+   Ordinato dalla media più favorevole della misura scelta. */
+export const CAL_ROUNDS = 5;
+export const METRICS = {
+  win: { label: "Vittoria", hint: "probabilità di vittoria", fmt: (v) => pc(v), tier: (v) => (v >= 0.5 ? "easy" : v >= 0.3 ? "mid" : "hard") },
+  xg: { label: "Gol attesi", hint: "gol attesi della squadra: per attaccanti e centrocampisti", fmt: (v) => d2(v), tier: (v) => (v >= 1.6 ? "easy" : v >= 1.1 ? "mid" : "hard") },
+  cs: { label: "Porta inviolata", hint: "probabilità di non subire gol: per portiere e difesa", fmt: (v) => pc(v), tier: (v) => (v >= 0.35 ? "easy" : v >= 0.2 ? "mid" : "hard") }
+};
+export function fantaCalendar(turno, metric = "win", maxRounds = CAL_ROUNDS) {
+  if (!turno) return { rounds: [], teams: [], metric };
   const rounds = [{ matchday: turno.matchday, matches: turno.matches || [] }]
     .concat((turno.next_rounds || []).filter((r) => r && Array.isArray(r.matches)))
-    .filter((r) => r.matches.length);
+    .filter((r) => r.matches.length).slice(0, maxRounds);
   const table = new Map();
   rounds.forEach((r, i) => r.matches.forEach((m) => {
     if (!m || !m.home || !m.away || !m.prob) return;
-    [[m.home, m.away, true, m.prob.p1], [m.away, m.home, false, m.prob.p2]].forEach(([team, opp, home, p]) => {
+    const xg = ok(m) ? m.xg : null;
+    [[m.home, m.away, true, m.prob.p1, xg && xg[0], xg && xg[1]], [m.away, m.home, false, m.prob.p2, xg && xg[1], xg && xg[0]]].forEach(([team, opp, home, p, xf, xa]) => {
       if (!Number.isFinite(p)) return;
       if (!table.has(team)) table.set(team, new Array(rounds.length).fill(null));
-      table.get(team)[i] = { opp, home, p };
+      const cell = { opp, home, p, win: p, xg: Number.isFinite(xf) ? xf : null, cs: Number.isFinite(xa) ? cleanSheet(xa) : null };
+      cell.v = cell[metric];
+      table.get(team)[i] = cell;
     });
   }));
   const teams = [...table.entries()].map(([team, cells]) => {
-    const ps = cells.filter(Boolean).map((c) => c.p);
-    return { team, cells, avg: ps.length ? ps.reduce((s, x) => s + x, 0) / ps.length : 0 };
+    const vs = cells.filter((c) => c && Number.isFinite(c.v)).map((c) => c.v);
+    return { team, cells, avg: vs.length ? vs.reduce((s, x) => s + x, 0) / vs.length : 0 };
   }).sort((a, b) => b.avg - a.avg || a.team.localeCompare(b.team));
-  return { rounds: rounds.map((r) => r.matchday), teams };
+  return { rounds: rounds.map((r) => r.matchday), teams, metric };
 }
 
-/* Fascia di colore della cella: favorevole · equilibrata · difficile. */
-export const tier = (p) => (p >= 0.5 ? "easy" : p >= 0.3 ? "mid" : "hard");
+/* Fascia di colore della cella (vittoria): favorevole · equilibrata · difficile. */
+export const tier = (p) => METRICS.win.tier(p);
 /* Porta inviolata: in Serie A una squadra la tiene in circa un terzo delle partite. */
 export const csTier = (p) => (p >= 0.35 ? "easy" : p >= 0.2 ? "mid" : "hard");
 /* Sigla dell'avversaria: le prime tre lettere (Como 1907 → COM). Il nome intero sta nel title. */
@@ -101,12 +111,13 @@ export function roundTableHtml(ctx, rows) {
 
 export function calendarHtml(ctx, cal) {
   if (!cal.teams.length) return '<div class="msg">Calendario non disponibile.</div>';
+  const M = METRICS[cal.metric] || METRICS.win;
   return '<div class="fanta-scroll"><table class="fanta-cal"><thead><tr><th>Squadra</th>' + cal.rounds.map((d) => "<th>G" + esc(d) + "</th>").join("") + "<th>Media</th></tr></thead><tbody>" +
     cal.teams.map((r) => "<tr><td>" + teamLink(ctx, r.team) + "</td>" +
-      r.cells.map((c) => (c
-        ? '<td class="' + tier(c.p) + '" title="' + esc(c.opp + " " + where(c.home) + ": vittoria " + pc(c.p)) + '"><b>' + esc(short(c.opp)) + "</b><small>" + (c.home ? "C" : "T") + " · " + pc(c.p) + "</small></td>"
+      r.cells.map((c) => (c && Number.isFinite(c.v)
+        ? '<td class="' + M.tier(c.v) + '" title="' + esc(c.opp + " " + where(c.home) + ": " + M.hint.split(":")[0] + " " + M.fmt(c.v)) + '"><b>' + esc(short(c.opp)) + "</b><small>" + (c.home ? "C" : "T") + " · " + M.fmt(c.v) + "</small></td>"
         : '<td class="none">–</td>')).join("") +
-      "<td>" + pc(r.avg) + "</td></tr>").join("") +
+      "<td>" + M.fmt(r.avg) + "</td></tr>").join("") +
     "</tbody></table></div>";
 }
 

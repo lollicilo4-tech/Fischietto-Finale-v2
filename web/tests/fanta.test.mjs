@@ -46,6 +46,22 @@ test("una riga per squadra, partite senza gol attesi ignorate", () => {
   assert.equal(F.highlights([]), null);
 });
 
+test("calendario: al massimo 5 giornate, tre misure ordinate dalla più favorevole", () => {
+  const rounds = [10, 11, 12, 13, 14].map((d) => ({ matchday: d, matches: [M(d, "Inter", "Lecce", [2, 0.6], { p1: 0.7, px: 0.2, p2: 0.1 })] }));
+  const t = { matchday: 9, matches: [M(1, "Inter", "Lecce", [2, 0.5], { p1: 0.7, px: 0.2, p2: 0.1 })], next_rounds: rounds };
+  assert.deepEqual(F.fantaCalendar(t).rounds, [9, 10, 11, 12, 13]);
+  const xg = F.fantaCalendar(t, "xg"), cs = F.fantaCalendar(t, "cs");
+  assert.equal(xg.metric, "xg");
+  assert.equal(xg.teams[0].team, "Inter");
+  assert.ok(Math.abs(xg.teams[0].avg - 2) < 1e-9);
+  assert.equal(cs.teams[0].team, "Inter");
+  assert.ok(Math.abs(cs.teams[0].cells[0].v - Math.exp(-0.5)) < 1e-9);
+  assert.deepEqual(["easy", "mid", "hard"], [F.METRICS.xg.tier(1.6), F.METRICS.xg.tier(1.1), F.METRICS.xg.tier(1.09)]);
+  const html = F.calendarHtml({ league: "SA", favs: [] }, xg);
+  assert.match(html, /<small>C · 2,00<\/small>/);
+  assert.match(F.calendarHtml({ league: "SA", favs: [] }, cs), /<small>T · \d+%<\/small>/);
+});
+
 test("calendario: giornate in ordine, celle vuote per chi non gioca, ordinato per media", () => {
   const t = {
     matchday: 9,
@@ -58,7 +74,7 @@ test("calendario: giornate in ordine, celle vuote per chi non gioca, ordinato pe
   assert.equal(cal.teams[0].cells[1], null);
   assert.equal(cal.teams[2].cells[0].home, false);
   assert.ok(Math.abs(cal.teams[2].avg - 0.175) < 1e-9);
-  assert.deepEqual(F.fantaCalendar(null), { rounds: [], teams: [] });
+  assert.deepEqual(F.fantaCalendar(null), { rounds: [], teams: [], metric: "win" });
   assert.equal(F.tier(0.5), "easy");
   assert.equal(F.tier(0.3), "mid");
   assert.equal(F.tier(0.29), "hard");

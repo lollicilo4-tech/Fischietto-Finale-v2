@@ -37,6 +37,11 @@ const fileName = (set) => "partite-" + (day ? day.key : "oggi") + "-" + set.slug
             </figure>
           )}
           <figure class="panel social-item">
+            <a class="social-img" href={FANTA_URL + "calendario.png"}><img src={FANTA_URL + "calendario.png"} width={STORY.width} height={STORY.height} loading="lazy" decoding="async" alt="Calendario fantacalcio di Serie A"></a>
+            <figcaption><b>Calendario fantacalcio</b><small>prossime giornate di Serie A</small></figcaption>
+            <a class="ff-btn fanta-download" href={FANTA_URL + "calendario.png"} download="calendario-fantacalcio.png">Scarica</a>
+          </figure>
+          <figure class="panel social-item">
             <a class="social-img" href={FANTA_URL + "consigli.png"}><img src={FANTA_URL + "consigli.png"} width={SOCIAL.width} height={SOCIAL.height} loading="lazy" decoding="async" alt="Consigli fantacalcio della giornata di Serie A"></a>
             <figcaption><b>Consigli fantacalcio</b><small>formato post 4:5</small></figcaption>
             <a class="ff-btn fanta-download" href={FANTA_URL + "consigli.png"} download="consigli-fantacalcio.png">Scarica</a>
