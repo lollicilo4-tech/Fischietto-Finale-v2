@@ -64,6 +64,7 @@ def _market_predictions(s: dict, recommendation: dict) -> list[dict]:
 RECOMMENDED_MIN_P = 0.50   # il consiglio deve restare più probabile che no
 MIN_EDGE = 0.03            # sotto i 3 punti sopra la media, il mercato non dice nulla di speciale
 MIN_BASE_SAMPLE = 40       # partite minime per calcolare le frequenze del campionato
+NEXT_ROUNDS = 4            # giornate dopo quella in corso (calendario fantacalcio: 5 in tutto)
 BASE_CODES = ("1", "X", "2", "1X", "X2", "Over 1,5", "Over 2,5", "Under 2,5", "Under 3,5",
               "Gol", "No Gol", "1_o15", "2_o15", "1x_o15", "x2_o15", "1x_u35", "x2_u35",
               "gg_o25", "ng_u35")
@@ -255,9 +256,11 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
             "ai_error": ai_error,
             "ai_status": ai_status,
             "matchday": ctx.get("matchday"),
-            # Giornate successive: solo modello statistico, niente AI (si aggiorna a ogni esecuzione)
+            # Giornate successive: solo modello statistico, niente AI (si aggiorna a ogni esecuzione).
+            # Quattro giornate: con quella in corso fanno le 5 del calendario fantacalcio.
             "next_rounds": [] if ctx["demo"] else explain.upcoming_rounds(
-                ctx.get("remaining", []), {str(fx["id"]) for fx in ctx["fixtures"]}, teams, avg_h, avg_a, rho),
+                ctx.get("remaining", []), {str(fx["id"]) for fx in ctx["fixtures"]}, teams, avg_h, avg_a, rho,
+                rounds=NEXT_ROUNDS),
             "rho": round(rho, 3),
             # Coppe: quante squadre partono dalla forza nel proprio campionato (app/strength.py)
             "cup_prior": ctx.get("cup_prior"),

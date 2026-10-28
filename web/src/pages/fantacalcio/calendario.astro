@@ -1,0 +1,56 @@
+---
+/* Calendario fantacalcio: le prossime 5 giornate di Serie A di ogni squadra, colorate da favorevole a
+   difficile secondo il modello, con tre misure (vittoria, gol attesi, porta inviolata) da scegliere senza
+   JavaScript (pulsanti radio e CSS). Dati: src/lib/fanta.js. Solo in italiano, come il resto del fantacalcio. */
+import Base from "../../layouts/Base.astro";
+import { FANTA_URL } from "../../lib/core.js";
+import { leagueData } from "../../lib/data.js";
+import { fantaCalendar, calendarHtml, METRICS } from "../../lib/fanta.js";
+import { CAL_IMAGE, STORY } from "../../lib/calcard.js";
+import { PREVIEW } from "../../lib/fantacard.js";
+import { setLang } from "../../lib/i18n.js";
+setLang("it");
+const league = "SA";
+const ctx = { league, favs: [] };
+const { turno } = leagueData(league);
+const cals = Object.keys(METRICS).map((m) => ({ key: m, ...METRICS[m], cal: fantaCalendar(turno, m) }));
+const win = cals[0].cal;
+const span = win.rounds.length > 1 ? "giornate " + win.rounds[0] + "–" + win.rounds[win.rounds.length - 1] : win.rounds.length ? "giornata " + win.rounds[0] : "prossime giornate";
+const top = win.teams.slice(0, 3).map((r) => r.team);
+const PATH = FANTA_URL + "calendario/";
+const title = "Calendario fantacalcio Serie A: " + span;
+const description = "Le prossime giornate di Serie A di ogni squadra colorate da favorevole a difficile: probabilità di vittoria, gol attesi e porta inviolata secondo il modello statistico. Utile per scambi, asta di riparazione e formazione.";
+---
+<Base title={title} description={description} league={league} path={PATH} sub={"Serie A · Fantacalcio · calendario"} crumbs={[{ name: "Fantacalcio", path: FANTA_URL }, { name: "Calendario", path: PATH }]} itOnly
+  ogImage={{ path: FANTA_URL + "anteprima.png", width: PREVIEW.width, height: PREVIEW.height, alt: "Consigli fantacalcio di Serie A" }}>
+  <section id="p-fanta-cal" aria-labelledby="cal-title">
+    <h2 class="sub2" id="cal-title">Calendario fantacalcio · {span}</h2>
+    <p class="lead">Per ogni squadra le avversarie delle prossime giornate, dalla più favorevole: verde favorevole, giallo equilibrata, rosso difficile. C = in casa, T = in trasferta. {top.length === 3 && <Fragment>Calendario migliore per <b>{top[0]}</b>, <b>{top[1]}</b> e <b>{top[2]}</b>.</Fragment>}</p>
+    {turno ? (
+      <div class="panel cal-tabs">
+        {cals.map((c, i) => <input type="radio" name="cal-metric" id={"cal-" + c.key} class={"cal-radio cal-radio-" + c.key} checked={i === 0} />)}
+        <div class="cal-switch" role="group" aria-label="Misura del calendario">
+          {cals.map((c) => <label for={"cal-" + c.key} class={"cal-label cal-label-" + c.key}>{c.label}</label>)}
+        </div>
+        {cals.map((c) => (
+          <div class={"cal-pane cal-pane-" + c.key}>
+            <p class="lead" style="margin:6px 0 0">{c.label}: {c.hint}.</p>
+            <Fragment set:html={calendarHtml(ctx, c.cal)} />
+          </div>
+        ))}
+        <div class="fanta-legend" aria-hidden="true"><span class="easy">favorevole</span><span class="mid">equilibrata</span><span class="hard">difficile</span></div>
+      </div>
+    ) : (
+      <div class="msg">I dati della Serie A non sono ancora disponibili: riprova dopo il prossimo aggiornamento.</div>
+    )}
+    {turno && (
+      <div class="panel fanta-share">
+        <h2>Condividi il calendario</h2>
+        <p class="lead" style="margin:0">L'immagine verticale per storie, Reels e TikTok con la probabilità di vittoria, rigenerata a ogni aggiornamento dei dati.</p>
+        <a class="fanta-share-img" href={CAL_IMAGE}><img src={CAL_IMAGE} width={STORY.width} height={STORY.height} loading="lazy" decoding="async" alt={"Calendario fantacalcio di Serie A, " + span}></a>
+        <a class="ff-btn fanta-download" href={CAL_IMAGE} download={"calendario-fantacalcio-" + span.replace(/\s+/g, "-").replace("–", "-") + ".png"}>Scarica l'immagine</a>
+      </div>
+    )}
+    <p class="lead">Le probabilità delle giornate dopo quella in corso vengono dal solo modello statistico: infortuni e squalifiche entrano solo nelle 48 ore prima di ogni partita. Sono stime, non certezze. <a href={FANTA_URL}>Consigli della giornata →</a></p>
+  </section>
+</Base>

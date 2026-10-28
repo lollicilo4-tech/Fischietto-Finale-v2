@@ -88,7 +88,7 @@ export function liveCalendar() {
     if (!t) return;
     /* Una partita già iniziata quando gira "Aggiorna pronostici" esce da matches e resta solo in
        next_rounds: senza questa seconda fonte il Worker la perderebbe a metà (Napoli-Roma, 24 ottobre). */
-    const rounds = (t.next_rounds || []).flatMap((r) => (r && Array.isArray(r.matches) ? r.matches : []));
+    const rounds = (t.next_rounds || []).slice(0, 2).flatMap((r) => (r && Array.isArray(r.matches) ? r.matches : []));
     t.matches.concat(rounds).forEach((m) => {
       const key = l.code + ":" + m.id;
       if (!m || !m.kickoff || !m.home || !m.away || seen.has(key)) return;

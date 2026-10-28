@@ -27,7 +27,7 @@ const day = turno && turno.matchday ? " · " + roundWord(league) + " " + turno.m
     <section id="now-live" class="panel now-live" aria-live="polite" hidden data-live-key={L.liveKey} data-live-url={liveUrl(league)}></section>
     <div id="fav-strip"></div>
     <div class="list" id="matches" set:html={matches.length ? grouped(ctx, matches) : '<div class="msg err">' + t("Partite non disponibili per questo campionato in questo momento.") + "</div>"}></div>
-    <div id="next-rounds" set:html={turno ? nextRoundsPanel(ctx, turno.next_rounds) : ""}></div>
+    <div id="next-rounds" set:html={turno ? nextRoundsPanel(ctx, (turno.next_rounds || []).slice(0, 2)) : ""}></div>
     <div id="played" set:html={turno ? playedSection(turno.played) : ""}></div>
   </section>
   <script is:inline type="application/json" id="ff-fav-data" set:html={favData}></script>

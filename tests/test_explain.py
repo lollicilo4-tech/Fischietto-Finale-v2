@@ -1,7 +1,7 @@
 """Spiegazioni, statistiche squadra e prossime giornate (app/explain.py)."""
 import unittest
 
-from app import explain, model
+from app import explain, model, pipeline
 
 TEAMS = {"Alfa": {"att": 1.08, "def": 0.92, "form": "VVNVP"},
          "Beta": {"att": 1.0, "def": 1.26, "form": "PPNPV"},
@@ -60,6 +60,10 @@ class UpcomingRoundsTests(unittest.TestCase):
         self.assertAlmostEqual(sum(first["prob"].values()), 1.0, places=3)
         lh, la = model.expected_goals(TEAMS, 1.45, 1.15, "Beta", "Gamma")
         self.assertEqual(first["xg"], [round(lh, 2), round(la, 2)])
+        # Il sito ne chiede quattro (calendario fantacalcio): qui ce ne sono solo tre.
+        four = explain.upcoming_rounds(rem, {"1", "2"}, TEAMS, 1.45, 1.15, -0.05, rounds=pipeline.NEXT_ROUNDS)
+        self.assertEqual(pipeline.NEXT_ROUNDS, 4)
+        self.assertEqual([r["matchday"] for r in four], [10, 11, 12])
 
 
 if __name__ == "__main__":
