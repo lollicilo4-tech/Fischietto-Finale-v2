@@ -42,7 +42,9 @@ function normalize(html) {
     .replace(/<button type="button" class="share-btn" data-goto-match="[^"]*">Apri la partita →<\/button>/g, "")
     .replace(/<div class="match-stale-note">[^<]*<\/div>/g, "")
     .replace(/<div class="stat wide"><div class="k">Quote eque 1 · X · 2<\/div><div class="v num">[^<]*<\/div><\/div>/g, "")
-    .replace(/quota equa [^<·]* · /g, "");
+    .replace(/quota equa [^<·]* · /g, "")
+    // Riquadri nuovi della pagina squadra, che il sito attuale non ha: marcatori (#134).
+    .replace(/<div class="panel"><h2>Tra i capocannonieri<\/h2><div class="team-list">(?:<div><span>[^<]*<\/span><b>[^<]*<\/b><\/div>)*<\/div><\/div>/g, "");
 }
 
 /* Campionati che esistevano nel sito vecchio: la Copa del Rey c'è solo nel sito nuovo. */
