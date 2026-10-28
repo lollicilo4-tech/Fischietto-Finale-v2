@@ -5,7 +5,8 @@ import Base from "../layouts/Base.astro";
 import { LEAGUES, todayUrl } from "../lib/core.js";
 import { leagueData, inlineJson } from "../lib/data.js";
 import { todayItems, todayHtml } from "../lib/today.js";
-import { setLang, langOfPath, t } from "../lib/i18n.js";
+import { setLang, langOfPath, t, lang } from "../lib/i18n.js";
+import { SOCIAL_URL } from "../lib/socialcard.js";
 setLang(langOfPath(Astro.url.pathname));
 const turni = Object.fromEntries(LEAGUES.map((l) => [l.code, leagueData(l.code).turno]));
 const items = todayItems(turni);
@@ -16,6 +17,7 @@ const now = Date.now();
     <h2 class="sub2" id="today-title">{t("Oggi in campo")}</h2>
     <p class="lead">{t("Le partite di tutti i campionati, in ordine di orario. Tocca una partita per aprire l'analisi completa. Stime statistiche, non un invito a scommettere.")}</p>
     <div id="today" aria-live="polite" set:html={todayHtml(items, now)}></div>
+    {lang() === "it" && <p class="lead"><a href={SOCIAL_URL}>Immagini delle partite per storie, Reels e TikTok →</a></p>}
   </section>
   <script is:inline type="application/json" id="ff-today" set:html={inlineJson(items)}></script>
   <script>

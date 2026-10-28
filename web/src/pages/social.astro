@@ -1,0 +1,42 @@
+---
+/* Immagini per i social: le grafiche verticali delle partite del giorno (storie, Reels, TikTok) e quella dei
+   consigli fantacalcio, da scaricare e pubblicare. Si rigenerano a ogni aggiornamento dei dati.
+   Pagina di servizio, solo in italiano e fuori dai motori di ricerca (noindex, non in sitemap). */
+import Base from "../layouts/Base.astro";
+import { FANTA_URL, todayUrl } from "../lib/core.js";
+import { buildSets, SOCIAL_URL, STORY } from "../lib/socialcard.js";
+import { SOCIAL } from "../lib/fantacard.js";
+import { setLang } from "../lib/i18n.js";
+setLang("it");
+const { day, sets } = buildSets();
+const dayName = day ? day.title.toLowerCase() : "";
+const fileName = (set) => "partite-" + (day ? day.key : "oggi") + "-" + set.slug + ".png";
+---
+<Base title="Immagini per i social" description="Le grafiche delle partite del giorno con le probabilità del modello, pronte per storie, Reels e TikTok." path={SOCIAL_URL} sub="Immagini per i social" itOnly noindex>
+  <section id="p-social" aria-labelledby="social-title">
+    <h2 class="sub2" id="social-title">Immagini per i social</h2>
+    <p class="lead">Grafiche verticali (1080×1920) per storie, Reels e TikTok, con le probabilità 1 X 2 del modello. Si rigenerano da sole a ogni aggiornamento dei dati, circa ogni 4 ore: la sera, quando le partite del giorno sono finite, passano al giorno dopo.</p>
+    {day ? (
+      <Fragment>
+        <p class="lead"><b>Partite di {dayName}</b> · {sets[0].total} in programma. <a href={todayUrl()}>Tutte le partite in Oggi in campo →</a></p>
+        <div class="social-grid">
+          {sets.map((set) => (
+            <figure class="panel social-item">
+              <a class="social-img" href={set.file}><img src={set.file} width={STORY.width} height={STORY.height} loading="lazy" decoding="async" alt={set.label + ", " + dayName}></a>
+              <figcaption><b>{set.label}</b><small>{set.items.length < set.total ? set.items.length + " di " + set.total + " partite" : set.total + (set.total === 1 ? " partita" : " partite")}</small></figcaption>
+              <a class="ff-btn fanta-download" href={set.file} download={fileName(set)}>Scarica</a>
+            </figure>
+          ))}
+          <figure class="panel social-item">
+            <a class="social-img" href={FANTA_URL + "consigli.png"}><img src={FANTA_URL + "consigli.png"} width={SOCIAL.width} height={SOCIAL.height} loading="lazy" decoding="async" alt="Consigli fantacalcio della giornata di Serie A"></a>
+            <figcaption><b>Consigli fantacalcio</b><small>formato post 4:5</small></figcaption>
+            <a class="ff-btn fanta-download" href={FANTA_URL + "consigli.png"} download="consigli-fantacalcio.png">Scarica</a>
+          </figure>
+        </div>
+      </Fragment>
+    ) : (
+      <div class="msg">Nei prossimi giorni non ci sono partite in programma nei nostri campionati.</div>
+    )}
+    <p class="lead">Le immagini dicono che sono stime statistiche e non un invito a scommettere: è bene che lo dica anche il testo del post.</p>
+  </section>
+</Base>

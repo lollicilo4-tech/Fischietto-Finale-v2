@@ -37,11 +37,11 @@ if (!existsSync(dist)) { console.error("Manca dist/: esegui prima npm run build"
 
 /* Pagine e file che devono esserci. */
 /* Pagine solo in italiano: niente versione inglese, quindi niente hreflang. */
-const IT_ONLY = ["/fantacalcio/index.html"];
+const IT_ONLY = ["/fantacalcio/index.html", "/social/index.html"];
 const expected = ["/", "/live/", "/come-funziona/", "/privacy/", "/i-miei-pronostici/", "/fantacalcio/", "/risultati-recenti.json", "/404.html", "/sitemap.xml", "/robots.txt", "/sw.js", "/manifest.webmanifest", "/_headers", "/_redirects", "/ads.txt", "/live-calendar.json", "/turno.json"];
 LEAGUES.forEach((l) => Object.values(SECTIONS).forEach((s) => expected.push("/" + l.slug + "/" + s.path, "/en/" + l.slug + "/" + s.en)));
 /* Versione inglese (/en/): stesse pagine con indirizzi inglesi. */
-expected.push("/en/", "/en/live/", "/en/how-it-works/", "/en/privacy/", "/en/my-predictions/", "/oggi/", "/en/today/");
+expected.push("/en/", "/en/live/", "/en/how-it-works/", "/en/privacy/", "/en/my-predictions/", "/oggi/", "/en/today/", "/social/");
 expected.forEach((u) => { if (!pageFor(u)) fail("manca " + u); });
 
 /* Immagini dei consigli fantacalcio: PNG veri, della misura giusta (non l'icona di riserva usata se il disegno fallisce). */
@@ -51,6 +51,16 @@ expected.forEach((u) => { if (!pageFor(u)) fail("manca " + u); });
   const b = readFileSync(file);
   const isPng = b.length > 24 && b.readUInt32BE(0) === 0x89504e47;
   if (!isPng || b.readUInt32BE(16) !== w || b.readUInt32BE(20) !== h) fail(u + ": non è un PNG " + w + "×" + h + " (disegno non riuscito?)");
+});
+
+/* Immagini per i social (/social/*.png): PNG 1080×1920, almeno quella delle partite principali. */
+const socialDir = path.join(dist, "social");
+const socialPngs = existsSync(socialDir) ? readdirSync(socialDir).filter((f) => f.endsWith(".png")) : [];
+const socialPage = pageFor("/social/") ? readFileSync(pageFor("/social/"), "utf-8") : "";
+if (socialPage.includes("/social/oggi.png") && !socialPngs.includes("oggi.png")) fail("manca /social/oggi.png");
+socialPngs.forEach((f) => {
+  const b = readFileSync(path.join(socialDir, f));
+  if (b.readUInt32BE(0) !== 0x89504e47 || b.readUInt32BE(16) !== 1080 || b.readUInt32BE(20) !== 1920) fail("/social/" + f + ": non è un PNG 1080×1920 (disegno non riuscito?)");
 });
 
 /* HTML: script, gestori inline, link interni, testo. */
