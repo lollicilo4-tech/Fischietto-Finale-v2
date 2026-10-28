@@ -71,7 +71,9 @@ def _joined(finished: list[dict], league: str | None = None) -> list[tuple[str, 
 
     I record storici più vecchi non hanno il campo league: vengono associati
     solo quando il loro ID compare nel feed FINISHED della competizione corrente.
-    I risultati archiviati non vengono mai sovrascritti.
+    Il pronostico non cambia mai; il risultato archiviato si corregge solo se il feed delle partite
+    finite dà un punteggio diverso (fino al 28/10/2026 entravano anche punteggi di partite ancora
+    in corso, per esempio Barça-Real Madrid salvata 0-0 invece di 1-2).
     """
     predictions = _load()
     results = {str(m["id"]): m for m in finished if m.get("id") is not None}
@@ -94,13 +96,19 @@ def _joined(finished: list[dict], league: str | None = None) -> list[tuple[str, 
             # Compatibilità per i chiamanti legacy: senza lega, usa solo il feed corrente.
             continue
 
-        if result is None or "result" in p:
+        if result is None:
             continue
         try:
             hg, ag = int(result["hg"]), int(result["ag"])
         except (KeyError, TypeError, ValueError):
             continue
-        p["result"] = {"hg": hg, "ag": ag, "date": result.get("date")}
+        old = p.get("result")
+        if isinstance(old, dict) and old.get("hg") == hg and old.get("ag") == ag:
+            continue
+        if isinstance(old, dict) and "hg" in old:
+            p["result_corrected"] = {"from": [old.get("hg"), old.get("ag")], "to": [hg, ag]}
+            print(f"[store] risultato corretto {p.get('home')}-{p.get('away')}: {old.get('hg')}-{old.get('ag')} -> {hg}-{ag}")
+        p["result"] = {"hg": hg, "ag": ag, "date": result.get("date") or (old or {}).get("date")}
         changed = True
 
     if changed:

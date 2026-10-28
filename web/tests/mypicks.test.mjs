@@ -30,6 +30,15 @@ test("risultati: si salvano con il pronostico e si contano tu contro modello", (
   assert.deepEqual([st.total, st.you, st.modelTotal, st.model], [2, 1, 2, 1]);
 });
 
+test("un risultato corretto dal sito sostituisce quello salvato", () => {
+  let s = setPick(emptyStore(), inter, "1", NOW);
+  s = withResults(s, { "SA:558563": { hg: 0, ag: 0, actual: "X", model: "1" } }).store;
+  const fixed = withResults(s, { "SA:558563": { hg: 2, ag: 0, actual: "1", model: "1" } });
+  assert.equal(fixed.changed, true);
+  assert.deepEqual(fixed.store.picks["SA:558563"].result, { hg: 2, ag: 0, actual: "1", model: "1" });
+  assert.equal(challengeStats(fixed.store).you, 1);
+});
+
 test("oltre MAX_PICKS si tolgono i più vecchi", () => {
   let s = emptyStore();
   for (let i = 0; i < MAX_PICKS + 5; i++) s = setPick(s, { league: "PL", id: String(i), home: "A", away: "B", kickoff: null }, "1", NOW + i);

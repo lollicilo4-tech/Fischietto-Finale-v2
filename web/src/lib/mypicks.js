@@ -39,14 +39,17 @@ export function setPick(store, match, pick, now = Date.now()) {
   return s;
 }
 
-/* Aggiunge i risultati arrivati (results: { "SA:558563": { hg, ag, actual, model } }). Il risultato resta
-   salvato con il pronostico, così lo storico non si perde quando la partita esce dai dati del sito. */
+/* Aggiunge i risultati arrivati (results: { "SA:558563": { hg, ag, actual, model } }) e corregge quelli
+   cambiati. Il risultato resta salvato con il pronostico, così lo storico non si perde quando la partita
+   esce dai dati del sito. */
 export function withResults(store, results) {
   const s = { v: 1, picks: { ...store.picks } };
   let changed = false;
   Object.keys(s.picks).forEach((k) => {
     const r = results && results[k], p = s.picks[k];
-    if (r && LABEL[r.actual] && !p.result) { s.picks[k] = { ...p, result: { hg: r.hg, ag: r.ag, actual: r.actual, model: LABEL[r.model] ? r.model : null } }; changed = true; }
+    // Anche un risultato già salvato si aggiorna se il sito ne pubblica uno diverso (correzione dello storico).
+    const same = p.result && p.result.hg === r.hg && p.result.ag === r.ag && p.result.actual === r.actual;
+    if (r && LABEL[r.actual] && !same) { s.picks[k] = { ...p, result: { hg: r.hg, ag: r.ag, actual: r.actual, model: LABEL[r.model] ? r.model : null } }; changed = true; }
   });
   return { store: s, changed };
 }
