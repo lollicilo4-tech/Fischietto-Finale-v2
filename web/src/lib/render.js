@@ -565,9 +565,9 @@ function teamStatsPanel(name, classifica) {
     row("Almeno 3 gol in partita", (s) => share(s.o25, s.pg)) + row("Segnano entrambe", (s) => share(s.btts, s.pg)) +
     "</tbody></table></div>";
 }
-/* Marcatori della squadra tra i capocannonieri del campionato. */
+/* Marcatori della squadra tra i primi 20 capocannonieri del campionato (lo storico ne ha 100 per il fantacalcio). */
 function teamScorersPanel(name, classifica) {
-  const list = ((classifica && classifica.scorers) || []).filter((x) => x && x.team === name && Number.isFinite(x.goals));
+  const list = ((classifica && classifica.scorers) || []).slice(0, 20).filter((x) => x && x.team === name && Number.isFinite(x.goals));
   if (!list.length) return "";
   return '<div class="panel"><h2>' + t("Tra i capocannonieri") + '</h2><div class="team-list">' + list.map((x) =>
     "<div><span>" + esc(x.player) + "</span><b>" + (x.goals === 1 ? t("1 gol") : t("{n} gol", { n: x.goals })) + "</b></div>").join("") + "</div></div>";
