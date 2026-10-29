@@ -1760,6 +1760,1436 @@
    1.69
   ]
  },
+ "558539": {
+  "ai": true,
+  "away": "Monza",
+  "base": {
+   "p1": 0.5046,
+   "p2": 0.2788,
+   "px": 0.2167
+  },
+  "gg": 0.6667,
+  "home": "Bologna",
+  "kickoff": "2026-10-31T14:00:00Z",
+  "league": "SA",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.5046
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2167
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2788
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7212
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.4954
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8625
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6753
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3247
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5412
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.6667
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.3333
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.443
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2343
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6282
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4195
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3813
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.283
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.5751
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.2914
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.0917,
+    "score": "2-1"
+   }
+  ],
+  "o25": 0.6753,
+  "old": {
+   "p1": 0.4538,
+   "p2": 0.3143,
+   "px": 0.2319
+  },
+  "p1": 0.5046,
+  "p2": 0.2788,
+  "pick": "1",
+  "pick_p": 0.5046,
+  "px": 0.2167,
+  "recommendation": {
+   "base": 0.3782,
+   "code": "gg_o25",
+   "edge": 0.1969,
+   "kind": "combo",
+   "label": "Gol + Over 2,5",
+   "p": 0.5751
+  },
+  "top": [
+   2,
+   1
+  ],
+  "xg": [
+   2.02,
+   1.46
+  ]
+ },
+ "558540": {
+  "ai": false,
+  "away": "Genoa",
+  "base": {
+   "p1": 0.3201,
+   "p2": 0.3863,
+   "px": 0.2936
+  },
+  "gg": 0.4412,
+  "home": "Lecce",
+  "kickoff": "2026-11-01T17:00:00Z",
+  "league": "SA",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.3201
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2936
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.3863
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.6137
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.6799
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.6426
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.3732
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.6268
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.8223
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.4412
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.5588
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.2055
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.257
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3857
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4371
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.511
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5595
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3065
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.5415
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1293,
+    "score": "0-1"
+   }
+  ],
+  "o25": 0.3732,
+  "old": {
+   "p1": 0.3507,
+   "p2": 0.3767,
+   "px": 0.2726
+  },
+  "p1": 0.3201,
+  "p2": 0.3863,
+  "pick": "2",
+  "pick_p": 0.3863,
+  "px": 0.2936,
+  "recommendation": {
+   "base": 0.5171,
+   "code": "Under 2,5",
+   "edge": 0.1097,
+   "kind": "gol",
+   "label": "Under 2,5 · massimo 2 gol",
+   "p": 0.6268
+  },
+  "top": [
+   0,
+   1
+  ],
+  "xg": [
+   1.03,
+   1.16
+  ]
+ },
+ "558541": {
+  "ai": false,
+  "away": "Fiorentina",
+  "base": {
+   "p1": 0.3949,
+   "p2": 0.3597,
+   "px": 0.2455
+  },
+  "gg": 0.5999,
+  "home": "Sassuolo",
+  "kickoff": "2026-11-02T17:30:00Z",
+  "league": "SA",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.3949
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2455
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.3597
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.6403
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.6051
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7982
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5716
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4284
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6524
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5999
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4001
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3178
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2866
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5115
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4804
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4184
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3993
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4863
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3709
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.0862,
+    "score": "2-1"
+   }
+  ],
+  "o25": 0.5716,
+  "old": {
+   "p1": 0.4441,
+   "p2": 0.347,
+   "px": 0.209
+  },
+  "p1": 0.3949,
+  "p2": 0.3597,
+  "pick": "1",
+  "pick_p": 0.3949,
+  "px": 0.2455,
+  "recommendation": {
+   "base": 0.4744,
+   "code": "Gol",
+   "edge": 0.1255,
+   "kind": "gol",
+   "label": "Gol · entrambe segnano",
+   "p": 0.5999
+  },
+  "top": [
+   2,
+   1
+  ],
+  "xg": [
+   1.53,
+   1.45
+  ]
+ },
+ "558542": {
+  "ai": true,
+  "away": "Roma",
+  "base": {
+   "p1": 0.1491,
+   "p2": 0.6477,
+   "px": 0.2032
+  },
+  "gg": 0.5007,
+  "home": "Udinese",
+  "kickoff": "2026-10-31T17:00:00Z",
+  "league": "SA",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.16
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2136
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.6264
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.3736
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.84
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7745
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5374
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4626
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6856
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5007
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4993
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.1092
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.5115
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.263
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6653
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.2854
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.5616
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3991
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4413
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1148,
+    "score": "0-1"
+   }
+  ],
+  "o25": 0.5374,
+  "old": {
+   "p1": 0.0976,
+   "p2": 0.7077,
+   "px": 0.1947
+  },
+  "p1": 0.16,
+  "p2": 0.6264,
+  "pick": "2",
+  "pick_p": 0.6264,
+  "px": 0.2136,
+  "recommendation": {
+   "base": 0.3547,
+   "code": "2",
+   "edge": 0.2717,
+   "kind": "esito",
+   "label": "2 · Vince Roma",
+   "p": 0.6264
+  },
+  "top": [
+   0,
+   1
+  ],
+  "xg": [
+   0.87,
+   1.96
+  ]
+ },
+ "558543": {
+  "ai": false,
+  "away": "Venezia FC",
+  "base": {
+   "p1": 0.7038,
+   "p2": 0.1062,
+   "px": 0.1899
+  },
+  "gg": 0.4258,
+  "home": "Como 1907",
+  "kickoff": "2026-11-01T11:30:00Z",
+  "league": "SA",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.7038
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.1899
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1062
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8938
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.2962
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7605
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5179
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4821
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7037
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.4258
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.5742
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.571
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.0643
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6962
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.1895
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.6149
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.2428
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3364
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4924
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.139,
+    "score": "2-0"
+   }
+  ],
+  "o25": 0.5179,
+  "old": {
+   "p1": 0.628,
+   "p2": 0.1399,
+   "px": 0.2321
+  },
+  "p1": 0.7038,
+  "p2": 0.1062,
+  "pick": "1",
+  "pick_p": 0.7038,
+  "px": 0.1899,
+  "recommendation": {
+   "base": 0.4017,
+   "code": "1",
+   "edge": 0.3021,
+   "kind": "esito",
+   "label": "1 · Vince Como 1907",
+   "p": 0.7038
+  },
+  "top": [
+   2,
+   0
+  ],
+  "xg": [
+   2.08,
+   0.66
+  ]
+ },
+ "558544": {
+  "ai": false,
+  "away": "Torino",
+  "base": {
+   "p1": 0.4879,
+   "p2": 0.2987,
+   "px": 0.2134
+  },
+  "gg": 0.6948,
+  "home": "Frosinone",
+  "kickoff": "2026-11-01T14:00:00Z",
+  "league": "SA",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.4879
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2134
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2987
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7013
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.5121
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8795
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.7056
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.2944
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5052
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.6948
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.3052
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.4348
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.258
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6215
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4447
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.3467
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.271
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.609
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.264
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.0878,
+    "score": "2-1"
+   }
+  ],
+  "o25": 0.7056,
+  "old": {
+   "p1": 0.3858,
+   "p2": 0.3644,
+   "px": 0.2498
+  },
+  "p1": 0.4879,
+  "p2": 0.2987,
+  "pick": "1",
+  "pick_p": 0.4879,
+  "px": 0.2134,
+  "recommendation": {
+   "base": 0.3782,
+   "code": "gg_o25",
+   "edge": 0.2308,
+   "kind": "combo",
+   "label": "Gol + Over 2,5",
+   "p": 0.609
+  },
+  "top": [
+   2,
+   1
+  ],
+  "xg": [
+   2.06,
+   1.59
+  ]
+ },
+ "558545": {
+  "ai": false,
+  "away": "Parma",
+  "base": {
+   "p1": 0.5276,
+   "p2": 0.2096,
+   "px": 0.2627
+  },
+  "gg": 0.4442,
+  "home": "Atalanta",
+  "kickoff": "2026-11-02T19:45:00Z",
+  "league": "SA",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.5276
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2627
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.2096
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.7904
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.4724
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.6812
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.417
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.583
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7892
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.4442
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.5558
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.3848
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.13
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.5512
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.2964
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.615
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3926
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3222
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.5248
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1429,
+    "score": "1-0"
+   }
+  ],
+  "o25": 0.417,
+  "old": {
+   "p1": 0.6521,
+   "p2": 0.1512,
+   "px": 0.1967
+  },
+  "p1": 0.5276,
+  "p2": 0.2096,
+  "pick": "1",
+  "pick_p": 0.5276,
+  "px": 0.2627,
+  "recommendation": {
+   "base": 0.4679,
+   "code": "1x_u35",
+   "edge": 0.1471,
+   "kind": "combo",
+   "label": "1X + Under 3,5",
+   "p": 0.615
+  },
+  "top": [
+   1,
+   0
+  ],
+  "xg": [
+   1.51,
+   0.84
+  ]
+ },
+ "558546": {
+  "ai": false,
+  "away": "Cagliari",
+  "base": {
+   "p1": 0.5943,
+   "p2": 0.1761,
+   "px": 0.2296
+  },
+  "gg": 0.4841,
+  "home": "Lazio",
+  "kickoff": "2026-11-01T14:00:00Z",
+  "league": "SA",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.5943
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2296
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.1761
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.8239
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.4057
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7459
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.498
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.502
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7216
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.4841
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.5159
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.4699
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.1167
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.6292
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.276
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.5819
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.3191
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.375
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4681
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1245,
+    "score": "1-0"
+   }
+  ],
+  "o25": 0.498,
+  "old": {
+   "p1": 0.5909,
+   "p2": 0.1897,
+   "px": 0.2194
+  },
+  "p1": 0.5943,
+  "p2": 0.1761,
+  "pick": "1",
+  "pick_p": 0.5943,
+  "px": 0.2296,
+  "recommendation": {
+   "base": 0.4017,
+   "code": "1",
+   "edge": 0.1926,
+   "kind": "esito",
+   "label": "1 · Vince Lazio",
+   "p": 0.5943
+  },
+  "top": [
+   1,
+   0
+  ],
+  "xg": [
+   1.8,
+   0.86
+  ]
+ },
+ "558547": {
+  "ai": false,
+  "away": "Napoli",
+  "base": {
+   "p1": 0.3188,
+   "p2": 0.4082,
+   "px": 0.273
+  },
+  "gg": 0.4989,
+  "home": "Juventus",
+  "kickoff": "2026-11-01T19:45:00Z",
+  "league": "SA",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.3188
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.273
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.4082
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.5918
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.6812
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.705
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.4456
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.5544
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.7664
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.4989
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.5011
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.2225
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.296
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.4091
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4825
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4613
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.521
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.3695
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.4789
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.1122,
+    "score": "0-1"
+   }
+  ],
+  "o25": 0.4456,
+  "old": {
+   "p1": 0.3222,
+   "p2": 0.4035,
+   "px": 0.2743
+  },
+  "p1": 0.3188,
+  "p2": 0.4082,
+  "pick": "2",
+  "pick_p": 0.4082,
+  "px": 0.273,
+  "recommendation": {
+   "base": 0.5983,
+   "code": "X2",
+   "edge": 0.0829,
+   "kind": "doppia",
+   "label": "X2 · Napoli non perde",
+   "p": 0.6812
+  },
+  "top": [
+   0,
+   1
+  ],
+  "xg": [
+   1.14,
+   1.32
+  ]
+ },
+ "558548": {
+  "ai": false,
+  "away": "Inter",
+  "base": {
+   "p1": 0.2565,
+   "p2": 0.5246,
+   "px": 0.2189
+  },
+  "gg": 0.6369,
+  "home": "Milan",
+  "kickoff": "2026-10-31T19:45:00Z",
+  "league": "SA",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.2565
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2189
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.5246
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.4754
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.7435
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.8448
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.6451
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.3549
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.5753
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.6369
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.3631
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.209
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.4537
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.3912
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.6359
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.2913
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4172
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.5405
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3199
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.095,
+    "score": "1-2"
+   }
+  ],
+  "o25": 0.6451,
+  "old": {
+   "p1": 0.3219,
+   "p2": 0.4427,
+   "px": 0.2355
+  },
+  "p1": 0.2565,
+  "p2": 0.5246,
+  "pick": "2",
+  "pick_p": 0.5246,
+  "px": 0.2189,
+  "recommendation": {
+   "base": 0.4274,
+   "code": "x2_o15",
+   "edge": 0.2085,
+   "kind": "combo",
+   "label": "X2 + Over 1,5",
+   "p": 0.6359
+  },
+  "top": [
+   1,
+   2
+  ],
+  "xg": [
+   1.34,
+   1.99
+  ]
+ },
  "558549": {
   "ai": false,
   "away": "Bologna",
