@@ -6,14 +6,14 @@ import { ROSA_KEY, parseRosa, emptyRosa, addPlayer, removePlayer, rosaHtml } fro
 const root = document.getElementById("rosa");
 const form = document.getElementById("rosa-form");
 const note = document.getElementById("rosa-msg");
-let data = { rows: [], teams: [] };
+let data = { rows: [], teams: [], players: [] };
 try { data = JSON.parse(document.getElementById("ff-fanta").textContent); } catch (e) { /* pagina senza dati */ }
 
 const read = () => { try { return parseRosa(localStorage.getItem(ROSA_KEY)); } catch (e) { return emptyRosa(); } };
 const write = (rosa) => { try { localStorage.setItem(ROSA_KEY, JSON.stringify(rosa)); return true; } catch (e) { return false; } };
 
 function render() {
-  root.innerHTML = rosaHtml(read(), data.rows);
+  root.innerHTML = rosaHtml(read(), data.rows, data.players || []);
 }
 function say(text, err) {
   note.textContent = text;

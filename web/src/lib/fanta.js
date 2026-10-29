@@ -90,11 +90,18 @@ function pickCard(ctx, title, hint, list, value) {
     "</ol></div>";
 }
 
-export function highlightsHtml(ctx, rows) {
+/* captains (facoltativo): i giocatori con più bonus attesi nella giornata (src/lib/fantaplayers.js). */
+function captainCard(ctx, captains) {
+  return '<div class="panel fanta-pick"><div class="fanta-pick-head"><h3>Capitano</h3><small>più bonus attesi in questa giornata, se giocano</small></div><ol>' +
+    captains.map((p) => "<li><span>" + esc(p.player) + "<small>" + teamLink(ctx, p.team) + " · " + esc(where(p.cells[0].home)) + " con " + esc(p.cells[0].opp) + "</small></span><b>" +
+      pc(p.cells[0].p) + "<small>probabilità di segnare</small></b></li>").join("") + "</ol></div>";
+}
+
+export function highlightsHtml(ctx, rows, captains = []) {
   const h = highlights(rows);
   if (!h) return "";
   return '<div class="fanta-picks">' +
-    pickCard(ctx, "Capitano", "attaccanti delle squadre con più gol attesi", h.attack, (r) => d2(r.xgFor) + "<small>gol attesi</small>") +
+    (captains.length ? captainCard(ctx, captains) : pickCard(ctx, "Capitano", "attaccanti delle squadre con più gol attesi", h.attack, (r) => d2(r.xgFor) + "<small>gol attesi</small>")) +
     pickCard(ctx, "Portiere e difesa", "porta inviolata più probabile", h.defence, (r) => pc(r.cs) + "<small>porta inviolata</small>") +
     pickCard(ctx, "Giornata difficile", "meglio pensarci prima di schierarli", h.avoid, (r) => d2(r.xgFor) + " – " + d2(r.xgAgainst) + "<small>gol fatti – subiti attesi</small>") +
     "</div>";

@@ -7,6 +7,7 @@
 import { C, h, text, brand, frame, renderPng, pngFrom, PREVIEW, SOCIAL } from "./cardkit.js";
 import { pc, d2, roundDay } from "./core.js";
 import { fantaRows, highlights, firstKickoff } from "./fanta.js";
+import { playerProjections, roundCaptains } from "./fantaplayers.js";
 import { setLang } from "./i18n.js";
 
 export { SOCIAL, PREVIEW, renderPng };
@@ -14,7 +15,8 @@ export const SITE_LABEL = "fischiettofinale.com/fantacalcio";
 
 /* ---------- Dati ---------- */
 /* Le tre liste dell'immagine e le scritte di testa, dalla giornata pubblicata in turno.json. */
-export function cardData(turno) {
+/* classifica (facoltativa): con i marcatori il capitano diventa una lista di giocatori. */
+export function cardData(turno, classifica = null) {
   /* L'immagine è sempre in italiano: durante il build la lingua resta quella dell'ultima pagina generata
      (spesso una pagina /en/), e numeri e date la seguono. */
   setLang("it");
@@ -22,10 +24,13 @@ export function cardData(turno) {
   const h = highlights(rows);
   const k = firstKickoff(turno ? turno.matches : []);
   const where = (r) => (r.home ? "in casa con " : "in trasferta con ") + r.opp;
+  const caps = turno && classifica ? roundCaptains(playerProjections(turno, classifica), 3) : [];
   return {
     day: turno && turno.matchday ? "GIORNATA " + turno.matchday : "PROSSIMA GIORNATA",
     deadline: k ? "Prima partita: " + roundDay(k) : "",
-    attack: h ? h.attack.map((r) => ({ team: r.team, sub: where(r), value: d2(r.xgFor), unit: "gol attesi" })) : [],
+    captainPlayers: !!caps.length,
+    attack: caps.length ? caps.map((p) => ({ team: p.player, sub: p.team + " · " + (p.cells[0].home ? "in casa con " : "in trasferta con ") + p.cells[0].opp, value: pc(p.cells[0].p), unit: "segna, se gioca" }))
+      : h ? h.attack.map((r) => ({ team: r.team, sub: where(r), value: d2(r.xgFor), unit: "gol attesi" })) : [],
     defence: h ? h.defence.map((r) => ({ team: r.team, sub: where(r), value: pc(r.cs), unit: "porta inviolata" })) : [],
     avoid: h ? h.avoid.map((r) => ({ team: r.team, sub: where(r), value: d2(r.xgFor) + "–" + d2(r.xgAgainst), unit: "gol fatti–subiti" })) : []
   };
@@ -62,7 +67,7 @@ export function socialTree(d) {
         text({ fontFamily: "Barlow", fontWeight: 800, fontSize: 58, color: C.gold }, d.day),
         d.deadline ? text({ fontFamily: "Plex", fontWeight: 600, fontSize: 24, color: C.muted }, d.deadline) : null)),
     h({ flexDirection: "column", gap: 14, flexGrow: 1 },
-      section("CAPITANO", "scegli tra i loro attaccanti", d.attack, C.gold, sizes),
+      section("CAPITANO", d.captainPlayers ? "più bonus attesi, se giocano" : "scegli tra i loro attaccanti", d.attack, C.gold, sizes),
       section("PORTA INVIOLATA", "portiere e difesa", d.defence, C.good, sizes),
       section("GIORNATA DIFFICILE", "meglio evitare", d.avoid, C.bad, { ...sizes, sub: 0, team: 30, value: 32, pad: 5 })),
     h({ justifyContent: "space-between", alignItems: "flex-end", marginTop: 18 },
@@ -86,7 +91,7 @@ export function previewTree(d) {
 }
 
 /* ---------- PNG ---------- */
-export const pngResponse = (kind, turno) => pngFrom("fantacalcio " + kind, () => {
-  const d = cardData(turno);
+export const pngResponse = (kind, turno, classifica = null) => pngFrom("fantacalcio " + kind, () => {
+  const d = cardData(turno, classifica);
   return renderPng(kind === "preview" ? previewTree(d) : socialTree(d), kind === "preview" ? PREVIEW : SOCIAL);
 });

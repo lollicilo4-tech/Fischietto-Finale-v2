@@ -1,11 +1,13 @@
 /* "La mia rosa" del fantacalcio: chi visita inserisce i suoi giocatori (ruolo, squadra di Serie A, nome)
    e la pagina Fantacalcio gli dice, per ogni ruolo, chi ha la partita più favorevole e chi mettere capitano.
-   Il modello conosce le squadre, non i giocatori: il consiglio di ogni giocatore è quello della sua squadra
-   (porta inviolata per portieri e difensori, gol attesi per centrocampisti e attaccanti).
+   Portieri e difensori: porta inviolata della squadra. Centrocampisti e attaccanti: se il nome è tra i
+   marcatori di Serie A (src/lib/fantaplayers.js), la sua probabilità di segnare se gioca; altrimenti i gol
+   attesi della squadra con una quota tipica del ruolo. Gli assenti confermati non vanno capitano.
    Tutto resta nel browser (localStorage, chiave ROSA_KEY): nessun account, niente arriva al server.
    Funzioni pure, provate in Node; il DOM è in scripts/rosa.js. Ogni dato nell'HTML passa da esc(). */
 import { esc, pc, d2 } from "./core.js";
 import { csTier } from "./fanta.js";
+import { norm, pTier } from "./fantaplayers.js";
 
 export const ROSA_KEY = "ff-fanta-rosa-v1";
 export const MAX_PLAYERS = 40;
@@ -46,22 +48,42 @@ export const removePlayer = (rosa, id) => ({ v: 1, players: rosa.players.filter(
 /* Valore di un giocatore nella giornata: porta inviolata (P, D) o gol attesi della squadra (C, A).
    row: la riga della sua squadra in fantaRows(), null se la squadra non gioca più in questo turno. */
 const ATTACK_TIER = (x) => (x >= 1.5 ? "easy" : x >= 1.1 ? "mid" : "hard");
-export function playerAdvice(p, row) {
+/* Quota tipica dei gol della squadra per chi non è tra i marcatori (attaccante, centrocampista). */
+export const TYPICAL_SHARE = { A: 0.12, C: 0.06 };
+
+/* Il giocatore della rosa tra i marcatori: stessa squadra e nome uguale, oppure tutte le parole scritte
+   (almeno 3 lettere) dentro il nome completo, se c'è un solo giocatore così ("Lautaro" → Lautaro Martínez). */
+export function matchScorer(p, players) {
+  const same = (players || []).filter((x) => x && x.team === p.team);
+  const n = norm(p.name);
+  const exact = same.find((x) => norm(x.player) === n);
+  if (exact) return exact;
+  const words = n.split(" ").filter((w) => w.length >= 3);
+  if (!words.length) return null;
+  const hits = same.filter((x) => { const full = norm(x.player).split(" "); return words.every((w) => full.includes(w)); });
+  return hits.length === 1 ? hits[0] : null;
+}
+
+export function playerAdvice(p, row, scorer = null) {
   if (!row) return { ...p, row: null, score: -1, tier: "none" };
   const defence = p.role === "P" || p.role === "D";
-  return { ...p, row, score: defence ? row.cs : row.xgFor, tier: defence ? csTier(row.cs) : ATTACK_TIER(row.xgFor) };
+  if (defence) return { ...p, row, score: row.cs, tier: csTier(row.cs) };
+  if (scorer && scorer.absent) return { ...p, row, scorer, score: -0.5, xb: -1, tier: "none", absent: true };
+  if (scorer) return { ...p, row, scorer, score: scorer.p, xb: scorer.xb, tier: pTier(scorer.p) };
+  const share = TYPICAL_SHARE[p.role] || 0.06;
+  return { ...p, row, score: 1 - Math.exp(-row.xgFor * share), xb: 3 * row.xgFor * share, tier: ATTACK_TIER(row.xgFor) };
 }
 
 /* Consigli per la rosa: giocatori divisi per ruolo, dal più favorevole; capitano tra centrocampisti e
    attaccanti con più gol attesi (a parità l'attaccante). */
-export function rosaAdvice(rosa, rows) {
+export function rosaAdvice(rosa, rows, players = []) {
   const byTeam = new Map((rows || []).map((r) => [r.team, r]));
-  const all = rosa.players.map((p) => playerAdvice(p, byTeam.get(p.team) || null));
+  const all = rosa.players.map((p) => playerAdvice(p, byTeam.get(p.team) || null, matchScorer(p, players)));
   const groups = ROLES.map((role) => ({
     role, players: all.filter((p) => p.role === role).sort((a, b) => b.score - a.score || a.name.localeCompare(b.name))
   })).filter((g) => g.players.length);
-  const captain = all.filter((p) => (p.role === "A" || p.role === "C") && p.row)
-    .sort((a, b) => b.score - a.score || (a.role === "A" ? -1 : 0) - (b.role === "A" ? -1 : 0) || a.name.localeCompare(b.name))[0] || null;
+  const captain = all.filter((p) => (p.role === "A" || p.role === "C") && p.row && !p.absent)
+    .sort((a, b) => b.xb - a.xb || (a.role === "A" ? -1 : 0) - (b.role === "A" ? -1 : 0) || a.name.localeCompare(b.name))[0] || null;
   return { groups, captain, total: all.length };
 }
 
@@ -70,16 +92,19 @@ const TIER_TEXT = { easy: "favorevole", mid: "equilibrata", hard: "difficile", n
 function playerRow(p) {
   const r = p.row;
   const detail = r ? (r.home ? "in casa con " : "in trasferta con ") + esc(r.opp) : "partita già iniziata o non in programma";
-  const value = !r ? "–" : p.role === "P" || p.role === "D" ? pc(r.cs) + "<small>porta inviolata</small>" : d2(r.xgFor) + "<small>gol attesi</small>";
-  return '<li class="rosa-player ' + p.tier + '"><span><b>' + esc(p.name) + '</b><small>' + esc(p.team) + " · " + detail + " · " + TIER_TEXT[p.tier] +
+  const value = !r ? "–" : p.role === "P" || p.role === "D" ? pc(r.cs) + "<small>porta inviolata</small>"
+    : p.absent ? "–<small>assente</small>"
+      : p.scorer ? pc(p.scorer.p) + "<small>segna, se gioca</small>" : d2(r.xgFor) + "<small>gol attesi squadra</small>";
+  const tierText = p.absent ? "assente confermato" : TIER_TEXT[p.tier];
+  return '<li class="rosa-player ' + p.tier + '"><span><b>' + esc(p.name) + '</b><small>' + esc(p.team) + " · " + detail + " · " + tierText +
     '</small></span><span class="rosa-value">' + value + '</span><button type="button" class="rosa-remove" data-id="' + esc(p.id) + '" aria-label="' + esc("Togli " + p.name + " dalla rosa") + '">×</button></li>';
 }
 
-export function rosaHtml(rosa, rows) {
-  const a = rosaAdvice(rosa, rows);
+export function rosaHtml(rosa, rows, players = []) {
+  const a = rosaAdvice(rosa, rows, players);
   if (!a.total) return '<p class="lead" style="margin:0">La tua rosa è vuota. Aggiungi i tuoi giocatori qui sotto: per ogni ruolo vedrai chi ha la partita più favorevole in questa giornata.</p>';
   const cap = a.captain
-    ? '<div class="rosa-captain"><span>Capitano consigliato</span><b>' + esc(a.captain.name) + "</b><small>" + esc(a.captain.team) + " · " + d2(a.captain.row.xgFor) + " gol attesi</small></div>"
+    ? '<div class="rosa-captain"><span>Capitano consigliato</span><b>' + esc(a.captain.name) + "</b><small>" + esc(a.captain.team) + " · " + (a.captain.scorer ? pc(a.captain.scorer.p) + " di probabilità di segnare, se gioca" : d2(a.captain.row.xgFor) + " gol attesi della squadra") + "</small></div>"
     : "";
   return cap + '<p class="lead" style="margin:0">In ogni ruolo i giocatori sono in ordine di partita più favorevole: schiera partendo dall\'alto.</p>' +
     a.groups.map((g) => '<div class="rosa-group"><h3>' + ROLE_NAME[g.role] + " <small>" + g.players.length + '</small></h3><ul class="rosa-list">' + g.players.map(playerRow).join("") + "</ul></div>").join("") +
