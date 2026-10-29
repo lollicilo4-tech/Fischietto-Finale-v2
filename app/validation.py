@@ -73,6 +73,14 @@ def validate_turno_payload(payload: dict) -> None:
             _number(score[1], f"{prefix}.top_scores.trasferta", 0, 20)
             _number(score[2], f"{prefix}.top_scores.prob", 0, 1)
 
+        shown = match.get("pick_score")
+        if shown is not None:
+            if not isinstance(shown, list) or len(shown) < 3:
+                raise ValueError(f"{prefix}: formato del risultato previsto non valido")
+            _number(shown[0], f"{prefix}.pick_score.casa", 0, 20)
+            _number(shown[1], f"{prefix}.pick_score.trasferta", 0, 20)
+            _number(shown[2], f"{prefix}.pick_score.prob", 0, 1)
+
         markets = match.get("markets", {})
         if not isinstance(markets, dict):
             raise ValueError(f"{prefix}: mercati non validi")

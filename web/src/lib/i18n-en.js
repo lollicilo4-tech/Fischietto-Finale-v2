@@ -68,7 +68,7 @@ export const EN = {
   "Doppia chance più prudente": "Safer double chance",
   "Risultato esatto più probabile": "Most likely exact score",
   "Stima statistica del modello: non è una certezza e non costituisce un invito a scommettere.": "A statistical estimate from the model: not a certainty and not an invitation to gamble.",
-  "{home} – {away}: per il modello {code} ({name}) al {p}, risultato più probabile {score}. Stime statistiche, non un invito a scommettere.": "{home} – {away}: the model says {code} ({name}) at {p}, most likely score {score}. Statistical estimates, not an invitation to gamble.",
+  "{home} – {away}: per il modello {code} ({name}) al {p}, risultato previsto {score}. Stime statistiche, non un invito a scommettere.": "{home} – {away}: the model says {code} ({name}) at {p}, predicted score {score}. Statistical estimates, not an invitation to gamble.",
   "Assenze confermate dalle fonti": "Absences confirmed by sources",
   "Assenze": "Absences",
   "Gol attesi corretti:": "Adjusted expected goals:",
@@ -139,7 +139,7 @@ export const EN = {
   "DIFFICILE": "HARD",
   "Parte dal miglior pronostico multi-mercato del modello e privilegia le selezioni più solide.": "Starts from the model's best multi-market prediction and favours the most solid selections.",
   "Combina le migliori raccomandazioni del modello tra esiti, gol e combo, cercando un equilibrio.": "Combines the model's best recommendations across outcomes, goals and combinations, looking for a balance.",
-  "Cerca selezioni meno probabili tra combo, mercati gol e, quando disponibile, il risultato esatto più probabile.": "Looks for less likely selections among combinations, goal markets and, when available, the most likely exact score.",
+  "Cerca selezioni meno probabili tra combo, mercati gol e, quando disponibile, il risultato previsto.": "Looks for less likely selections among combinations, goal markets and, when available, the predicted score.",
   "Esito": "Outcome",
   "Doppia chance": "Double chance",
   "Gol": "Goals",
@@ -473,10 +473,10 @@ export const EN = {
   "Modello, AI e verifica delle fonti": "Model, AI and source checks",
   "{league}: pronostici e probabilità": "{league}: predictions and probabilities",
   "Pronostici statistici di Serie A, Premier League, LaLiga, Bundesliga, Ligue 1 e coppe europee: probabilità, risultato probabile e spiegazione di ogni partita. Solo informazione, nessuna scommessa.": "Statistical football predictions for the Premier League, Serie A, LaLiga, Bundesliga, Ligue 1 and the European cups: probabilities, likely score and an explanation of every match. Information only, no gambling.",
-  "Come potrebbe andare ogni partita di {league}: probabilità 1X2, risultato più probabile, gol attesi e spiegazione del modello.": "How every {league} match could go: 1X2 probabilities, most likely score, expected goals and the model's explanation.",
+  "Come potrebbe andare ogni partita di {league}: probabilità 1X2, risultato previsto, gol attesi e spiegazione del modello.": "How every {league} match could go: 1X2 probabilities, predicted score, expected goals and the model's explanation.",
 
   // ---------- Pagine dei campionati ----------
-  "Pronostici di tutte le partite di {league}{day}: probabilità 1X2, risultato più probabile, gol attesi e assenze confermate.": "Predictions for every {league} match{day}: 1X2 probabilities, most likely score, expected goals and confirmed absences.",
+  "Pronostici di tutte le partite di {league}{day}: probabilità 1X2, risultato previsto, gol attesi e assenze confermate.": "Predictions for every {league} match{day}: 1X2 probabilities, predicted score, expected goals and confirmed absences.",
   "Tocca una partita per aprire il dettaglio. Nel dettaglio puoi fare anche il tuo pronostico e sfidare il modello:": "Tap a match to open the details. There you can also make your own prediction and challenge the model:",
   "Partite non disponibili per questo campionato in questo momento.": "Matches not available for this competition right now.",
   "Le selezioni più probabili secondo il modello per {league} e come scende la probabilità combinandole. Stime statistiche, non un invito a scommettere.": "The most likely selections according to the model for {league}, and how the probability drops when you combine them. Statistical estimates, not an invitation to gamble.",
@@ -500,7 +500,7 @@ export const EN = {
   "Ultimi pronostici": "Latest predictions",
   "più recente → meno recente": "newest → oldest",
   "pronostico": "prediction",
-  "{league}, {day} {time}. {home} – {away}: per il modello {code} ({name}) al {p}, risultato più probabile {score}. Probabilità 1X2, gol attesi e assenze confermate.": "{league}, {day} {time}. {home} – {away}: the model says {code} ({name}) at {p}, most likely score {score}. 1X2 probabilities, expected goals and confirmed absences.",
+  "{league}, {day} {time}. {home} – {away}: per il modello {code} ({name}) al {p}, risultato previsto {score}. Probabilità 1X2, gol attesi e assenze confermate.": "{league}, {day} {time}. {home} – {away}: the model says {code} ({name}) at {p}, predicted score {score}. 1X2 probabilities, expected goals and confirmed absences.",
   "Stime statistiche del modello: non sono certezze e non sono un invito a scommettere.": "Statistical estimates from the model: not certainties and not an invitation to gamble.",
   "Tutte le partite di {league} →": "All {league} matches →",
   "{home} – {away}: probabilità 1 X 2 del modello": "{home} – {away}: model 1 X 2 probabilities",
@@ -596,5 +596,6 @@ export const EN = {
   "Le partite di oggi →": "Today's matches →",
   "Il modello negli ultimi 7 giorni, in tutti i campionati →": "The model in the last 7 days, across all leagues →",
   "Modello: {pick} al {p}": "Model: {pick} at {p}",
-  "risultato esatto": "exact score"
+  "risultato esatto": "exact score",
+  " · altri probabili: ": " · also likely: "
 };

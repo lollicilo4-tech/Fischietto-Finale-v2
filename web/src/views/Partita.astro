@@ -4,7 +4,7 @@
 import Base from "../layouts/Base.astro";
 import { leagueByCode, matchUrl, dayOf, when, pc, leagueUrl } from "../lib/core.js";
 import { card } from "../lib/render.js";
-import { finalOutcome } from "../lib/model.js";
+import { finalOutcome, mainScore } from "../lib/model.js";
 import { setLang, langOfPath, t } from "../lib/i18n.js";
 import { sportsEventLd } from "../lib/seo.js";
 import { previewPath, PREVIEW } from "../lib/matchcard.js";
@@ -12,9 +12,9 @@ interface Props { league: string; match: any }
 setLang(langOfPath(Astro.url.pathname));
 const { league, match: m } = Astro.props;
 const L = leagueByCode(league);
-const fo = finalOutcome(m), s = m.top_scores[0];
+const fo = finalOutcome(m), s = mainScore(m);
 const title = m.home + " – " + m.away + ": " + t("pronostico");
-const description = t("{league}, {day} {time}. {home} – {away}: per il modello {code} ({name}) al {p}, risultato più probabile {score}. Probabilità 1X2, gol attesi e assenze confermate.",
+const description = t("{league}, {day} {time}. {home} – {away}: per il modello {code} ({name}) al {p}, risultato previsto {score}. Probabilità 1X2, gol attesi e assenze confermate.",
   { league: L.name, day: dayOf(m), time: when(m), home: m.home, away: m.away, code: fo[0], name: fo[1], p: pc(fo[2]), score: s[0] + "-" + s[1] });
 const site = Astro.site ? Astro.site.href.replace(/\/$/, "") : "";
 const ld = [sportsEventLd(site, league, m, description)];

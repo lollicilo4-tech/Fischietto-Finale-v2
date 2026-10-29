@@ -9,7 +9,7 @@ import {
   pc, d1, d2, esc, safeUrl, when, dayOf, shortDay, roundDay, fmtDay, decimalIt, thousandsIt,
   leagueByCode, teamUrl, matchUrl, leagueUrl, calendarUrl
 } from "./core.js";
-import { finalOutcome, homeOutcome, prudentChoice, byStrength, deriveRecommendation, slipReason, marketReliability, recLabel, marketText } from "./model.js";
+import { finalOutcome, mainScore, otherScores, homeOutcome, prudentChoice, byStrength, deriveRecommendation, slipReason, marketReliability, recLabel, marketText } from "./model.js";
 import { t, isEn, loc } from "./i18n.js";
 import { crestImg, crestSrc } from "./crests.js";
 
@@ -76,28 +76,28 @@ function matchCenter(ctx, m, p, a, s, fo, prudent) {
     '<div class="mc-grid"><div class="mc-stat"><small>' + t("Gol attesi") + "</small><b>" + d1(m.xg[0]) + " – " + d1(m.xg[1]) + "</b></div>" +
     '<div class="mc-stat"><small>' + t("Affidabilità") + "</small><b>" + esc(confText(m.conf)) + '</b></div><div class="mc-stat"><small>' + t("Forma casa") + '</small><div class="mc-form">' + chips(m.form && m.form.home) + "</div></div>" +
     '<div class="mc-stat"><small>' + t("Forma trasferta") + '</small><div class="mc-form">' + chips(m.form && m.form.away) + "</div></div></div>" +
-    '<div class="mc-score"><span>' + t("Risultato più probabile") + "</span><b>" + s[0] + "-" + s[1] + "</b><span>" + pc(s[2]) + "</span></div>" +
+    '<div class="mc-score"><span>' + t("Risultato previsto") + "</span><b>" + s[0] + "-" + s[1] + "</b><span>" + pc(s[2]) + "</span></div>" +
     '<div class="mc-explain"><b>' + t("Perché questo esito") + '</b><p class="expl">' + esc(loc(a, "text")) + "</p></div>" +
     '<div class="mc-final reference-final-card"><div class="title">✦ ' + t("Pronostico finale del modello") + '</div><div class="reference-final-grid">' +
     '<div class="reference-final-item"><small>' + t("Esito 1X2 più probabile") + "</small><b>" + esc(fo[0] + " · " + fo[1]) + "</b><strong>" + pc(fo[2]) + "</strong></div>" +
     '<div class="reference-final-item"><small>' + t("Doppia chance più prudente") + "</small><b>" + esc(prudent[0]) + "</b><strong>" + pc(prudent[1]) + "</strong></div>" +
-    '<div class="reference-final-item"><small>' + t("Risultato esatto più probabile") + "</small><b>" + esc(s[0] + "-" + s[1]) + "</b><strong>" + pc(s[2]) + "</strong></div></div>" +
+    '<div class="reference-final-item"><small>' + t("Risultato previsto") + "</small><b>" + esc(s[0] + "-" + s[1]) + "</b><strong>" + pc(s[2]) + "</strong></div></div>" +
     '<p class="reference-final-note">' + t(NOTE_NO_BET) + "</p></div></div>";
 }
 
 /* Testo condiviso da "Condividi" (WhatsApp, menu del telefono o appunti). */
 export function shareText(m) {
-  const p = m.prob, s = m.top_scores[0];
+  const p = m.prob, s = mainScore(m);
   const top = p.p1 >= p.px && p.p1 >= p.p2 ? ["1", m.home, p.p1] : p.px >= p.p2 ? ["X", t("pareggio"), p.px] : ["2", m.away, p.p2];
-  return t("{home} – {away}: per il modello {code} ({name}) al {p}, risultato più probabile {score}. Stime statistiche, non un invito a scommettere.",
+  return t("{home} – {away}: per il modello {code} ({name}) al {p}, risultato previsto {score}. Stime statistiche, non un invito a scommettere.",
     { home: m.home, away: m.away, code: top[0], name: top[1], p: pc(top[2]), score: s[0] + "-" + s[1] });
 }
 
 /* Scheda di una partita. opts.open: aperta (pagina della partita); opts.standalone: senza link a sé stessa. */
 export function card(ctx, m, i, opts = {}) {
-  const p = m.prob, a = m.analysis, s = m.top_scores[0], rec = deriveRecommendation(m);
+  const p = m.prob, a = m.analysis, s = mainScore(m), rec = deriveRecommendation(m);
   const fo = finalOutcome(m), prudent = prudentChoice(m);
-  const alt = m.top_scores.slice(1).map((x) => x[0] + "-" + x[1]).join(", ");
+  const alt = otherScores(m).map((x) => x[0] + "-" + x[1] + " " + pc(x[2])).join(", ");
   const absHome = a.absences_home || [], absAway = a.absences_away || [], nAbs = absHome.length + absAway.length;
   const adjusted = a.adjusted != null ? !!a.adjusted : (Math.abs(a.factor_home - 1) > 0.005 || Math.abs(a.factor_away - 1) > 0.005);
   let abs = "";
@@ -150,12 +150,12 @@ export function card(ctx, m, i, opts = {}) {
     (rec.best.base != null ? '<div class="row"><span>' + t("Media del campionato per questo mercato") + '</span><b class="num">' + pc(rec.best.base) + " · " + (rec.best.edge >= 0 ? "+" : "") + Math.round(rec.best.edge * 100) + t(" punti") + "</b></div>" : "") +
     '<div class="row"><span>' + t("Alternativa più prudente") + "</span><b>" + esc(prudent[0]) + ' · <span class="num">' + pc(prudent[1]) + "</span></b></div>" +
     '<div class="row"><span>' + t("Altri mercati forti") + '</span><b class="num">' + rec.alternatives.slice(1, 3).map((x) => esc(recLabel(x, m)) + " · " + pc(x.p)).join(" · ") + "</b></div>" +
-    '<div class="row"><span>' + t("Risultato esatto più probabile") + '</span><b class="num">' + esc(s[0] + "-" + s[1]) + " · " + pc(s[2]) + "</b></div>" +
+    '<div class="row"><span>' + t("Risultato previsto") + '</span><b class="num">' + esc(s[0] + "-" + s[1]) + " · " + pc(s[2]) + "</b></div>" +
     "</div>" +
     '<p class="note">' + t(NOTE_NO_BET) + "</p>" +
     "</div>" +
     '<div class="grid">' +
-    '<div class="stat"><div class="k">' + t("Risultato probabile") + '</div><div class="v">' + s[0] + "-" + s[1] + '</div><div class="s">' + pc(s[2]) + t(" · poi ") + alt + "</div></div>" +
+    '<div class="stat"><div class="k">' + t("Risultato probabile") + '</div><div class="v">' + s[0] + "-" + s[1] + '</div><div class="s">' + pc(s[2]) + (alt ? t(" · altri probabili: ") + alt : "") + "</div></div>" +
     '<div class="stat"><div class="k">' + t("Gol attesi") + '</div><div class="v">' + d1(m.xg[0]) + " - " + d1(m.xg[1]) + '</div><div class="s">' + t("totale") + " " + d1(m.xg[0] + m.xg[1]) + "</div></div>" +
     '<div class="stat"><div class="k">' + marketText("Over 2,5") + '</div><div class="v">' + pc(p.o25) + '</div><div class="s">Under ' + pc(p.u25) + "</div></div>" +
     '<div class="stat"><div class="k">' + t("Segnano entrambe") + '</div><div class="v">' + pc(p.gg) + '</div><div class="s">' + t("No") + " " + pc(p.ng) + "</div></div>" +
@@ -210,7 +210,7 @@ export function playedSection(list) {
 /* Il pronostico più netto del turno, in cima a Partite. */
 export function hero(m, league) {
   if (!m) return "";
-  const p = m.prob, s = m.top_scores[0], rec = deriveRecommendation(m);
+  const p = m.prob, s = mainScore(m), rec = deriveRecommendation(m);
   return '<div class="hero" style="--i:0"><span class="badge">' + t("Pronostico più netto del turno") + "</span>" +
     '<div class="vs"><div class="side l">' + crestImg(league, m.home, 32, "crest-hero") + '<div class="nm">' + esc(m.home) + '</div><div class="big">' + pc(p.p1) + "</div></div>" +
     '<div class="mid"><div class="label">X</div><div class="big">' + pc(p.px) + "</div></div>" +
@@ -224,18 +224,18 @@ export function hero(m, league) {
 export function homeDashboard(ctx, matches) {
   const ranked = byStrength(matches);
   if (!ranked.length) return null;
-  const m = ranked[0], p = m.prob, s = m.top_scores[0], rec = deriveRecommendation(m), fo = homeOutcome(m);
+  const m = ranked[0], p = m.prob, s = mainScore(m), rec = deriveRecommendation(m), fo = homeOutcome(m);
   const open = (x) => leagueUrl(ctx.league, "partite") + "#m-" + encodeURIComponent(x.id);
   const feature = '<div class="feature-card"><div class="feature-top"><span class="badge">' + esc(recLabel(rec.best, m)) + " " + pc(rec.best.p) + '</span><span class="conf ' + esc(m.conf) + '">' + esc(t("Affidabilità " + m.conf)) +
     '</span></div><div class="feature-match"><div class="feature-team">' + crestImg(ctx.league, m.home, 36, "crest-feature") + "<small>" + t("Casa") + "</small><b>" + esc(m.home) + '</b></div><div class="feature-vs">VS</div><div class="feature-team r">' + crestImg(ctx.league, m.away, 36, "crest-feature") + "<small>" + t("Trasferta") + "</small><b>" + esc(m.away) +
     '</b></div></div><div class="feature-prob"><span class="' + (fo[0] === "1" ? "hot" : "") + '"><b>1</b>' + pc(p.p1) + '</span><span class="' + (fo[0] === "X" ? "hot" : "") + '"><b>X</b>' + pc(p.px) +
-    '</span><span class="' + (fo[0] === "2" ? "hot" : "") + '"><b>2</b>' + pc(p.p2) + '</span></div><div class="feature-bottom"><div class="feature-score"><small>' + t("Risultato più probabile") + "</small>" + s[0] + "-" + s[1] +
+    '</span><span class="' + (fo[0] === "2" ? "hot" : "") + '"><b>2</b>' + pc(p.p2) + '</span></div><div class="feature-bottom"><div class="feature-score"><small>' + t("Risultato previsto") + "</small>" + s[0] + "-" + s[1] +
     '</div><a class="feature-open ff-btn" href="' + esc(open(m)) + '">' + t("Vedi analisi →") + "</a></div></div>";
   const n = matches.length, avg = matches.reduce((x, y) => x + Math.max(y.prob.p1, y.prob.px, y.prob.p2), 0) / n;
   const quick = '<div class="quick-card"><div class="q-label">' + t("Partite") + '</div><div class="q-value">' + n + '</div><div class="q-note">' + t("analizzate dal modello") + "</div></div>" +
     '<div class="quick-card"><div class="q-label">' + t("Forza media") + '</div><div class="q-value">' + pc(avg) + '</div><div class="q-note">' + t("esito principale medio") + "</div></div>";
   const strong = ranked.slice(0, 4).map((x) => {
-    const f = homeOutcome(x), sc = x.top_scores[0][0] + "-" + x.top_scores[0][1];
+    const f = homeOutcome(x), sc = mainScore(x)[0] + "-" + mainScore(x)[1];
     return '<a class="home-row ff-btn" href="' + esc(open(x)) + '"><span class="hr-p">' + pc(f[2]) + "<small>" + esc(f[0] + " · " + f[1]) + '</small></span><span class="hr-teams">' + esc(x.home) + " — " + esc(x.away) +
       "<small>" + esc(confText(x.conf)) + " · " + esc(sc) + " " + t("probabile") + '</small></span><span class="hr-score">' + esc(sc) + "</span></a>";
   }).join("");
@@ -281,7 +281,7 @@ const SLIP_NAME = { facile: "FACILE", media: "MEDIA", difficile: "DIFFICILE" };
 const SLIP_DESC = {
   facile: "Parte dal miglior pronostico multi-mercato del modello e privilegia le selezioni più solide.",
   media: "Combina le migliori raccomandazioni del modello tra esiti, gol e combo, cercando un equilibrio.",
-  difficile: "Cerca selezioni meno probabili tra combo, mercati gol e, quando disponibile, il risultato esatto più probabile."
+  difficile: "Cerca selezioni meno probabili tra combo, mercati gol e, quando disponibile, il risultato previsto."
 };
 const KIND_NAME = { base: "Esito", esito: "Esito", doppia: "Doppia chance", gol: "Gol", combo: "Combo", score: "Risultato esatto" };
 const kindName = (k) => (k === "gol" && isEn() ? "Goals" : t(KIND_NAME[k]));

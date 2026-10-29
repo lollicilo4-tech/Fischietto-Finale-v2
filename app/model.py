@@ -245,7 +245,26 @@ def summarize(lh: float, la: float, rho: float = DEFAULT_RHO) -> dict:
     top = max(r["p1"], r["px"], r["p2"])
     r["conf"] = "alta" if top >= 0.55 else "media" if top >= 0.45 else "bassa"
     r["top_scores"] = [[i, j, round(q, 4)] for i, j, q in scores[:3]]
+    r["pick_score"] = pick_score(r, scores)
     return r
+
+
+def _outcome_of(i: int, j: int) -> str:
+    return "1" if i > j else "X" if i == j else "2"
+
+
+def pick_score(r: dict, scores: list) -> list:
+    """Risultato previsto: il punteggio più probabile tra quelli in linea con l'esito 1X2 più probabile.
+
+    Il singolo punteggio più probabile (top_scores[0]) è quasi sempre 1-1: con gol attesi tra 1 e 2 per
+    squadra l'1-1 vince di poco su 2-1, 1-0 e 2-0, anche quando il modello dà una squadra favorita.
+    Accanto a "vince il Milan al 49%" un 1-1 sembrava un errore. Sulle 226 partite già giocate (29/10/2026)
+    questo punteggio indovina il risultato esatto quasi quanto quello assoluto (19 contro 21) e resta
+    coerente con il pronostico. Parità: 1, poi X, poi 2, come la scelta salvata nello storico.
+    """
+    best = "1" if r["p1"] >= r["px"] and r["p1"] >= r["p2"] else "X" if r["px"] >= r["p2"] else "2"
+    i, j, q = next(s for s in scores if _outcome_of(s[0], s[1]) == best)
+    return [i, j, round(q, 4)]
 
 
 def fair_odds(p: float) -> float | None:

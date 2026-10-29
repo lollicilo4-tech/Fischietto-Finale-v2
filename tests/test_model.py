@@ -79,5 +79,38 @@ class DixonColesTests(unittest.TestCase):
                                        [], {}, 1.5, 1.1, now=NOW), model.DEFAULT_RHO)
 
 
+class PickScoreTests(unittest.TestCase):
+    """Il risultato mostrato è in linea con l'esito 1X2 più probabile (non più quasi sempre 1-1)."""
+
+    @staticmethod
+    def outcome(i, j):
+        return "1" if i > j else "X" if i == j else "2"
+
+    def test_favourite_at_home_gets_a_home_win_even_when_1_1_is_the_single_top_score(self):
+        s = model.summarize(1.6, 1.2, -0.05)
+        self.assertEqual(s["top_scores"][0][:2], [1, 1])
+        self.assertGreater(s["p1"], max(s["px"], s["p2"]))
+        i, j, q = s["pick_score"]
+        self.assertEqual(self.outcome(i, j), "1")
+        self.assertLess(q, s["top_scores"][0][2])
+
+    def test_matches_the_outcome_in_many_random_matches(self):
+        rng = random.Random(7)
+        for _ in range(300):
+            lh, la, rho = rng.uniform(0.3, 3.2), rng.uniform(0.3, 3.0), rng.uniform(-0.12, 0.0)
+            s = model.summarize(lh, la, rho)
+            best = "1" if s["p1"] >= s["px"] and s["p1"] >= s["p2"] else "X" if s["px"] >= s["p2"] else "2"
+            i, j, q = s["pick_score"]
+            self.assertEqual(self.outcome(i, j), best, (lh, la, rho))
+            self.assertTrue(0 < q <= s["top_scores"][0][2])
+
+    def test_away_favourite_and_balanced_match(self):
+        away = model.summarize(0.9, 1.9, -0.05)
+        self.assertEqual(self.outcome(*away["pick_score"][:2]), "2")
+        even = model.summarize(0.7, 0.7, -0.1)
+        self.assertGreaterEqual(even["px"], max(even["p1"], even["p2"]))
+        self.assertIn(even["pick_score"][:2], ([0, 0], [1, 1]))
+
+
 if __name__ == "__main__":
     unittest.main()

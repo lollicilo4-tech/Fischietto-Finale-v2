@@ -51,14 +51,19 @@ def _market_predictions(s: dict, recommendation: dict) -> list[dict]:
     for code in ("1_o15", "2_o15", "1x_o15", "x2_o15", "1x_u35", "x2_u35", "gg_o25", "ng_u35"):
         if q.get(code) is not None:
             items.append((code, q[code], "combo"))
-    if s.get("top_scores"):
-        score = s["top_scores"][0]
+    score = _shown_score(s)
+    if score:
         items.append(("score", score[2], "score", f"{score[0]}-{score[1]}"))
     out = [{"code": code, "p": round(float(prob), 4), "kind": kind} for code, prob, kind, *rest in items]
-    if s.get("top_scores"):
-        out[-1]["score"] = f"{s['top_scores'][0][0]}-{s['top_scores'][0][1]}"
+    if score:
+        out[-1]["score"] = f"{score[0]}-{score[1]}"
     return out
 
+
+
+def _shown_score(s: dict) -> list | None:
+    """Il risultato mostrato dal sito: quello in linea con l'esito più probabile (model.pick_score)."""
+    return s.get("pick_score") or (s.get("top_scores") or [None])[0]
 
 
 RECOMMENDED_MIN_P = 0.50   # il consiglio deve restare più probabile che no
@@ -91,7 +96,7 @@ def _recommendations(s: dict, home: str, away: str, base_rates: dict | None = No
     """
     p = s
     q = s.get("markets", {})
-    z = s.get("top_scores", [])
+    z = [_shown_score(s)] if _shown_score(s) else []
     candidates = [
         {"code": "1", "label": f"1 · Vince {home}", "p": p["p1"], "kind": "esito"},
         {"code": "X", "label": "X · Pareggio", "p": p["px"], "kind": "esito"},
@@ -205,7 +210,7 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
             "id": fx["id"], "home": fx["home"], "away": fx["away"], "kickoff": fx["kickoff"], "label": fx["label"],
             "prob": prob, "fair_odds": {k: model.fair_odds(prob[k]) for k in KEYS},
             "xg": [round(lh, 2), round(la, 2)], "xg_base": [round(item["base"]["lh"], 2), round(item["base"]["la"], 2)],
-            "top_scores": s["top_scores"], "markets": s.get("markets", {}), "recommendation": recommendation, "conf": conf,
+            "top_scores": s["top_scores"], "pick_score": _shown_score(s), "markets": s.get("markets", {}), "recommendation": recommendation, "conf": conf,
             "form": {"home": teams.get(fx["home"], {}).get("form", ""), "away": teams.get(fx["away"], {}).get("form", "")},
             "last": {"home": _last(ctx["finished"], fx["home"]), "away": _last(ctx["finished"], fx["away"])},
             "h2h": _h2h(ctx.get("previous", []) + ctx["finished"], fx["home"], fx["away"]),
@@ -228,7 +233,9 @@ async def build_turno(competition: str | None = None, use_ai: bool | None = None
             pending.append(dict(match_id=fx["id"], home=fx["home"], away=fx["away"], kickoff=fx["kickoff"],
                                 p1=prob["p1"], px=prob["px"], p2=prob["p2"], league=league,
                                 extra={"o25": prob["o25"], "gg": prob["gg"], "xg": [round(lh, 2), round(la, 2)],
-                              "top": s["top_scores"][0][:2], "ai": bool(an["ai"]),
+                              # Risultato previsto mostrato dal sito (dal 29/10/2026 quello in linea con
+                              # l'esito più probabile): su questo si contano i risultati esatti.
+                              "top": _shown_score(s)[:2], "ai": bool(an["ai"]),
                               "market_predictions": market_predictions,
                               "recommendation": recommendation.get("best"),
                               "base": {k: round(item["base"][k], 4) for k in ("p1", "px", "p2")},
