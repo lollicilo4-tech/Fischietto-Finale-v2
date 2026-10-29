@@ -582,6 +582,11 @@
    "label": "Under 2,5 · massimo 2 gol",
    "p": 0.583
   },
+  "result": {
+   "ag": 2,
+   "date": "2026-10-29T00:30:00Z",
+   "hg": 3
+  },
   "top": [
    1,
    1
@@ -1449,6 +1454,11 @@
    "kind": "doppia",
    "label": "X2 · Botafogo non perde",
    "p": 0.5952
+  },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-29T00:30:00Z",
+   "hg": 2
   },
   "top": [
    1,
