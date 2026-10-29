@@ -8,25 +8,30 @@ import { SOCIAL, PREVIEW } from "../lib/fantacard.js";
 import { leagueData, allTeams, inlineJson } from "../lib/data.js";
 import { fantaRows, fantaCalendar, highlightsHtml, roundTableHtml, calendarHtml, deadlineText } from "../lib/fanta.js";
 import { ROLES, ROLE_ONE, MAX_NAME } from "../lib/rosa.js";
+import { playerProjections, roundCaptains, roundScorersHtml, bestPlayersHtml, rosaPlayers } from "../lib/fantaplayers.js";
 import { setLang } from "../lib/i18n.js";
 setLang("it");
 const league = "SA";
 const ctx = { league, favs: [] };
-const { turno } = leagueData(league);
+const { turno, classifica } = leagueData(league);
 const matches = turno ? turno.matches : [];
 const rows = fantaRows(matches);
 const cal = fantaCalendar(turno);
+/* Giocatori: probabilità di segnare e bonus attesi (src/lib/fantaplayers.js), dai marcatori di football-data.org. */
+const proj = playerProjections(turno, classifica);
+const captains = roundCaptains(proj, 3);
+const hasPlayers = proj.players.length > 0;
 const teams = allTeams(league).slice().sort((a, b) => a.localeCompare(b, "it"));
 const day = turno && turno.matchday ? "giornata " + turno.matchday : "prossima giornata";
 const deadline = deadlineText(matches);
 const title = "Consigli fantacalcio " + day + " di Serie A";
-const description = "Chi schierare al fantacalcio nella " + day + " di Serie A: capitano, portiere e difesa con la porta inviolata più probabile, gol attesi di ogni squadra e calendario delle prossime giornate. Stime del modello statistico.";
+const description = "Chi schierare al fantacalcio nella " + day + " di Serie A: probabili marcatori, capitano, giocatori migliori per le prossime giornate, porta inviolata, gol attesi e calendario. Stime del modello statistico.";
 ---
 <Base title={title} description={description} league={league} path={FANTA_URL} sub={"Serie A · Fantacalcio · " + day} crumbs={[{ name: "Fantacalcio", path: FANTA_URL }]} itOnly
   ogImage={{ path: FANTA_URL + "anteprima.png", width: PREVIEW.width, height: PREVIEW.height, alt: "Consigli fantacalcio " + day + " di Serie A: capitano e porta inviolata" }}>
   <section id="p-fanta" aria-labelledby="fanta-title">
     <h2 class="sub2" id="fanta-title">Consigli fantacalcio · {day}</h2>
-    <p class="lead">Chi schierare secondo il modello statistico di Fischietto finale: le squadre con più gol attesi per scegliere attaccanti e capitano, quelle con la porta inviolata più probabile per portiere e difesa. {deadline && <b>{deadline}.</b>}</p>
+    <p class="lead">Chi schierare secondo il modello statistico di Fischietto finale: i giocatori con più probabilità di segnare, il capitano, quelli con le prossime giornate migliori e le squadre con la porta inviolata più probabile per portiere e difesa. {deadline && <b>{deadline}.</b>}</p>
     {turno ? (
       <Fragment>
         <div class="panel rosa-panel" id="la-mia-rosa">
@@ -42,7 +47,22 @@ const description = "Chi schierare al fantacalcio nella " + day + " di Serie A: 
           <noscript><div class="msg">Per usare la tua rosa serve JavaScript.</div></noscript>
           <p class="rosa-note">La rosa resta solo su questo dispositivo: nessun account, niente viene inviato al sito.</p>
         </div>
-        <Fragment set:html={highlightsHtml(ctx, rows)} />
+        <Fragment set:html={highlightsHtml(ctx, rows, captains)} />
+        {hasPlayers && (
+          <div class="panel" id="chi-puo-segnare">
+            <h2>Chi può segnare in questa giornata</h2>
+            <p class="lead" style="margin:0">Probabilità che il giocatore segni almeno un gol <b>se è in campo</b>: le formazioni non le conosciamo, togliamo solo gli assenti confermati dalle notizie. Viene dai gol attesi della sua squadra e dalla sua parte dei gol della squadra in campionato.</p>
+            <Fragment set:html={roundScorersHtml(ctx, proj)} />
+          </div>
+        )}
+        {hasPlayers && (
+          <div class="panel" id="giocatori-prossime-giornate">
+            <h2>I giocatori per le prossime giornate</h2>
+            <p class="lead" style="margin:0">Probabilità di segnare in ogni partita, se gioca, e bonus attesi in tutte (gol +3, assist +1): utile per scambi, asta di riparazione e per decidere chi tenere. Solo i marcatori del campionato: chi non ha ancora segnato non c'è.</p>
+            <Fragment set:html={bestPlayersHtml(ctx, proj)} />
+            <div class="fanta-legend" aria-hidden="true"><span class="easy">da 40%</span><span class="mid">25–40%</span><span class="hard">sotto 25%</span></div>
+          </div>
+        )}
         <div class="panel fanta-share">
           <h2>Condividi i consigli</h2>
           <p class="lead" style="margin:0">L'immagine con capitano, porta inviolata e squadre in giornata difficile, pronta da pubblicare. Si aggiorna da sola con i dati della giornata.</p>
@@ -65,9 +85,9 @@ const description = "Chi schierare al fantacalcio nella " + day + " di Serie A: 
     ) : (
       <div class="msg">I dati della Serie A non sono ancora disponibili: riprova dopo il prossimo aggiornamento.</div>
     )}
-    <p class="lead">Il modello conosce le squadre, non i singoli giocatori: per titolari e infortuni controlla le probabili formazioni prima di chiudere la tua. Sono stime statistiche, non certezze.</p>
+    <p class="lead">Le probabilità dei giocatori valgono se sono in campo: il sito non conosce le formazioni, quindi controlla le probabili formazioni prima di chiudere la tua. Marcatori, gol e assist: football-data.org. Sono stime statistiche, non certezze.</p>
   </section>
-  <script is:inline type="application/json" id="ff-fanta" set:html={inlineJson({ rows, teams })}></script>
+  <script is:inline type="application/json" id="ff-fanta" set:html={inlineJson({ rows, teams, players: rosaPlayers(proj) })}></script>
   <script>
     import "../scripts/rosa.js";
   </script>
