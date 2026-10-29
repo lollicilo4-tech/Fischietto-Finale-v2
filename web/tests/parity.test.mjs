@@ -43,15 +43,26 @@ function normalize(html) {
     .replace(/<div class="match-stale-note">[^<]*<\/div>/g, "")
     .replace(/<div class="stat wide"><div class="k">Quote eque 1 · X · 2<\/div><div class="v num">[^<]*<\/div><\/div>/g, "")
     .replace(/quota equa [^<·]* · /g, "")
+    // Risultato previsto (29/10/2026): etichette nuove e altri punteggi con la probabilità.
+    .replace(/Risultato previsto(?=<\/span><b>\d)/g, "Risultato più probabile")
+    .replace(/(<div class="reference-final-item"><small>)Risultato previsto/g, "$1Risultato esatto più probabile")
+    .replace(/(<div class="row"><span>)Risultato previsto/g, "$1Risultato esatto più probabile")
+    .replace(/(<div class="feature-score"><small>)Risultato previsto/g, "$1Risultato più probabile")
+    .replace(/, risultato previsto (\d+-\d+)\. Stime/g, ", risultato più probabile $1. Stime")
+    .replace(/ · altri probabili: ((?:\d+-\d+ \d+%(?:, )?)*)/g, (_, list) => " · poi " + list.replace(/ \d+%/g, ""))
     // Riquadri nuovi della pagina squadra, che il sito attuale non ha: marcatori (#134).
     .replace(/<div class="panel"><h2>Tra i capocannonieri<\/h2><div class="team-list">(?:<div><span>[^<]*<\/span><b>[^<]*<\/b><\/div>)*<\/div><\/div>/g, "");
 }
+
+/* Il sito vecchio non conosce pick_score (risultato in linea con il pronostico, 29/10/2026): il confronto
+   si fa sullo stesso punteggio di prima, top_scores[0]. */
+const withoutPickScore = (t) => t && { ...t, matches: (t.matches || []).map(({ pick_score, ...m }) => m) };
 
 /* Campionati che esistevano nel sito vecchio: la Copa del Rey c'è solo nel sito nuovo. */
 const LEGACY = new Set(["SA", "PL", "CL", "BL1", "PD", "FL1", "EL", "UECL"]);
 for (const L of LEAGUES.filter((l) => LEGACY.has(l.code))) {
   const prefix = L.file;
-  const turno = read(prefix + "turno.json"), storico = read(prefix + "storico.json"), classifica = read(prefix + "classifica.json");
+  const turno = withoutPickScore(read(prefix + "turno.json")), storico = read(prefix + "storico.json"), classifica = read(prefix + "classifica.json");
   test("stesso HTML del sito attuale · " + L.name, { skip: !turno && "dati non pubblicati" }, () => {
     const old = legacyRender(L.code);
     assert.deepEqual(old.errors, [], "il sito attuale non deve avere errori su questi dati");

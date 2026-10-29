@@ -145,7 +145,7 @@ def upcoming_rounds(remaining: list[dict], current_ids: set, teams: dict, avg_h:
             s = model.summarize(lh, la, rho)
             items.append({"id": str(m.get("id")), "home": m["home"], "away": m["away"], "kickoff": m["kickoff"],
                           "prob": {k: round(s[k], 4) for k in ("p1", "px", "p2")},
-                          "xg": [round(lh, 2), round(la, 2)], "top": s["top_scores"][0][:2]})
+                          "xg": [round(lh, 2), round(la, 2)], "top": s["pick_score"][:2]})
         out.append({"matchday": matchday, "matches": items})
         if len(out) >= rounds:
             break

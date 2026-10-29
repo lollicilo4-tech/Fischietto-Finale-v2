@@ -118,7 +118,7 @@ export function recentResults() {
 export function slimMatches(matches) {
   return (matches || []).map((m) => ({
     id: m.id, home: m.home, away: m.away, prob: m.prob, xg: m.xg, markets: m.markets,
-    top_scores: m.top_scores, recommendation: m.recommendation, analysis: { ai: !!(m.analysis && m.analysis.ai) }
+    top_scores: m.top_scores, pick_score: m.pick_score, recommendation: m.recommendation, analysis: { ai: !!(m.analysis && m.analysis.ai) }
   }));
 }
 /* JSON sicuro dentro <script type="application/json">: "<" non può chiudere il tag. */

@@ -17,7 +17,7 @@ const matches = turno ? turno.matches : [];
 const favData = JSON.stringify(favStripData(matches)).replace(/</g, "\\u003c");
 const day = turno && turno.matchday ? " · " + roundWord(league) + " " + turno.matchday : "";
 ---
-<Base title={t("Partite") + " " + L.name + day} description={t("Pronostici di tutte le partite di {league}{day}: probabilità 1X2, risultato più probabile, gol attesi e assenze confermate.", { league: L.name, day })} league={league} section="partite" path={leagueUrl(league, "partite")}>
+<Base title={t("Partite") + " " + L.name + day} description={t("Pronostici di tutte le partite di {league}{day}: probabilità 1X2, risultato previsto, gol attesi e assenze confermate.", { league: L.name, day })} league={league} section="partite" path={leagueUrl(league, "partite")}>
   <section id="p-partite" aria-label={t("Partite") + " " + L.name}>
     <div id="hero" set:html={matches.length ? hero(byStrength(matches)[0], league) : ""}></div>
     <p class="lead">{t("Tocca una partita per aprire il dettaglio. Nel dettaglio puoi fare anche il tuo pronostico e sfidare il modello:")} <a href={myPicksUrl()}>{t("I miei pronostici →")}</a></p>

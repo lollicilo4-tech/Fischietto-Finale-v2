@@ -44,6 +44,21 @@ export function prudentChoice(m) {
   const p = m.prob;
   return p.p1 + p.px >= p.px + p.p2 ? ["1X", p.p1 + p.px] : ["X2", p.px + p.p2];
 }
+/* Risultato previsto mostrato dal sito: [casa, trasferta, probabilità].
+   Dal 29/10/2026 è il punteggio più probabile tra quelli in linea con l'esito 1X2 più probabile
+   (pick_score, app/model.py): il singolo punteggio più probabile era quasi sempre 1-1, anche con una
+   squadra nettamente favorita. Se pick_score manca (dati vecchi) o non torna con l'esito, resta top_scores[0]. */
+const outcomeOf = (z) => (z[0] > z[1] ? "1" : z[0] === z[1] ? "X" : "2");
+export function mainScore(m) {
+  const z = m && m.pick_score, top = m && m.top_scores && m.top_scores[0];
+  const ok = Array.isArray(z) && z.length >= 3 && [z[0], z[1], z[2]].every(Number.isFinite) && m.prob && outcomeOf(z) === finalOutcome(m)[0];
+  return ok ? z : top || null;
+}
+/* Gli altri punteggi più probabili (al massimo 3), senza quello mostrato: l'1-1 resta visibile qui. */
+export const otherScores = (m) => {
+  const s = mainScore(m);
+  return ((m && m.top_scores) || []).filter((x) => !s || x[0] !== s[0] || x[1] !== s[1]).slice(0, 3);
+};
 export const strength = (m) => Math.max(m.prob.p1, m.prob.px, m.prob.p2);
 export const byStrength = (matches) => matches.slice().sort((a, b) => strength(b) - strength(a));
 
@@ -90,7 +105,7 @@ const marketsOf = (m) => (m.markets && Object.keys(m.markets).length ? m.markets
 
 export function deriveRecommendation(m) {
   if (m.recommendation && m.recommendation.best) return m.recommendation;
-  const p = m.prob || {}, q = marketsOf(m), z = m.top_scores && m.top_scores[0];
+  const p = m.prob || {}, q = marketsOf(m), z = mainScore(m);
   let a = [
     { code: "1", label: marketLabel("1", m), p: p.p1, kind: "esito" },
     { code: "X", label: marketLabel("X", m), p: p.px, kind: "esito" },
@@ -180,8 +195,8 @@ export function modelSlipPicks(matches, mode, n, marketPerformance = {}) {
       ["Gol + Over 2,5", "Gol + Over 2,5", q["gg_o25"], "combo"],
       ["No Gol + Under 3,5", "No Gol + Under 3,5", q["ng_u35"], "combo"]
     ];
-    if (m.top_scores && m.top_scores[0]) {
-      const z = m.top_scores[0];
+    if (mainScore(m)) {
+      const z = mainScore(m);
       a.push(["Ris. esatto", marketLabel("Ris. esatto", m, z[0] + "-" + z[1]), Number(z[2] || 0), "score"]);
     }
     a.forEach((x) => { if (x[2] > 0) all.push({ match: m, m: m.home + " – " + m.away, code: x[0], label: x[1].indexOf(" + ") >= 0 ? marketText(x[1]) : x[1], p: Number(x[2]), kind: x[3] }); });

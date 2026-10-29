@@ -13,7 +13,7 @@ const L = leagueByCode(league);
 const title = root ? "Fischietto finale" : t("{league}: pronostici e probabilità", { league: L.name });
 const description = root
   ? t("Pronostici statistici di Serie A, Premier League, LaLiga, Bundesliga, Ligue 1 e coppe europee: probabilità, risultato probabile e spiegazione di ogni partita. Solo informazione, nessuna scommessa.")
-  : t("Come potrebbe andare ogni partita di {league}: probabilità 1X2, risultato più probabile, gol attesi e spiegazione del modello.", { league: L.name });
+  : t("Come potrebbe andare ogni partita di {league}: probabilità 1X2, risultato previsto, gol attesi e spiegazione del modello.", { league: L.name });
 const site = Astro.site ? Astro.site.href.replace(/\/$/, "") : "";
 ---
 <Base title={title} description={description} league={league} section="home" path={leagueUrl(league, "home")} inner={false} ld={root ? [websiteLd(site, description)] : []}>

@@ -4,6 +4,7 @@
    Funzioni pure, provate in Node; i file li genera il build (src/pages/calendario/, src/pages/en/calendar/). */
 import { leagueByCode, matchUrl, teamUrl, pc } from "./core.js";
 import { t, isEn } from "./i18n.js";
+import { mainScore } from "./model.js";
 
 /* Partite della squadra: turno in corso (con la pagina della partita) e prossime giornate. */
 export function teamFixtures(team, turno) {
@@ -46,7 +47,7 @@ export function teamCalendar({ site, league, team, turno, generatedAt }) {
     "REFRESH-INTERVAL;VALUE=DURATION:PT6H", "X-PUBLISHED-TTL:PT6H"
   ];
   teamFixtures(team, turno).forEach(({ m, page }) => {
-    const p = m.prob || {}, top = m.top || (m.top_scores && m.top_scores[0]);
+    const p = m.prob || {}, top = m.top || mainScore(m);
     const odds = Number.isFinite(p.p1) ? "1 " + m.home + " " + pc(p.p1) + " · X " + pc(p.px) + " · 2 " + m.away + " " + pc(p.p2) : "";
     const desc = L.name + ". " + (odds ? t("Modello: {odds}", { odds }) + (top ? ", " + t("risultato probabile {score}", { score: top[0] + "-" + top[1] }) : "") + ". " : "") +
       t("Stime statistiche, non un invito a scommettere.");

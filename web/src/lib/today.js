@@ -3,7 +3,7 @@
    così dopo mezzanotte "Oggi" e "Domani" restano giusti anche prima del prossimo aggiornamento.
    Funzioni pure, provate in Node. */
 import { LEAGUES, esc, pc, romeParts, dayOf, matchUrl } from "./core.js";
-import { finalOutcome } from "./model.js";
+import { finalOutcome, mainScore } from "./model.js";
 import { t } from "./i18n.js";
 import { crestSrc, crestImgSrc } from "./crests.js";
 
@@ -19,7 +19,7 @@ export function todayItems(turni) {
     const turno = turni[l.code];
     ((turno && turno.matches) || []).forEach((m) => {
       if (!m || !m.kickoff || !m.prob || !Number.isFinite(Date.parse(m.kickoff))) return;
-      const fo = finalOutcome(m), s = m.top_scores && m.top_scores[0];
+      const fo = finalOutcome(m), s = mainScore(m);
       out.push({
         league: l.code, flag: l.flag, name: l.name, id: String(m.id), home: m.home, away: m.away, kickoff: m.kickoff,
         p1: m.prob.p1, px: m.prob.px, p2: m.prob.p2, conf: m.conf, pick: [fo[0], fo[1], fo[2]],
