@@ -717,7 +717,25 @@ async def real_context(competition: str | None = None) -> dict:
             "standings": _reconcile_standings(_standings(st), finished)}
 
 
-SCORERS_LIMIT = 20
+# 100 marcatori invece di 20 (29/10/2026): servono al fantacalcio, che stima per ogni giocatore la
+# probabilità di segnare; con 20 nomi metà delle squadre restava senza giocatori. È sempre una sola
+# richiesta. Il sito ne mostra 20 nella classifica marcatori.
+SCORERS_LIMIT = 100
+
+# Ruolo del giocatore secondo football-data.org (player.section o player.position, in inglese):
+# P portiere, D difensore, C centrocampista, A attaccante. Ruolo sconosciuto: None.
+_ROLE_WORDS = (("goalkeeper", "P"), ("keeper", "P"), ("defence", "D"), ("defender", "D"), ("back", "D"),
+               ("midfield", "C"), ("offence", "A"), ("attack", "A"), ("forward", "A"), ("striker", "A"),
+               ("winger", "A"), ("wing", "A"))
+
+
+def _role(player: dict) -> str | None:
+    for key in ("section", "position"):
+        text = str(player.get(key) or "").lower()
+        for word, role in _ROLE_WORDS:
+            if word in text:
+                return role
+    return None
 
 
 def _scorers(payload: dict) -> list[dict]:
@@ -732,7 +750,7 @@ def _scorers(payload: dict) -> list[dict]:
             continue
         out.append({"player": str(player["name"]), "team": _name(team), "goals": goals,
                     "assists": num(s.get("assists")), "penalties": num(s.get("penalties")),
-                    "played": num(s.get("playedMatches"))})
+                    "played": num(s.get("playedMatches")), "role": _role(player)})
     return sorted(out, key=lambda x: (-x["goals"], -(x["assists"] or 0), x["played"] or 0, x["player"]))[:SCORERS_LIMIT]
 
 

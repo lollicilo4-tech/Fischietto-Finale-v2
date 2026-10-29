@@ -20,7 +20,7 @@ const ctx = { league, favs: [] };
         <div class="panel"><div id="table" set:html={tableHtml(ctx, classifica)}></div></div>
         <p class="legend">{t("Barra blu: prime quattro. Barra rossa: ultime tre. Tocca una squadra per aprire la sua scheda.")}</p>
         <div id="season" set:html={classifica ? seasonPanel(ctx, classifica.season) : ""}></div>
-        <div id="scorers" set:html={classifica ? scorersPanel(ctx, classifica.scorers) : ""}></div>
+        <div id="scorers" set:html={classifica ? scorersPanel(ctx, (classifica.scorers || []).slice(0, 20)) : ""}></div>
       </>
     )}
   </section>
