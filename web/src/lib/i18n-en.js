@@ -597,5 +597,6 @@ export const EN = {
   "Il modello negli ultimi 7 giorni, in tutti i campionati →": "The model in the last 7 days, across all leagues →",
   "Modello: {pick} al {p}": "Model: {pick} at {p}",
   "risultato esatto": "exact score",
-  " · altri probabili: ": " · also likely: "
+  " · altri probabili: ": " · also likely: ",
+  "{league}: la giornata in breve": "{league}: this round at a glance"
 };
