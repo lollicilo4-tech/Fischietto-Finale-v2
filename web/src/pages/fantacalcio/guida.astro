@@ -1,0 +1,82 @@
+---
+/* Guida al fantacalcio con i numeri del modello: come leggere probabilità di segnare, porta inviolata,
+   bonus attesi e calendario, con esempi presi dalla giornata in corso (si aggiornano da soli).
+   Solo in italiano, come il resto del fantacalcio. */
+import Base from "../../layouts/Base.astro";
+import { FANTA_URL, INFO_URL, pc, d2 } from "../../lib/core.js";
+import { leagueData } from "../../lib/data.js";
+import { fantaRows, highlights, fantaCalendar } from "../../lib/fanta.js";
+import { playerProjections, roundCaptains, bestPlayers } from "../../lib/fantaplayers.js";
+import { setLang } from "../../lib/i18n.js";
+setLang("it");
+const { turno, classifica } = leagueData("SA");
+const rows = fantaRows(turno ? turno.matches : []);
+const h = highlights(rows);
+const proj = playerProjections(turno, classifica);
+const cap = roundCaptains(proj, 1)[0] || null;
+const best = bestPlayers(proj, null, 1)[0] || null;
+const cal = fantaCalendar(turno, "win");
+const easiest = cal.teams[0] || null, hardest = cal.teams[cal.teams.length - 1] || null;
+const day = turno && turno.matchday ? "giornata " + turno.matchday : "prossima giornata";
+const where = (home) => (home ? "in casa" : "in trasferta");
+const PATH = FANTA_URL + "guida/";
+---
+<Base title="Guida al fantacalcio con le statistiche" description="Come usare probabilità di segnare, porta inviolata, bonus attesi e calendario per scegliere formazione, capitano e scambi al fantacalcio, con esempi della giornata di Serie A." league="SA" path={PATH} sub="Serie A · Fantacalcio · guida" crumbs={[{ name: "Fantacalcio", path: FANTA_URL }, { name: "Guida", path: PATH }]} itOnly>
+  <section id="p-info" aria-labelledby="guide-title">
+    <h2 class="sub2" id="guide-title">Guida al fantacalcio con le statistiche</h2>
+    <p class="lead">Al fantacalcio non vince chi indovina tutto, ma chi sbaglia meno scelte nel corso della stagione. I numeri non sostituiscono le probabili formazioni: servono a decidere meglio quando sei in dubbio tra due giocatori. Questa guida spiega come leggere quelli della pagina <a href={FANTA_URL}>Fantacalcio</a>, con esempi presi dalla {day}.</p>
+
+    <div class="panel info-section">
+      <h2>1. Prima di tutto: chi gioca</h2>
+      <p>Nessuna statistica vale per un giocatore in panchina. Tutte le probabilità che trovi qui valgono <b>se il giocatore è in campo</b>: il sito non conosce le formazioni ufficiali. Toglie solo gli assenti che le notizie confermano (infortuni e squalifiche, con il link all'articolo nella scheda della partita). Quindi l'ordine giusto è: controlla le probabili formazioni, poi usa i numeri per scegliere tra i titolari.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>2. Attaccanti e capitano: la probabilità di segnare</h2>
+      <p>Per ogni marcatore di Serie A calcoliamo che parte dei gol della sua squadra segna quando è in campo. Poi la combiniamo con i gol che il modello si aspetta dalla squadra in quella partita. Un attaccante che fa un terzo dei gol della squadra, contro un avversario da cui la sua squadra si aspetta 1,8 gol, ha circa il 45% di probabilità di segnare almeno una volta.</p>
+      {cap && <p><b>Esempio della {day}:</b> il giocatore con più bonus attesi è <b>{cap.player}</b> ({cap.team}, {where(cap.cells[0].home)} con {cap.cells[0].opp}): {pc(cap.cells[0].p)} di probabilità di segnare, con {d2(cap.cells[0].lambda)} gol attesi per la sua squadra e {cap.goals} gol in {cap.played} partite.</p>}
+      <p>Per il <b>capitano</b> conta il bonus raddoppiato, quindi conviene chi ha più bonus attesi (gol +3 e assist +1, pesati per la loro probabilità), non per forza il più famoso. A inizio stagione il calcolo è prudente: chi ha segnato due gol nelle prime due partite non viene trattato come un bomber.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>3. Portiere e difesa: la porta inviolata</h2>
+      <p>Per portieri e difensori il numero chiave è la probabilità che l'avversaria non segni. Viene direttamente dai gol attesi dell'avversaria: meno gol attesi, più probabile la porta inviolata. In Serie A una squadra tiene la porta inviolata in circa un terzo delle partite, quindi sopra il 35% è una buona giornata, sotto il 20% è meglio pensarci.</p>
+      {h && h.defence[0] && <p><b>Esempio della {day}:</b> la porta inviolata più probabile è di <b>{h.defence[0].team}</b> ({where(h.defence[0].home)} con {h.defence[0].opp}): {pc(h.defence[0].cs)}.</p>}
+      <p>Il modificatore di difesa, se la tua lega lo usa, segue la stessa logica: schiera i difensori delle squadre con la porta inviolata più probabile.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>4. Le giornate difficili</h2>
+      <p>Sono le squadre con meno gol attesi e più gol subiti attesi. Non vuol dire che i loro giocatori vadano sempre in panchina, ma che servono motivi forti (un rigorista, un giocatore in grande forma) per schierarli.</p>
+      {h && h.avoid[0] && <p><b>Esempio della {day}:</b> la giornata più difficile è di <b>{h.avoid[0].team}</b>, con {d2(h.avoid[0].xgFor)} gol fatti e {d2(h.avoid[0].xgAgainst)} subiti attesi.</p>}
+    </div>
+
+    <div class="panel info-section">
+      <h2>5. Scambi e asta di riparazione: il calendario</h2>
+      <p>Una singola giornata dice poco; cinque giornate dicono molto di più. Il <a href={FANTA_URL + "calendario/"}>calendario fantacalcio</a> mostra per ogni squadra le avversarie delle prossime giornate, colorate da favorevole a difficile, con tre misure: vittoria, gol attesi (per attaccanti e centrocampisti) e porta inviolata (per portiere e difesa).</p>
+      {easiest && hardest && <p><b>Adesso:</b> il calendario più favorevole è di <b>{easiest.team}</b> (vittoria in media al {pc(easiest.avg)}), il più difficile di <b>{hardest.team}</b> ({pc(hardest.avg)}).</p>}
+      {best && <p>Tra i giocatori, quello con più bonus attesi nelle prossime partite è <b>{best.player}</b> ({best.team}): {d2(best.total)} bonus attesi in {best.games} {best.games === 1 ? "partita" : "partite"}. La tabella completa, divisa per ruolo, è nella pagina Fantacalcio.</p>}
+    </div>
+
+    <div class="panel info-section">
+      <h2>6. La tua rosa</h2>
+      <p>In "La mia rosa" inserisci i tuoi giocatori: per ogni ruolo il sito li mette in ordine di partita più favorevole e propone il capitano. Se il nome che scrivi è tra i marcatori di Serie A (basta anche solo il cognome, o il nome con cui è conosciuto), vedi la sua probabilità di segnare; per gli altri usa i gol attesi della squadra. La rosa resta solo sul tuo telefono: niente account, niente dati inviati.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>7. Gli errori più comuni</h2>
+      <ul>
+        <li><b>Scegliere solo per il nome.</b> Un campione in trasferta contro la miglior difesa spesso vale meno di un buon attaccante in casa contro l'ultima in classifica.</li>
+        <li><b>Guardare solo la classifica.</b> La classifica dice cosa è successo; i gol attesi stimano cosa può succedere, tenendo conto di attacco, difesa, campo e assenze.</li>
+        <li><b>Fidarsi di una sola partita.</b> Una probabilità del 40% vuol dire che 6 volte su 10 il gol non arriva. Le scelte buone si vedono sulla stagione, non sulla singola giornata.</li>
+        <li><b>Dimenticare chi gioca.</b> Prima le probabili formazioni, poi i numeri.</li>
+      </ul>
+    </div>
+
+    <div class="panel info-section">
+      <h2>8. Da dove vengono i numeri</h2>
+      <p>Le forze delle squadre e i gol attesi vengono dal modello statistico di Fischietto finale, spiegato con un esempio nella pagina <a href={INFO_URL}>Come funziona</a>. Marcatori, gol, assist e presenze arrivano da football-data.org e si aggiornano ogni quattro ore. Sono stime statistiche, non certezze.</p>
+      <p><a href={FANTA_URL}>Vai ai consigli della {day} →</a></p>
+    </div>
+  </section>
+</Base>

@@ -64,6 +64,8 @@ export const matchSlug = (m) => String(m.id).replace(/[^0-9A-Za-z_-]/g, "") + "-
 export const matchUrl = (league, m) => prefix() + "/" + leagueByCode(league).slug + "/" + PART.partita[isEn() ? "en" : "it"] + "/" + matchSlug(m) + "/";
 export const liveUrl = (league) => prefix() + "/live/" + (league ? "?lega=" + leagueByCode(league).slug : "");
 export const INFO_URL = "/come-funziona/";
+export const ABOUT_URL = "/chi-siamo/";
+export const aboutUrl = () => (isEn() ? "/en/about/" : ABOUT_URL);
 export const PRIVACY_URL = "/privacy/";
 export const MYPICKS_URL = "/i-miei-pronostici/";
 /* Consigli fantacalcio: solo Serie A e solo in italiano. */
@@ -86,7 +88,7 @@ export const CONTACT_EMAIL = "info@fischiettofinale.com";
 
 /* Stessa pagina nell'altra lingua, per il selettore di lingua e i link hreflang.
    La Home italiana (/) è la Serie A, quella inglese (/en/) la Premier League. */
-const PAGES = [["/come-funziona/", "/en/how-it-works/"], ["/privacy/", "/en/privacy/"], ["/i-miei-pronostici/", "/en/my-predictions/"], ["/live/", "/en/live/"], ["/oggi/", "/en/today/"], ["/settimana/", "/en/week/"]];
+const PAGES = [["/come-funziona/", "/en/how-it-works/"], ["/privacy/", "/en/privacy/"], ["/i-miei-pronostici/", "/en/my-predictions/"], ["/live/", "/en/live/"], ["/oggi/", "/en/today/"], ["/settimana/", "/en/week/"], ["/chi-siamo/", "/en/about/"]];
 export function altPath(pathname, to) {
   const p = String(pathname || "/");
   const from = to === "en" ? 0 : 1, dest = to === "en" ? 1 : 0;

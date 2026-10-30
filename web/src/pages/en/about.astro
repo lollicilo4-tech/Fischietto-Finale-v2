@@ -1,0 +1,54 @@
+---
+/* About: traduzione inglese di src/pages/chi-siamo.astro. Va aggiornata insieme a quella. */
+import Base from "../../layouts/Base.astro";
+import { KOFI_URL, CONTACT_EMAIL, leagueUrl } from "../../lib/core.js";
+import { setLang } from "../../lib/i18n.js";
+setLang("en");
+const ext = { target: "_blank", rel: "noopener noreferrer" };
+---
+<Base title="About" description="Fischietto finale is a free, personal project by a football and data enthusiast: transparent statistical predictions, a public record and no betting." section={undefined} path="/en/about/">
+  <section id="p-info" aria-labelledby="about-title">
+    <h2 class="sub2" id="about-title">About</h2>
+    <p class="lead">Fischietto finale is a personal project, born from a passion for football and for numbers. No newsroom, no agency, no bookmaker behind it: just an enthusiast who wanted to understand, with data, how a match could go.</p>
+
+    <div class="panel info-section">
+      <h2>Why it started</h2>
+      <p>Before every round you can read predictions of every kind, almost always without saying where they come from. Fischietto finale does the opposite: it starts from real results, builds a statistical model that is simple to explain and shows every number with its reason. If the model says a team wins 55% of the time, you should be able to see why and to check, match after match, whether it was right.</p>
+      <p>That is why every prediction is saved before kick-off and never changed: the <a href={leagueUrl("PL", "storico")}>History</a> compares it with the real result, wrong calls included, and the <a href="/en/week/">weekly recap</a> shows how it went, good or bad.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>What you will find</h2>
+      <ul>
+        <li><b>Statistical predictions</b> for the Premier League, Serie A, LaLiga, Bundesliga, Ligue 1, European cups and other leagues: probabilities of 1, X and 2, expected goals and predicted score, with the factors that matter most.</li>
+        <li><b>Verified news</b>: in the 48 hours before the main matches an artificial intelligence system looks for injuries and suspensions, and an absence counts only if an article confirms it, with a link to the source.</li>
+        <li><b>Live Center</b> with scores, events and probabilities that change minute by minute.</li>
+      </ul>
+      <p>How the model works, with a real example: <a href="/en/how-it-works/">How it works</a>.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>What we do not do</h2>
+      <ul>
+        <li>We do not take bets, do not show bookmaker odds and have no deals with betting sites. The site is for information only and is not an invitation to gamble.</li>
+        <li>We do not ask for sign-ups or personal data: your preferences (followed teams, your own predictions) stay on your device only. Details are on the <a href="/en/privacy/">Privacy and cookies</a> page.</li>
+        <li>We do not sell "sure" predictions: they do not exist. Every number is an estimate, and we say so everywhere.</li>
+      </ul>
+    </div>
+
+    <div class="panel info-section">
+      <h2>The data</h2>
+      <p>Results, fixtures, tables and scorers come from <a href="https://www.football-data.org/" {...ext}>football-data.org</a>; some cups from public results archives. The Live Center uses SportScore's free service. Predictions update by themselves every four hours and the site is rebuilt at every update.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>Free, for everyone</h2>
+      <p>Fischietto finale is free and has no subscriptions: everyone sees the same things. If you find it useful you can support it with a donation of your choice on <a href={KOFI_URL} {...ext}>Ko-fi</a>, which helps cover the time spent on the project. Donations do not unlock anything and do not change the predictions.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>Contact</h2>
+      <p>Found a mistake, a wrong result or have an idea? Write to <a href={"mailto:" + CONTACT_EMAIL}>{CONTACT_EMAIL}</a>. Every message is read, and many of the site's features started that way.</p>
+    </div>
+  </section>
+</Base>
