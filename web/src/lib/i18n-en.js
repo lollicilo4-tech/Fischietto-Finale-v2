@@ -598,5 +598,13 @@ export const EN = {
   "Modello: {pick} al {p}": "Model: {pick} at {p}",
   "risultato esatto": "exact score",
   " · altri probabili: ": " · also likely: ",
-  "{league}: la giornata in breve": "{league}: this round at a glance"
+  "{league}: la giornata in breve": "{league}: this round at a glance",
+  "Il pronostico del modello si salva da poco: comparirà qui dopo le prossime partite.": "The model's prediction has only been saved recently: it will appear here after the next matches.",
+  "pronostico azzeccato": "prediction correct",
+  "<b>{hit}</b> pronostici corretti su <b>{n}</b>, con una probabilità media dichiarata del {p}.": "<b>{hit}</b> correct predictions out of <b>{n}</b>, with an average stated probability of {p}.",
+  "È il pronostico finale mostrato nella scheda di ogni partita (per esempio X2, Over 1,5 o una combinazione): più prudente dell'esito 1X2, quindi azzecca più spesso, ma con probabilità più alte da rispettare.": "It is the final prediction shown on every match card (for example X2, Over 1.5 or a combination): more cautious than the 1X2 outcome, so it is right more often, but with higher probabilities to live up to.",
+  "Esito 1X2: {pick} {mark}": "1X2 outcome: {pick} {mark}",
+  "Quale storico": "Which record",
+  "Ultimi pronostici del modello": "Latest model predictions",
+  "Esito 1X2": "1X2 outcome"
 };

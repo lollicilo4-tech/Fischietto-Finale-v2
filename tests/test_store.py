@@ -182,6 +182,23 @@ class ArchivedResultsTests(unittest.TestCase):
         self.assertEqual(actual["base_rates"], {"1": 0.5, "X": 0.25, "2": 0.25})
 
 
+class HistoryRecommendationTests(unittest.TestCase):
+    def test_items_carry_the_shown_prediction_and_its_outcome(self):
+        base = {"home": "Fiorentina", "away": "Atalanta", "kickoff": "2026-10-29T19:45:00Z",
+                "p1": 0.3, "px": 0.25, "p2": 0.45, "pick": "2", "pick_p": 0.45}
+        rows = [
+            ("1", {**base, "recommendation": {"code": "x2_o15", "label": "X2 + Over 1,5", "p": 0.5486}}, {"id": "1", "hg": 2, "ag": 2}),
+            ("2", {**base, "recommendation": {"code": "Over 2,5", "label": "Over 2,5", "p": 0.55}}, {"id": "2", "hg": 1, "ag": 0}),
+            ("3", dict(base), {"id": "3", "hg": 0, "ag": 1}),
+        ]
+        with patch("app.store._joined", return_value=rows):
+            items = store.history([r[2] for r in rows])["items"]
+        self.assertFalse(items[0]["ok"], "1X2: diceva 2, è finita 2-2")
+        self.assertEqual(items[0]["rec"], {"code": "x2_o15", "label": "X2 + Over 1,5", "p": 0.5486, "ok": True})
+        self.assertFalse(items[1]["rec"]["ok"])
+        self.assertNotIn("rec", items[2], "pronostici vecchi senza consiglio")
+
+
 class WeekItemsTests(unittest.TestCase):
     def test_week_items_keeps_recent_finished_matches_newest_first(self):
         from datetime import datetime, timezone

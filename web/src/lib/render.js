@@ -485,6 +485,25 @@ function marketPerformancePanel(h) {
 }
 
 /* Tutte le parti della pagina Storico: { lead, verdict, recap, hero, sum, quality, hist }. */
+/* Storico del "Pronostico finale del modello" (quello mostrato nella scheda: X2, Over 1,5, combo...),
+   accanto a quello dell'esito 1X2. Dati: recommendation_performance e items[].rec (app/store.py). */
+export function recommendationParts(h) {
+  const rp = h && h.recommendation_performance, items = ((h && h.items) || []).filter((x) => x && x.rec);
+  if (!rp || !rp.n) return { hero: '<div class="msg">' + t("Il pronostico del modello si salva da poco: comparirà qui dopo le prossime partite.") + "</div>", list: "" };
+  const rate = rp.hit / rp.n, recent = items.slice(0, 12);
+  const bars = recent.map((x) => '<i class="' + (x.rec.ok ? "y" : "n") + '" style="height:' + (x.rec.ok ? 78 : 34) + '%"><span>' + (x.rec.ok ? "✓" : "✕") + "</span></i>").join("");
+  const hero = '<div class="hist-hero-top"><div><div class="hist-kicker">' + t("Pronostico del modello") + '</div><div class="hist-rate">' + pc(rate) + " <small>" + t("pronostico azzeccato") + "</small></div>" +
+    '<p class="hist-caption">' + t("<b>{hit}</b> pronostici corretti su <b>{n}</b>, con una probabilità media dichiarata del {p}.", { hit: rp.hit, n: rp.n, p: pc(rp.avg_p) }) + " " +
+    t("È il pronostico finale mostrato nella scheda di ogni partita (per esempio X2, Over 1,5 o una combinazione): più prudente dell'esito 1X2, quindi azzecca più spesso, ma con probabilità più alte da rispettare.") +
+    '</p></div><div class="hist-ring" style="--rate:' + Math.round(rate * 100) + '%"><b>' + pc(rate) + '</b></div></div>' + (bars ? '<div class="hist-bars">' + bars + "</div>" : "");
+  const list = items.length ? '<div class="team-list week-list">' + items.map((x) => {
+    const parts = String(x.match).split(" – "), m = { home: parts[0], away: parts[1] };
+    return "<div><span><b>" + esc(x.match) + " · " + esc(x.score) + "</b><small>" + t("Esito 1X2: {pick} {mark}", { pick: esc(x.pick), mark: x.ok ? "✓" : "✕" }) + '</small></span><b class="' + (x.rec.ok ? "ok" : "ko") + '">' +
+      esc(recLabel(x.rec, m)) + " · " + pc(x.rec.p) + " " + (x.rec.ok ? "✓" : "✕") + "</b></div>";
+  }).join("") + "</div>" : "";
+  return { hero, list };
+}
+
 export function storicoParts(h) {
   const out = { lead: t("Ogni pronostico viene salvato prima della partita e confrontato con il risultato."), verdict: "", recap: "", hero: "", sum: "", quality: "", hist: "" };
   if (!h) return out;
