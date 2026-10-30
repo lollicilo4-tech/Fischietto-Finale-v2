@@ -1317,6 +1317,11 @@
    "label": "X2 · Paranaense non perde",
    "p": 0.6562
   },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-30T00:30:00Z",
+   "hg": 2
+  },
   "top": [
    1,
    1
@@ -1755,6 +1760,11 @@
    "kind": "doppia",
    "label": "X2 · Flamengo non perde",
    "p": 0.7569
+  },
+  "result": {
+   "ag": 4,
+   "date": "2026-10-29T23:00:00Z",
+   "hg": 1
   },
   "top": [
    1,
