@@ -44405,6 +44405,11 @@
    "label": "X2 · Athletic Club non perde",
    "p": 0.9068
   },
+  "result": {
+   "ag": 6,
+   "date": "2026-10-29T20:00:00Z",
+   "hg": 1
+  },
   "top": [
    0,
    2
@@ -44540,6 +44545,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7882
+  },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-29T19:00:00Z",
+   "hg": 2
   },
   "top": [
    1,
@@ -44677,6 +44687,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8036
   },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-29T18:00:00Z",
+   "hg": 0
+  },
   "top": [
    1,
    1
@@ -44812,6 +44827,11 @@
    "kind": "doppia",
    "label": "X2 · Osasuna non perde",
    "p": 0.9004
+  },
+  "result": {
+   "ag": 6,
+   "date": "2026-10-29T18:00:00Z",
+   "hg": 0
   },
   "top": [
    0,
@@ -44949,6 +44969,11 @@
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8036
   },
+  "result": {
+   "ag": 4,
+   "date": "2026-10-29T19:00:00Z",
+   "hg": 2
+  },
   "top": [
    1,
    1
@@ -45084,6 +45109,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8036
+  },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-29T19:00:00Z",
+   "hg": 0
   },
   "top": [
    1,
@@ -45223,6 +45253,11 @@
    "label": "X2 + Under 3,5",
    "p": 0.5128
   },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-29T18:30:00Z",
+   "hg": 0
+  },
   "top": [
    1,
    2
@@ -45358,6 +45393,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8036
+  },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-29T19:00:00Z",
+   "hg": 0
   },
   "top": [
    1,
@@ -45497,6 +45537,11 @@
    "label": "1X · Coruxo non perde",
    "p": 0.7234
   },
+  "result": {
+   "ag": 2,
+   "date": "2026-10-29T18:00:00Z",
+   "hg": 0
+  },
   "top": [
    2,
    1
@@ -45634,6 +45679,11 @@
    "kind": "combo",
    "label": "X2 + Under 3,5",
    "p": 0.5128
+  },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-29T19:00:00Z",
+   "hg": 0
   },
   "top": [
    1,
@@ -45773,6 +45823,11 @@
    "label": "1X · Gimnástica Torrelavega non perde",
    "p": 0.7234
   },
+  "result": {
+   "ag": 1,
+   "date": "2026-10-29T19:30:00Z",
+   "hg": 3
+  },
   "top": [
    2,
    1
@@ -45908,6 +45963,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.8036
+  },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-29T19:00:00Z",
+   "hg": 1
   },
   "top": [
    1,
@@ -46047,6 +46107,11 @@
    "label": "X2 · Real Oviedo non perde",
    "p": 0.8955
   },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-29T17:00:00Z",
+   "hg": 3
+  },
   "top": [
    0,
    2
@@ -46185,6 +46250,11 @@
    "label": "X2 + Under 3,5",
    "p": 0.5128
   },
+  "result": {
+   "ag": 2,
+   "date": "2026-10-29T18:00:00Z",
+   "hg": 1
+  },
   "top": [
    1,
    2
@@ -46320,6 +46390,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7882
+  },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-29T19:00:00Z",
+   "hg": 1
   },
   "top": [
    1,
@@ -46457,6 +46532,11 @@
    "label": "X2 · Racing Santander non perde",
    "p": 0.9029
   },
+  "result": {
+   "ag": 2,
+   "date": "2026-10-29T20:00:00Z",
+   "hg": 0
+  },
   "top": [
    0,
    2
@@ -46592,6 +46672,11 @@
    "kind": "gol",
    "label": "Over 1,5 · almeno 2 gol",
    "p": 0.7882
+  },
+  "result": {
+   "ag": 2,
+   "date": "2026-10-29T18:00:00Z",
+   "hg": 1
   },
   "top": [
    1,
@@ -46729,6 +46814,11 @@
    "label": "X2 · Sevilla non perde",
    "p": 0.9122
   },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-29T20:00:00Z",
+   "hg": 0
+  },
   "top": [
    0,
    2
@@ -46864,6 +46954,11 @@
    "kind": "doppia",
    "label": "X2 · Getafe non perde",
    "p": 0.898
+  },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-29T18:00:00Z",
+   "hg": 2
   },
   "top": [
    0,
@@ -47002,6 +47097,11 @@
    "kind": "combo",
    "label": "X2 + Under 3,5",
    "p": 0.5128
+  },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-29T20:00:00Z",
+   "hg": 1
   },
   "top": [
    1,
@@ -49346,6 +49446,11 @@
    "label": "X2 · Deportivo non perde",
    "p": 0.9143
   },
+  "result": {
+   "ag": 3,
+   "date": "2026-10-29T20:00:00Z",
+   "hg": 0
+  },
   "top": [
    0,
    2
@@ -49621,6 +49726,11 @@
    "kind": "doppia",
    "label": "1X · Peña Sport non perde",
    "p": 0.7234
+  },
+  "result": {
+   "ag": 5,
+   "date": "2026-10-29T17:00:00Z",
+   "hg": 1
   },
   "top": [
    2,
