@@ -5,6 +5,7 @@
 import Base from "../layouts/Base.astro";
 import { LEAGUES, leagueUrl, liveUrl } from "../lib/core.js";
 import { livePriors, inlineJson } from "../lib/data.js";
+/* Si riempie solo nel browser: fuori da Google (src/lib/indexing.js). */
 import { setLang, langOfPath, t } from "../lib/i18n.js";
 setLang(langOfPath(Astro.url.pathname));
 const links = Object.fromEntries(LEAGUES.map((l) => [l.slug, {
@@ -13,7 +14,7 @@ const links = Object.fromEntries(LEAGUES.map((l) => [l.slug, {
   schedina: leagueUrl(l.code, "schedina"), classifica: leagueUrl(l.code, "classifica"), storico: leagueUrl(l.code, "storico")
 }]));
 ---
-<Base title={t("Live Center: risultati in diretta")} description={t("Risultati in diretta, eventi, statistiche e probabilità minuto per minuto delle partite in corso. Dati SportScore.")} section="live" path={liveUrl()} sub={t("Live Center · risultati in diretta")}>
+<Base title={t("Live Center: risultati in diretta")} description={t("Risultati in diretta, eventi, statistiche e probabilità minuto per minuto delle partite in corso. Dati SportScore.")} section="live" path={liveUrl()} noindex sub={t("Live Center · risultati in diretta")}>
   <section id="p-live" aria-label="Live Center">
     <div class="live-head">
       <div><div class="live-kicker">{t("AGGIORNAMENTI PARTITE")}</div><h2>Live Center</h2><p class="expl">{t("Risultati in diretta dal feed SportScore. Gli aggiornamenti possono avere un ritardo.")}</p></div>

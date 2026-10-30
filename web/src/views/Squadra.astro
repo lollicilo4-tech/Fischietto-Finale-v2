@@ -3,6 +3,7 @@
 import Base from "../layouts/Base.astro";
 import { leagueByCode, teamUrl } from "../lib/core.js";
 import { leagueData } from "../lib/data.js";
+import { sectionIndexable, teamIndexable } from "../lib/indexing.js";
 import { teamPage } from "../lib/render.js";
 import { setLang, langOfPath, t } from "../lib/i18n.js";
 interface Props { league: string; team: string }
@@ -12,7 +13,7 @@ const L = leagueByCode(league);
 const site = Astro.site ? Astro.site.href.replace(/\/$/, "") : "";
 const html = teamPage({ league, favs: [], site }, team, leagueData(league));
 ---
-<Base title={team + " · " + L.name} description={t("{team} in {league}: forza in attacco e difesa, forma, prossima partita con le probabilità del modello e pronostici passati.", { team, league: L.name })} league={league} section={undefined} path={teamUrl(league, team)} crumbs={[{ name: team, path: teamUrl(league, team) }]}>
+<Base title={team + " · " + L.name} description={t("{team} in {league}: forza in attacco e difesa, forma, prossima partita con le probabilità del modello e pronostici passati.", { team, league: L.name })} league={league} section={undefined} path={teamUrl(league, team)} noindex={!teamIndexable(team, leagueData(league))} crumbs={[{ name: team, path: teamUrl(league, team) }]}>
   <section id="p-team" aria-labelledby="team-title">
     <div id="team-page" set:html={html}></div>
   </section>

@@ -67,6 +67,7 @@ socialPngs.forEach((f) => {
 const files = walk(dist);
 const html = files.filter((f) => f.endsWith(".html"));
 let links = 0, ldCount = 0, crestImgs = 0, ogChecked = 0;
+const noindexPages = new Set();
 for (const file of html) {
   const rel = "/" + path.relative(dist, file);
   const src = readFileSync(file, "utf-8");
@@ -105,7 +106,9 @@ for (const file of html) {
   const en = rel.startsWith("/en/");
   if (!src.includes(en ? 'href="/en/privacy/"' : 'href="/privacy/"')) fail(rel + ": manca il link a Privacy e cookie");
   if (rel !== "/404.html" && !src.includes('<html lang="' + (en ? "en" : "it") + '"')) fail(rel + ": lingua della pagina sbagliata");
-  if (rel !== "/404.html" && !IT_ONLY.includes(rel) && !/<link rel="alternate" hreflang="en" href="https:\/\/fischiettofinale\.com\//.test(src)) fail(rel + ": manca il link hreflang alla versione inglese");
+  const isNoindex = src.includes('<meta name="robots" content="noindex">');
+  if (isNoindex) noindexPages.add(rel.replace(/index\.html$/, ""));
+  if (rel !== "/404.html" && !IT_ONLY.includes(rel) && !isNoindex && !/<link rel="alternate" hreflang="en" href="https:\/\/fischiettofinale\.com\//.test(src)) fail(rel + ": manca il link hreflang alla versione inglese");
   if (!src.includes('href="' + KOFI_URL + '" target="_blank" rel="noopener noreferrer"')) fail(rel + ": manca il link Ko-fi");
 }
 
@@ -140,6 +143,9 @@ headers.split("\n").forEach((line, i) => { if (line.length > 2000) fail("_header
 const sitemap = readFileSync(path.join(dist, "sitemap.xml"), "utf-8");
 const locs = [...sitemap.matchAll(/<loc>https:\/\/fischiettofinale\.com(\/[^<]*)<\/loc>/g)].map((m) => m[1]);
 locs.forEach((u) => { if (!pageFor(u)) fail("sitemap: " + u + " non esiste"); });
+/* Pagine noindex (src/lib/indexing.js): mai nella sitemap; e ce ne devono essere (strumenti, Live...). */
+locs.forEach((u) => { if (noindexPages.has(u)) fail("sitemap: " + u + " è noindex"); });
+["/live/", "/i-miei-pronostici/", "/serie-a/piu-probabili/", "/en/serie-a/model-picks/"].forEach((u) => { if (!noindexPages.has(u)) fail(u + ": dovrebbe essere noindex"); });
 
 /* Redirect: la destinazione esiste per ogni campionato, la vecchia pagina non c'è più. */
 const redirects = readFileSync(path.join(dist, "_redirects"), "utf-8").split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#"));
@@ -178,4 +184,4 @@ if (problems.length) {
   console.error(problems.length + " problemi nel sito generato:\n- " + problems.slice(0, 50).join("\n- "));
   process.exit(1);
 }
-console.log("dist/ ok: " + html.length + " pagine, " + files.length + " file, " + links + " link interni verificati, " + locs.length + " indirizzi in sitemap, " + ldCount + " blocchi di dati strutturati, " + crestImgs + " stemmi nelle pagine, " + ogChecked + " anteprime delle partite.");
+console.log("dist/ ok: " + html.length + " pagine, " + files.length + " file, " + links + " link interni verificati, " + locs.length + " indirizzi in sitemap, " + ldCount + " blocchi di dati strutturati, " + crestImgs + " stemmi nelle pagine, " + ogChecked + " anteprime delle partite, " + noindexPages.size + " pagine noindex.");
