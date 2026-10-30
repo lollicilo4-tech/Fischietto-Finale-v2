@@ -264,3 +264,9 @@ img.crest { display: inline-block; object-fit: contain; flex: 0 0 auto; }
 .fp-radio-all:checked ~ .fp-pane-all, .fp-radio-a:checked ~ .fp-pane-a, .fp-radio-c:checked ~ .fp-pane-c, .fp-radio-d:checked ~ .fp-pane-d { display: block; }
 .fp-radio-all:checked ~ .cal-switch .fp-label-all, .fp-radio-a:checked ~ .cal-switch .fp-label-a, .fp-radio-c:checked ~ .cal-switch .fp-label-c, .fp-radio-d:checked ~ .cal-switch .fp-label-d { background: var(--gold); color: var(--gold-ink); border-color: var(--gold); }
 .fp-radio:focus-visible ~ .cal-switch { outline: 2px solid var(--link); outline-offset: 3px; border-radius: 12px; }
+
+/* Testi introduttivi scritti dai dati (src/lib/intro.js). */
+.intro-panel { margin: 14px 0; }
+.intro-panel h2 { margin: 0; font-size: 18px; }
+p.intro { margin: 0; line-height: 1.6; }
+#team-page p.intro { margin: 12px 0; }

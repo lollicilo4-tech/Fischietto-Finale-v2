@@ -3,6 +3,7 @@
 import { LEAGUES, leagueUrl, infoUrl, myPicksUrl, FANTA_URL, todayUrl } from "../lib/core.js";
 import { t, isEn } from "../lib/i18n.js";
 import { homeDashboard } from "../lib/render.js";
+import { leagueIntro } from "../lib/intro.js";
 import { leagueData, leagueMeta } from "../lib/data.js";
 
 interface Props { league: string }
@@ -12,6 +13,8 @@ const meta = leagueMeta(league);
 const ctx = { league, favs: [] };
 const dash = turno && turno.matches.length ? homeDashboard(ctx, turno.matches) : null;
 const L = LEAGUES.find((l) => l.code === league);
+/* La giornata in breve: testo scritto dai dati del campionato (src/lib/intro.js). */
+const intro = leagueIntro(league, leagueData(league), isEn() ? "en" : "it");
 /* Fantacalcio: solo Serie A e solo in italiano. */
 const fanta = league === "SA" && !isEn();
 const tilePartite = turno ? (meta.matchday ? (L.knockout ? t("Turno") : t("Giornata")) + " " + meta.matchday + " · " : "") + t("{n} partite", { n: meta.nMatches }) : t("Il prossimo turno");
@@ -29,6 +32,12 @@ const grid = ["SA", "PL", "PD", "BL1", "FL1", "CL", "EL", "UECL", "CDR", "ELC", 
   </div>
   <div class="reference-stadium-art" aria-hidden="true"><div class="stadium-lights"></div><div class="stadium-pitch"></div><div class="stadium-ball">⚽</div></div>
 </div>
+{intro && (
+  <div class="panel intro-panel">
+    <h2>{t("{league}: la giornata in breve", { league: L.name })}</h2>
+    <Fragment set:html={intro} />
+  </div>
+)}
 <div class="reference-leagues">
   <div class="reference-section-title"><h2>{t("Campionati")}</h2><span>{t("SELEZIONA LEGA")}</span></div>
   <div class="reference-league-grid">
