@@ -2,6 +2,7 @@
 import Base from "../layouts/Base.astro";
 import { leagueByCode, leagueUrl, weekUrl } from "../lib/core.js";
 import { leagueData } from "../lib/data.js";
+import { sectionIndexable, teamIndexable } from "../lib/indexing.js";
 import { storicoParts } from "../lib/render.js";
 import { setLang, langOfPath, t } from "../lib/i18n.js";
 interface Props { league: string }
@@ -11,7 +12,7 @@ const L = leagueByCode(league);
 const { storico } = leagueData(league);
 const s = storicoParts(storico);
 ---
-<Base title={t("Storico pronostici") + " " + L.name} description={t("Ogni pronostico di {league} salvato prima della partita e confrontato con il risultato vero: precisione, calibrazione e affidabilità del modello.", { league: L.name })} league={league} section="storico" path={leagueUrl(league, "storico")}>
+<Base title={t("Storico pronostici") + " " + L.name} description={t("Ogni pronostico di {league} salvato prima della partita e confrontato con il risultato vero: precisione, calibrazione e affidabilità del modello.", { league: L.name })} league={league} section="storico" path={leagueUrl(league, "storico")} noindex={!sectionIndexable("storico", leagueData(league))}>
   <section id="p-storico" aria-label={t("Storico") + " " + L.name}>
     <p class="lead" id="hist-lead">{s.lead}</p>
     <div id="verdict" set:html={s.verdict}></div>

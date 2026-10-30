@@ -1,16 +1,24 @@
-/* Mappa del sito per i motori di ricerca: tutte le pagine generate (tranne la 404), in italiano e in inglese. */
+/* Mappa del sito per i motori di ricerca: le pagine indicizzabili (src/lib/indexing.js), in italiano e in inglese.
+   Live Center, I miei pronostici, Più probabili, Le scelte del modello e le pagine con pochi dati sono noindex. */
 import { TODAY_URL, WEEK_URL, ABOUT_URL, LEAGUES, SECTIONS, slugify, matchSlug, INFO_URL, PRIVACY_URL, FANTA_URL, altPath } from "../lib/core.js";
-import { MYPICKS_URL } from "../lib/mypicks.js";
 import { leagueData, allTeams } from "../lib/data.js";
+import { sectionIndexable, teamIndexable } from "../lib/indexing.js";
 
 export function GET({ site }) {
   const base = String(site).replace(/\/$/, "");
-  const urls = ["/", INFO_URL, PRIVACY_URL, MYPICKS_URL, "/live/", TODAY_URL, WEEK_URL, ABOUT_URL];
+  const urls = ["/", INFO_URL, PRIVACY_URL, TODAY_URL, WEEK_URL, ABOUT_URL];
   LEAGUES.forEach((l) => {
-    Object.values(SECTIONS).forEach((s) => { if (!(l.code === "SA" && s.path === "")) urls.push("/" + l.slug + "/" + s.path); });
-    const t = leagueData(l.code).turno;
+    const data = leagueData(l.code), t = data.turno;
+    Object.entries(SECTIONS).forEach(([key, s]) => {
+      if (!(l.code === "SA" && s.path === "") && sectionIndexable(key, data)) urls.push("/" + l.slug + "/" + s.path);
+    });
     (t ? t.matches : []).forEach((m) => urls.push("/" + l.slug + "/partita/" + matchSlug(m) + "/"));
-    [...new Set(allTeams(l.code).map(slugify))].forEach((s) => urls.push("/" + l.slug + "/squadra/" + s + "/"));
+    const seen = new Set();
+    allTeams(l.code).forEach((name) => {
+      const slug = slugify(name);
+      if (!seen.has(slug) && teamIndexable(name, data)) urls.push("/" + l.slug + "/squadra/" + slug + "/");
+      seen.add(slug);
+    });
   });
   urls.push(...urls.map((u) => altPath(u, "en")));
   urls.push(FANTA_URL, FANTA_URL + "calendario/", FANTA_URL + "guida/");  // solo in italiano

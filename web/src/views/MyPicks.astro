@@ -3,10 +3,11 @@
    ha solo la spiegazione e il contenitore. */
 import Base from "../layouts/Base.astro";
 import { myPicksUrl } from "../lib/core.js";
+/* Pagina personale che si riempie nel browser: fuori da Google (src/lib/indexing.js). */
 import { setLang, langOfPath, t } from "../lib/i18n.js";
 setLang(langOfPath(Astro.url.pathname));
 ---
-<Base title={t("I miei pronostici")} description={t("Scegli 1, X o 2 prima del calcio d'inizio e sfida il modello di Fischietto finale: quante ne azzecchi tu e quante il modello. Niente soldi né quote, tutto resta sul tuo telefono.")} section={undefined} path={myPicksUrl()}>
+<Base title={t("I miei pronostici")} description={t("Scegli 1, X o 2 prima del calcio d'inizio e sfida il modello di Fischietto finale: quante ne azzecchi tu e quante il modello. Niente soldi né quote, tutto resta sul tuo telefono.")} section={undefined} path={myPicksUrl()} noindex>
   <section id="p-mypicks" aria-labelledby="my-title">
     <h2 class="sub2" id="my-title">{t("I miei pronostici")}</h2>
     <p class="lead">{t("Nella scheda di ogni partita puoi scegliere 1, X o 2 fino al calcio d'inizio. Qui vedi quante ne azzecchi rispetto al modello. È una sfida, non una scommessa: niente soldi e niente quote. I pronostici restano solo su questo dispositivo, senza account.")}</p>
