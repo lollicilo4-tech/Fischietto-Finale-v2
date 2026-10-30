@@ -270,3 +270,12 @@ img.crest { display: inline-block; object-fit: contain; flex: 0 0 auto; }
 .intro-panel h2 { margin: 0; font-size: 18px; }
 p.intro { margin: 0; line-height: 1.6; }
 #team-page p.intro { margin: 12px 0; }
+
+/* Storico: esito 1X2 e pronostico del modello (pulsanti radio e CSS). */
+.hist-tabs { margin-top: 10px; }
+.hist-radio { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+.hist-pane { display: none; }
+.hist-radio-1x2:checked ~ .hist-pane-1x2, .hist-radio-rec:checked ~ .hist-pane-rec { display: block; }
+.hist-radio-1x2:checked ~ .cal-switch .hist-label-1x2, .hist-radio-rec:checked ~ .cal-switch .hist-label-rec { background: var(--gold); color: var(--gold-ink); border-color: var(--gold); }
+.hist-radio:focus-visible ~ .cal-switch { outline: 2px solid var(--link); outline-offset: 3px; border-radius: 12px; }
+.hist-tabs .cal-switch { margin-bottom: 10px; }

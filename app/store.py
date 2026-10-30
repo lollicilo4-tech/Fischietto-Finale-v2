@@ -379,8 +379,15 @@ def history(finished: list[dict], league: str | None = None) -> dict:
         outcomes.append(actual)
         brier.append(sum((q - (1.0 if k == actual else 0.0)) ** 2
                          for k, q in (("1", p["p1"]), ("X", p["px"]), ("2", p["p2"]))))
-        items.append({"match": f"{p['home']} – {p['away']}", "pick": p["pick"], "p": p["pick_p"],
-                      "score": f"{m['hg']}-{m['ag']}", "ok": p["pick"] == actual})
+        item = {"match": f"{p['home']} – {p['away']}", "pick": p["pick"], "p": p["pick_p"],
+                "score": f"{m['hg']}-{m['ag']}", "ok": p["pick"] == actual}
+        # Il "Pronostico finale del modello" mostrato sul sito (non sempre l'1X2: X2, Over 1,5, combo...),
+        # per lo Storico "Pronostico del modello". Assente nei pronostici più vecchi.
+        rec = p.get("recommendation")
+        if isinstance(rec, dict) and rec.get("code") and rec.get("p") is not None:
+            item["rec"] = {"code": rec["code"], "label": rec.get("label") or rec["code"], "p": round(float(rec["p"]), 4),
+                           "ok": market_hit(rec["code"], m, rec.get("score"))}
+        items.append(item)
     n = len(items)
     hit = sum(1 for i in items if i["ok"])
     out = {"n": n, "hit": hit,
