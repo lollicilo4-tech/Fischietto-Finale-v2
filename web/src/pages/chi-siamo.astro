@@ -1,0 +1,56 @@
+---
+/* Chi siamo: chi fa Fischietto finale, perché, come lavora e cosa non fa. Va tenuta allineata alla
+   versione inglese (src/pages/en/about.astro). */
+import Base from "../layouts/Base.astro";
+import { KOFI_URL, CONTACT_EMAIL, INFO_URL, PRIVACY_URL, FANTA_URL, WEEK_URL, leagueUrl } from "../lib/core.js";
+import { setLang } from "../lib/i18n.js";
+setLang("it");
+const ext = { target: "_blank", rel: "noopener noreferrer" };
+---
+<Base title="Chi siamo" description="Fischietto finale è un progetto personale e gratuito di un appassionato di calcio e di dati: pronostici statistici trasparenti, storico pubblico e nessuna scommessa." section={undefined} path="/chi-siamo/">
+  <section id="p-info" aria-labelledby="about-title">
+    <h2 class="sub2" id="about-title">Chi siamo</h2>
+    <p class="lead">Fischietto finale è un progetto personale, nato dalla passione per il calcio e per i numeri. Nessuna redazione, nessuna agenzia, nessun bookmaker dietro: solo un appassionato che voleva capire, con i dati, come potrebbe andare una partita.</p>
+
+    <div class="panel info-section">
+      <h2>Perché è nato</h2>
+      <p>Prima di ogni giornata si leggono pronostici di ogni tipo, quasi sempre senza spiegare da dove vengono. L'idea di Fischietto finale è l'opposto: partire dai risultati veri, costruire un modello statistico semplice da spiegare e mostrare ogni numero con il suo perché. Se il modello dice che una squadra vince nel 55% dei casi, deve essere possibile capire perché lo dice e controllare, partita dopo partita, se ha avuto ragione.</p>
+      <p>Per questo ogni pronostico viene salvato prima del calcio d'inizio e non viene più toccato: nello <a href={leagueUrl("SA", "storico")}>Storico</a> c'è il confronto con il risultato vero, comprese le partite sbagliate, e nel <a href={WEEK_URL}>riepilogo della settimana</a> si vede com'è andata, nel bene e nel male.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>Cosa trovi qui</h2>
+      <ul>
+        <li><b>Pronostici statistici</b> per Serie A, Premier League, LaLiga, Bundesliga, Ligue 1, coppe europee e altri campionati: probabilità di 1, X e 2, gol attesi e risultato previsto, con la spiegazione dei fattori che pesano di più.</li>
+        <li><b>Notizie verificate</b>: nelle 48 ore prima delle partite principali un sistema di intelligenza artificiale cerca infortuni e squalifiche, e un'assenza conta solo se un articolo la conferma, con il link alla fonte.</li>
+        <li><b>Fantacalcio</b>: chi può segnare, il capitano, la porta inviolata e il calendario delle prossime giornate per ogni squadra di Serie A. C'è anche una <a href="/fantacalcio/guida/">guida</a> per usare questi numeri.</li>
+        <li><b>Live Center</b> con risultati, eventi e probabilità che cambiano minuto per minuto.</li>
+      </ul>
+      <p>Come funziona il modello, con un esempio vero: <a href={INFO_URL}>Come funziona</a>.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>Cosa non facciamo</h2>
+      <ul>
+        <li>Non accettiamo scommesse, non mostriamo quote dei bookmaker e non abbiamo accordi con siti di scommesse. Il sito è solo informativo e non è un invito a scommettere.</li>
+        <li>Non chiediamo registrazioni né dati personali: le preferenze (squadre seguite, la tua rosa del fantacalcio, i tuoi pronostici) restano solo sul tuo dispositivo. I dettagli sono nella pagina <a href={PRIVACY_URL}>Privacy e cookie</a>.</li>
+        <li>Non vendiamo pronostici "sicuri": non esistono. Ogni numero è una stima, e lo scriviamo ovunque.</li>
+      </ul>
+    </div>
+
+    <div class="panel info-section">
+      <h2>I dati</h2>
+      <p>Risultati, calendari, classifiche e marcatori arrivano da <a href="https://www.football-data.org/" {...ext}>football-data.org</a>; alcune coppe da archivi pubblici di risultati. Il Live Center usa il servizio gratuito di SportScore. I pronostici si aggiornano da soli ogni quattro ore e il sito viene ricostruito a ogni aggiornamento.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>Gratis, per tutti</h2>
+      <p>Fischietto finale è gratuito e non ha abbonamenti: tutti vedono le stesse cose. Se ti è utile puoi sostenerlo con una donazione libera su <a href={KOFI_URL} {...ext}>Ko-fi</a>, che aiuta a coprire il tempo dedicato al progetto. Le donazioni non sbloccano niente e non cambiano i pronostici.</p>
+    </div>
+
+    <div class="panel info-section">
+      <h2>Contatti</h2>
+      <p>Hai trovato un errore, un risultato sbagliato o hai un'idea? Scrivi a <a href={"mailto:" + CONTACT_EMAIL}>{CONTACT_EMAIL}</a>. Ogni segnalazione viene letta, e molte delle funzioni del sito sono nate proprio così.</p>
+    </div>
+  </section>
+</Base>

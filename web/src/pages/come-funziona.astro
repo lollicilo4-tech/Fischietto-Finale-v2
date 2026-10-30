@@ -1,7 +1,12 @@
 ---
-/* Come funziona: testo identico alla sezione del sito attuale. */
-import { KOFI_URL } from "../lib/core.js";
+/* Come funziona: com'è fatto il modello, con un esempio vero calcolato sui dati della giornata (src/lib/example.js). */
+import { KOFI_URL, ABOUT_URL } from "../lib/core.js";
 import Base from "../layouts/Base.astro";
+import { leagueData } from "../lib/data.js";
+import { exampleMatch, exampleHtml } from "../lib/example.js";
+import { setLang } from "../lib/i18n.js";
+setLang("it");
+const example = exampleHtml("SA", exampleMatch(leagueData("SA").turno), "it");
 ---
 <Base title="Come funziona" description="Da dove vengono i numeri di Fischietto finale: modello statistico, ruolo dell'AI con fonti verificate, storico pubblico dei pronostici e limiti delle stime." section={undefined} path="/come-funziona/">
   <section id="p-info" aria-labelledby="info-title">
@@ -13,6 +18,13 @@ import Base from "../layouts/Base.astro";
       <p>Da queste forze nascono i gol attesi di ogni squadra e, da lì, la probabilità di ogni risultato possibile (0-0, 1-0, 2-1…). Una piccola correzione, stimata per ogni campionato, tiene conto che i pareggi a basso punteggio sono un po’ più frequenti di quanto direbbe il calcolo puro.</p>
       <p>Nella scheda di ogni partita, “Perché il modello dice così” mostra i fattori che pesano di più: attacco e difesa delle due squadre rispetto alla media, fattore campo, forma e, se ci sono, le assenze confermate. In Partite trovi anche le probabilità delle giornate successive, calcolate con il solo modello statistico.</p>
     </div>
+    {example && (
+      <div class="panel info-section" id="esempio">
+        <h2>Un esempio vero, con una partita di questa giornata</h2>
+        <Fragment set:html={example} />
+        <p>L'esempio cambia da solo a ogni aggiornamento: è sempre la partita di Serie A con il favorito più netto tra quelle ancora da giocare.</p>
+      </div>
+    )}
     <div class="panel info-section">
       <h2>2. Le coppe europee</h2>
       <p>In Champions, Europa e Conference League ogni squadra gioca poche partite. Per questo il modello parte dal livello del suo campionato (Premier League, LaLiga, Serie A, Bundesliga e Ligue 1 più in alto, gli altri campionati un po’ più in basso) e dalla sua forza in campionato. Le partite europee poi correggono la stima.</p>
@@ -51,6 +63,7 @@ import Base from "../layouts/Base.astro";
       <h2>9. Gratis e senza scommesse</h2>
       <p>Il sito è gratuito, non accetta giocate e non mostra quote dei bookmaker. È un servizio solo informativo e non è un invito a scommettere.</p>
       <p>Se ti è utile puoi sostenerlo con una donazione libera su <a href={KOFI_URL} target="_blank" rel="noopener noreferrer">Ko-fi</a>. Le donazioni non sbloccano contenuti e non cambiano i pronostici: il sito resta uguale per tutti.</p>
+      <p>Chi c'è dietro il progetto e perché è nato: <a href={ABOUT_URL}>Chi siamo</a>.</p>
     </div>
   </section>
 </Base>

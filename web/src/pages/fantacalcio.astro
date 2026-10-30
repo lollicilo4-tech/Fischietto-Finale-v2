@@ -31,7 +31,7 @@ const description = "Chi schierare al fantacalcio nella " + day + " di Serie A: 
   ogImage={{ path: FANTA_URL + "anteprima.png", width: PREVIEW.width, height: PREVIEW.height, alt: "Consigli fantacalcio " + day + " di Serie A: capitano e porta inviolata" }}>
   <section id="p-fanta" aria-labelledby="fanta-title">
     <h2 class="sub2" id="fanta-title">Consigli fantacalcio · {day}</h2>
-    <p class="lead">Chi schierare secondo il modello statistico di Fischietto finale: i giocatori con più probabilità di segnare, il capitano, quelli con le prossime giornate migliori e le squadre con la porta inviolata più probabile per portiere e difesa. {deadline && <b>{deadline}.</b>}</p>
+    <p class="lead">Chi schierare secondo il modello statistico di Fischietto finale: i giocatori con più probabilità di segnare, il capitano, quelli con le prossime giornate migliori e le squadre con la porta inviolata più probabile per portiere e difesa. {deadline && <b>{deadline}.</b>} Prima volta qui? Leggi la <a href={FANTA_URL + "guida/"}>guida al fantacalcio con le statistiche</a>.</p>
     {turno ? (
       <Fragment>
         <div class="panel rosa-panel" id="la-mia-rosa">

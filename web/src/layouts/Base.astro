@@ -15,7 +15,7 @@ import "@fontsource/ibm-plex-mono/500.css";
 import "@fontsource/ibm-plex-mono/600.css";
 import "../styles/legacy.css";
 import "../styles/site.css";
-import { LEAGUES, SELECT_ORDER, leagueByCode, leagueUrl, liveUrl, infoUrl, KOFI_URL, privacyUrl, CONTACT_EMAIL, SECTIONS, altPath, defaultLeague, roundWord } from "../lib/core.js";
+import { LEAGUES, SELECT_ORDER, leagueByCode, leagueUrl, liveUrl, infoUrl, aboutUrl, KOFI_URL, privacyUrl, CONTACT_EMAIL, SECTIONS, altPath, defaultLeague, roundWord } from "../lib/core.js";
 import { statusTags } from "../lib/render.js";
 import { leagueData, leagueMeta, inlineJson } from "../lib/data.js";
 import { breadcrumbLd } from "../lib/seo.js";
@@ -121,14 +121,14 @@ const structured = noindex ? [] : [Astro.props.league ? breadcrumbLd(site, { lea
     <p class="note">These are statistical estimates, not certainties: a team given 60% still fails to win 4 times in 10, and that happens often. The numbers come from a statistical model; the AI adds absences only when an article confirms them. Times are UK time. <a class="foot-link ff-btn" href={infoUrl()}>How it works →</a></p>
     <p class="note responsible"><b>Information only, no gambling.</b> Fischietto finale does not take bets, does not show bookmaker odds and is not an invitation to gamble. Gambling is for adults only (18+) and can be addictive. If gambling is causing you problems, help is free and confidential: in the UK call the National Gambling Helpline on <a href="tel:08088020133">0808 8020 133</a> (<a href="https://www.gamcare.org.uk/" target="_blank" rel="noopener noreferrer">GamCare</a>); elsewhere, contact your local support service.</p>
     <p class="note support">Fischietto finale is free, with no subscriptions. If you find it useful, you can buy us a coffee: <a class="foot-link ff-btn" href={KOFI_URL} target="_blank" rel="noopener noreferrer">☕ Support us on Ko-fi</a></p>
-    <p class="note"><a class="foot-link ff-btn" href={privacyUrl()}>Privacy and cookies</a> · Contact: <a href={"mailto:" + CONTACT_EMAIL}>{CONTACT_EMAIL}</a> · <a href={itPath} hreflang="it" lang="it">Versione italiana</a></p>
+    <p class="note"><a class="foot-link ff-btn" href={aboutUrl()}>About</a> · <a class="foot-link ff-btn" href={privacyUrl()}>Privacy and cookies</a> · Contact: <a href={"mailto:" + CONTACT_EMAIL}>{CONTACT_EMAIL}</a> · <a href={itPath} hreflang="it" lang="it">Versione italiana</a></p>
     </Fragment>
     ) : (
     <Fragment>
     <p class="note">Sono stime statistiche, non certezze: una squadra data al 60% non vince 4 volte su 10, e succede spesso. I numeri vengono da un modello statistico; l'AI aggiunge le assenze solo quando le conferma un articolo. <a class="foot-link ff-btn" href={infoUrl()}>Come funziona →</a></p>
     <p class="note responsible"><b>Solo informazione, nessuna scommessa.</b> Fischietto finale non accetta giocate, non mostra quote dei bookmaker e non è un invito a scommettere. Il gioco d'azzardo è vietato ai minori di 18 anni e può causare dipendenza. Se il gioco ti crea problemi, puoi chiamare il Telefono Verde Nazionale dell'Istituto Superiore di Sanità: <a href="tel:800558822">800 55 88 22</a> (<a href="https://www.iss.it/dipendenze/-/asset_publisher/zwfXwoiZC6zu/content/telefono-verde-nazionale-per-le-problematiche-legate-al-gioco-d-azzardo-tvnga-800-55-88-22" target="_blank" rel="noopener noreferrer">informazioni</a>).</p>
     <p class="note support">Fischietto finale è gratuito e senza abbonamenti. Se ti è utile, puoi offrirci un caffè: <a class="foot-link ff-btn" href={KOFI_URL} target="_blank" rel="noopener noreferrer">☕ Sostienici su Ko-fi</a></p>
-    <p class="note"><a class="foot-link ff-btn" href={privacyUrl()}>Privacy e cookie</a> · Contatti: <a href={"mailto:" + CONTACT_EMAIL}>{CONTACT_EMAIL}</a></p>
+    <p class="note"><a class="foot-link ff-btn" href={aboutUrl()}>Chi siamo</a> · <a class="foot-link ff-btn" href={privacyUrl()}>Privacy e cookie</a> · Contatti: <a href={"mailto:" + CONTACT_EMAIL}>{CONTACT_EMAIL}</a></p>
     </Fragment>
     )}
     <p class="note">Football data provided by the Football-Data.org API.</p>

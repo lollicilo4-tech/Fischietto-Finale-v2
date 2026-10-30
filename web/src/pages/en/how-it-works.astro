@@ -2,6 +2,11 @@
 /* How it works: traduzione inglese di src/pages/come-funziona.astro. Va aggiornata insieme a quella. */
 import { KOFI_URL } from "../../lib/core.js";
 import Base from "../../layouts/Base.astro";
+import { leagueData } from "../../lib/data.js";
+import { exampleMatch, exampleHtml } from "../../lib/example.js";
+import { setLang } from "../../lib/i18n.js";
+setLang("en");
+const example = exampleHtml("SA", exampleMatch(leagueData("SA").turno), "en");
 ---
 <Base title="How it works" description="Where Fischietto finale's numbers come from: a statistical model, the role of AI with verified sources, a public record of every prediction and the limits of the estimates." section={undefined} path="/en/how-it-works/">
   <section id="p-info" aria-labelledby="info-title">
@@ -13,6 +18,13 @@ import Base from "../../layouts/Base.astro";
       <p>These strengths give each team's expected goals and, from there, the probability of every possible score (0-0, 1-0, 2-1…). A small correction, estimated for each league, accounts for low-scoring draws being slightly more common than the pure calculation would say.</p>
       <p>In each match card, “Why the model says this” shows the factors that weigh most: both teams' attack and defence compared with the average, home advantage, form and, if there are any, confirmed absences. In Matches you also find the probabilities for the following rounds, calculated with the statistical model only.</p>
     </div>
+    {example && (
+      <div class="panel info-section" id="example">
+        <h2>A real example, with a match from this round</h2>
+        <Fragment set:html={example} />
+        <p>The example changes by itself at every update: it is always the Serie A match with the clearest favourite among those still to be played.</p>
+      </div>
+    )}
     <div class="panel info-section">
       <h2>2. The European cups</h2>
       <p>In the Champions, Europa and Conference League each team plays few matches. So the model starts from the level of its league (Premier League, LaLiga, Serie A, Bundesliga and Ligue 1 highest, the other leagues a little lower) and from its strength in that league. The European matches then correct the estimate.</p>
@@ -52,6 +64,7 @@ import Base from "../../layouts/Base.astro";
       <h2>9. Free and without gambling</h2>
       <p>The site is free, does not take bets and does not show bookmaker odds. It is an information service only and is not an invitation to gamble.</p>
       <p>If you find it useful you can support it with a donation of your choice on <a href={KOFI_URL} target="_blank" rel="noopener noreferrer">Ko-fi</a>. Donations do not unlock content and do not change the predictions: the site stays the same for everyone.</p>
+      <p>Who is behind the project and why it started: <a href="/en/about/">About</a>.</p>
     </div>
   </section>
 </Base>
