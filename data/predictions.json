@@ -883,6 +883,11 @@
    "label": "X2 · Mirassol non perde",
    "p": 0.6187
   },
+  "result": {
+   "ag": 0,
+   "date": "2026-10-30T23:00:00Z",
+   "hg": 2
+  },
   "top": [
    1,
    1
