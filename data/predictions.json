@@ -53972,6 +53972,149 @@
    1.29
   ]
  },
+ "EL-4-2026-11-04-Rennes-Olympiacos": {
+  "ai": false,
+  "away": "Olympiacos",
+  "base": {
+   "p1": 0.3655,
+   "p2": 0.3748,
+   "px": 0.2597
+  },
+  "gg": 0.5905,
+  "home": "Rennes",
+  "kickoff": "2026-11-04T15:30:00Z",
+  "league": "EL",
+  "market_predictions": [
+   {
+    "code": "1",
+    "kind": "esito",
+    "p": 0.3655
+   },
+   {
+    "code": "X",
+    "kind": "esito",
+    "p": 0.2597
+   },
+   {
+    "code": "2",
+    "kind": "esito",
+    "p": 0.3748
+   },
+   {
+    "code": "1X",
+    "kind": "doppia",
+    "p": 0.6252
+   },
+   {
+    "code": "X2",
+    "kind": "doppia",
+    "p": 0.6345
+   },
+   {
+    "code": "Over 1,5",
+    "kind": "gol",
+    "p": 0.7902
+   },
+   {
+    "code": "Over 2,5",
+    "kind": "gol",
+    "p": 0.5525
+   },
+   {
+    "code": "Under 2,5",
+    "kind": "gol",
+    "p": 0.4475
+   },
+   {
+    "code": "Under 3,5",
+    "kind": "gol",
+    "p": 0.6711
+   },
+   {
+    "code": "Gol",
+    "kind": "gol",
+    "p": 0.5905
+   },
+   {
+    "code": "No Gol",
+    "kind": "gol",
+    "p": 0.4095
+   },
+   {
+    "code": "1_o15",
+    "kind": "combo",
+    "p": 0.2918
+   },
+   {
+    "code": "2_o15",
+    "kind": "combo",
+    "p": 0.2999
+   },
+   {
+    "code": "1x_o15",
+    "kind": "combo",
+    "p": 0.4903
+   },
+   {
+    "code": "x2_o15",
+    "kind": "combo",
+    "p": 0.4984
+   },
+   {
+    "code": "1x_u35",
+    "kind": "combo",
+    "p": 0.4244
+   },
+   {
+    "code": "x2_u35",
+    "kind": "combo",
+    "p": 0.4296
+   },
+   {
+    "code": "gg_o25",
+    "kind": "combo",
+    "p": 0.4688
+   },
+   {
+    "code": "ng_u35",
+    "kind": "combo",
+    "p": 0.3817
+   },
+   {
+    "code": "score",
+    "kind": "score",
+    "p": 0.0845,
+    "score": "1-2"
+   }
+  ],
+  "o25": 0.5525,
+  "old": {
+   "p1": 0.3325,
+   "p2": 0.3992,
+   "px": 0.2683
+  },
+  "p1": 0.3655,
+  "p2": 0.3748,
+  "pick": "2",
+  "pick_p": 0.3748,
+  "px": 0.2597,
+  "recommendation": {
+   "base": 0.5185,
+   "code": "Gol",
+   "edge": 0.072,
+   "kind": "gol",
+   "label": "Gol · entrambe segnano",
+   "p": 0.5905
+  },
+  "top": [
+   1,
+   2
+  ],
+  "xg": [
+   1.44,
+   1.46
+  ]
+ },
  "EL-4-2026-11-05-AZ Alkmaar-Juventus": {
   "ai": false,
   "away": "Juventus",
